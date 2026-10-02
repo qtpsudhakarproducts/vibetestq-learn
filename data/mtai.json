@@ -1,0 +1,172 @@
+{
+  "id": "mtai",
+  "title": "AI-Native Manual Testing",
+  "sidebarIcon": "fas fa-robot",
+  "meta": "13 chapters · 4 parts",
+  "pageTitle": "AI-Native Manual Testing | VibeTestQ Academy",
+  "chapterTitle": "{title} | AI-Native Manual Testing | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "AI-native manual testing",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">AI-Native</span> <span class=\"g2\">Manual Testing</span>",
+    "sub": "The masterclass: testing fundamentals, the AI-SDLC, prompt engineering, MCP, human-in-the-loop, API testing and a capstone.",
+    "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
+    "stats": [
+      [
+        "13",
+        "Chapters"
+      ],
+      [
+        "4",
+        "Parts"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "g1",
+      "title": "Foundations",
+      "short": "Foundations",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-layer-group",
+      "desc": "Traditional Testing Fundamentals · Foundations · AI-SDLC",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "traditional",
+          "title": "Traditional Testing Fundamentals",
+          "src": "/mtai/00_traditional_testing_fundamentals.md"
+        },
+        {
+          "num": 2,
+          "slug": "foundations",
+          "title": "Foundations",
+          "src": "/mtai/01_foundations.md"
+        },
+        {
+          "num": 3,
+          "slug": "ai_sdlc",
+          "title": "AI-SDLC",
+          "src": "/mtai/02_ai_sdlc_modern_testing.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "g2",
+      "title": "Tools & Frameworks",
+      "short": "Tools & Frameworks",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fas fa-robot",
+      "desc": "Management Tools · GenAI & MCP",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 4,
+          "slug": "tools",
+          "title": "Management Tools",
+          "src": "/mtai/03_test_management_tools.md"
+        },
+        {
+          "num": 5,
+          "slug": "mcp",
+          "title": "GenAI & MCP",
+          "src": "/mtai/04_genai_mcp_testing.md"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "g3",
+      "title": "AI Skills",
+      "short": "AI Skills",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "icon": "fas fa-robot",
+      "desc": "Prompt Engineering · Artifact Generation",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 6,
+          "slug": "prompting",
+          "title": "Prompt Engineering",
+          "src": "/mtai/05_prompt_engineering.md"
+        },
+        {
+          "num": 7,
+          "slug": "artifacts",
+          "title": "Artifact Generation",
+          "src": "/mtai/06_ai_powered_test_artifact_generation.md"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "g4",
+      "title": "Strategy & Career",
+      "short": "Strategy & Career",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "icon": "fas fa-robot",
+      "desc": "Human-In-The-Loop · Irreplaceable Skills · API Testing · Prompt Testing …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 8,
+          "slug": "hitl",
+          "title": "Human-In-The-Loop",
+          "src": "/mtai/07_human_in_the_loop.md"
+        },
+        {
+          "num": 9,
+          "slug": "human_skills",
+          "title": "Irreplaceable Skills",
+          "src": "/mtai/08_human_irreplaceable_skills.md"
+        },
+        {
+          "num": 10,
+          "slug": "api_testing",
+          "title": "API Testing",
+          "src": "/mtai/09_api_testing.md"
+        },
+        {
+          "num": 11,
+          "slug": "prompt_testing",
+          "title": "Prompt Testing",
+          "src": "/mtai/10_testing_ai_systems_prompt_testing.md"
+        },
+        {
+          "num": 12,
+          "slug": "capstone",
+          "title": "Capstone Project",
+          "src": "/mtai/11_capstone_project.md"
+        },
+        {
+          "num": 13,
+          "slug": "career",
+          "title": "Career Dev",
+          "src": "/mtai/12_career_development.md"
+        }
+      ]
+    }
+  ]
+}

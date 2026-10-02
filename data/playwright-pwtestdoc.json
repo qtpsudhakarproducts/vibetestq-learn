@@ -1,0 +1,277 @@
+{
+  "id": "playwright-pwtestdoc",
+  "title": "Playwright Test",
+  "sidebarIcon": "fas fa-vial",
+  "meta": "21 topics · 8 parts",
+  "pageTitle": "Playwright Test | VibeTestQ Academy",
+  "chapterTitle": "{title} | Playwright Test | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "Playwright Test runner",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "Playwright <span class=\"g\">Test</span> <span class=\"g2\">Framework</span>",
+    "sub": "Defining and grouping tests, hooks, fixtures, configuration, parallelism, retries, reporters, sharding and CI — the runner end to end.",
+    "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
+    "stats": [
+      [
+        "21",
+        "Topics"
+      ],
+      [
+        "8",
+        "Parts"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Playwright",
+      "icon": "fas fa-house",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "g1",
+      "title": "Test Structure",
+      "short": "Test Structure",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-edit",
+      "desc": "Defining Tests · Grouping Tests · Test Steps",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "defining-tests",
+          "title": "Defining Tests",
+          "src": "/playwright/pwtestdoc/01_defining_tests.md"
+        },
+        {
+          "num": 2,
+          "slug": "grouping-tests",
+          "title": "Grouping Tests",
+          "src": "/playwright/pwtestdoc/02_grouping_tests.md"
+        },
+        {
+          "num": 3,
+          "slug": "test-steps",
+          "title": "Test Steps",
+          "src": "/playwright/pwtestdoc/04_test_steps.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "g2",
+      "title": "Hooks, Annotations & Tags",
+      "short": "Hooks, Annotations & Tags",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fas fa-vial",
+      "desc": "Hooks · Annotations · Tags · Test Info",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 4,
+          "slug": "hooks",
+          "title": "Hooks",
+          "src": "/playwright/pwtestdoc/03_hooks.md"
+        },
+        {
+          "num": 5,
+          "slug": "annotations",
+          "title": "Annotations",
+          "src": "/playwright/pwtestdoc/06_annotations.md"
+        },
+        {
+          "num": 6,
+          "slug": "tags",
+          "title": "Tags",
+          "src": "/playwright/pwtestdoc/07_tags.md"
+        },
+        {
+          "num": 7,
+          "slug": "testinfo",
+          "title": "Test Info",
+          "src": "/playwright/pwtestdoc/05_testinfo.md"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "g3",
+      "title": "Parameterized Tests & Fixtures",
+      "short": "Parameterized Tests & Fixtures",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "icon": "fas fa-table",
+      "desc": "Parameterized Tests · Fixtures",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 8,
+          "slug": "parameterised-tests",
+          "title": "Parameterized Tests",
+          "src": "/playwright/pwtestdoc/08_parameterised_tests.md"
+        },
+        {
+          "num": 9,
+          "slug": "fixtures",
+          "title": "Fixtures",
+          "src": "/playwright/pwtestdoc/09_fixtures.md"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "g4",
+      "title": "Config, Projects & Global Setup",
+      "short": "Config, Projects & Global Setup",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "icon": "fas fa-cog",
+      "desc": "Configuration · Projects · Global Setup/Teardown",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 10,
+          "slug": "configuration",
+          "title": "Configuration",
+          "src": "/playwright/pwtestdoc/11_configuration.md"
+        },
+        {
+          "num": 11,
+          "slug": "projects",
+          "title": "Projects",
+          "src": "/playwright/pwtestdoc/12_projects.md"
+        },
+        {
+          "num": 12,
+          "slug": "global-setup-teardown",
+          "title": "Global Setup/Teardown",
+          "src": "/playwright/pwtestdoc/10_global_setup_teardown.md"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "slug": "g5",
+      "title": "Parallelism, Sharding & Retries",
+      "short": "Parallelism, Sharding & Retries",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
+      "icon": "fas fa-bolt",
+      "desc": "Parallelism · Sharding · Retries · Timeouts",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 13,
+          "slug": "parallelism",
+          "title": "Parallelism",
+          "src": "/playwright/pwtestdoc/13_parallelism.md"
+        },
+        {
+          "num": 14,
+          "slug": "sharding",
+          "title": "Sharding",
+          "src": "/playwright/pwtestdoc/18_sharding.md"
+        },
+        {
+          "num": 15,
+          "slug": "retries",
+          "title": "Retries",
+          "src": "/playwright/pwtestdoc/14_retries.md"
+        },
+        {
+          "num": 16,
+          "slug": "timeouts",
+          "title": "Timeouts",
+          "src": "/playwright/pwtestdoc/15_timeouts.md"
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "slug": "g6",
+      "title": "CLI & Reporters",
+      "short": "CLI & Reporters",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
+      "icon": "fas fa-vial",
+      "desc": "CLI · Reporters",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 17,
+          "slug": "cli",
+          "title": "CLI",
+          "src": "/playwright/pwtestdoc/16_cli.md"
+        },
+        {
+          "num": 18,
+          "slug": "reporters",
+          "title": "Reporters",
+          "src": "/playwright/pwtestdoc/17_reporters.md"
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "slug": "g7",
+      "title": "CI/CD & Docker",
+      "short": "CI/CD & Docker",
+      "color": "#f97316",
+      "rgb": "249,115,22",
+      "icon": "fas fa-vial",
+      "desc": "CI/CD · Docker",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 19,
+          "slug": "ci",
+          "title": "CI/CD",
+          "src": "/playwright/pwtestdoc/19_ci.md"
+        },
+        {
+          "num": 20,
+          "slug": "docker",
+          "title": "Docker",
+          "src": "/playwright/pwtestdoc/20_docker.md"
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "slug": "g8",
+      "title": "Reference",
+      "short": "Reference",
+      "color": "#3b82f6",
+      "rgb": "59,130,246",
+      "icon": "fas fa-bookmark",
+      "desc": "Quick Reference",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 21,
+          "slug": "quick-reference",
+          "title": "Quick Reference",
+          "src": "/playwright/pwtestdoc/21_quick_reference.md"
+        }
+      ]
+    }
+  ]
+}

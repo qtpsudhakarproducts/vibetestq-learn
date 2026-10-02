@@ -1,0 +1,114 @@
+{
+  "id": "lang",
+  "title": "AI-Powered QA",
+  "sidebarIcon": "fas fa-robot",
+  "meta": "4 courses · 4 parts",
+  "pageTitle": "AI-Powered QA | VibeTestQ Academy",
+  "chapterTitle": "{title} | AI-Powered QA | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "LangChain · LangGraph · LangSmith · Playwright AI",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">AI-Powered</span> <span class=\"g2\">QA</span>",
+    "sub": "Four hands-on courses for building AI into your testing: LangChain, LangGraph, LangSmith and Playwright AI.",
+    "note": "<strong>Suggested order:</strong> LangChain first, then LangGraph, LangSmith, and finally Playwright AI.",
+    "stats": [
+      [
+        "4",
+        "Courses"
+      ]
+    ],
+    "label": "Courses",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "title": "LangChain for QA",
+      "icon": "fas fa-link",
+      "desc": "Chains, memory, tools, agents and RAG — then build an AI test-case generator, bug-report analyser, test-data generator and selector healer.",
+      "metric": "",
+      "chapters": [
+        {
+          "slug": "langchain",
+          "title": "LangChain for QA (20 chapters)",
+          "href": "/lang/langchain/",
+          "num": 1
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "LangChain for QA",
+      "color": "#fbbf24",
+      "rgb": "251,191,36"
+    },
+    {
+      "title": "LangGraph for QA",
+      "icon": "fas fa-share-nodes",
+      "desc": "State, nodes, edges, branching, cycles and multi-agent QA workflows.",
+      "metric": "",
+      "chapters": [
+        {
+          "slug": "langgraph",
+          "title": "LangGraph for QA (14 chapters)",
+          "href": "/lang/langgraph/",
+          "num": 2
+        }
+      ],
+      "num": 2,
+      "slug": "g2",
+      "short": "LangGraph for QA",
+      "color": "#10b981",
+      "rgb": "16,185,129"
+    },
+    {
+      "title": "LangSmith for QA",
+      "icon": "fas fa-magnifying-glass-chart",
+      "desc": "Tracing, evaluation and monitoring for AI-powered testing.",
+      "metric": "",
+      "chapters": [
+        {
+          "slug": "langsmith",
+          "title": "LangSmith for QA (12 chapters)",
+          "href": "/lang/langsmith/",
+          "num": 3
+        }
+      ],
+      "num": 3,
+      "slug": "g3",
+      "short": "LangSmith for QA",
+      "color": "#6366f1",
+      "rgb": "99,102,241"
+    },
+    {
+      "title": "Playwright AI",
+      "icon": "fas fa-masks-theater",
+      "desc": "Combine Playwright with AI models for self-healing and AI-assisted testing.",
+      "metric": "",
+      "chapters": [
+        {
+          "slug": "playwright-ai",
+          "title": "Playwright AI (14 chapters)",
+          "href": "/lang/playwright-ai/",
+          "num": 4
+        }
+      ],
+      "num": 4,
+      "slug": "g4",
+      "short": "Playwright AI",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "appium",
+  "title": "Mobile Testing",
+  "sidebarIcon": "fas fa-mobile-screen",
+  "meta": "2 guides · 1 part",
+  "pageTitle": "Mobile Testing | VibeTestQ Academy",
+  "chapterTitle": "{title} | Mobile Testing | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "Mobile application testing",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">Mobile</span> <span class=\"g2\">Testing</span>",
+    "sub": "Mobile application testing fundamentals and a complete WebdriverIO mobile setup guide.",
+    "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
+    "stats": [
+      [
+        "2",
+        "Guides"
+      ],
+      [
+        "1",
+        "Part"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "title": "Guides",
+      "icon": "fas fa-mobile-screen",
+      "desc": "Mobile testing",
+      "chapters": [
+        {
+          "slug": "mobile-intro",
+          "title": "Mobile Application Testing",
+          "src": "/appium/mobile-intro.md",
+          "num": 1
+        },
+        {
+          "slug": "wdio",
+          "title": "WebdriverIO Mobile Testing — Complete Setup",
+          "src": "/appium/wdio.md",
+          "num": 2
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "Guides",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "metric": ""
+    }
+  ]
+}

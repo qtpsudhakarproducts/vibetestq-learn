@@ -1,0 +1,214 @@
+{
+  "id": "workflows",
+  "title": "QA Workflows for the AI SDLC",
+  "sidebarIcon": "fas fa-diagram-project",
+  "meta": "20 chapters · 4 parts",
+  "pageTitle": "QA Workflows for the AI SDLC | VibeTestQ Academy",
+  "chapterTitle": "{title} | QA Workflows for the AI SDLC | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "Implementation guide",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "QA <span class=\"g\">Workflows</span> for the <span class=\"g2\">AI SDLC</span>",
+    "sub": "Eleven repeatable workflows — from requirements to production feedback — with the foundations, governance and tools to run them.",
+    "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
+    "stats": [
+      [
+        "20",
+        "Chapters"
+      ],
+      [
+        "4",
+        "Parts"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "title": "Foundations",
+      "icon": "fas fa-cubes",
+      "desc": "Repository model · graph.json · AI IDE · tool landscape",
+      "chapters": [
+        {
+          "slug": "01-project-repository",
+          "title": "The Project Repository Model",
+          "src": "/workflows/00-foundations/01-project-repository.md",
+          "num": 1
+        },
+        {
+          "slug": "02-graph-json-setup",
+          "title": "Setting Up graph.json — The Living Traceability File",
+          "src": "/workflows/00-foundations/02-graph-json-setup.md",
+          "num": 2
+        },
+        {
+          "slug": "03-ai-ide-selection",
+          "title": "Choosing Your AI IDE",
+          "src": "/workflows/00-foundations/03-ai-ide-selection.md",
+          "num": 3
+        },
+        {
+          "slug": "04-tool-landscape",
+          "title": "The 7 Categories of AI Validation Tools",
+          "src": "/workflows/00-foundations/04-tool-landscape.md",
+          "num": 4
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "Foundations",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "metric": ""
+    },
+    {
+      "title": "The 11 Workflows",
+      "icon": "fas fa-route",
+      "desc": "WF1 Requirements → WF11 Production feedback",
+      "chapters": [
+        {
+          "slug": "WF1-requirements-to-scenarios",
+          "title": "WF1 — Requirements → Test Scenarios",
+          "src": "/workflows/01-workflows/WF1-requirements-to-scenarios.md",
+          "num": 5
+        },
+        {
+          "slug": "WF2-exploratory-planning",
+          "title": "WF2 — Exploratory Planning",
+          "src": "/workflows/01-workflows/WF2-exploratory-planning.md",
+          "num": 6
+        },
+        {
+          "slug": "WF3-test-data-design",
+          "title": "WF3 — Test Data Design",
+          "src": "/workflows/01-workflows/WF3-test-data-design.md",
+          "num": 7
+        },
+        {
+          "slug": "WF4-bug-triage-design",
+          "title": "WF4 — Bug Triage Design",
+          "src": "/workflows/01-workflows/WF4-bug-triage-design.md",
+          "num": 8
+        },
+        {
+          "slug": "WF5-automation-generation",
+          "title": "WF5 — Automation Generation",
+          "src": "/workflows/01-workflows/WF5-automation-generation.md",
+          "num": 9
+        },
+        {
+          "slug": "WF6-test-maintenance",
+          "title": "WF6 — Test Maintenance",
+          "src": "/workflows/01-workflows/WF6-test-maintenance.md",
+          "num": 10
+        },
+        {
+          "slug": "WF7-self-healing-tests",
+          "title": "WF7 — Self-Healing Tests",
+          "src": "/workflows/01-workflows/WF7-self-healing-tests.md",
+          "num": 11
+        },
+        {
+          "slug": "WF8-coverage-audit",
+          "title": "WF8 — Coverage Audit",
+          "src": "/workflows/01-workflows/WF8-coverage-audit.md",
+          "num": 12
+        },
+        {
+          "slug": "WF9-feature-readiness-gate",
+          "title": "WF9 — Feature Readiness Gate",
+          "src": "/workflows/01-workflows/WF9-feature-readiness-gate.md",
+          "num": 13
+        },
+        {
+          "slug": "WF10-ci-quality-gate",
+          "title": "WF10 — CI Quality Gate",
+          "src": "/workflows/01-workflows/WF10-ci-quality-gate.md",
+          "num": 14
+        },
+        {
+          "slug": "WF11-production-feedback-loop",
+          "title": "WF11 — Production Feedback Loop",
+          "src": "/workflows/01-workflows/WF11-production-feedback-loop.md",
+          "num": 15
+        }
+      ],
+      "num": 2,
+      "slug": "g2",
+      "short": "The 11 Workflows",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "metric": ""
+    },
+    {
+      "title": "Matching & Governance",
+      "icon": "fas fa-scale-balanced",
+      "desc": "Match to your SDLC · anti-patterns · measurement",
+      "chapters": [
+        {
+          "slug": "workflow-to-sdlc-type",
+          "title": "Matching Workflows to Your SDLC Type",
+          "src": "/workflows/02-matching/workflow-to-sdlc-type.md",
+          "num": 16
+        },
+        {
+          "slug": "anti-patterns",
+          "title": "Anti-Patterns — How These Workflows Fail",
+          "src": "/workflows/03-governance/anti-patterns.md",
+          "num": 17
+        },
+        {
+          "slug": "measurement",
+          "title": "Measurement — How to Know the Workflows Are Working",
+          "src": "/workflows/03-governance/measurement.md",
+          "num": 18
+        }
+      ],
+      "num": 3,
+      "slug": "g3",
+      "short": "Matching & Governance",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "metric": ""
+    },
+    {
+      "title": "Appendix",
+      "icon": "fas fa-book",
+      "desc": "Glossary · tools reference",
+      "chapters": [
+        {
+          "slug": "glossary",
+          "title": "Glossary",
+          "src": "/workflows/04-appendix/glossary.md",
+          "num": 19
+        },
+        {
+          "slug": "tools-reference",
+          "title": "Tools Reference",
+          "src": "/workflows/04-appendix/tools-reference.md",
+          "num": 20
+        }
+      ],
+      "num": 4,
+      "slug": "g4",
+      "short": "Appendix",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "metric": ""
+    }
+  ]
+}

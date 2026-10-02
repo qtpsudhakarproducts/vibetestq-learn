@@ -1,0 +1,609 @@
+{
+  "id": "iqs",
+  "title": "Playwright IQs",
+  "sidebarIcon": "fas fa-masks-theater",
+  "meta": "85 chapters · 9 parts · 1,300+ questions",
+  "pageTitle": "Playwright Interview Questions Hub | VibeTestQ",
+  "chapterTitle": "Ch {num}: {title} | Playwright IQs | VibeTestQ",
+  "topbarChapter": "Ch {num} — {title}",
+  "home": {
+    "eyebrow": "Playwright interview sketchbook",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">Sketch</span> your next <span class=\"g2\">interview win</span>",
+    "sub": "A notebook-style map of Playwright interview prep — each part is a page of notes, examples, traps, and ready-to-recall answers.",
+    "note": "<strong>Use it like this:</strong> start from part one, open the first chapter, and build your confidence one question at a time.",
+    "stats": [
+      [
+        "1,300+",
+        "Questions"
+      ],
+      [
+        "85",
+        "Chapters"
+      ],
+      [
+        "9",
+        "Parts"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "fragment",
+    "pattern": "/iqs/playwright/{part}/{chapter}.html",
+    "notebook": true
+  },
+  "topbar": [
+    {
+      "label": "Hub",
+      "icon": "fas fa-house",
+      "href": "#home"
+    },
+    {
+      "label": "Training",
+      "icon": "fas fa-graduation-cap",
+      "href": "/qa-ai-era-training",
+      "target": "_blank"
+    },
+    {
+      "label": "Interviews",
+      "icon": "fas fa-microphone-lines",
+      "href": "/interviews",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "part-1-javascript-typescript",
+      "live": true,
+      "title": "JavaScript & TypeScript",
+      "short": "JS / TypeScript",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fab fa-js",
+      "desc": "Variables, closures, async/await, Promises, event loop, Classes, Modules and TypeScript for test automation.",
+      "metric": "~172 Qs",
+      "chapters": [
+        {
+          "num": 101,
+          "slug": "chapter-101-javascript-for-automation-introduction-history",
+          "title": "Introduction & History"
+        },
+        {
+          "num": 102,
+          "slug": "chapter-102-variables-scope-data-types",
+          "title": "Variables, Scope & Data Types"
+        },
+        {
+          "num": 103,
+          "slug": "chapter-103-operators-conditionals",
+          "title": "Operators & Conditionals"
+        },
+        {
+          "num": 104,
+          "slug": "chapter-104-loops-iteration",
+          "title": "Loops & Iteration"
+        },
+        {
+          "num": 105,
+          "slug": "chapter-105-arrays-collections",
+          "title": "Arrays & Collections"
+        },
+        {
+          "num": 106,
+          "slug": "chapter-106-functions-arrow-functions",
+          "title": "Functions & Arrow Functions"
+        },
+        {
+          "num": 107,
+          "slug": "chapter-107-objects-prototypes",
+          "title": "Objects & Prototypes"
+        },
+        {
+          "num": 108,
+          "slug": "chapter-108-strings-regular-expressions",
+          "title": "Strings & Regular Expressions"
+        },
+        {
+          "num": 109,
+          "slug": "chapter-109-async-javascript-promises-await",
+          "title": "Async JS — Promises & async/await"
+        },
+        {
+          "num": 110,
+          "slug": "chapter-110-classes-modules-scope",
+          "title": "Classes, Modules & Scopes"
+        },
+        {
+          "num": 111,
+          "slug": "chapter-111-exception-handling",
+          "title": "Exception Handling"
+        },
+        {
+          "num": 112,
+          "slug": "chapter-112-typescript-for-test-automation",
+          "title": "TypeScript for Test Automation"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "part-2-playwright-core",
+      "live": true,
+      "title": "Playwright Core",
+      "short": "Playwright Core",
+      "color": "#34d399",
+      "rgb": "52,211,153",
+      "icon": "fas fa-masks-theater",
+      "desc": "Browser hierarchy, BrowserContext, locators, interactions, iframes, dialogs, waits and timeouts.",
+      "metric": "~167 Qs",
+      "chapters": [
+        {
+          "num": 201,
+          "slug": "chapter-201-introduction-to-playwright",
+          "title": "Introduction to Playwright & Architecture"
+        },
+        {
+          "num": 202,
+          "slug": "chapter-202-installation-project-setup",
+          "title": "Installation & Directory Structure"
+        },
+        {
+          "num": 203,
+          "slug": "chapter-203-browser-context-isolated-environments",
+          "title": "BrowserContext — Isolated Environments"
+        },
+        {
+          "num": 204,
+          "slug": "chapter-204-locators-auto-waiting",
+          "title": "Locators & Auto-Waiting"
+        },
+        {
+          "num": 205,
+          "slug": "chapter-205-actions-clicks-typing-checkboxes",
+          "title": "Actions — Clicks, Typing & Checkboxes"
+        },
+        {
+          "num": 206,
+          "slug": "chapter-206-advanced-actions-drag-hover-keys",
+          "title": "Advanced Actions — Drag, Hover & Keys"
+        },
+        {
+          "num": 207,
+          "slug": "chapter-207-file-uploads-downloads",
+          "title": "File Uploads & Downloads"
+        },
+        {
+          "num": 208,
+          "slug": "chapter-208-dialogs-alerts-prompts",
+          "title": "Dialogs — Alerts, Confirms & Prompts"
+        },
+        {
+          "num": 209,
+          "slug": "chapter-209-iframes-frame-locators",
+          "title": "iFrames — frameLocator & Frames"
+        },
+        {
+          "num": 210,
+          "slug": "chapter-210-windows-multiple-pages-tabs",
+          "title": "Windows — Multiple Pages & Tabs"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "part-3-playwright-test-framework",
+      "live": true,
+      "title": "Playwright Test Framework",
+      "short": "Test Framework",
+      "color": "#818cf8",
+      "rgb": "129,140,248",
+      "icon": "fas fa-vial",
+      "desc": "Test structure, describe blocks, hooks, fixtures, assertions, reporters, annotations and configuration.",
+      "metric": "~226 Qs",
+      "chapters": [
+        {
+          "num": 301,
+          "slug": "chapter-301-getting-started-with-playwright-test",
+          "title": "Getting Started with Playwright Test"
+        },
+        {
+          "num": 302,
+          "slug": "chapter-302-defining-tests-structure-syntax",
+          "title": "Defining Tests — Structure & Syntax"
+        },
+        {
+          "num": 303,
+          "slug": "chapter-303-grouping-tests-with-describe-suites",
+          "title": "Grouping Tests with describe & Suites"
+        },
+        {
+          "num": 304,
+          "slug": "chapter-304-test-steps-step-by-step-execution",
+          "title": "Test Steps — Step-by-Step Execution"
+        },
+        {
+          "num": 305,
+          "slug": "chapter-305-hooks-before-after-lifecycle",
+          "title": "Hooks — before/after Lifecycle"
+        },
+        {
+          "num": 306,
+          "slug": "chapter-306-annotations-skip-only-fail-fixme",
+          "title": "Annotations — skip, only, fail, fixme"
+        },
+        {
+          "num": 307,
+          "slug": "chapter-307-tags-test-filtering",
+          "title": "Tags & Test Filtering"
+        },
+        {
+          "num": 308,
+          "slug": "chapter-308-testinfo-object",
+          "title": "TestInfo Object"
+        },
+        {
+          "num": 309,
+          "slug": "chapter-309-parameterized-tests",
+          "title": "Parameterized Tests"
+        },
+        {
+          "num": 310,
+          "slug": "chapter-310-fixtures-built-in-custom",
+          "title": "Fixtures — Built-in & Custom"
+        },
+        {
+          "num": 311,
+          "slug": "chapter-311-configuration-playwright-config-ts",
+          "title": "Configuration & playwright.config.ts"
+        },
+        {
+          "num": 312,
+          "slug": "chapter-312-projects-multi-browser-multi-env",
+          "title": "Projects — Multi-browser & Multi-env"
+        },
+        {
+          "num": 313,
+          "slug": "chapter-313-global-setup-teardown",
+          "title": "Global Setup & Teardown"
+        },
+        {
+          "num": 314,
+          "slug": "chapter-314-assertions-expect-api",
+          "title": "Assertions & Expect API"
+        },
+        {
+          "num": 315,
+          "slug": "chapter-315-screenshots-video-tracing",
+          "title": "Screenshots, Video & Tracing"
+        },
+        {
+          "num": 316,
+          "slug": "chapter-316-reporters-html-json-allure-custom",
+          "title": "Reporters — HTML, JSON, Allure & Custom"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "part-4-execution-cli-cicd",
+      "live": true,
+      "title": "Execution, CLI & CI/CD",
+      "short": "CLI & CI/CD",
+      "color": "#38bdf8",
+      "rgb": "56,189,248",
+      "icon": "fas fa-terminal",
+      "desc": "Parallelism model, sharding execution, timeouts, command line running, and CI/CD integration.",
+      "metric": "~105 Qs",
+      "chapters": [
+        {
+          "num": 401,
+          "slug": "chapter-401-parallelism-workers-execution-model",
+          "title": "Parallelism — Workers & Execution Model"
+        },
+        {
+          "num": 402,
+          "slug": "chapter-402-sharding-distributed-test-execution",
+          "title": "Sharding — Distributed Test Execution"
+        },
+        {
+          "num": 403,
+          "slug": "chapter-403-retries-flakiness-recovery",
+          "title": "Retries — Flakiness & Recovery"
+        },
+        {
+          "num": 404,
+          "slug": "chapter-404-timeouts-global-test-action-level",
+          "title": "Timeouts — Global, Test & Action Level"
+        },
+        {
+          "num": 405,
+          "slug": "chapter-405-cli-running-filtering-tests",
+          "title": "CLI — Running & Filtering Tests"
+        },
+        {
+          "num": 406,
+          "slug": "chapter-406-reporters-output-deep-dive",
+          "title": "Reporters & Output — Deep Dive"
+        },
+        {
+          "num": 407,
+          "slug": "chapter-407-cicd-docker-integration",
+          "title": "CI/CD & Docker Integration"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "slug": "part-5-pom-framework-design",
+      "live": true,
+      "title": "POM & Framework Design",
+      "short": "POM Design",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
+      "icon": "fas fa-layer-group",
+      "desc": "Page objects levels 0-10, custom fixtures, test data layers, standard-driven generation and self-healing.",
+      "metric": "~179 Qs",
+      "chapters": [
+        {
+          "num": 501,
+          "slug": "chapter-501-pom-theory-design-principles-l0",
+          "title": "POM Theory & Design Principles (L0)"
+        },
+        {
+          "num": 502,
+          "slug": "chapter-502-basic-page-objects-l1",
+          "title": "Basic Page Objects (L1)"
+        },
+        {
+          "num": 503,
+          "slug": "chapter-503-basepage-inheritance-l2",
+          "title": "BasePage & Inheritance (L2)"
+        },
+        {
+          "num": 504,
+          "slug": "chapter-504-fixtures-shared-state-l3",
+          "title": "Fixtures & Shared State (L3)"
+        },
+        {
+          "num": 505,
+          "slug": "chapter-505-test-independence-state-setup-l4",
+          "title": "Test Independence & State Setup (L4)"
+        },
+        {
+          "num": 506,
+          "slug": "chapter-506-test-data-management-l5",
+          "title": "Test Data Management (L5)"
+        },
+        {
+          "num": 507,
+          "slug": "chapter-507-reusable-web-action-helpers-l6",
+          "title": "Reusable Web Action Helpers (L6)"
+        },
+        {
+          "num": 508,
+          "slug": "chapter-508-reporting-test-organisation-l7",
+          "title": "Reporting & Test Organisation (L7)"
+        },
+        {
+          "num": 509,
+          "slug": "chapter-509-cicd-integration-execution-strategy-l8",
+          "title": "CI/CD Integration & Execution Strategy (L8)"
+        },
+        {
+          "num": 510,
+          "slug": "chapter-510-ai-agents-standard-driven-test-generation-l9",
+          "title": "AI Agents & Standard-Driven Test Generation (L9)"
+        },
+        {
+          "num": 511,
+          "slug": "chapter-511-runtime-self-healing-l10",
+          "title": "Runtime Self-Healing (L10)"
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "slug": "part-6-cucumber-bdd",
+      "live": true,
+      "title": "BDD with Cucumber",
+      "short": "BDD Cucumber",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
+      "icon": "fas fa-cubes",
+      "desc": "Gherkin feature files, cucumber profiles, custom World context, hooks, lifecycle, step definitions and POM.",
+      "metric": "~75 Qs",
+      "chapters": [
+        {
+          "num": 601,
+          "slug": "chapter-601-bdd-overview",
+          "title": "BDD with Cucumber & Playwright — Overview"
+        },
+        {
+          "num": 602,
+          "slug": "chapter-602-gherkin-feature-files-cucumber-profiles",
+          "title": "Gherkin Feature Files & Cucumber Profiles"
+        },
+        {
+          "num": 603,
+          "slug": "chapter-603-custom-world-hooks-lifecycle",
+          "title": "Custom World, Hooks & Lifecycle"
+        },
+        {
+          "num": 604,
+          "slug": "chapter-604-step-definitions-pom-bdd",
+          "title": "Step Definitions & POM in BDD"
+        },
+        {
+          "num": 605,
+          "slug": "chapter-605-reporting-configuration-cicd-bdd",
+          "title": "Reporting, Configuration & CI/CD in BDD"
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "slug": "part-7-api-testing-network-authentication",
+      "live": true,
+      "title": "API, Network & Auth",
+      "short": "API / Auth",
+      "color": "#f97316",
+      "rgb": "249,115,22",
+      "icon": "fas fa-plug",
+      "desc": "API testing via request context, network interception, routing, network mocking, and authentication flows.",
+      "metric": "~96 Qs",
+      "chapters": [
+        {
+          "num": 701,
+          "slug": "chapter-701-api-testing-playwright",
+          "title": "API Testing with Playwright"
+        },
+        {
+          "num": 702,
+          "slug": "chapter-702-network-interception-routing",
+          "title": "Network Interception & Routing"
+        },
+        {
+          "num": 703,
+          "slug": "chapter-703-network-mocking-strategies",
+          "title": "Network Mocking Strategies"
+        },
+        {
+          "num": 704,
+          "slug": "chapter-704-authentication-basics",
+          "title": "Authentication — Basics"
+        },
+        {
+          "num": 705,
+          "slug": "chapter-705-authentication-advanced",
+          "title": "Authentication — Advanced"
+        },
+        {
+          "num": 706,
+          "slug": "chapter-706-mobile-emulation-cross-browser-testing",
+          "title": "Mobile Emulation & Cross-Browser"
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "slug": "part-8-visual-testing-accessibility",
+      "live": true,
+      "title": "Visual Testing & Accessibility",
+      "short": "Visual / A11y",
+      "color": "#3b82f6",
+      "rgb": "59,130,246",
+      "icon": "fas fa-eye",
+      "desc": "Visual comparisons with toHaveScreenshot, axe-core scans, accessibility tree checks, and best practices.",
+      "metric": "~90 Qs",
+      "chapters": [
+        {
+          "num": 801,
+          "slug": "chapter-801-visual-testing-fundamentals",
+          "title": "Visual Testing Fundamentals"
+        },
+        {
+          "num": 802,
+          "slug": "chapter-802-playwright-visual-comparisons",
+          "title": "Playwright Visual Comparisons"
+        },
+        {
+          "num": 803,
+          "slug": "chapter-803-advanced-visual-testing",
+          "title": "Advanced Visual Testing"
+        },
+        {
+          "num": 804,
+          "slug": "chapter-804-accessibility-testing-fundamentals",
+          "title": "Accessibility Testing Fundamentals"
+        },
+        {
+          "num": 805,
+          "slug": "chapter-805-accessibility-testing-with-playwright",
+          "title": "Accessibility Testing with Playwright"
+        },
+        {
+          "num": 806,
+          "slug": "chapter-806-best-practices-visual-accessibility",
+          "title": "Best Practices — Visual & Accessibility"
+        }
+      ]
+    },
+    {
+      "num": 9,
+      "slug": "part-9-ai-native-automation",
+      "live": true,
+      "title": "AI-Native Automation",
+      "short": "AI-Native",
+      "color": "#a78bfa",
+      "rgb": "167,139,250",
+      "icon": "fas fa-robot",
+      "desc": "GenAI, prompt engineering, context management, agent skills, AI IDEs, and Model Context Protocol (MCP) server.",
+      "metric": "~193 Qs",
+      "chapters": [
+        {
+          "num": 901,
+          "slug": "chapter-901-genai-fundamentals-testers",
+          "title": "GenAI Fundamentals for Testers"
+        },
+        {
+          "num": 902,
+          "slug": "chapter-902-prompt-engineering-test-automation",
+          "title": "Prompt Engineering for Test Automation"
+        },
+        {
+          "num": 903,
+          "slug": "chapter-903-context-engineering-test-automation",
+          "title": "Context Engineering for Test Automation"
+        },
+        {
+          "num": 904,
+          "slug": "chapter-904-agent-skills-skill-files",
+          "title": "Agent Skills & SKILL Files"
+        },
+        {
+          "num": 905,
+          "slug": "chapter-905-ai-ides-test-automation",
+          "title": "AI IDEs for Test Automation"
+        },
+        {
+          "num": 906,
+          "slug": "chapter-906-mcp-protocol-fundamentals",
+          "title": "MCP Protocol Fundamentals"
+        },
+        {
+          "num": 907,
+          "slug": "chapter-907-playwright-mcp-server",
+          "title": "Playwright MCP Server"
+        },
+        {
+          "num": 908,
+          "slug": "chapter-908-playwright-cli-skills",
+          "title": "Playwright CLI & SKILLs"
+        },
+        {
+          "num": 909,
+          "slug": "chapter-909-mcp-vs-cli-choosing-right-approach",
+          "title": "MCP vs CLI — Choosing the Right Approach"
+        },
+        {
+          "num": 910,
+          "slug": "chapter-910-playwright-ai-agents",
+          "title": "Playwright AI Agents"
+        },
+        {
+          "num": 911,
+          "slug": "chapter-911-testing-ai-applications",
+          "title": "Testing AI Applications"
+        },
+        {
+          "num": 912,
+          "slug": "chapter-912-runtime-self-healing-ai-strategy-capstone",
+          "title": "Runtime Self-Healing & AI Strategy Capstone"
+        }
+      ]
+    }
+  ]
+}

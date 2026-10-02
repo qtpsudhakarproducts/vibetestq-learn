@@ -1,0 +1,478 @@
+{
+  "id": "locators",
+  "title": "Locators",
+  "sidebarIcon": "fas fa-crosshairs",
+  "meta": "61 lessons · 5 parts",
+  "pageTitle": "Locators | VibeTestQ Academy",
+  "chapterTitle": "{title} | Locators | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "Locators — learn, then practise",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">Locator</span> <span class=\"g2\">Mastery</span>",
+    "sub": "Four locator books — CSS, XPath, Playwright and Cypress — followed by graded practice from beginner to expert and a hands-on lab.",
+    "note": "<strong>Use it like this:</strong> read a book part, then practise it in the matching level before moving on.",
+    "stats": [
+      [
+        "61",
+        "Lessons"
+      ],
+      [
+        "5",
+        "Parts"
+      ]
+    ],
+    "label": "Learn & practise",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Playwright",
+      "icon": "fas fa-house",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "title": "CSS Selectors",
+      "icon": "fab fa-css3-alt",
+      "desc": "The foundation: syntax, pseudo-classes, expert patterns",
+      "chapters": [
+        {
+          "slug": "css-00-introduction",
+          "title": "Introduction",
+          "src": "/locators/css/00-introduction.md",
+          "num": 1
+        },
+        {
+          "slug": "css-01-foundations-of-css-selectors",
+          "title": "Foundations of CSS selectors",
+          "src": "/locators/css/01-foundations-of-css-selectors.md",
+          "num": 2
+        },
+        {
+          "slug": "css-02-basic-css-selector-syntax",
+          "title": "Basic CSS selector syntax",
+          "src": "/locators/css/02-basic-css-selector-syntax.md",
+          "num": 3
+        },
+        {
+          "slug": "css-03-intermediate-css-selector-techniques",
+          "title": "Intermediate CSS selector techniques",
+          "src": "/locators/css/03-intermediate-css-selector-techniques.md",
+          "num": 4
+        },
+        {
+          "slug": "css-04-advanced-css-selector-techniques",
+          "title": "Advanced CSS selector techniques",
+          "src": "/locators/css/04-advanced-css-selector-techniques.md",
+          "num": 5
+        },
+        {
+          "slug": "css-05-css-pseudo-classes-and-pseudo-elements",
+          "title": "CSS pseudo classes and pseudo elements",
+          "src": "/locators/css/05-css-pseudo-classes-and-pseudo-elements.md",
+          "num": 6
+        },
+        {
+          "slug": "css-06-expert-level-css-selector-patterns",
+          "title": "Expert level CSS selector patterns",
+          "src": "/locators/css/06-expert-level-css-selector-patterns.md",
+          "num": 7
+        },
+        {
+          "slug": "css-07-real-world-test-automation-examples",
+          "title": "Real world test automation examples",
+          "src": "/locators/css/07-real-world-test-automation-examples.md",
+          "num": 8
+        },
+        {
+          "slug": "css-08-css-selectors-best-practices-and-guidelines",
+          "title": "CSS selectors best practices and guidelines",
+          "src": "/locators/css/08-css-selectors-best-practices-and-guidelines.md",
+          "num": 9
+        },
+        {
+          "slug": "css-09-complete-css-selector-reference",
+          "title": "Complete CSS selector reference",
+          "src": "/locators/css/09-complete-css-selector-reference.md",
+          "num": 10
+        },
+        {
+          "slug": "css-99-conclusion",
+          "title": "Conclusion",
+          "src": "/locators/css/99-conclusion.md",
+          "num": 11
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "CSS Selectors",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "metric": ""
+    },
+    {
+      "title": "XPath",
+      "icon": "fas fa-code",
+      "desc": "Axes, functions and expert patterns",
+      "chapters": [
+        {
+          "slug": "xpath-00-introduction",
+          "title": "Introduction",
+          "src": "/locators/xpath/00-introduction.md",
+          "num": 12
+        },
+        {
+          "slug": "xpath-01-foundations-of-xpath",
+          "title": "Foundations of XPath",
+          "src": "/locators/xpath/01-foundations-of-xpath.md",
+          "num": 13
+        },
+        {
+          "slug": "xpath-02-basic-xpath-syntax",
+          "title": "Basic XPath syntax",
+          "src": "/locators/xpath/02-basic-xpath-syntax.md",
+          "num": 14
+        },
+        {
+          "slug": "xpath-03-intermediate-xpath-techniques",
+          "title": "Intermediate XPath techniques",
+          "src": "/locators/xpath/03-intermediate-xpath-techniques.md",
+          "num": 15
+        },
+        {
+          "slug": "xpath-04-advanced-xpath-techniques",
+          "title": "Advanced XPath techniques",
+          "src": "/locators/xpath/04-advanced-xpath-techniques.md",
+          "num": 16
+        },
+        {
+          "slug": "xpath-05-xpath-functions-reference",
+          "title": "XPath functions reference",
+          "src": "/locators/xpath/05-xpath-functions-reference.md",
+          "num": 17
+        },
+        {
+          "slug": "xpath-06-expert-level-xpath-patterns",
+          "title": "Expert level XPath patterns",
+          "src": "/locators/xpath/06-expert-level-xpath-patterns.md",
+          "num": 18
+        },
+        {
+          "slug": "xpath-07-real-world-test-automation-examples",
+          "title": "Real world test automation examples",
+          "src": "/locators/xpath/07-real-world-test-automation-examples.md",
+          "num": 19
+        },
+        {
+          "slug": "xpath-08-xpath-best-practices-and-guidelines",
+          "title": "XPath best practices and guidelines",
+          "src": "/locators/xpath/08-xpath-best-practices-and-guidelines.md",
+          "num": 20
+        },
+        {
+          "slug": "xpath-09-complete-xpath-reference",
+          "title": "Complete XPath reference",
+          "src": "/locators/xpath/09-complete-xpath-reference.md",
+          "num": 21
+        },
+        {
+          "slug": "xpath-99-conclusion",
+          "title": "Conclusion",
+          "src": "/locators/xpath/99-conclusion.md",
+          "num": 22
+        }
+      ],
+      "num": 2,
+      "slug": "g2",
+      "short": "XPath",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "metric": ""
+    },
+    {
+      "title": "Playwright Locators",
+      "icon": "fas fa-masks-theater",
+      "desc": "Built-in strategies, chaining, shadow DOM, frames",
+      "chapters": [
+        {
+          "slug": "playwright-00-introduction",
+          "title": "Introduction",
+          "src": "/locators/playwright/00-introduction.md",
+          "num": 23
+        },
+        {
+          "slug": "playwright-01-foundations-of-playwright-locators",
+          "title": "Foundations of Playwright locators",
+          "src": "/locators/playwright/01-foundations-of-playwright-locators.md",
+          "num": 24
+        },
+        {
+          "slug": "playwright-02-built-in-locator-strategies",
+          "title": "Built in locator strategies",
+          "src": "/locators/playwright/02-built-in-locator-strategies.md",
+          "num": 25
+        },
+        {
+          "slug": "playwright-03-advanced-locator-techniques",
+          "title": "Advanced locator techniques",
+          "src": "/locators/playwright/03-advanced-locator-techniques.md",
+          "num": 26
+        },
+        {
+          "slug": "playwright-04-chaining-and-filtering-locators",
+          "title": "Chaining and filtering locators",
+          "src": "/locators/playwright/04-chaining-and-filtering-locators.md",
+          "num": 27
+        },
+        {
+          "slug": "playwright-05-working-with-shadow-dom-and-frames",
+          "title": "Working with shadow DOM and frames",
+          "src": "/locators/playwright/05-working-with-shadow-dom-and-frames.md",
+          "num": 28
+        },
+        {
+          "slug": "playwright-06-assertions-and-auto-waiting",
+          "title": "Assertions and auto waiting",
+          "src": "/locators/playwright/06-assertions-and-auto-waiting.md",
+          "num": 29
+        },
+        {
+          "slug": "playwright-07-real-world-automation-examples",
+          "title": "Real world automation examples",
+          "src": "/locators/playwright/07-real-world-automation-examples.md",
+          "num": 30
+        },
+        {
+          "slug": "playwright-08-playwright-locator-best-practices",
+          "title": "Playwright locator best practices",
+          "src": "/locators/playwright/08-playwright-locator-best-practices.md",
+          "num": 31
+        },
+        {
+          "slug": "playwright-09-complete-playwright-locator-reference",
+          "title": "Complete Playwright locator reference",
+          "src": "/locators/playwright/09-complete-playwright-locator-reference.md",
+          "num": 32
+        },
+        {
+          "slug": "playwright-99-conclusion",
+          "title": "Conclusion",
+          "src": "/locators/playwright/99-conclusion.md",
+          "num": 33
+        },
+        {
+          "slug": "playwright-appendix-a-migration-guide-from-selenium-cypress",
+          "title": "Migration guide from Selenium Cypress",
+          "src": "/locators/playwright/appendix-a-migration-guide-from-selenium-cypress.md",
+          "num": 34
+        },
+        {
+          "slug": "playwright-appendix-b-accessibility-roles-complete-reference",
+          "title": "Accessibility roles complete reference",
+          "src": "/locators/playwright/appendix-b-accessibility-roles-complete-reference.md",
+          "num": 35
+        },
+        {
+          "slug": "playwright-appendix-c-playwright-configuration-for-locators",
+          "title": "Playwright configuration for locators",
+          "src": "/locators/playwright/appendix-c-playwright-configuration-for-locators.md",
+          "num": 36
+        },
+        {
+          "slug": "playwright-appendix-d-useful-resources",
+          "title": "Useful resources",
+          "src": "/locators/playwright/appendix-d-useful-resources.md",
+          "num": 37
+        }
+      ],
+      "num": 3,
+      "slug": "g3",
+      "short": "Playwright Locators",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "metric": ""
+    },
+    {
+      "title": "Cypress Locators",
+      "icon": "fas fa-bolt",
+      "desc": "Commands, dynamic elements and migration",
+      "chapters": [
+        {
+          "slug": "cypress-00-introduction",
+          "title": "Introduction",
+          "src": "/locators/cypress/00-introduction.md",
+          "num": 38
+        },
+        {
+          "slug": "cypress-01-foundations-of-cypress-locators",
+          "title": "Foundations of Cypress locators",
+          "src": "/locators/cypress/01-foundations-of-cypress-locators.md",
+          "num": 39
+        },
+        {
+          "slug": "cypress-02-core-cypress-commands-for-element-selection",
+          "title": "Core Cypress commands for element selection",
+          "src": "/locators/cypress/02-core-cypress-commands-for-element-selection.md",
+          "num": 40
+        },
+        {
+          "slug": "cypress-03-css-selectors-in-cypress",
+          "title": "CSS selectors in Cypress",
+          "src": "/locators/cypress/03-css-selectors-in-cypress.md",
+          "num": 41
+        },
+        {
+          "slug": "cypress-04-advanced-selector-techniques",
+          "title": "Advanced selector techniques",
+          "src": "/locators/cypress/04-advanced-selector-techniques.md",
+          "num": 42
+        },
+        {
+          "slug": "cypress-05-cypress-specific-locator-strategies",
+          "title": "Cypress specific locator strategies",
+          "src": "/locators/cypress/05-cypress-specific-locator-strategies.md",
+          "num": 43
+        },
+        {
+          "slug": "cypress-06-working-with-dynamic-elements",
+          "title": "Working with dynamic elements",
+          "src": "/locators/cypress/06-working-with-dynamic-elements.md",
+          "num": 44
+        },
+        {
+          "slug": "cypress-07-traversal-and-relationship-commands",
+          "title": "Traversal and relationship commands",
+          "src": "/locators/cypress/07-traversal-and-relationship-commands.md",
+          "num": 45
+        },
+        {
+          "slug": "cypress-08-filtering-and-conditional-selection",
+          "title": "Filtering and conditional selection",
+          "src": "/locators/cypress/08-filtering-and-conditional-selection.md",
+          "num": 46
+        },
+        {
+          "slug": "cypress-09-real-world-test-automation-examples",
+          "title": "Real world test automation examples",
+          "src": "/locators/cypress/09-real-world-test-automation-examples.md",
+          "num": 47
+        },
+        {
+          "slug": "cypress-10-cypress-locators-best-practices",
+          "title": "Cypress locators best practices",
+          "src": "/locators/cypress/10-cypress-locators-best-practices.md",
+          "num": 48
+        },
+        {
+          "slug": "cypress-11-complete-cypress-command-reference",
+          "title": "Complete Cypress command reference",
+          "src": "/locators/cypress/11-complete-cypress-command-reference.md",
+          "num": 49
+        },
+        {
+          "slug": "cypress-12-advanced-techniques-and-patterns",
+          "title": "Advanced techniques and patterns",
+          "src": "/locators/cypress/12-advanced-techniques-and-patterns.md",
+          "num": 50
+        },
+        {
+          "slug": "cypress-99-conclusion",
+          "title": "Conclusion",
+          "src": "/locators/cypress/99-conclusion.md",
+          "num": 51
+        },
+        {
+          "slug": "cypress-appendix-a-cypress-configuration",
+          "title": "Cypress configuration",
+          "src": "/locators/cypress/appendix-a-cypress-configuration.md",
+          "num": 52
+        },
+        {
+          "slug": "cypress-appendix-b-jquery-selectors-quick-reference",
+          "title": "jQuery selectors quick reference",
+          "src": "/locators/cypress/appendix-b-jquery-selectors-quick-reference.md",
+          "num": 53
+        },
+        {
+          "slug": "cypress-appendix-c-testing-library-integration",
+          "title": "Testing library integration",
+          "src": "/locators/cypress/appendix-c-testing-library-integration.md",
+          "num": 54
+        },
+        {
+          "slug": "cypress-appendix-d-migration-from-selenium",
+          "title": "Migration from Selenium",
+          "src": "/locators/cypress/appendix-d-migration-from-selenium.md",
+          "num": 55
+        },
+        {
+          "slug": "cypress-appendix-e-useful-plugins",
+          "title": "Useful plugins",
+          "src": "/locators/cypress/appendix-e-useful-plugins.md",
+          "num": 56
+        }
+      ],
+      "num": 4,
+      "slug": "g4",
+      "short": "Cypress Locators",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "metric": ""
+    },
+    {
+      "title": "Practice",
+      "icon": "fas fa-dumbbell",
+      "desc": "Graded exercises and a hands-on lab",
+      "chapters": [
+        {
+          "slug": "beginner",
+          "title": "Beginner practice",
+          "href": "/locators/beginner.html",
+          "num": 57
+        },
+        {
+          "slug": "intermediate",
+          "title": "Intermediate practice",
+          "href": "/locators/intermediate.html",
+          "num": 58
+        },
+        {
+          "slug": "advanced",
+          "title": "Advanced practice",
+          "href": "/locators/advanced.html",
+          "num": 59
+        },
+        {
+          "slug": "expert",
+          "title": "Expert practice",
+          "href": "/locators/expert.html",
+          "num": 60
+        },
+        {
+          "slug": "practice",
+          "title": "Locator practice lab",
+          "href": "/locators/practice.html",
+          "num": 61
+        }
+      ],
+      "num": 5,
+      "slug": "g5",
+      "short": "Practice",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
+      "metric": ""
+    }
+  ]
+}

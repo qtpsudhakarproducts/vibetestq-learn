@@ -1,0 +1,158 @@
+{
+  "id": "lang-langsmith",
+  "title": "LangSmith for QA",
+  "sidebarIcon": "fas fa-magnifying-glass-chart",
+  "meta": "12 chapters · 3 parts",
+  "pageTitle": "LangSmith for QA | VibeTestQ Academy",
+  "chapterTitle": "{title} | LangSmith for QA | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "LangSmith",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">LangSmith</span> for <span class=\"g2\">QA</span>",
+    "sub": "Tracing, evaluation and monitoring for AI-powered testing.",
+    "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
+    "stats": [
+      [
+        "12",
+        "Chapters"
+      ],
+      [
+        "3",
+        "Parts"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "AI-Powered QA",
+      "icon": "fas fa-house",
+      "href": "/lang/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "title": "Start here",
+      "icon": "fas fa-flag",
+      "desc": "Introduction and prerequisites",
+      "chapters": [
+        {
+          "slug": "00-front-matter",
+          "title": "LangSmith for QA and Test Automation",
+          "src": "/lang/langsmith/00-front-matter.md",
+          "num": 1
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "Start here",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "metric": ""
+    },
+    {
+      "title": "Chapters",
+      "icon": "fas fa-magnifying-glass-chart",
+      "desc": "The course, chapter by chapter",
+      "chapters": [
+        {
+          "slug": "chapter-01-what-is-langsmith",
+          "title": "What Is LangSmith?",
+          "src": "/lang/langsmith/chapter-01-what-is-langsmith.md",
+          "num": 2
+        },
+        {
+          "slug": "chapter-02-setting-up-tracing",
+          "title": "Setting Up Tracing",
+          "src": "/lang/langsmith/chapter-02-setting-up-tracing.md",
+          "num": 3
+        },
+        {
+          "slug": "chapter-03-runs-and-traces",
+          "title": "Understanding Runs and Traces",
+          "src": "/lang/langsmith/chapter-03-runs-and-traces.md",
+          "num": 4
+        },
+        {
+          "slug": "chapter-04-datasets",
+          "title": "Creating Datasets",
+          "src": "/lang/langsmith/chapter-04-datasets.md",
+          "num": 5
+        },
+        {
+          "slug": "chapter-05-running-evaluations",
+          "title": "Running Evaluations",
+          "src": "/lang/langsmith/chapter-05-running-evaluations.md",
+          "num": 6
+        },
+        {
+          "slug": "chapter-06-custom-evaluators",
+          "title": "Custom Evaluators",
+          "src": "/lang/langsmith/chapter-06-custom-evaluators.md",
+          "num": 7
+        },
+        {
+          "slug": "chapter-07-evaluating-qa-tools",
+          "title": "Evaluating AI QA Tools",
+          "src": "/lang/langsmith/chapter-07-evaluating-qa-tools.md",
+          "num": 8
+        },
+        {
+          "slug": "chapter-08-evaluating-playwright-tests",
+          "title": "Evaluating AI-Generated Playwright Tests",
+          "src": "/lang/langsmith/chapter-08-evaluating-playwright-tests.md",
+          "num": 9
+        },
+        {
+          "slug": "chapter-09-ci-evaluation",
+          "title": "Automated Evaluation in CI",
+          "src": "/lang/langsmith/chapter-09-ci-evaluation.md",
+          "num": 10
+        },
+        {
+          "slug": "chapter-10-best-practices",
+          "title": "Best Practices",
+          "src": "/lang/langsmith/chapter-10-best-practices.md",
+          "num": 11
+        }
+      ],
+      "num": 2,
+      "slug": "g2",
+      "short": "Chapters",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "metric": ""
+    },
+    {
+      "title": "Appendix",
+      "icon": "fas fa-book",
+      "desc": "Reference material",
+      "chapters": [
+        {
+          "slug": "appendix-troubleshooting",
+          "title": "Appendix — Troubleshooting LangSmith",
+          "src": "/lang/langsmith/appendix-troubleshooting.md",
+          "num": 12
+        }
+      ],
+      "num": 3,
+      "slug": "g3",
+      "short": "Appendix",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "metric": ""
+    }
+  ]
+}

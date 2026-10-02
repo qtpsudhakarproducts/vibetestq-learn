@@ -1,0 +1,324 @@
+{
+  "id": "playwright-pwdoc",
+  "title": "Playwright Core",
+  "sidebarIcon": "fas fa-masks-theater",
+  "meta": "31 topics · 7 parts",
+  "pageTitle": "Playwright Core | VibeTestQ Academy",
+  "chapterTitle": "{title} | Playwright Core | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "Playwright handbook",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "Playwright <span class=\"g\">Core</span> <span class=\"g2\">Handbook</span>",
+    "sub": "Browser automation from first install to AI-assisted testing: architecture, locators, interactions, waits, test runner, API and network testing.",
+    "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
+    "stats": [
+      [
+        "31",
+        "Topics"
+      ],
+      [
+        "7",
+        "Parts"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Playwright",
+      "icon": "fas fa-house",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "g1",
+      "title": "Intro, Setup & Architecture",
+      "short": "Intro, Setup & Architecture",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-download",
+      "desc": "Installation · Architecture",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "installation",
+          "title": "Installation",
+          "src": "/playwright/pwdoc/01_Introduction_Installation.md"
+        },
+        {
+          "num": 2,
+          "slug": "architecture",
+          "title": "Architecture",
+          "src": "/playwright/pwdoc/02_Architecture_Manual_Launch.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "g2",
+      "title": "Locators & Interactions",
+      "short": "Locators & Interactions",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fas fa-masks-theater",
+      "desc": "Locators · Basic Interactions · Advanced Interactions · Files & Downloads",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 3,
+          "slug": "locators",
+          "title": "Locators",
+          "src": "/playwright/pwdoc/03_Locators.md"
+        },
+        {
+          "num": 4,
+          "slug": "basic-interactions",
+          "title": "Basic Interactions",
+          "src": "/playwright/pwdoc/04_Basic_Interactions.md"
+        },
+        {
+          "num": 5,
+          "slug": "advanced-interactions",
+          "title": "Advanced Interactions",
+          "src": "/playwright/pwdoc/05_Advanced_Interactions.md"
+        },
+        {
+          "num": 6,
+          "slug": "files",
+          "title": "Files & Downloads",
+          "src": "/playwright/pwdoc/06_Files_Downloads.md"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "g3",
+      "title": "Navigation, Frames & Waits",
+      "short": "Navigation, Frames & Waits",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "icon": "fas fa-compass",
+      "desc": "Navigation & Pages · Frames & Dialogs · Waits & Timeouts",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 7,
+          "slug": "navigation",
+          "title": "Navigation & Pages",
+          "src": "/playwright/pwdoc/07_Navigation_Pages.md"
+        },
+        {
+          "num": 8,
+          "slug": "scopes",
+          "title": "Frames & Dialogs",
+          "src": "/playwright/pwdoc/08_Scopes_Frames_Dialogs.md"
+        },
+        {
+          "num": 9,
+          "slug": "waits",
+          "title": "Waits & Timeouts",
+          "src": "/playwright/pwdoc/09_Waits_Timeouts.md"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "g4",
+      "title": "Test Runner & Framework",
+      "short": "Test Runner & Framework",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "icon": "fas fa-play-circle",
+      "desc": "Test Runner · Assertions · Configuration · Debugging Tools …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 10,
+          "slug": "test-runner",
+          "title": "Test Runner",
+          "src": "/playwright/pwdoc/10_Test_Runner_Intro.md"
+        },
+        {
+          "num": 11,
+          "slug": "assertions",
+          "title": "Assertions",
+          "src": "/playwright/pwdoc/11_Assertions.md"
+        },
+        {
+          "num": 12,
+          "slug": "config",
+          "title": "Configuration",
+          "src": "/playwright/pwdoc/12_Test_Configuration.md"
+        },
+        {
+          "num": 13,
+          "slug": "debug",
+          "title": "Debugging Tools",
+          "src": "/playwright/pwdoc/13_Debugging_Tools.md"
+        },
+        {
+          "num": 14,
+          "slug": "fixtures",
+          "title": "Fixtures & Hooks",
+          "src": "/playwright/pwdoc/14_Fixtures_Hooks.md"
+        },
+        {
+          "num": 15,
+          "slug": "reports",
+          "title": "Reporters & CI",
+          "src": "/playwright/pwdoc/15_Reporters_CI.md"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "slug": "g5",
+      "title": "Execution & Scaling",
+      "short": "Execution & Scaling",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
+      "icon": "fas fa-table",
+      "desc": "Parameterization · Parallelism · Page Object Model",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 16,
+          "slug": "parameterization",
+          "title": "Parameterization",
+          "src": "/playwright/pwdoc/16_Parameterization.md"
+        },
+        {
+          "num": 17,
+          "slug": "parallelism",
+          "title": "Parallelism",
+          "src": "/playwright/pwdoc/17_Parallelism.md"
+        },
+        {
+          "num": 18,
+          "slug": "pom",
+          "title": "Page Object Model",
+          "src": "/playwright/pwdoc/18_Page_Object_Model.md"
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "slug": "g6",
+      "title": "API, Auth & Network",
+      "short": "API, Auth & Network",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
+      "icon": "fas fa-masks-theater",
+      "desc": "API Testing · Network Mocking · Authentication · Screenshots & Video …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 19,
+          "slug": "api",
+          "title": "API Testing",
+          "src": "/playwright/pwdoc/19_API_Testing.md"
+        },
+        {
+          "num": 20,
+          "slug": "mocking",
+          "title": "Network Mocking",
+          "src": "/playwright/pwdoc/20_Network_Mocking.md"
+        },
+        {
+          "num": 21,
+          "slug": "auth",
+          "title": "Authentication",
+          "src": "/playwright/pwdoc/21_Authentication.md"
+        },
+        {
+          "num": 22,
+          "slug": "media",
+          "title": "Screenshots & Video",
+          "src": "/playwright/pwdoc/22_Media_Screenshots.md"
+        },
+        {
+          "num": 23,
+          "slug": "emulation",
+          "title": "Mobile Emulation",
+          "src": "/playwright/pwdoc/23_Emulation.md"
+        },
+        {
+          "num": 24,
+          "slug": "best-practices",
+          "title": "Best Practices",
+          "src": "/playwright/pwdoc/24_Best_Practices.md"
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "slug": "g7",
+      "title": "Visual, Accessibility & AI",
+      "short": "Visual, Accessibility & AI",
+      "color": "#f97316",
+      "rgb": "249,115,22",
+      "icon": "fas fa-brain",
+      "desc": "GenAI Fundamentals · Prompt Engineering · AI IDEs & MCP · Playwright Agents …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 25,
+          "slug": "ai-fundamentals",
+          "title": "GenAI Fundamentals",
+          "src": "/playwright/pwdoc/25_GenAI_Fundamentals.md"
+        },
+        {
+          "num": 26,
+          "slug": "prompting",
+          "title": "Prompt Engineering",
+          "src": "/playwright/pwdoc/26_Prompt_Engineering.md"
+        },
+        {
+          "num": 27,
+          "slug": "ai-ides",
+          "title": "AI IDEs & MCP",
+          "src": "/playwright/pwdoc/27_AI_IDEs_MCP.md"
+        },
+        {
+          "num": 28,
+          "slug": "ai-agents",
+          "title": "Playwright Agents",
+          "src": "/playwright/pwdoc/28_Playwright_Agents.md"
+        },
+        {
+          "num": 29,
+          "slug": "testing-ai",
+          "title": "Testing AI Apps",
+          "src": "/playwright/pwdoc/29_Testing_AI_Apps.md"
+        },
+        {
+          "num": 30,
+          "slug": "visual",
+          "title": "Visual Testing",
+          "src": "/playwright/pwdoc/30_Visual_Testing.md"
+        },
+        {
+          "num": 31,
+          "slug": "capstone",
+          "title": "Capstone Project",
+          "src": "/playwright/pwdoc/31_Capstone_Project.md"
+        }
+      ]
+    }
+  ]
+}
