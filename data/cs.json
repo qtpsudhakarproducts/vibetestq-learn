@@ -1,0 +1,74 @@
+{
+  "id": "cs",
+  "title": "Locator Cheat Sheets",
+  "sidebarIcon": "fas fa-table-list",
+  "meta": "3 cheat sheets",
+  "pageTitle": "Locator Cheat Sheets | VibeTestQ Academy",
+  "chapterTitle": "{title} | Locator Cheat Sheets | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "N",
+  "home": {
+    "eyebrow": "XPath vs CSS vs Playwright",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "Locator <span class=\"g\">Cheat</span> <span class=\"g2\">Sheets</span>",
+    "sub": "Side-by-side XPath, CSS and Playwright locators, with a complete comparison and a guide to the learning structure.",
+    "note": "<strong>Use it like this:</strong> pick the note you need — each one stands on its own.",
+    "stats": [
+      [
+        "3",
+        "Cheat sheets"
+      ]
+    ],
+    "label": "Contents",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Library",
+      "icon": "fas fa-book-open",
+      "href": "/learn/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "g1",
+      "title": "Locator Cheat Sheets",
+      "short": "Locator Cheat Sheets",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-table-list",
+      "desc": "",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "SIDE-BY-SIDE-LOCATOR-CHEAT-SHEET-md",
+          "title": "Side-by-side cheat sheet",
+          "src": "/cs/SIDE-BY-SIDE-LOCATOR-CHEAT-SHEET.md"
+        },
+        {
+          "num": 2,
+          "slug": "XPATH-CSS-PLAYWRIGHT-COMPARISON-md",
+          "title": "XPath vs CSS vs Playwright comparison",
+          "src": "/cs/XPATH-CSS-PLAYWRIGHT-COMPARISON.md"
+        },
+        {
+          "num": 3,
+          "slug": "HYBRID-LEARNING-STRUCTURE-md",
+          "title": "Web locators: complete guide",
+          "src": "/cs/HYBRID-LEARNING-STRUCTURE.md"
+        }
+      ]
+    }
+  ]
+}

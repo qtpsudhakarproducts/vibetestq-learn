@@ -10,12 +10,12 @@
 
 ## – Playwright Framework Concepts
 
-New to any of these? Read the topic at [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc) first, then return here.
+New to any of these? Read the topic at [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc) first, then return here.
 
 | Concept | Why you need it in this level |
 |---------|------------------------------|
-| [Hooks](https://vibetestq.com/docs/playwright/pwtestdoc/#hooks) | `beforeAll` and `afterAll` patterns used for per-suite state setup |
-| [Global Setup & Teardown](https://vibetestq.com/docs/playwright/pwtestdoc/#global-setup-teardown) | One-time setup patterns used for authentication state management |
+| [Hooks](https://academy.vibetestq.com/playwright/pwtestdoc/#hooks) | `beforeAll` and `afterAll` patterns used for per-suite state setup |
+| [Global Setup & Teardown](https://academy.vibetestq.com/playwright/pwtestdoc/#global-setup-teardown) | One-time setup patterns used for authentication state management |
 
 ---
 

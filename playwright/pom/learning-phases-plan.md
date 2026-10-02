@@ -11,7 +11,7 @@ At each level:
 2. **Study the linked Playwright test topics second** — they deepen understanding of the framework features you just used
 
 ## Quick Reference
-> Available at any level — refer to this at any point: [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc)
+> Available at any level — refer to this at any point: [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc)
 
 ---
 
@@ -23,7 +23,7 @@ At each level:
 
 **Goal:** Understand why POM exists, how the framework is structured, and the design principles behind every decision that follows.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Defining Tests
 - Grouping Tests
 
@@ -58,7 +58,7 @@ At each level:
 
 **Goal:** Eliminate duplication across page classes with a shared BasePage and inheritance.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Hooks
 - Test Steps
 
@@ -77,7 +77,7 @@ At each level:
 
 > ⚠️ **This is the steepest level.** It introduces session storage, Playwright's custom fixture API, multi-role setups, and the Leave module simultaneously. Allocate the majority of this level's time to understanding fixtures before moving on.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Fixtures
 
 **Learning Objectives:**
@@ -97,10 +97,10 @@ At each level:
 
 **Goal:** Ensure every test can run in isolation — no test should rely on another having run first.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Global Setup & Teardown
 
-> 💡 If your application has an API layer, studying API testing ([vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc)) before or during this level makes state setup significantly faster.
+> 💡 If your application has an API layer, studying API testing ([academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc)) before or during this level makes state setup significantly faster.
 
 **Learning Objectives:**
 - Diagnose cascade failures caused by shared state
@@ -117,7 +117,7 @@ At each level:
 
 **Goal:** Replace hardcoded test data with dynamic, generated data that is unique per run.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Parameterised Tests
 
 **Learning Objectives:**
@@ -154,7 +154,7 @@ At each level:
 
 **Goal:** Make test results meaningful, actionable, and navigable for all audiences.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Test Info
 - Annotations
 - Tags & Filtering
@@ -179,7 +179,7 @@ At each level:
 
 **Goal:** Run the framework reliably at scale in a CI pipeline.
 
-**Playwright Test Content** — [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc):
+**Playwright Test Content** — [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc):
 - Parallelism
 - Retries
 - Sharding

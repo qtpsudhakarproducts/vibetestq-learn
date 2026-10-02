@@ -1,0 +1,113 @@
+{
+  "id": "projects",
+  "title": "Automation Practice Lab",
+  "sidebarIcon": "fas fa-flask",
+  "meta": "2 tracks · 6 items",
+  "pageTitle": "Automation Practice Lab | VibeTestQ Academy",
+  "chapterTitle": "{title} | Automation Practice Lab | VibeTestQ Academy",
+  "topbarChapter": "{title}",
+  "badgeLetter": "L",
+  "home": {
+    "eyebrow": "Automation Practice Lab",
+    "eyebrowIcon": "fas fa-flask",
+    "title": "The Automation <span class=\"g\">Practice</span> <span class=\"g2\">Lab</span>",
+    "sub": "An engineering-first approach to test automation: follow a 42-day program, then automate real applications and an isolated sandbox.",
+    "note": "<strong>Use it like this:</strong> start with the 42-day program, then apply it to the practice targets.",
+    "stats": [
+      [
+        "42",
+        "Days"
+      ],
+      [
+        "3",
+        "Real apps"
+      ],
+      [
+        "1",
+        "Sandbox"
+      ]
+    ],
+    "label": "Practice lab",
+    "labelIcon": "fas fa-flask"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Curriculum",
+      "icon": "fas fa-route",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "program",
+      "title": "42-Day Mastery Program",
+      "short": "42-Day Program",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-calendar-check",
+      "desc": "A progressive daily roadmap from Day 01 setup to Day 42 lead delivery. 100% hands-on.",
+      "metric": "",
+      "chapters": [
+        {
+          "slug": "Playwright-Daily-StepUp-Practice-Program",
+          "title": "Program overview",
+          "src": "/projects/Playwright-Daily-StepUp-Practice-Program.md",
+          "num": 1
+        },
+        {
+          "num": 2,
+          "slug": "start",
+          "title": "Start the 42-day program",
+          "href": "/projects/program/"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "targets",
+      "title": "Practice targets",
+      "short": "Practice targets",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fas fa-bullseye",
+      "desc": "Automate real applications end to end, then experiment in an isolated sandbox.",
+      "metric": "",
+      "chapters": [
+        {
+          "slug": "orangehrm-scenarios",
+          "title": "OrangeHRM",
+          "src": "/projects/orangehrm-scenarios.md",
+          "num": 3
+        },
+        {
+          "slug": "suitecrm-scenarios",
+          "title": "SuiteCRM",
+          "src": "/projects/suitecrm-scenarios.md",
+          "num": 4
+        },
+        {
+          "slug": "assetexplorer-scenarios",
+          "title": "ManageEngine AssetExplorer",
+          "src": "/projects/assetexplorer-scenarios.md",
+          "num": 5
+        },
+        {
+          "num": 6,
+          "slug": "sandbox",
+          "title": "Sandbox Studio",
+          "href": "https://vibetestq.com/testweb/sandbox/"
+        }
+      ]
+    }
+  ]
+}

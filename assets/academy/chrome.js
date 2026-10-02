@@ -56,6 +56,11 @@
       title.classList.add('acad-moved-title');
       bar.insertAdjacentElement('afterend', title);
     }
+    // data-move=".mobile-menu-btn": controls from the page's own header that must keep working
+    (d.move || '').split(',').map((x) => x.trim()).filter(Boolean).forEach((sel) => {
+      const el = document.querySelector(sel);
+      if (el) bar.insertBefore(el, bar.firstChild);
+    });
     legacy.forEach((el) => { el.style.display = 'none'; });
   }
 

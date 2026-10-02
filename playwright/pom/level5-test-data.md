@@ -10,11 +10,11 @@
 
 ## – Playwright Framework Concepts
 
-New to any of these? Read the topic at [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc) first, then return here.
+New to any of these? Read the topic at [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc) first, then return here.
 
 | Concept | Why you need it in this level |
 |---------|------------------------------|
-| [Parameterised Tests](https://vibetestq.com/docs/playwright/pwtestdoc/#parameterised-tests) | `test.each()` patterns used to run the same test with multiple data sets |
+| [Parameterised Tests](https://academy.vibetestq.com/playwright/pwtestdoc/#parameterised-tests) | `test.each()` patterns used to run the same test with multiple data sets |
 ---
 
 ## Part 1 — The Problem Level 4 Left Behind

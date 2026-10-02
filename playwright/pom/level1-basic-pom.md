@@ -10,12 +10,12 @@
 
 ## – Playwright Framework Concepts
 
-New to any of these? Read the topic at [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc) first, then return here.
+New to any of these? Read the topic at [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc) first, then return here.
 
 | Concept | Why you need it in this level |
 |---------|------------------------------|
-| [Defining Tests](https://vibetestq.com/docs/playwright/pwtestdoc/#defining-tests) | Writing `test()` blocks and `expect()` assertions |
-| [Grouping Tests](https://vibetestq.com/docs/playwright/pwtestdoc/#grouping-tests) | Organising related tests with `describe()` blocks |
+| [Defining Tests](https://academy.vibetestq.com/playwright/pwtestdoc/#defining-tests) | Writing `test()` blocks and `expect()` assertions |
+| [Grouping Tests](https://academy.vibetestq.com/playwright/pwtestdoc/#grouping-tests) | Organising related tests with `describe()` blocks |
 
 ---
 

@@ -1,0 +1,384 @@
+{
+  "id": "program",
+  "title": "42-Day Mastery Program",
+  "sidebarIcon": "fas fa-calendar-check",
+  "meta": "42 days · 6 weeks",
+  "pageTitle": "42-Day Mastery Program | VibeTestQ Academy",
+  "chapterTitle": "{title} | 42-Day Mastery Program | VibeTestQ Academy",
+  "topbarChapter": "{title}",
+  "partLabel": "Week",
+  "badgeLetter": "W",
+  "chapterWord": "days",
+  "home": {
+    "eyebrow": "Daily step-up practice",
+    "eyebrowIcon": "fas fa-calendar-check",
+    "title": "The <span class=\"g\">42-Day</span> <span class=\"g2\">Mastery Program</span>",
+    "sub": "A progressive daily roadmap from Day 01 project setup to Day 42 lead-level delivery. Every day: study, warm up, practise, then step up.",
+    "note": "<strong>Use it like this:</strong> one day at a time, in order. Every day ends with a commit you can show.",
+    "stats": [
+      [
+        "42",
+        "Days"
+      ],
+      [
+        "6",
+        "Weeks"
+      ]
+    ],
+    "label": "Weeks",
+    "labelIcon": "fas fa-calendar-week"
+  },
+  "content": {
+    "type": "html"
+  },
+  "topbar": [
+    {
+      "label": "Practice Lab",
+      "icon": "fas fa-flask",
+      "href": "/projects/"
+    },
+    {
+      "label": "Curriculum",
+      "icon": "fas fa-route",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "w1",
+      "title": "Week 01: Core Playwright Skills",
+      "short": "Core Playwright Skills",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-rocket",
+      "desc": "Architecture & Project Setup · Git & Node.js Project Foundation · Locators: Finding Any Element · Actions: Every Method on Every Element …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "w1-d01",
+          "title": "Day 01 — Architecture & Project Setup",
+          "src": "/projects/program/w1-d01.html"
+        },
+        {
+          "num": 2,
+          "slug": "w1-d02",
+          "title": "Day 02 — Git & Node.js Project Foundation",
+          "src": "/projects/program/w1-d02.html"
+        },
+        {
+          "num": 3,
+          "slug": "w1-d03",
+          "title": "Day 03 — Locators: Finding Any Element",
+          "src": "/projects/program/w1-d03.html"
+        },
+        {
+          "num": 4,
+          "slug": "w1-d04",
+          "title": "Day 04 — Actions: Every Method on Every Element",
+          "src": "/projects/program/w1-d04.html"
+        },
+        {
+          "num": 5,
+          "slug": "w1-d05",
+          "title": "Day 05 — Special Contexts: Dialogs, Frames & Windows",
+          "src": "/projects/program/w1-d05.html"
+        },
+        {
+          "num": 6,
+          "slug": "w1-d06",
+          "title": "Day 06 — Assertions & Wait Strategies",
+          "src": "/projects/program/w1-d06.html"
+        },
+        {
+          "num": 7,
+          "slug": "w1-d07",
+          "title": "Day 07 — TypeScript for Testers",
+          "src": "/projects/program/w1-d07.html"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "w2",
+      "title": "Week 02: POM & Framework",
+      "short": "POM & Framework",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fas fa-sitemap",
+      "desc": "Why POM & BasePage · Feature Page Objects · Data Models & Faker · Custom Fixtures …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 8,
+          "slug": "w2-d08",
+          "title": "Day 08 — Why POM & BasePage",
+          "src": "/projects/program/w2-d08.html"
+        },
+        {
+          "num": 9,
+          "slug": "w2-d09",
+          "title": "Day 09 — Feature Page Objects",
+          "src": "/projects/program/w2-d09.html"
+        },
+        {
+          "num": 10,
+          "slug": "w2-d10",
+          "title": "Day 10 — Data Models & Faker",
+          "src": "/projects/program/w2-d10.html"
+        },
+        {
+          "num": 11,
+          "slug": "w2-d11",
+          "title": "Day 11 — Custom Fixtures",
+          "src": "/projects/program/w2-d11.html"
+        },
+        {
+          "num": 12,
+          "slug": "w2-d12",
+          "title": "Day 12 — Framework Architecture",
+          "src": "/projects/program/w2-d12.html"
+        },
+        {
+          "num": 13,
+          "slug": "w2-d13",
+          "title": "Day 13 — Multi-Project Config",
+          "src": "/projects/program/w2-d13.html"
+        },
+        {
+          "num": 14,
+          "slug": "w2-d14",
+          "title": "Day 14 — Session Auth State",
+          "src": "/projects/program/w2-d14.html"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "w3",
+      "title": "Week 03: Data, API & Reporting",
+      "short": "Data, API & Reporting",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "icon": "fas fa-database",
+      "desc": "Debug & Trace · Data-Driven Testing · API Testing · Hybrid UI + API …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 15,
+          "slug": "w3-d15",
+          "title": "Day 15 — Debug & Trace",
+          "src": "/projects/program/w3-d15.html"
+        },
+        {
+          "num": 16,
+          "slug": "w3-d16",
+          "title": "Day 16 — Data-Driven Testing",
+          "src": "/projects/program/w3-d16.html"
+        },
+        {
+          "num": 17,
+          "slug": "w3-d17",
+          "title": "Day 17 — API Testing",
+          "src": "/projects/program/w3-d17.html"
+        },
+        {
+          "num": 18,
+          "slug": "w3-d18",
+          "title": "Day 18 — Hybrid UI + API",
+          "src": "/projects/program/w3-d18.html"
+        },
+        {
+          "num": 19,
+          "slug": "w3-d19",
+          "title": "Day 19 — Network Mocking",
+          "src": "/projects/program/w3-d19.html"
+        },
+        {
+          "num": 20,
+          "slug": "w3-d20",
+          "title": "Day 20 — Mid-Way Checkpoint",
+          "src": "/projects/program/w3-d20.html"
+        },
+        {
+          "num": 21,
+          "slug": "w3-d21",
+          "title": "Day 21 — Built-in Reporting",
+          "src": "/projects/program/w3-d21.html"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "w4",
+      "title": "Week 04: CI/CD & Specialised Testing",
+      "short": "CI/CD & Specialised Testing",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "icon": "fas fa-gears",
+      "desc": "GitHub Actions Pipeline · Docker & Containers · Parallel & Sharding · Enterprise Pipelines …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 22,
+          "slug": "w4-d22",
+          "title": "Day 22 — GitHub Actions Pipeline",
+          "src": "/projects/program/w4-d22.html"
+        },
+        {
+          "num": 23,
+          "slug": "w4-d23",
+          "title": "Day 23 — Docker & Containers",
+          "src": "/projects/program/w4-d23.html"
+        },
+        {
+          "num": 24,
+          "slug": "w4-d24",
+          "title": "Day 24 — Parallel & Sharding",
+          "src": "/projects/program/w4-d24.html"
+        },
+        {
+          "num": 25,
+          "slug": "w4-d25",
+          "title": "Day 25 — Enterprise Pipelines",
+          "src": "/projects/program/w4-d25.html"
+        },
+        {
+          "num": 26,
+          "slug": "w4-d26",
+          "title": "Day 26 — Visual & Accessibility",
+          "src": "/projects/program/w4-d26.html"
+        },
+        {
+          "num": 27,
+          "slug": "w4-d27",
+          "title": "Day 27 — page.evaluate()",
+          "src": "/projects/program/w4-d27.html"
+        },
+        {
+          "num": 28,
+          "slug": "w4-d28",
+          "title": "Day 28 — Semantic & AI Locators",
+          "src": "/projects/program/w4-d28.html"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "slug": "w5",
+      "title": "Week 05: AI-Native & Cloud",
+      "short": "AI-Native & Cloud",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
+      "icon": "fas fa-robot",
+      "desc": "Prompt Engineering · Self-Healing Tests · Testing AI Apps · AI Agents & MCP …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 29,
+          "slug": "w5-d29",
+          "title": "Day 29 — Prompt Engineering",
+          "src": "/projects/program/w5-d29.html"
+        },
+        {
+          "num": 30,
+          "slug": "w5-d30",
+          "title": "Day 30 — Self-Healing Tests",
+          "src": "/projects/program/w5-d30.html"
+        },
+        {
+          "num": 31,
+          "slug": "w5-d31",
+          "title": "Day 31 — Testing AI Apps",
+          "src": "/projects/program/w5-d31.html"
+        },
+        {
+          "num": 32,
+          "slug": "w5-d32",
+          "title": "Day 32 — AI Agents & MCP",
+          "src": "/projects/program/w5-d32.html"
+        },
+        {
+          "num": 33,
+          "slug": "w5-d33",
+          "title": "Day 33 — Vibe Testing",
+          "src": "/projects/program/w5-d33.html"
+        },
+        {
+          "num": 34,
+          "slug": "w5-d34",
+          "title": "Day 34 — Cloud Execution",
+          "src": "/projects/program/w5-d34.html"
+        },
+        {
+          "num": 35,
+          "slug": "w5-d35",
+          "title": "Day 35 — Foundation: SuiteCRM",
+          "src": "/projects/program/w5-d35.html"
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "slug": "w6",
+      "title": "Week 06: Project Leadership",
+      "short": "Project Leadership",
+      "color": "#8b5cf6",
+      "rgb": "139,92,246",
+      "icon": "fas fa-flag-checkered",
+      "desc": "SuiteCRM Workflows · Asset Foundation · Asset Workflows · Framework Review …",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 36,
+          "slug": "w6-d36",
+          "title": "Day 36 — SuiteCRM Workflows",
+          "src": "/projects/program/w6-d36.html"
+        },
+        {
+          "num": 37,
+          "slug": "w6-d37",
+          "title": "Day 37 — Asset Foundation",
+          "src": "/projects/program/w6-d37.html"
+        },
+        {
+          "num": 38,
+          "slug": "w6-d38",
+          "title": "Day 38 — Asset Workflows",
+          "src": "/projects/program/w6-d38.html"
+        },
+        {
+          "num": 39,
+          "slug": "w6-d39",
+          "title": "Day 39 — Framework Review",
+          "src": "/projects/program/w6-d39.html"
+        },
+        {
+          "num": 40,
+          "slug": "w6-d40",
+          "title": "Day 40 — Advanced Git",
+          "src": "/projects/program/w6-d40.html"
+        },
+        {
+          "num": 41,
+          "slug": "w6-d41",
+          "title": "Day 41 — Suite Health",
+          "src": "/projects/program/w6-d41.html"
+        },
+        {
+          "num": 42,
+          "slug": "w6-d42",
+          "title": "Day 42 — Final Capstone Delivery",
+          "src": "/projects/program/w6-d42.html"
+        }
+      ]
+    }
+  ]
+}

@@ -137,6 +137,21 @@
         const target = first ? (first.href || '') : '';
         const pc = live ? p.color : '#94a3b8';
         const rgb = live ? p.rgb : '148,163,184';
+        if (p.listLinks) {
+          // library-style card: lists every destination directly instead of opening the first one
+          return `
+        <div class="ph-card ph-card-links" style="--pc:${pc};--pc-rgb:${rgb}">
+          <div class="ph-card-top"></div>
+          <div class="ph-card-body">
+            <div class="ph-card-head">
+              <div class="ph-card-sticker" style="--pc:${pc};--pc-rgb:${rgb}"><span class="ph-sticker-label">${esc((M.badgeLetter || 'P') + p.num)}</span><i class="${p.icon}"></i></div>
+              <div class="ph-card-head-right"><div class="ph-title">${esc(p.title)}</div></div>
+            </div>
+            <div class="ph-desc">${p.desc || ''}</div>
+            <ul class="ph-links">${p.chapters.map((c) => `<li><a href="${esc(c.href)}">${esc(c.title)} <i class="fas fa-arrow-right"></i></a></li>`).join('')}</ul>
+          </div>
+        </div>`;
+        }
         return `
         <div class="ph-card${live ? '' : ' ph-card-soon'}" style="--pc:${pc};--pc-rgb:${rgb}" data-first="${first ? first.num : ''}" data-href="${esc(target)}">
           <div class="ph-card-top"${live ? '' : ' style="background:#e2e8f0"'}></div>
@@ -177,7 +192,7 @@
           <div class="parts-home-grid">${cards}</div>
         </div>`;
 
-      mainEl.querySelectorAll('.ph-card:not(.ph-card-soon)').forEach((card) => {
+      mainEl.querySelectorAll('.ph-card:not(.ph-card-soon):not(.ph-card-links)').forEach((card) => {
         card.addEventListener('click', () => {
           if (card.dataset.href) location.href = card.dataset.href;
           else location.hash = '#ch' + card.dataset.first;

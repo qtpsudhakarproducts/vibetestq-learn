@@ -1,0 +1,230 @@
+{
+  "id": "assignments-jsts",
+  "title": "JS & TS Assignments",
+  "sidebarIcon": "fas fa-code",
+  "meta": "20 stages · 210 questions",
+  "pageTitle": "JavaScript & TypeScript Assignments | VibeTestQ Academy",
+  "chapterTitle": "{title} | JS & TS Assignments | VibeTestQ Academy",
+  "topbarChapter": "{title}",
+  "partLabel": "Group",
+  "badgeLetter": "G",
+  "home": {
+    "eyebrow": "Coding practice for test automation",
+    "eyebrowIcon": "fas fa-code",
+    "title": "<span class=\"g\">JavaScript</span> &amp; <span class=\"g2\">TypeScript</span> Assignments",
+    "sub": "20 stages and 210 practice questions that take you from variables to TypeScript for test automation. Write the code yourself, run it in Node.js, then move on.",
+    "note": "<strong>Use it like this:</strong> read a stage, write every solution yourself, run it, and only then move to the next stage.",
+    "stats": [
+      [
+        "210",
+        "Questions"
+      ],
+      [
+        "20",
+        "Stages"
+      ],
+      [
+        "3",
+        "Groups"
+      ]
+    ],
+    "label": "Study map",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Playwright",
+      "icon": "fas fa-route",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "start",
+      "title": "Start here",
+      "short": "Start here",
+      "color": "#94a3b8",
+      "rgb": "148,163,184",
+      "icon": "fas fa-flag",
+      "desc": "How the 210 questions are organised and how to use them.",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "readme",
+          "title": "How to use this series",
+          "src": "/assignments/jsts/README.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "js",
+      "title": "JavaScript Core",
+      "short": "JavaScript Core",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fab fa-js",
+      "desc": "Absolute Basics · Numbers · Strings — Built-ins · Strings — Manual · Loops & Patterns …",
+      "metric": "157 Qs",
+      "chapters": [
+        {
+          "num": 2,
+          "slug": "stage-01-basics",
+          "title": "Stage 1 — Absolute Basics",
+          "src": "/assignments/jsts/stage-01-basics.md"
+        },
+        {
+          "num": 3,
+          "slug": "stage-02-numbers",
+          "title": "Stage 2 — Numbers",
+          "src": "/assignments/jsts/stage-02-numbers.md"
+        },
+        {
+          "num": 4,
+          "slug": "stage-03-strings-builtins",
+          "title": "Stage 3 — Strings — Built-ins",
+          "src": "/assignments/jsts/stage-03-strings-builtins.md"
+        },
+        {
+          "num": 5,
+          "slug": "stage-04-strings-manual",
+          "title": "Stage 4 — Strings — Manual",
+          "src": "/assignments/jsts/stage-04-strings-manual.md"
+        },
+        {
+          "num": 6,
+          "slug": "stage-05-loops-patterns",
+          "title": "Stage 5 — Loops & Patterns",
+          "src": "/assignments/jsts/stage-05-loops-patterns.md"
+        },
+        {
+          "num": 7,
+          "slug": "stage-06-arrays-builtins",
+          "title": "Stage 6 — Arrays — Built-ins",
+          "src": "/assignments/jsts/stage-06-arrays-builtins.md"
+        },
+        {
+          "num": 8,
+          "slug": "stage-07-arrays-manual",
+          "title": "Stage 7 — Arrays — Manual",
+          "src": "/assignments/jsts/stage-07-arrays-manual.md"
+        },
+        {
+          "num": 9,
+          "slug": "stage-08-functions",
+          "title": "Stage 8 — Functions",
+          "src": "/assignments/jsts/stage-08-functions.md"
+        },
+        {
+          "num": 10,
+          "slug": "stage-09-functional",
+          "title": "Stage 9 — Functional Patterns",
+          "src": "/assignments/jsts/stage-09-functional.md"
+        },
+        {
+          "num": 11,
+          "slug": "stage-10-objects-oop",
+          "title": "Stage 10 — Objects & OOP",
+          "src": "/assignments/jsts/stage-10-objects-oop.md"
+        },
+        {
+          "num": 12,
+          "slug": "stage-11-data-structures",
+          "title": "Stage 11 — Data Structures",
+          "src": "/assignments/jsts/stage-11-data-structures.md"
+        },
+        {
+          "num": 13,
+          "slug": "stage-12-iterators-generators",
+          "title": "Stage 12 — Iterators & Generators",
+          "src": "/assignments/jsts/stage-12-iterators-generators.md"
+        },
+        {
+          "num": 14,
+          "slug": "stage-13-async-promises",
+          "title": "Stage 13 — Async & Promises",
+          "src": "/assignments/jsts/stage-13-async-promises.md"
+        },
+        {
+          "num": 15,
+          "slug": "stage-14-error-handling",
+          "title": "Stage 14 — Error Handling",
+          "src": "/assignments/jsts/stage-14-error-handling.md"
+        },
+        {
+          "num": 16,
+          "slug": "stage-15-dates-time",
+          "title": "Stage 15 — Dates & Time",
+          "src": "/assignments/jsts/stage-15-dates-time.md"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "node",
+      "title": "Node.js & Modules",
+      "short": "Node.js & Modules",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fab fa-node-js",
+      "desc": "Node.js · Modules",
+      "metric": "25 Qs",
+      "chapters": [
+        {
+          "num": 17,
+          "slug": "stage-16-nodejs",
+          "title": "Stage 16 — Node.js",
+          "src": "/assignments/jsts/stage-16-nodejs.md"
+        },
+        {
+          "num": 18,
+          "slug": "stage-17-modules",
+          "title": "Stage 17 — Modules",
+          "src": "/assignments/jsts/stage-17-modules.md"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "ts",
+      "title": "TypeScript",
+      "short": "TypeScript",
+      "color": "#3b82f6",
+      "rgb": "59,130,246",
+      "icon": "fas fa-t",
+      "desc": "TypeScript — Basics · TypeScript — Advanced · TypeScript for Automation",
+      "metric": "28 Qs",
+      "chapters": [
+        {
+          "num": 19,
+          "slug": "stage-18-typescript-basics",
+          "title": "Stage 18 — TypeScript — Basics",
+          "src": "/assignments/jsts/stage-18-typescript-basics.md"
+        },
+        {
+          "num": 20,
+          "slug": "stage-19-typescript-advanced",
+          "title": "Stage 19 — TypeScript — Advanced",
+          "src": "/assignments/jsts/stage-19-typescript-advanced.md"
+        },
+        {
+          "num": 21,
+          "slug": "stage-20-typescript-test-automation",
+          "title": "Stage 20 — TypeScript for Automation",
+          "src": "/assignments/jsts/stage-20-typescript-test-automation.md"
+        }
+      ]
+    }
+  ]
+}

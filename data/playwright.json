@@ -2,7 +2,7 @@
   "id": "playwright",
   "title": "Playwright Mastery",
   "sidebarIcon": "fas fa-masks-theater",
-  "meta": "10 modules · 57 steps",
+  "meta": "10 modules · 58 steps",
   "pageTitle": "Playwright Mastery — Complete Curriculum | VibeTestQ Academy",
   "chapterTitle": "{title} | Playwright Mastery | VibeTestQ Academy",
   "topbarChapter": "{title}",
@@ -21,7 +21,7 @@
         "Modules"
       ],
       [
-        "200",
+        "204",
         "Lessons"
       ],
       [
@@ -33,7 +33,7 @@
         "Quizzes"
       ],
       [
-        "11",
+        "12",
         "Assignments"
       ],
       [
@@ -105,18 +105,24 @@
         {
           "num": 6,
           "slug": "s6",
-          "title": "Assignment · QE fundamentals & TypeScript",
-          "href": "/playwright/assignments/#ch1"
+          "title": "Assignment · JS & TS coding stages (210 questions)",
+          "href": "/assignments/"
         },
         {
           "num": 7,
           "slug": "s7",
-          "title": "Assignment · Async JavaScript & Node.js",
-          "href": "/playwright/assignments/#ch2"
+          "title": "Assignment · QE fundamentals & TypeScript",
+          "href": "/playwright/assignments/#ch1"
         },
         {
           "num": 8,
           "slug": "s8",
+          "title": "Assignment · Async JavaScript & Node.js",
+          "href": "/playwright/assignments/#ch2"
+        },
+        {
+          "num": 9,
+          "slug": "s9",
           "title": "Interview · JavaScript & TypeScript questions",
           "href": "/iqs/#ch101"
         }
@@ -134,32 +140,32 @@
       "metric": "",
       "chapters": [
         {
-          "num": 9,
-          "slug": "s9",
+          "num": 10,
+          "slug": "s10",
           "title": "Learn · Playwright Core handbook",
           "href": "/playwright/pwdoc/"
         },
         {
-          "num": 10,
-          "slug": "s10",
+          "num": 11,
+          "slug": "s11",
           "title": "Practice · Playwright challenges",
           "href": "/practicehub/playwright.html"
         },
         {
-          "num": 11,
-          "slug": "s11",
+          "num": 12,
+          "slug": "s12",
           "title": "Assess · Playwright basics quiz",
           "href": "/playwright/assessments/Playwright-Basics.html"
         },
         {
-          "num": 12,
-          "slug": "s12",
+          "num": 13,
+          "slug": "s13",
           "title": "Assignment · Playwright basics",
           "href": "/playwright/assignments/#ch3"
         },
         {
-          "num": 13,
-          "slug": "s13",
+          "num": 14,
+          "slug": "s14",
           "title": "Interview · Playwright Core questions",
           "href": "/iqs/#ch201"
         }
@@ -177,26 +183,26 @@
       "metric": "",
       "chapters": [
         {
-          "num": 14,
-          "slug": "s14",
+          "num": 15,
+          "slug": "s15",
           "title": "Learn · Locator books (CSS · XPath · Playwright · Cypress)",
           "href": "/locators/"
         },
         {
-          "num": 15,
-          "slug": "s15",
+          "num": 16,
+          "slug": "s16",
           "title": "Practice · Locator practice lab",
           "href": "/locators/practice.html"
         },
         {
-          "num": 16,
-          "slug": "s16",
+          "num": 17,
+          "slug": "s17",
           "title": "Practice · Playwright locator challenges",
           "href": "/practicehub/pw-locators.html"
         },
         {
-          "num": 17,
-          "slug": "s17",
+          "num": 18,
+          "slug": "s18",
           "title": "Assess · Locators & assertions quiz",
           "href": "/playwright/assessments/Playwright-Basics-Part2-Locators-Assertions.html"
         }
@@ -214,62 +220,62 @@
       "metric": "",
       "chapters": [
         {
-          "num": 18,
-          "slug": "s18",
+          "num": 19,
+          "slug": "s19",
           "title": "Learn · Playwright Test framework",
           "href": "/playwright/pwtestdoc/"
         },
         {
-          "num": 19,
-          "slug": "s19",
+          "num": 20,
+          "slug": "s20",
           "title": "Learn · Quick study notes",
           "href": "/pwtest/"
         },
         {
-          "num": 20,
-          "slug": "s20",
+          "num": 21,
+          "slug": "s21",
           "title": "Practice · Assertions challenges",
           "href": "/practicehub/pw-assertions.html"
         },
         {
-          "num": 21,
-          "slug": "s21",
+          "num": 22,
+          "slug": "s22",
           "title": "Practice · Fixtures & hooks challenges",
           "href": "/practicehub/pw-fixtures.html"
         },
         {
-          "num": 22,
-          "slug": "s22",
+          "num": 23,
+          "slug": "s23",
           "title": "Practice · Configuration challenges",
           "href": "/practicehub/pw-config.html"
         },
         {
-          "num": 23,
-          "slug": "s23",
+          "num": 24,
+          "slug": "s24",
           "title": "Assess · Advanced Playwright quiz",
           "href": "/playwright/assessments/Advanced-Playwright.html"
         },
         {
-          "num": 24,
-          "slug": "s24",
+          "num": 25,
+          "slug": "s25",
           "title": "Assess · Advanced scenarios quiz",
           "href": "/playwright/assessments/Playwright-Advanced-Scenarios.html"
         },
         {
-          "num": 25,
-          "slug": "s25",
+          "num": 26,
+          "slug": "s26",
           "title": "Assignment · Advanced Playwright",
           "href": "/playwright/assignments/#ch4"
         },
         {
-          "num": 26,
-          "slug": "s26",
+          "num": 27,
+          "slug": "s27",
           "title": "Assignment · Advanced scenarios",
           "href": "/playwright/assignments/#ch5"
         },
         {
-          "num": 27,
-          "slug": "s27",
+          "num": 28,
+          "slug": "s28",
           "title": "Interview · Test framework questions",
           "href": "/iqs/#ch301"
         }
@@ -287,62 +293,62 @@
       "metric": "",
       "chapters": [
         {
-          "num": 28,
-          "slug": "s28",
+          "num": 29,
+          "slug": "s29",
           "title": "Learn · API testing guide",
           "href": "/playwright/apitest/"
         },
         {
-          "num": 29,
-          "slug": "s29",
+          "num": 30,
+          "slug": "s30",
           "title": "Practice · API testing challenges",
           "href": "/practicehub/pw-api-testing.html"
         },
         {
-          "num": 30,
-          "slug": "s30",
+          "num": 31,
+          "slug": "s31",
           "title": "Practice · Network mocking challenges",
           "href": "/practicehub/pw-network.html"
         },
         {
-          "num": 31,
-          "slug": "s31",
+          "num": 32,
+          "slug": "s32",
           "title": "Assess · API testing fundamentals quiz",
           "href": "/playwright/assessments/Playwright-API-Testing-Fundamentals.html"
         },
         {
-          "num": 32,
-          "slug": "s32",
+          "num": 33,
+          "slug": "s33",
           "title": "Assess · Playwright API testing quiz",
           "href": "/playwright/assessments/Playwright-API-Testing.html"
         },
         {
-          "num": 33,
-          "slug": "s33",
+          "num": 34,
+          "slug": "s34",
           "title": "Assess · Advanced API testing quiz",
           "href": "/playwright/assessments/Advanced-Playwright-API-Testing.html"
         },
         {
-          "num": 34,
-          "slug": "s34",
+          "num": 35,
+          "slug": "s35",
           "title": "Assignment · Playwright API testing",
           "href": "/playwright/assignments/#ch6"
         },
         {
-          "num": 35,
-          "slug": "s35",
+          "num": 36,
+          "slug": "s36",
           "title": "Assignment · API testing fundamentals",
           "href": "/playwright/assignments/#ch7"
         },
         {
-          "num": 36,
-          "slug": "s36",
+          "num": 37,
+          "slug": "s37",
           "title": "Assignment · Advanced API testing",
           "href": "/playwright/assignments/#ch8"
         },
         {
-          "num": 37,
-          "slug": "s37",
+          "num": 38,
+          "slug": "s38",
           "title": "Interview · API, network & auth questions",
           "href": "/iqs/#ch701"
         }
@@ -360,20 +366,20 @@
       "metric": "",
       "chapters": [
         {
-          "num": 38,
-          "slug": "s38",
+          "num": 39,
+          "slug": "s39",
           "title": "Learn · POM framework design",
           "href": "/playwright/pom/"
         },
         {
-          "num": 39,
-          "slug": "s39",
+          "num": 40,
+          "slug": "s40",
           "title": "Practice · Page Object Model challenges",
           "href": "/practicehub/pw-pom.html"
         },
         {
-          "num": 40,
-          "slug": "s40",
+          "num": 41,
+          "slug": "s41",
           "title": "Interview · POM & framework design questions",
           "href": "/iqs/#ch501"
         }
@@ -391,20 +397,20 @@
       "metric": "",
       "chapters": [
         {
-          "num": 41,
-          "slug": "s41",
+          "num": 42,
+          "slug": "s42",
           "title": "Learn · Cucumber BDD with Playwright",
           "href": "/playwright/bdd/"
         },
         {
-          "num": 42,
-          "slug": "s42",
+          "num": 43,
+          "slug": "s43",
           "title": "Practice · BDD / Cucumber challenges",
           "href": "/practicehub/pw-bdd.html"
         },
         {
-          "num": 43,
-          "slug": "s43",
+          "num": 44,
+          "slug": "s44",
           "title": "Interview · BDD with Cucumber questions",
           "href": "/iqs/#ch601"
         }
@@ -422,32 +428,32 @@
       "metric": "",
       "chapters": [
         {
-          "num": 44,
-          "slug": "s44",
+          "num": 45,
+          "slug": "s45",
           "title": "Learn · CI/CD & cloud guides",
           "href": "/testbed/"
         },
         {
-          "num": 45,
-          "slug": "s45",
+          "num": 46,
+          "slug": "s46",
           "title": "Learn · AI & GitHub for QA",
           "href": "/playwright/gh/"
         },
         {
-          "num": 46,
-          "slug": "s46",
+          "num": 47,
+          "slug": "s47",
           "title": "Assess · CI/CD & test reporting quiz",
           "href": "/playwright/assessments/CICD-Test-Reporting.html"
         },
         {
-          "num": 47,
-          "slug": "s47",
+          "num": 48,
+          "slug": "s48",
           "title": "Assignment · CI/CD & test reporting",
           "href": "/playwright/assignments/#ch9"
         },
         {
-          "num": 48,
-          "slug": "s48",
+          "num": 49,
+          "slug": "s49",
           "title": "Interview · Execution, CLI & CI/CD questions",
           "href": "/iqs/#ch401"
         }
@@ -465,38 +471,38 @@
       "metric": "",
       "chapters": [
         {
-          "num": 49,
-          "slug": "s49",
+          "num": 50,
+          "slug": "s50",
           "title": "Learn · Visual, accessibility & AI chapters",
           "href": "/playwright/pwdoc/#ch30"
         },
         {
-          "num": 50,
-          "slug": "s50",
+          "num": 51,
+          "slug": "s51",
           "title": "Learn · Playwright AI course",
           "href": "/lang/playwright-ai/"
         },
         {
-          "num": 51,
-          "slug": "s51",
+          "num": 52,
+          "slug": "s52",
           "title": "Assess · AI test automation quiz",
           "href": "/playwright/assessments/AI-Test-Automation.html"
         },
         {
-          "num": 52,
-          "slug": "s52",
+          "num": 53,
+          "slug": "s53",
           "title": "Assignment · AI in test automation",
           "href": "/playwright/assignments/#ch11"
         },
         {
-          "num": 53,
-          "slug": "s53",
+          "num": 54,
+          "slug": "s54",
           "title": "Interview · Visual testing & accessibility questions",
           "href": "/iqs/#ch801"
         },
         {
-          "num": 54,
-          "slug": "s54",
+          "num": 55,
+          "slug": "s55",
           "title": "Interview · AI-native automation questions",
           "href": "/iqs/#ch901"
         }
@@ -514,20 +520,20 @@
       "metric": "",
       "chapters": [
         {
-          "num": 55,
-          "slug": "s55",
+          "num": 56,
+          "slug": "s56",
           "title": "Assess · Framework design capstone quiz",
           "href": "/playwright/assessments/Framework-Design-Capstone.html"
         },
         {
-          "num": 56,
-          "slug": "s56",
+          "num": 57,
+          "slug": "s57",
           "title": "Assignment · Framework design & capstone",
           "href": "/playwright/assignments/#ch10"
         },
         {
-          "num": 57,
-          "slug": "s57",
+          "num": 58,
+          "slug": "s58",
           "title": "Apply · Automation practice lab",
           "href": "/projects/"
         }

@@ -601,3 +601,24 @@ a:hover{text-decoration:underline}
 .md-article img{max-width:100%;height:auto;border-radius:10px;border:1px solid #e2e8f0;margin:.8rem 0}
 .md-article .table-wrap{margin:1.1rem 0}
 .md-article .mermaid{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:1rem;margin:1.2rem 0;overflow-x:auto;text-align:center}
+
+/* ── DAILY PROGRAM (Practice Lab) ─────────────────────────────── */
+.lab-day .day-header{margin-bottom:1.6rem;padding-bottom:1.1rem;border-bottom:1px solid #e2e8f0}
+.lab-day .tag{display:inline-flex;align-items:center;font-size:.67rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--pc,var(--cyan));background:rgba(var(--pc-rgb,2,132,199),.1);border:1px solid rgba(var(--pc-rgb,2,132,199),.22);border-radius:999px;padding:.22rem .75rem;margin-bottom:.7rem}
+.lab-day .focus-box{margin-top:.9rem;padding:.8rem 1.05rem;border-left:4px solid var(--pc,var(--cyan));background:rgba(var(--pc-rgb,2,132,199),.07);border-radius:0 10px 10px 0;font-weight:600;color:var(--text-bright)}
+.lab-day .task-card{margin:.9rem 0;padding:.9rem 1.25rem .9rem .5rem;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:var(--sh)}
+.lab-day .task-card ol,.lab-day .task-card ul{margin-left:1.9rem}
+.lab-day .step-up{display:flex;gap:.8rem;align-items:flex-start;margin:1.8rem 0 0;padding:1rem 1.2rem;border:1.5px dashed #22c55e;border-radius:12px;background:rgba(34,197,94,.07);color:#166534}
+.lab-day .step-up i{margin-top:.25rem;color:#16a34a}
+.lab-day .code-snippet{margin:1rem 0}
+
+/* ── LIBRARY CARDS (list their destinations) ───────────────────── */
+.ph-card-links{cursor:default}
+.ph-card-links:hover{transform:none;border-color:var(--pc,#0284c7)}
+.ph-links{list-style:none;margin:.2rem 0 0;padding:0;border-top:1px dashed #e8d8b4}
+.ph-links li{border-bottom:1px dashed #efe3c4}
+.ph-links li:last-child{border-bottom:none}
+.ph-links a{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.5rem .15rem;color:var(--text-bright);text-decoration:none;font-size:.86rem;font-weight:600}
+.ph-links a i{font-size:.65rem;color:var(--pc,#0284c7);opacity:.55;transition:transform .15s,opacity .15s}
+.ph-links a:hover{color:var(--pc,#0284c7)}
+.ph-links a:hover i{opacity:1;transform:translateX(3px)}

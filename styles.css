@@ -6336,3 +6336,10 @@ footer::after {
         display: none;
     }
 }
+
+@media (max-width: 1180px) and (min-width: 993px) {
+    /* the company link is also in the footer; keep the learner nav on one line */
+    .nav-links a[href^="https://vibetestq.com"] {
+        display: none;
+    }
+}

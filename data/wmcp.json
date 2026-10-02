@@ -2,7 +2,7 @@
   "id": "wmcp",
   "title": "WebMCP",
   "sidebarIcon": "fas fa-network-wired",
-  "meta": "8 chapters · 3 parts",
+  "meta": "9 chapters · 4 parts",
   "pageTitle": "WebMCP | VibeTestQ Academy",
   "chapterTitle": "{title} | WebMCP | VibeTestQ Academy",
   "topbarChapter": "{num}. {title}",
@@ -15,11 +15,11 @@
     "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
     "stats": [
       [
-        "8",
+        "9",
         "Chapters"
       ],
       [
-        "3",
+        "4",
         "Parts"
       ]
     ],
@@ -39,6 +39,25 @@
   ],
   "parts": [
     {
+      "title": "Start here",
+      "icon": "fas fa-flag",
+      "desc": "Overview",
+      "chapters": [
+        {
+          "slug": "readme",
+          "title": "Overview",
+          "src": "/wmcp/README.md",
+          "num": 1
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "Start here",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "metric": ""
+    },
+    {
       "title": "Understand WebMCP",
       "icon": "fas fa-lightbulb",
       "desc": "Introduction · Comparison · Advantages",
@@ -47,26 +66,26 @@
           "slug": "01-introduction",
           "title": "Introduction to WebMCP",
           "src": "/wmcp/01-introduction.md",
-          "num": 1
+          "num": 2
         },
         {
           "slug": "02-comparison",
           "title": "How WebMCP Differs From Other Approaches",
           "src": "/wmcp/02-comparison.md",
-          "num": 2
+          "num": 3
         },
         {
           "slug": "03-advantages",
           "title": "Advantages of WebMCP",
           "src": "/wmcp/03-advantages.md",
-          "num": 3
+          "num": 4
         }
       ],
-      "num": 1,
-      "slug": "g1",
+      "num": 2,
+      "slug": "g2",
       "short": "Understand WebMCP",
-      "color": "#fbbf24",
-      "rgb": "251,191,36",
+      "color": "#10b981",
+      "rgb": "16,185,129",
       "metric": ""
     },
     {
@@ -78,26 +97,26 @@
           "slug": "04-developer-guide",
           "title": "Developer Guide",
           "src": "/wmcp/04-developer-guide.md",
-          "num": 4
+          "num": 5
         },
         {
           "slug": "05-tester-guide",
           "title": "Tester Guide — How to Test WebMCP",
           "src": "/wmcp/05-tester-guide.md",
-          "num": 5
+          "num": 6
         },
         {
           "slug": "06-webmcp-testing",
           "title": "WebMCP Testing as a New Discipline",
           "src": "/wmcp/06-webmcp-testing.md",
-          "num": 6
+          "num": 7
         }
       ],
-      "num": 2,
-      "slug": "g2",
+      "num": 3,
+      "slug": "g3",
       "short": "Build & Test",
-      "color": "#10b981",
-      "rgb": "16,185,129",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
       "metric": ""
     },
     {
@@ -109,20 +128,20 @@
           "slug": "07-tamash-tools",
           "title": "The TAMASH Toolkit",
           "src": "/wmcp/07-tamash-tools.md",
-          "num": 7
+          "num": 8
         },
         {
           "slug": "08-flows-and-conclusion",
           "title": "End-to-End Flows and Conclusion",
           "src": "/wmcp/08-flows-and-conclusion.md",
-          "num": 8
+          "num": 9
         }
       ],
-      "num": 3,
-      "slug": "g3",
+      "num": 4,
+      "slug": "g4",
       "short": "TAMASH & Flows",
-      "color": "#6366f1",
-      "rgb": "99,102,241",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
       "metric": ""
     }
   ]

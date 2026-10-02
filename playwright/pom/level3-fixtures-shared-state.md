@@ -10,12 +10,12 @@
 
 ## – Playwright Framework Concepts
 
-New to any of these? Read the topic at [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc) first, then return here.
+New to any of these? Read the topic at [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc) first, then return here.
 
 | Concept | Why you need it in this level |
 |---------|------------------------------|
-| [Fixtures](https://vibetestq.com/docs/playwright/pwtestdoc/#fixtures) | Understanding `test.extend()` before building a custom fixture system |
-| [Hooks](https://vibetestq.com/docs/playwright/pwtestdoc/#hooks) | `beforeEach`, `afterAll`, and lifecycle management used throughout this level |
+| [Fixtures](https://academy.vibetestq.com/playwright/pwtestdoc/#fixtures) | Understanding `test.extend()` before building a custom fixture system |
+| [Hooks](https://academy.vibetestq.com/playwright/pwtestdoc/#hooks) | `beforeEach`, `afterAll`, and lifecycle management used throughout this level |
 
 ---
 

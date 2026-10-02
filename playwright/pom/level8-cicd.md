@@ -10,15 +10,15 @@
 
 ## – Playwright Framework Concepts
 
-New to any of these? Read the topic at [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc) first, then return here.
+New to any of these? Read the topic at [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc) first, then return here.
 
 | Concept | Why you need it in this level |
 |---------|------------------------------|
-| [Parallelism](https://vibetestq.com/docs/playwright/pwtestdoc/#parallelism) | Worker configuration and parallel execution strategy |
-| [Retries](https://vibetestq.com/docs/playwright/pwtestdoc/#retries) | Retry policies configured in the CI workflows |
-| [Sharding](https://vibetestq.com/docs/playwright/pwtestdoc/#sharding) | Splitting test runs across machines in GitHub Actions |
-| [CI Integration](https://vibetestq.com/docs/playwright/pwtestdoc/#ci) | Playwright-specific CI setup patterns used in the workflows |
-| [Docker](https://vibetestq.com/docs/playwright/pwtestdoc/#docker) | Running Playwright tests inside containers |
+| [Parallelism](https://academy.vibetestq.com/playwright/pwtestdoc/#parallelism) | Worker configuration and parallel execution strategy |
+| [Retries](https://academy.vibetestq.com/playwright/pwtestdoc/#retries) | Retry policies configured in the CI workflows |
+| [Sharding](https://academy.vibetestq.com/playwright/pwtestdoc/#sharding) | Splitting test runs across machines in GitHub Actions |
+| [CI Integration](https://academy.vibetestq.com/playwright/pwtestdoc/#ci) | Playwright-specific CI setup patterns used in the workflows |
+| [Docker](https://academy.vibetestq.com/playwright/pwtestdoc/#docker) | Running Playwright tests inside containers |
 ---
 
 ## Part 1 — The Problem Level 7 Left Behind

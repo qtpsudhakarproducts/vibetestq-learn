@@ -1,0 +1,38 @@
+<div class="md-article lab-day">
+<div class="day-header">
+                    <span class="tag">DAY 03</span>
+                    <h1>Locators: Finding Any Element</h1>
+                    <div class="focus-box">The most important day. Find any element confidently using the right
+                        strategy.</div>
+                </div>
+
+                <h2>What to Study</h2>
+                <div class="code-snippet">
+                    <pre class="code-block"><code class="language-typescript">// Hierarchy of stability
+await page.getByRole('button', { name: 'Log in' }); // 1st Choice
+await page.getByLabel('User Name');
+await page.getByPlaceholder('Enter password');
+await page.getByText('Success');
+await page.getByTestId('submit-btn');
+await page.locator('.css-selector'); // Last Resort</code></pre>
+                </div>
+
+                <h3>Core Practice</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Find OrangeHRM username input 5 different ways</li>
+                        <li>Identify the most stable locator for the login button</li>
+                        <li>Navigate Employee List — find search field, table rows, Add button</li>
+                        <li>Practice <code>filter()</code>, <code>nth()</code>, <code>first()</code>, and
+                            <code>last()</code>
+                        </li>
+                        <li>Use Playwright Codegen and manually improve the results</li>
+                    </ol>
+                </div>
+
+                <div class="step-up">
+                    <i class="fas fa-bullseye"></i>
+                    <div><strong>Step-Up:</strong> Yesterday you had a project structure. Today you can find any element
+                        on any page.</div>
+                </div>
+</div>

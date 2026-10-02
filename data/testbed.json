@@ -2,7 +2,7 @@
   "id": "testbed",
   "title": "CI/CD & Cloud Guides",
   "sidebarIcon": "fas fa-cloud",
-  "meta": "4 guides · 3 parts",
+  "meta": "6 guides · 3 parts",
   "pageTitle": "CI/CD & Cloud Guides | VibeTestQ Academy",
   "chapterTitle": "{title} | CI/CD & Cloud Guides | VibeTestQ Academy",
   "topbarChapter": "{num}. {title}",
@@ -15,7 +15,7 @@
     "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
     "stats": [
       [
-        "4",
+        "6",
         "Guides"
       ],
       [
@@ -79,6 +79,18 @@
           "slug": "github-actions",
           "title": "GitHub Actions",
           "src": "/testbed/github-actions-test-automation-guide.md"
+        },
+        {
+          "num": 4,
+          "slug": "yaml",
+          "title": "YAML for GitHub Actions",
+          "src": "/gh/yaml.md"
+        },
+        {
+          "num": 5,
+          "slug": "gha-playwright",
+          "title": "GitHub Actions for Playwright Test Suites",
+          "src": "/gh/github-actions-playwright.md"
         }
       ]
     },
@@ -94,7 +106,7 @@
       "metric": "",
       "chapters": [
         {
-          "num": 4,
+          "num": 6,
           "slug": "aws",
           "title": "AWS Playwright",
           "src": "/testbed/aws-playwright-guide.md"

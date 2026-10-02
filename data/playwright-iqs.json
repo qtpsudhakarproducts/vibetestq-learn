@@ -2,7 +2,7 @@
   "id": "playwright-iqs",
   "title": "Interview Question Sets",
   "sidebarIcon": "fas fa-microphone-lines",
-  "meta": "10 sets · 6 parts",
+  "meta": "11 sets · 7 parts",
   "pageTitle": "Interview Question Sets | VibeTestQ Academy",
   "chapterTitle": "{title} | Interview Question Sets | VibeTestQ Academy",
   "topbarChapter": "{num}. {title}",
@@ -15,11 +15,11 @@
     "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
     "stats": [
       [
-        "10",
+        "11",
         "Sets"
       ],
       [
-        "6",
+        "7",
         "Parts"
       ]
     ],
@@ -46,28 +46,47 @@
     {
       "num": 1,
       "slug": "g1",
-      "title": "JavaScript & TypeScript",
-      "short": "JavaScript & TypeScript",
+      "title": "Start here",
+      "short": "Start here",
       "color": "#fbbf24",
       "rgb": "251,191,36",
+      "icon": "fas fa-flag",
+      "desc": "Overview of the book",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "overview",
+          "title": "Overview",
+          "src": "/playwright/iqs/index.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "g2",
+      "title": "JavaScript & TypeScript",
+      "short": "JavaScript & TypeScript",
+      "color": "#10b981",
+      "rgb": "16,185,129",
       "icon": "fas fa-code",
       "desc": "JS Fundamentals · Functions & Arrays · Async JavaScript",
       "metric": "",
       "chapters": [
         {
-          "num": 1,
+          "num": 2,
           "slug": "js-fundamentals",
           "title": "JS Fundamentals",
           "src": "/playwright/iqs/01-javascript-fundamentals.md"
         },
         {
-          "num": 2,
+          "num": 3,
           "slug": "functions-arrays",
           "title": "Functions & Arrays",
           "src": "/playwright/iqs/02-functions-and-arrays.md"
         },
         {
-          "num": 3,
+          "num": 4,
           "slug": "async-javascript",
           "title": "Async JavaScript",
           "src": "/playwright/iqs/03-async-javascript.md"
@@ -75,24 +94,24 @@
       ]
     },
     {
-      "num": 2,
-      "slug": "g2",
+      "num": 3,
+      "slug": "g3",
       "title": "Playwright Core & Tests",
       "short": "Playwright Core & Tests",
-      "color": "#10b981",
-      "rgb": "16,185,129",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
       "icon": "fas fa-play-circle",
       "desc": "Playwright Core · Test Framework",
       "metric": "",
       "chapters": [
         {
-          "num": 4,
+          "num": 5,
           "slug": "playwright-core",
           "title": "Playwright Core",
           "src": "/playwright/iqs/04-playwright-core.md"
         },
         {
-          "num": 5,
+          "num": 6,
           "slug": "playwright-test",
           "title": "Test Framework",
           "src": "/playwright/iqs/05-playwright-test-framework.md"
@@ -100,24 +119,24 @@
       ]
     },
     {
-      "num": 3,
-      "slug": "g3",
+      "num": 4,
+      "slug": "g4",
       "title": "POM & Execution",
       "short": "POM & Execution",
-      "color": "#6366f1",
-      "rgb": "99,102,241",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
       "icon": "fas fa-layer-group",
       "desc": "POM Framework Design · Execution, CLI & CI/CD",
       "metric": "",
       "chapters": [
         {
-          "num": 6,
+          "num": 7,
           "slug": "pom-framework",
           "title": "POM Framework Design",
           "src": "/playwright/iqs/06-pom-framework.md"
         },
         {
-          "num": 7,
+          "num": 8,
           "slug": "execution-cicd",
           "title": "Execution, CLI & CI/CD",
           "src": "/playwright/iqs/07-execution-cli-cicd.md"
@@ -125,18 +144,18 @@
       ]
     },
     {
-      "num": 4,
-      "slug": "g4",
+      "num": 5,
+      "slug": "g5",
       "title": "API, Network & Auth",
       "short": "API, Network & Auth",
-      "color": "#0ea5e9",
-      "rgb": "14,165,233",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
       "icon": "fas fa-plug",
       "desc": "API, Network & Auth",
       "metric": "",
       "chapters": [
         {
-          "num": 8,
+          "num": 9,
           "slug": "api-network-auth",
           "title": "API, Network & Auth",
           "src": "/playwright/iqs/08-api-network-auth.md"
@@ -144,18 +163,18 @@
       ]
     },
     {
-      "num": 5,
-      "slug": "g5",
+      "num": 6,
+      "slug": "g6",
       "title": "Visual & Accessibility",
       "short": "Visual & Accessibility",
-      "color": "#06b6d4",
-      "rgb": "6,182,212",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
       "icon": "fas fa-eye",
       "desc": "Visual & Accessibility",
       "metric": "",
       "chapters": [
         {
-          "num": 9,
+          "num": 10,
           "slug": "visual-accessibility",
           "title": "Visual & Accessibility",
           "src": "/playwright/iqs/09-visual-accessibility.md"
@@ -163,18 +182,18 @@
       ]
     },
     {
-      "num": 6,
-      "slug": "g6",
+      "num": 7,
+      "slug": "g7",
       "title": "AI-Native Automation",
       "short": "AI-Native Automation",
-      "color": "#ec4899",
-      "rgb": "236,72,153",
+      "color": "#f97316",
+      "rgb": "249,115,22",
       "icon": "fas fa-robot",
       "desc": "AI-Native Automation",
       "metric": "",
       "chapters": [
         {
-          "num": 10,
+          "num": 11,
           "slug": "ai-native",
           "title": "AI-Native Automation",
           "src": "/playwright/iqs/10-ai-native-automation.md"

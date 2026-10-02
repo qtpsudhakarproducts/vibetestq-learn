@@ -2,7 +2,7 @@
   "id": "playwright-apitest",
   "title": "API Testing",
   "sidebarIcon": "fas fa-plug",
-  "meta": "21 chapters · 6 parts",
+  "meta": "22 chapters · 7 parts",
   "pageTitle": "API Testing | VibeTestQ Academy",
   "chapterTitle": "{title} | API Testing | VibeTestQ Academy",
   "topbarChapter": "{num}. {title}",
@@ -15,11 +15,11 @@
     "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
     "stats": [
       [
-        "21",
+        "22",
         "Chapters"
       ],
       [
-        "6",
+        "7",
         "Parts"
       ]
     ],
@@ -46,22 +46,41 @@
     {
       "num": 1,
       "slug": "g1",
-      "title": "Foundations",
-      "short": "Foundations",
+      "title": "Start here",
+      "short": "Start here",
       "color": "#fbbf24",
       "rgb": "251,191,36",
+      "icon": "fas fa-flag",
+      "desc": "Overview of the book",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "overview",
+          "title": "Overview",
+          "src": "/playwright/apitest/00-front-matter.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "g2",
+      "title": "Foundations",
+      "short": "Foundations",
+      "color": "#10b981",
+      "rgb": "16,185,129",
       "icon": "fas fa-network-wired",
       "desc": "01 What Is an API? · 02 Project Setup",
       "metric": "",
       "chapters": [
         {
-          "num": 1,
+          "num": 2,
           "slug": "ch01",
           "title": "01 What Is an API?",
           "src": "/playwright/apitest/chapter-01-what-is-an-api.md"
         },
         {
-          "num": 2,
+          "num": 3,
           "slug": "ch02",
           "title": "02 Project Setup",
           "src": "/playwright/apitest/chapter-02-project-setup.md"
@@ -69,36 +88,36 @@
       ]
     },
     {
-      "num": 2,
-      "slug": "g2",
+      "num": 3,
+      "slug": "g3",
       "title": "CRUD Operations",
       "short": "CRUD Operations",
-      "color": "#10b981",
-      "rgb": "16,185,129",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
       "icon": "fas fa-plus-circle",
       "desc": "03 POST — Creating Resources · 04 GET — Reading Resources · 05 PUT & PATCH — Updating · 06 DELETE — Removing Resources",
       "metric": "",
       "chapters": [
         {
-          "num": 3,
+          "num": 4,
           "slug": "ch03",
           "title": "03 POST — Creating Resources",
           "src": "/playwright/apitest/chapter-03-post-creating-resources.md"
         },
         {
-          "num": 4,
+          "num": 5,
           "slug": "ch04",
           "title": "04 GET — Reading Resources",
           "src": "/playwright/apitest/chapter-04-get-reading-resources.md"
         },
         {
-          "num": 5,
+          "num": 6,
           "slug": "ch05",
           "title": "05 PUT & PATCH — Updating",
           "src": "/playwright/apitest/chapter-05-put-and-patch-updating-resources.md"
         },
         {
-          "num": 6,
+          "num": 7,
           "slug": "ch06",
           "title": "06 DELETE — Removing Resources",
           "src": "/playwright/apitest/chapter-06-delete-removing-resources.md"
@@ -106,24 +125,24 @@
       ]
     },
     {
-      "num": 3,
-      "slug": "g3",
+      "num": 4,
+      "slug": "g4",
       "title": "Hybrid & Mocking",
       "short": "Hybrid & Mocking",
-      "color": "#6366f1",
-      "rgb": "99,102,241",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
       "icon": "fas fa-object-group",
       "desc": "07 UI + API Hybrid Testing · 08 API Mocking — page.route()",
       "metric": "",
       "chapters": [
         {
-          "num": 7,
+          "num": 8,
           "slug": "ch07",
           "title": "07 UI + API Hybrid Testing",
           "src": "/playwright/apitest/chapter-07-ui-api-hybrid-testing.md"
         },
         {
-          "num": 8,
+          "num": 9,
           "slug": "ch08",
           "title": "08 API Mocking — page.route()",
           "src": "/playwright/apitest/chapter-08-api-mocking-page-route.md"
@@ -131,30 +150,30 @@
       ]
     },
     {
-      "num": 4,
-      "slug": "g4",
+      "num": 5,
+      "slug": "g5",
       "title": "Authentication",
       "short": "Authentication",
-      "color": "#0ea5e9",
-      "rgb": "14,165,233",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
       "icon": "fas fa-key",
       "desc": "09 API Key & Basic Auth · 10 Bearer Token & JWT · 11 Cookie, Session & OAuth 2.0",
       "metric": "",
       "chapters": [
         {
-          "num": 9,
+          "num": 10,
           "slug": "ch09",
           "title": "09 API Key & Basic Auth",
           "src": "/playwright/apitest/chapter-09-auth-api-key-and-basic-auth.md"
         },
         {
-          "num": 10,
+          "num": 11,
           "slug": "ch10",
           "title": "10 Bearer Token & JWT",
           "src": "/playwright/apitest/chapter-10-auth-bearer-token-and-jwt.md"
         },
         {
-          "num": 11,
+          "num": 12,
           "slug": "ch11",
           "title": "11 Cookie, Session & OAuth 2.0",
           "src": "/playwright/apitest/chapter-11-auth-cookie-session-and-oauth.md"
@@ -162,60 +181,60 @@
       ]
     },
     {
-      "num": 5,
-      "slug": "g5",
+      "num": 6,
+      "slug": "g6",
       "title": "Advanced Topics",
       "short": "Advanced Topics",
-      "color": "#06b6d4",
-      "rgb": "6,182,212",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
       "icon": "fas fa-layer-group",
       "desc": "12 Advanced Patterns · 13 Best Practices & Mistakes · 14 Test Organization & Structure · 15 Fixtures & Reusability …",
       "metric": "",
       "chapters": [
         {
-          "num": 12,
+          "num": 13,
           "slug": "ch12",
           "title": "12 Advanced Patterns",
           "src": "/playwright/apitest/chapter-12-advanced-patterns.md"
         },
         {
-          "num": 13,
+          "num": 14,
           "slug": "ch13",
           "title": "13 Best Practices & Mistakes",
           "src": "/playwright/apitest/chapter-13-best-practices-and-common-mistakes.md"
         },
         {
-          "num": 14,
+          "num": 15,
           "slug": "ch14",
           "title": "14 Test Organization & Structure",
           "src": "/playwright/apitest/chapter-14-test-organization-and-structure.md"
         },
         {
-          "num": 15,
+          "num": 16,
           "slug": "ch15",
           "title": "15 Fixtures & Reusability",
           "src": "/playwright/apitest/chapter-15-fixtures-and-reusability.md"
         },
         {
-          "num": 16,
+          "num": 17,
           "slug": "ch16",
           "title": "16 Environment Configuration",
           "src": "/playwright/apitest/chapter-16-environment-configuration.md"
         },
         {
-          "num": 17,
+          "num": 18,
           "slug": "ch17",
           "title": "17 Error Handling & Edge Cases",
           "src": "/playwright/apitest/chapter-17-error-handling-and-edge-cases.md"
         },
         {
-          "num": 18,
+          "num": 19,
           "slug": "ch18",
           "title": "18 Contract Testing",
           "src": "/playwright/apitest/chapter-18-contract-testing.md"
         },
         {
-          "num": 19,
+          "num": 20,
           "slug": "ch19",
           "title": "19 CI/CD Integration",
           "src": "/playwright/apitest/chapter-19-cicd-integration.md"
@@ -223,24 +242,24 @@
       ]
     },
     {
-      "num": 6,
-      "slug": "g6",
+      "num": 7,
+      "slug": "g7",
       "title": "Appendix",
       "short": "Appendix",
-      "color": "#ec4899",
-      "rgb": "236,72,153",
+      "color": "#f97316",
+      "rgb": "249,115,22",
       "icon": "fas fa-bug",
       "desc": "Debugging API Tests · Glossary",
       "metric": "",
       "chapters": [
         {
-          "num": 20,
+          "num": 21,
           "slug": "appendix-debug",
           "title": "Debugging API Tests",
           "src": "/playwright/apitest/appendix-debugging-api-tests.md"
         },
         {
-          "num": 21,
+          "num": 22,
           "slug": "appendix-glossary",
           "title": "Glossary",
           "src": "/playwright/apitest/appendix-glossary.md"

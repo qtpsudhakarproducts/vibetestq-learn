@@ -1,0 +1,98 @@
+{
+  "id": "notes",
+  "title": "Study Notes",
+  "sidebarIcon": "fas fa-note-sticky",
+  "meta": "7 notes",
+  "pageTitle": "Study Notes | VibeTestQ Academy",
+  "chapterTitle": "{title} | Study Notes | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "N",
+  "home": {
+    "eyebrow": "Detailed study notes",
+    "eyebrowIcon": "fas fa-pencil-alt",
+    "title": "<span class=\"g\">Study</span> <span class=\"g2\">Notes</span>",
+    "sub": "Focused notes on browser contexts, iframes, Shadow DOM, Node.js project setup, Git and GitHub, plus the OrangeHRM training assignments.",
+    "note": "<strong>Use it like this:</strong> pick the note you need — each one stands on its own.",
+    "stats": [
+      [
+        "7",
+        "Notes"
+      ]
+    ],
+    "label": "Contents",
+    "labelIcon": "fas fa-layer-group"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Library",
+      "icon": "fas fa-book-open",
+      "href": "/learn/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "g1",
+      "title": "Study Notes",
+      "short": "Study Notes",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-note-sticky",
+      "desc": "",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "Browser_Context_Pages_Notes-md",
+          "title": "Browser, Context & Pages",
+          "src": "/notes/Browser_Context_Pages_Notes.md"
+        },
+        {
+          "num": 2,
+          "slug": "iFrame_Notes-md",
+          "title": "iFrames",
+          "src": "/notes/iFrame_Notes.md"
+        },
+        {
+          "num": 3,
+          "slug": "Shadow_DOM_Notes-md",
+          "title": "Shadow DOM",
+          "src": "/notes/Shadow_DOM_Notes.md"
+        },
+        {
+          "num": 4,
+          "slug": "Nodejs_Project_Notes-md",
+          "title": "Node.js Project",
+          "src": "/notes/Nodejs_Project_Notes.md"
+        },
+        {
+          "num": 5,
+          "slug": "Module_02_Nodejs_Project_Setup-md",
+          "title": "Node.js Project Setup (Module 2)",
+          "src": "/notes/Module_02_Nodejs_Project_Setup.md"
+        },
+        {
+          "num": 6,
+          "slug": "module-01-git-github-guide-md",
+          "title": "Git, GitHub & GitSH (Module 1)",
+          "src": "/notes/module-01-git-github/guide.md"
+        },
+        {
+          "num": 7,
+          "slug": "OrangeHRM_Training_Assignments-md",
+          "title": "OrangeHRM Automation — Training Assignments",
+          "src": "/notes/OrangeHRM_Training_Assignments.md"
+        }
+      ]
+    }
+  ]
+}

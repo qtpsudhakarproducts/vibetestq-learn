@@ -1,0 +1,20 @@
+<div class="md-article lab-day">
+<div class="day-header">
+                    <span class="tag">DAY 08</span>
+                    <h1>Why POM & BasePage</h1>
+                    <div class="focus-box">Understand exactly what POM solves. Build the foundation everything extends.
+                    </div>
+                </div>
+                <h3>Core Practice</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Create <code>src/pages/BasePage.ts</code> — constructor accepts <code>Page</code></li>
+                        <li>Add to BasePage: <code>navigate()</code>, <code>waitForNetworkIdle()</code>,
+                            <code>isElementVisible()</code>
+                        </li>
+                        <li>Create <code>src/pages/LoginPage.ts</code> extending BasePage</li>
+                        <li>Implement <code>login(user, pass)</code> and <code>getErrorMessage()</code></li>
+                        <li>Rewrite login tests from Week 1 using these new classes</li>
+                    </ol>
+                </div>
+</div>

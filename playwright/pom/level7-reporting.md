@@ -10,18 +10,18 @@
 
 ## – Playwright Framework Concepts
 
-New to any of these? Read the topic at [vibetestq.com/docs/pwtestdoc](https://vibetestq.com/docs/playwright/pwtestdoc) first, then return here.
+New to any of these? Read the topic at [academy.vibetestq.com/pwtestdoc](https://academy.vibetestq.com/playwright/pwtestdoc) first, then return here.
 
 | Concept | Why you need it in this level |
 |---------|------------------------------|
-| [Test Info](https://vibetestq.com/docs/playwright/pwtestdoc/#testinfo) | Attaching screenshots, video, and runtime data to reports |
-| [Annotations](https://vibetestq.com/docs/playwright/pwtestdoc/#annotations) | Attaching metadata to tests and surfacing it in reports |
-| [Tags & Filtering](https://vibetestq.com/docs/playwright/pwtestdoc/#tags) | `@smoke`, `@regression` tags and `--grep` filtering for targeted runs |
-| [Reporters](https://vibetestq.com/docs/playwright/pwtestdoc/#reporters) | Built-in reporter types before building a custom one |
-| [CLI Usage](https://vibetestq.com/docs/playwright/pwtestdoc/#cli) | `--grep`, `--reporter`, and `--project` flags used throughout this level |
-| [Configuration](https://vibetestq.com/docs/playwright/pwtestdoc/#configuration) | `playwright.config.ts` structure updated in this level |
-| [Projects](https://vibetestq.com/docs/playwright/pwtestdoc/#projects) | Multi-project setup used to separate run profiles |
-| [Timeouts](https://vibetestq.com/docs/playwright/pwtestdoc/#timeouts) | Test and action timeout configuration |
+| [Test Info](https://academy.vibetestq.com/playwright/pwtestdoc/#testinfo) | Attaching screenshots, video, and runtime data to reports |
+| [Annotations](https://academy.vibetestq.com/playwright/pwtestdoc/#annotations) | Attaching metadata to tests and surfacing it in reports |
+| [Tags & Filtering](https://academy.vibetestq.com/playwright/pwtestdoc/#tags) | `@smoke`, `@regression` tags and `--grep` filtering for targeted runs |
+| [Reporters](https://academy.vibetestq.com/playwright/pwtestdoc/#reporters) | Built-in reporter types before building a custom one |
+| [CLI Usage](https://academy.vibetestq.com/playwright/pwtestdoc/#cli) | `--grep`, `--reporter`, and `--project` flags used throughout this level |
+| [Configuration](https://academy.vibetestq.com/playwright/pwtestdoc/#configuration) | `playwright.config.ts` structure updated in this level |
+| [Projects](https://academy.vibetestq.com/playwright/pwtestdoc/#projects) | Multi-project setup used to separate run profiles |
+| [Timeouts](https://academy.vibetestq.com/playwright/pwtestdoc/#timeouts) | Test and action timeout configuration |
 
 ---
 

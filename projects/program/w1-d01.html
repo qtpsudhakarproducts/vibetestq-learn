@@ -1,0 +1,45 @@
+<div class="md-article lab-day">
+<div class="day-header">
+                    <span class="tag">DAY 01</span>
+                    <h1>Architecture & Project Setup</h1>
+                    <div class="focus-box">Understand how Playwright works before writing a single test.</div>
+                </div>
+
+                <h2>What to Study</h2>
+                <ul>
+                    <li>Browser → BrowserContext → Page hierarchy and why it matters</li>
+                    <li>How Playwright communicates with browsers (CDP — Chrome DevTools Protocol)</li>
+                    <li>Why Playwright is faster and more reliable than Selenium</li>
+                    <li>Context-based vs Browser-based execution</li>
+                    <li>What test isolation means — why each test gets a fresh context</li>
+                    <li>The generated project structure — every file and what it does</li>
+                </ul>
+
+                <h3>Warm-up (15 min)</h3>
+                <p>Run <code>npm init playwright@latest</code>. Open <code>playwright.config.ts</code> and read every
+                    line. Look up any option you do not understand.</p>
+
+                <h3>Core Practice (45 min)</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Run <code>npx playwright test --headed</code> — watch the generated example tests run</li>
+                        <li>Run <code>npx playwright test --ui</code> — explore UI mode, understand every panel</li>
+                        <li>Run <code>npx playwright show-report</code> — understand what the HTML report shows</li>
+                        <li>Delete <code>example.spec.ts</code> and create your own <code>tests/first.spec.ts</code>
+                        </li>
+                        <li>Navigate to <code>https://opensource-demo.orangehrmlive.com/web/index.php/auth/login</code>
+                            and write one test that asserts the page title</li>
+                        <li>Run it headed, run it headless — observe the difference</li>
+                    </ol>
+                </div>
+
+                <h3>Open Challenge (30 min)</h3>
+                <p>Run the same test against Firefox and WebKit using <code>--project</code>. Understand what changes in
+                    the config to make this work.</p>
+
+                <div class="step-up">
+                    <i class="fas fa-check-double"></i>
+                    <div><strong>Step-Up:</strong> Nothing existed. Now you have a running project you understand from
+                        the inside.</div>
+                </div>
+</div>

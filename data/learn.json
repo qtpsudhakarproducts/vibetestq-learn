@@ -1,0 +1,417 @@
+{
+  "id": "learn",
+  "title": "Learning Library",
+  "sidebarIcon": "fas fa-book-open",
+  "meta": "8 tracks · 42 sections",
+  "pageTitle": "Learning Library | VibeTestQ Academy",
+  "chapterTitle": "{title} | Learning Library | VibeTestQ Academy",
+  "topbarChapter": "{title}",
+  "badgeLetter": "T",
+  "chapterWord": "sections",
+  "partLabel": "Track",
+  "home": {
+    "eyebrow": "Everything in one place",
+    "eyebrowIcon": "fas fa-book-open",
+    "title": "The <span class=\"g\">Learning</span> <span class=\"g2\">Library</span>",
+    "sub": "Every course, guide and practice set in the Academy, organised by what you want to do next.",
+    "note": "<strong>New here?</strong> Start with <em>Playwright Mastery → Curriculum</em>. Already working? Jump to a track.",
+    "stats": [
+      [
+        "8",
+        "Tracks"
+      ],
+      [
+        "367",
+        "Lessons"
+      ],
+      [
+        "1,300+",
+        "Interview Qs"
+      ]
+    ],
+    "label": "Tracks",
+    "labelIcon": "fas fa-compass"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Curriculum",
+      "icon": "fas fa-route",
+      "href": "/playwright/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "num": 1,
+      "slug": "t1",
+      "title": "Playwright Mastery",
+      "short": "Playwright Mastery",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "icon": "fas fa-masks-theater",
+      "desc": "The core path: from JavaScript foundations to AI-native automation, module by module.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "i1",
+          "title": "Curriculum — start here",
+          "href": "/playwright/"
+        },
+        {
+          "num": 2,
+          "slug": "i2",
+          "title": "JavaScript & TypeScript",
+          "href": "/playwright/jsdoc/"
+        },
+        {
+          "num": 3,
+          "slug": "i3",
+          "title": "Playwright Core",
+          "href": "/playwright/pwdoc/"
+        },
+        {
+          "num": 4,
+          "slug": "i4",
+          "title": "Playwright Test",
+          "href": "/playwright/pwtestdoc/"
+        },
+        {
+          "num": 5,
+          "slug": "i5",
+          "title": "Locators",
+          "href": "/locators/"
+        },
+        {
+          "num": 6,
+          "slug": "i6",
+          "title": "POM Framework Design",
+          "href": "/playwright/pom/"
+        },
+        {
+          "num": 7,
+          "slug": "i7",
+          "title": "API Testing",
+          "href": "/playwright/apitest/"
+        },
+        {
+          "num": 8,
+          "slug": "i8",
+          "title": "Cucumber BDD",
+          "href": "/playwright/bdd/"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "t2",
+      "title": "Practice & Assessment",
+      "short": "Practice & Assessment",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "icon": "fas fa-dumbbell",
+      "desc": "Prove it: challenges, locator labs, quizzes, assignments and a 42-day program.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 9,
+          "slug": "i9",
+          "title": "Practice Hub",
+          "href": "/practicehub/"
+        },
+        {
+          "num": 10,
+          "slug": "i10",
+          "title": "Locator practice",
+          "href": "/locators/"
+        },
+        {
+          "num": 11,
+          "slug": "i11",
+          "title": "Quizzes",
+          "href": "/playwright/assessments/"
+        },
+        {
+          "num": 12,
+          "slug": "i12",
+          "title": "Assignments",
+          "href": "/playwright/assignments/"
+        },
+        {
+          "num": 13,
+          "slug": "i13",
+          "title": "JS & TS coding assignments",
+          "href": "/assignments/"
+        },
+        {
+          "num": 14,
+          "slug": "i14",
+          "title": "Practice Lab & 42-day program",
+          "href": "/projects/"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "t3",
+      "title": "Interview Preparation",
+      "short": "Interview Preparation",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "icon": "fas fa-microphone-lines",
+      "desc": "Talk about it: 1,300+ interview questions in a notebook-style study map.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 15,
+          "slug": "i15",
+          "title": "Playwright interview questions",
+          "href": "/iqs/"
+        },
+        {
+          "num": 16,
+          "slug": "i16",
+          "title": "Interview question sets",
+          "href": "/playwright/iqs/"
+        },
+        {
+          "num": 17,
+          "slug": "i17",
+          "title": "JavaScript for testers (sketchbook)",
+          "href": "/iqs/javascript-for-testers.html"
+        }
+      ]
+    },
+    {
+      "num": 4,
+      "slug": "t4",
+      "title": "AI for Testers",
+      "short": "AI for Testers",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "icon": "fas fa-robot",
+      "desc": "Use AI in everyday testing: prompts, MCP, agents, skills and AI-SDLC workflows.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 18,
+          "slug": "i18",
+          "title": "AI for QA",
+          "href": "/aiqa/"
+        },
+        {
+          "num": 19,
+          "slug": "i19",
+          "title": "AI-Native Manual Testing",
+          "href": "/mtai/"
+        },
+        {
+          "num": 20,
+          "slug": "i20",
+          "title": "Masterclass syllabus",
+          "href": "/mtai/ai-native-manual-testing-agents-masterclass.html"
+        },
+        {
+          "num": 21,
+          "slug": "i21",
+          "title": "AI-Native Tester Masterclass",
+          "href": "/uai/"
+        },
+        {
+          "num": 22,
+          "slug": "i22",
+          "title": "AI Skills for Testing",
+          "href": "/skills/"
+        },
+        {
+          "num": 23,
+          "slug": "i23",
+          "title": "QA Workflows for the AI SDLC",
+          "href": "/workflows/"
+        },
+        {
+          "num": 24,
+          "slug": "i24",
+          "title": "WebMCP",
+          "href": "/wmcp/"
+        }
+      ]
+    },
+    {
+      "num": 5,
+      "slug": "t5",
+      "title": "AI-Powered QA",
+      "short": "AI-Powered QA",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
+      "icon": "fas fa-brain",
+      "desc": "Build AI into your testing with code: LangChain, LangGraph, LangSmith and Playwright AI.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 25,
+          "slug": "i25",
+          "title": "AI-Powered QA — overview",
+          "href": "/lang/"
+        },
+        {
+          "num": 26,
+          "slug": "i26",
+          "title": "LangChain",
+          "href": "/lang/langchain/"
+        },
+        {
+          "num": 27,
+          "slug": "i27",
+          "title": "LangGraph",
+          "href": "/lang/langgraph/"
+        },
+        {
+          "num": 28,
+          "slug": "i28",
+          "title": "LangSmith",
+          "href": "/lang/langsmith/"
+        },
+        {
+          "num": 29,
+          "slug": "i29",
+          "title": "Playwright AI",
+          "href": "/lang/playwright-ai/"
+        }
+      ]
+    },
+    {
+      "num": 6,
+      "slug": "t6",
+      "title": "More Tools",
+      "short": "More Tools",
+      "color": "#f97316",
+      "rgb": "249,115,22",
+      "icon": "fas fa-toolbox",
+      "desc": "Beyond Playwright: Cypress and mobile testing.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 30,
+          "slug": "i30",
+          "title": "Cypress",
+          "href": "/cy/"
+        },
+        {
+          "num": 31,
+          "slug": "i31",
+          "title": "Mobile testing",
+          "href": "/appium/"
+        }
+      ]
+    },
+    {
+      "num": 7,
+      "slug": "t7",
+      "title": "DevOps & Guides",
+      "short": "DevOps & Guides",
+      "color": "#8b5cf6",
+      "rgb": "139,92,246",
+      "icon": "fas fa-code-branch",
+      "desc": "Version control, CI/CD, cloud execution and AI assistants for QA.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 32,
+          "slug": "i32",
+          "title": "CI/CD & cloud guides",
+          "href": "/testbed/"
+        },
+        {
+          "num": 33,
+          "slug": "i33",
+          "title": "AI & GitHub for QA",
+          "href": "/playwright/gh/"
+        }
+      ]
+    },
+    {
+      "num": 8,
+      "slug": "t8",
+      "title": "Notes & Slides",
+      "short": "Notes & Slides",
+      "color": "#14b8a6",
+      "rgb": "20,184,166",
+      "icon": "fas fa-note-sticky",
+      "desc": "Quick references: study notes, locator cheat sheets and presentation decks.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 34,
+          "slug": "i34",
+          "title": "Study notes",
+          "href": "/notes/"
+        },
+        {
+          "num": 35,
+          "slug": "i35",
+          "title": "Locator cheat sheets",
+          "href": "/cs/"
+        },
+        {
+          "num": 36,
+          "slug": "i36",
+          "title": "Slides · JavaScript history",
+          "href": "/presentations/javascript-history-presentation.html"
+        },
+        {
+          "num": 37,
+          "slug": "i37",
+          "title": "Slides · JS, TS & Node.js for testers",
+          "href": "/presentations/js-ts-nodejs-for-testers.html"
+        },
+        {
+          "num": 38,
+          "slug": "i38",
+          "title": "Slides · Async, callbacks & promises",
+          "href": "/presentations/async-callbacks-promises.html"
+        },
+        {
+          "num": 39,
+          "slug": "i39",
+          "title": "Slides · Element inspection",
+          "href": "/presentations/element-inspection-presentation.html"
+        },
+        {
+          "num": 40,
+          "slug": "i40",
+          "title": "Slides · Locators masterclass",
+          "href": "/presentations/locators-masterclass.html"
+        },
+        {
+          "num": 41,
+          "slug": "i41",
+          "title": "Slides · Mobile application testing",
+          "href": "/appium/Mobile-Application-Testing-2026.html"
+        },
+        {
+          "num": 42,
+          "slug": "i42",
+          "title": "Slides · Why Playwright",
+          "href": "/presentations/playwright-superiority-presentation.html"
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "id": "skills",
   "title": "AI Skills for Testing",
   "sidebarIcon": "fas fa-puzzle-piece",
-  "meta": "14 chapters · 5 parts",
+  "meta": "15 chapters · 6 parts",
   "pageTitle": "AI Skills for Testing | VibeTestQ Academy",
   "chapterTitle": "{title} | AI Skills for Testing | VibeTestQ Academy",
   "topbarChapter": "{num}. {title}",
@@ -15,11 +15,11 @@
     "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
     "stats": [
       [
-        "14",
+        "15",
         "Chapters"
       ],
       [
-        "5",
+        "6",
         "Parts"
       ]
     ],
@@ -41,22 +41,41 @@
     {
       "num": 1,
       "slug": "g1",
-      "title": "Getting Started",
-      "short": "Getting Started",
+      "title": "Start here",
+      "short": "Start here",
       "color": "#fbbf24",
       "rgb": "251,191,36",
+      "icon": "fas fa-flag",
+      "desc": "Overview of the book",
+      "metric": "",
+      "chapters": [
+        {
+          "num": 1,
+          "slug": "overview",
+          "title": "Overview",
+          "src": "/skills/00-index.md"
+        }
+      ]
+    },
+    {
+      "num": 2,
+      "slug": "g2",
+      "title": "Getting Started",
+      "short": "Getting Started",
+      "color": "#10b981",
+      "rgb": "16,185,129",
       "icon": "fas fa-lightbulb",
       "desc": "Why This Matters · Getting Started Today",
       "metric": "",
       "chapters": [
         {
-          "num": 1,
+          "num": 2,
           "slug": "why-this-matters",
           "title": "Why This Matters",
           "src": "/skills/01-why-this-matters.md"
         },
         {
-          "num": 2,
+          "num": 3,
           "slug": "getting-started-today",
           "title": "Getting Started Today",
           "src": "/skills/06-getting-started-today.md"
@@ -64,36 +83,36 @@
       ]
     },
     {
-      "num": 2,
-      "slug": "g2",
+      "num": 3,
+      "slug": "g3",
       "title": "Core Concepts",
       "short": "Core Concepts",
-      "color": "#10b981",
-      "rgb": "16,185,129",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
       "icon": "fas fa-edit",
       "desc": "Prompt Engineering · Context Engineering · SKILL.md Files · Skill Deployment",
       "metric": "",
       "chapters": [
         {
-          "num": 3,
+          "num": 4,
           "slug": "prompt-engineering",
           "title": "Prompt Engineering",
           "src": "/skills/02-prompt-engineering.md"
         },
         {
-          "num": 4,
+          "num": 5,
           "slug": "context-engineering",
           "title": "Context Engineering",
           "src": "/skills/03-context-engineering.md"
         },
         {
-          "num": 5,
+          "num": 6,
           "slug": "skill-md",
           "title": "SKILL.md Files",
           "src": "/skills/04-skill-md.md"
         },
         {
-          "num": 6,
+          "num": 7,
           "slug": "skill-deployment",
           "title": "Skill Deployment",
           "src": "/skills/05-skill-deployment.md"
@@ -101,30 +120,30 @@
       ]
     },
     {
-      "num": 3,
-      "slug": "g3",
+      "num": 4,
+      "slug": "g4",
       "title": "Practical Applications",
       "short": "Practical Applications",
-      "color": "#6366f1",
-      "rgb": "99,102,241",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
       "icon": "fas fa-hand-paper",
       "desc": "Manual Testing Skills · Exploratory MCP · Automation Skills",
       "metric": "",
       "chapters": [
         {
-          "num": 7,
+          "num": 8,
           "slug": "skills-manual-testing",
           "title": "Manual Testing Skills",
           "src": "/skills/07-skills-manual-testing.md"
         },
         {
-          "num": 8,
+          "num": 9,
           "slug": "skills-exploratory-mcp",
           "title": "Exploratory MCP",
           "src": "/skills/08-skills-exploratory-mcp.md"
         },
         {
-          "num": 9,
+          "num": 10,
           "slug": "skills-automation",
           "title": "Automation Skills",
           "src": "/skills/09-skills-automation.md"
@@ -132,30 +151,30 @@
       ]
     },
     {
-      "num": 4,
-      "slug": "g4",
+      "num": 5,
+      "slug": "g5",
       "title": "Team & Leadership",
       "short": "Team & Leadership",
-      "color": "#0ea5e9",
-      "rgb": "14,165,233",
+      "color": "#06b6d4",
+      "rgb": "6,182,212",
       "icon": "fas fa-users",
       "desc": "Team Standards · QA Leads Guide · Skill Maintenance",
       "metric": "",
       "chapters": [
         {
-          "num": 10,
+          "num": 11,
           "slug": "skills-team-standards",
           "title": "Team Standards",
           "src": "/skills/10-skills-team-standards.md"
         },
         {
-          "num": 11,
+          "num": 12,
           "slug": "qa-leads-guide",
           "title": "QA Leads Guide",
           "src": "/skills/12-qa-leads-guide.md"
         },
         {
-          "num": 12,
+          "num": 13,
           "slug": "skill-maintenance",
           "title": "Skill Maintenance",
           "src": "/skills/11-skill-maintenance.md"
@@ -163,24 +182,24 @@
       ]
     },
     {
-      "num": 5,
-      "slug": "g5",
+      "num": 6,
+      "slug": "g6",
       "title": "Reference",
       "short": "Reference",
-      "color": "#06b6d4",
-      "rgb": "6,182,212",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
       "icon": "fas fa-exclamation-triangle",
       "desc": "What Goes Wrong · Quick Reference",
       "metric": "",
       "chapters": [
         {
-          "num": 13,
+          "num": 14,
           "slug": "what-goes-wrong",
           "title": "What Goes Wrong",
           "src": "/skills/13-what-goes-wrong.md"
         },
         {
-          "num": 14,
+          "num": 15,
           "slug": "quick-reference",
           "title": "Quick Reference",
           "src": "/skills/14-quick-reference.md"
