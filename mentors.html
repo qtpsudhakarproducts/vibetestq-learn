@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentor with VibeTestQ | Community-Led Quality Engineering Mentorship</title>
+    <meta name="description"
+        content="Join VibeTestQ as a mentor and help shape the future of Quality Engineering. A free, community-driven program for experienced professionals to provide guidance.">
+    <link rel="canonical" href="https://vibetestq.com/mentors" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=1.1">
+    <style>
+        .mentor-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .mentor-stat-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .mentor-stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .mentor-stat-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mentor-stat-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .check-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .check-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .check-list li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+        }
+
+        .conduct-section {
+            background: rgba(99, 102, 241, 0.05);
+            padding: 3rem;
+            border-radius: 24px;
+            border-left: 4px solid var(--primary);
+            margin: 3rem 0;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 4rem auto;
+            background: var(--bg-card);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .no-list {
+            list-style: none;
+        }
+
+        .no-list li {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .no-list li::before {
+            content: "\f00d";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 12px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="./" class="logo">
+                    <img src="assets/ulogo.jpg" alt="VibeTestQ Logo" style="height: 50px; width: auto; display: block;">
+                </a>
+                <div class="nav-links">
+                    <a href="./">Home</a>
+                    <div class="nav-dropdown">
+                        <a href="training" class="nav-dropdown-toggle">Trainings <i class="fas fa-chevron-down"></i></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="genai-manual-testing"><i class="fas fa-brain"></i> <span>GenAI Manual Testing</span></a>
+                            <a href="qa-ai-era-training"><i class="fas fa-code"></i> <span>Playwright with GenAI</span></a>
+                            <a href="selenium-genai"><i class="fab fa-python"></i> <span>Selenium with GenAI</span></a>
+                            <a href="cypress-genai"><i class="fab fa-js"></i> <span>Cypress with GenAI</span></a>
+                        </div>
+                    </div>
+                    <a href="interviews">Interviews</a>
+                    <div class="nav-dropdown">
+                        <a href="tamash" class="nav-dropdown-toggle">Products <i class="fas fa-chevron-down"></i></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="tamash/"><i class="fas fa-wand-magic-sparkles"></i> <span>TAMASH</span></a>
+                            <a href="tamash-playwright/"><i class="fas fa-heart-pulse"></i> <span>TAMASH-Playwright</span></a>
+                            <a href="tamash-selenium/"><i class="fas fa-shield-halved"></i> <span>TAMASH-Selenium</span></a>
+                        </div>
+                    </div>
+                    <a href="upcoming-trainings" style="color: var(--accent); font-weight: 600;"><i class="fas fa-calendar-star" style="margin-right: 0.3rem;"></i>Upcoming</a>
+                    <a href="mentors" class="active">Mentors</a>
+                    <a href="blog">Blogs</a>
+                    <a href="about">About</a>
+                    <a href="contact" class="nav-cta">Contact</a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <span class="hero-tagline">Join our Mission</span>
+                <h1 class="course-title">Mentor with <span class="gradient-text">VibeTestQ</span></h1>
+                <p class="course-subtitle">A Free, Community-Driven Professional Growth & Guidance Program</p>
+                <div class="course-meta-row">
+                    <div class="course-meta-item">
+                        <i class="fas fa-users"></i>
+                        <span>Community Led</span>
+                    </div>
+                    <div class="course-meta-item" style="color: #10b981;">
+                        <i class="fas fa-heart"></i>
+                        <span>100% Free Initiative</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Flexible Weekends</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div style="max-width: 900px; margin: 0 auto;">
+                    <p style="font-size: 1.2rem; text-align: center; margin-bottom: 3rem;">
+                        To support our <a href="interviews"
+                            style="color: var(--primary); text-decoration: underline;">Free Open Interview Service</a>,
+                        VibeTestQ is building a <strong>community-led mentorship network</strong>.
+                        As a mentor, you power this initiative by providing the clarity and direction professionals need
+                        to excel in their Quality Engineering careers.
+                    </p>
+
+                    <div class="mentor-stats">
+                        <div class="mentor-stat-card">
+                            <i class="fas fa-clock"></i>
+                            <h4>Flexible Time</h4>
+                            <p>Contribute in your free time or on weekends</p>
+                        </div>
+                        <div class="mentor-stat-card">
+                            <i class="fas fa-balance-scale"></i>
+                            <h4>Impact Driven</h4>
+                            <p>No commercial goals, purely professional growth</p>
+                        </div>
+                        <div class="mentor-stat-card">
+                            <i class="fas fa-user-friends"></i>
+                            <h4>Focused Guidance</h4>
+                            <p>Typically guide 5–10 professionals</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 4rem;">
+                        <span class="section-subtitle">Eligibility</span>
+                        <h2 class="text-center">Who Can Become a Mentor?</h2>
+                        <div class="card-grid" style="margin-top: 2rem;">
+                            <div class="card">
+                                <i class="fas fa-briefcase"></i>
+                                <h3>8+ Years Experience</h3>
+                                <p>Proven track record in Quality Engineering or related leadership roles.</p>
+                            </div>
+                            <div class="card">
+                                <i class="fas fa-tools"></i>
+                                <h3>Engineering Excellence</h3>
+                                <p>Deep architectural understanding of modern automation stacks, moving beyond scripts
+                                    to scalable solutions.</p>
+                            </div>
+                            <div class="card">
+                                <i class="fas fa-robot"></i>
+                                <h3>AI Integrated</h3>
+                                <p>Practical experience in leveraging AI for testing and automation workflows.</p>
+                            </div>
+                            <div class="card">
+                                <i class="fas fa-heart-pulse"></i>
+                                <h3>Impact Mindset</h3>
+                                <p>A genuine passion for community upliftment and the empathy to guide professionals
+                                    through their hurdles.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="background: rgba(30, 41, 59, 0.3);">
+            <div class="container">
+                <div class="founder-grid">
+                    <div>
+                        <span class="section-subtitle">The Mission</span>
+                        <h2>What Is the Mentor Role?</h2>
+                        <p>As a VibeTestQ Mentor, you will power our <a href="interviews"
+                                style="color: var(--primary); text-decoration: none; font-weight: 500;">Free Interview
+                                Service</a> by supporting professionals through simulated technical discussions focused
+                            on engineering thinking and decision-making.</p>
+                        <p style="margin-top: 1rem;"><strong>Before starting, you'll work with the founder to:</strong>
+                        </p>
+                        <ul class="check-list">
+                            <li>Guide professionals beyond technical checklists</li>
+                            <li>Cultivate engineering mindset & system thinking</li>
+                            <li>Analyze risk and quality strategy beyond tools</li>
+                            <li>Ensure fairness, empathy, and professionalism</li>
+                            <li>Provide growth-oriented, actionable feedback</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <span class="section-subtitle">Exclusive Access</span>
+                        <h2>Founder-Led Guidance</h2>
+                        <p>QtpSudhakar, Founder of VibeTestQ, connects with mentors every week for alignment and
+                            learning.</p>
+                        <ul class="check-list" style="margin-top: 1.5rem;">
+                            <li><strong>Weekly Connects:</strong> Direct access to the founder for guidance</li>
+                            <li><strong>Mentor Community:</strong> Dedicated group for peer interaction</li>
+                            <li><strong>Alignment:</strong> Ongoing discussions on mentorship impact</li>
+                            <li><strong>Networking:</strong> Exclusive invitations to community meetups and parties</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="contact-grid">
+                    <div>
+                        <span class="section-subtitle">The Rewards</span>
+                        <h2>What Mentors Gain</h2>
+                        <p class="text-muted">This is a non-monetary role where the value lies in learning and impact.
+                        </p>
+                        <ul class="check-list" style="margin-top: 1.5rem;">
+                            <li>Improved mentorship and leadership skills</li>
+                            <li>Increased professional visibility in the community</li>
+                            <li>Trusted peer network and meaningful connections</li>
+                            <li>Credential and credibility as a VibeTestQ Mentor</li>
+                        </ul>
+
+                        <div style="margin-top: 3rem;">
+                            <span class="section-subtitle">The Commitment</span>
+                            <h2>What's Expected</h2>
+                            <ul class="check-list">
+                                <li>Conduct discussions professionally and respectfully</li>
+                                <li>Document observations and constructive feedback</li>
+                                <li>Attend weekly connects with the founder</li>
+                                <li>Stay aware of Industry and Quality Engineering trends</li>
+                                <li>Demonstrate a commitment to serve others</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="section-subtitle">Clarification</span>
+                        <h2>What This Is Not</h2>
+                        <ul class="no-list" style="margin-top: 1.5rem;">
+                            <li>Not a paid or commercial program</li>
+                            <li>Not a hiring or recruitment role</li>
+                            <li>Not volume-based checklist assessments</li>
+                            <li>Not a platform for personal promotions</li>
+                            <li>Not a short-term or transactional engagement</li>
+                        </ul>
+
+                        <div class="conduct-section">
+                            <h3><i class="fas fa-shield-alt"></i> Mentorship Ethics & Principles</h3>
+                            <p style="font-size: 0.95rem; margin-top: 1rem;">
+                                Sessions are reviewed for mentorship excellence and standardizing impact. Mentors must
+                                adhere to the highest standards of fairness, integrity, and confidentiality.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="background: linear-gradient(to bottom, transparent, rgba(99, 102, 241, 0.1));">
+            <div class="container">
+                <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                    <span class="section-subtitle">The Purpose</span>
+                    <h2>Why This Program Exists</h2>
+                    <p style="font-size: 1.1rem; margin-top: 1.5rem; line-height: 1.8;">
+                        Today, learning content is available everywhere. But professionals often leave technical
+                        discussions
+                        without understanding what actually went wrong. VibeTestQ bridges that gap through
+                        <strong>transparent, thoughtful, and respectful guidance</strong> — providing clarity before
+                        struggle and direction for success.
+                    </p>
+                    <p style="font-size: 1.25rem; font-weight: 700; margin-top: 2rem; color: var(--text-main);">
+                        Mentors are the backbone of this mission.
+                    </p>
+                </div>
+
+                <div class="form-container" id="apply">
+                    <span class="section-subtitle">Join Us</span>
+                    <h2 class="text-center">Apply to Become a Mentor</h2>
+                    <p class="text-center text-muted mb-4">Join us in providing clarity and direction to the community.
+                    </p>
+                    <form id="mentorForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" name="fullName" required placeholder="Enter your full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address *</label>
+                                <input type="email" name="email" required placeholder="Enter your email address">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Mobile Number *</label>
+                                <input type="tel" name="phone" required placeholder="Enter your mobile number">
+                            </div>
+                            <div class="form-group">
+                                <label>LinkedIn Profile Link *</label>
+                                <input type="url" name="linkedin" required
+                                    placeholder="https://linkedin.com/in/yourprofile">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Current Role *</label>
+                                <input type="text" name="currentRole" required placeholder="e.g. QA Manager, Architect">
+                            </div>
+                            <div class="form-group">
+                                <label>Experience (Years) *</label>
+                                <select name="experience" required>
+                                    <option value="">Select Experience</option>
+                                    <option value="8-10">8 - 10 Years</option>
+                                    <option value="10-15">10 - 15 Years</option>
+                                    <option value="15-20">15 - 20 Years</option>
+                                    <option value="20+">20+ Years</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Primary Skill Set *</label>
+                            <textarea name="skills" rows="3" required
+                                placeholder="e.g. Playwright, Java, GenAI, Strategy..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>My Areas of Impact *</label>
+                            <textarea name="mentorshipOn" rows="3" required
+                                placeholder="What specific topics or areas can you mentor on?"></textarea>
+                        </div>
+
+                        <!-- Honeypot -->
+                        <div style="display:none;">
+                            <input type="text" name="honeypot" value="">
+                        </div>
+
+                        <button type="submit" id="submitBtn" class="btn btn-primary"
+                            style="width: 100%; margin-top: 1rem;">Submit Application</button>
+                        <div id="formStatus"
+                            style="margin-top: 1.5rem; text-align: center; display: none; font-weight: 500;"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="./" class="logo" style="margin-bottom: 1.5rem; display: block;">
+                        <img src="assets/ulogo.jpg" alt="VibeTestQ Logo" style="height: 40px; width: auto;">
+                    </a>
+                    <p style="color: var(--text-muted);">Elevating Quality Engineering through AI-driven innovation and
+                        expert-led training.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="./">Home</a></li>
+                        <li><a href="training">Trainings</a></li>
+                        <li><a href="upcoming-trainings" style="color: var(--accent);">📅 Upcoming Sessions</a></li>
+                        <li><a href="interviews">Interviews</a></li>
+                        <li><a href="mentors">Mentors</a></li>
+                        <li><a href="about">About Us</a></li>
+                        <li><a href="contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li>
+                        <li><a href="mailto:services@vibetestq.com">services@vibetestq.com</a></li>
+                    </ul>
+                    <div class="footer-social">
+                        <a href="https://www.linkedin.com/in/qtpsudhakar/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/c/qtpsudhakarblog" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 VibeTestQ. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span>Chat with us</span>
+    </a>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js"></script>
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwoKhl0co2R0MzYx2I3vmqqfeC7TTHokVO6w2G84woYB3rN0-cVjtMBpNIednO5qJ3M/exec';
+        const form = document.getElementById('mentorForm');
+        const status = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Submitting...';
+            status.style.display = 'block';
+            status.innerText = 'Sending your application...';
+            status.style.color = 'var(--text-muted)';
+
+            const formData = new FormData(form);
+            formData.append('form_type', 'mentor_application');
+            formData.append('vibe_token', 'vibe_secure_mentor_2026');
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors'
+            })
+                .then(() => {
+                    status.innerText = 'Thank you! Your application has been submitted successfully. We will connect with you soon.';
+                    status.style.color = '#10b981';
+                    form.reset();
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Application';
+                })
+                .catch(error => {
+                    status.innerText = 'Error! Submitting failed: ' + error.message;
+                    status.style.color = '#f43f5e';
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = 'Submit Application';
+                    console.error('Submission Error:', error);
+                });
+        });
+    </script>
+</body>
+
+</html>
