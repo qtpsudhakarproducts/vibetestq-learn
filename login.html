@@ -152,7 +152,7 @@
     const loginBtn = document.getElementById("githubLoginBtn");
 
     const params = new URLSearchParams(window.location.search);
-    const redirectTo = params.get("redirect") || "/docs/";
+    const redirectTo = params.get("redirect") || "/";
 
     function showStatus(message, type) {
       statusEl.textContent = message;

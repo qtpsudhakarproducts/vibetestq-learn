@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Playwright Interview Questions Hub | VibeTestQ</title>
 <meta name="description" content="1,300+ Playwright interview questions — 9 parts, 85 chapters. JavaScript, TypeScript, POM, API Testing, CI/CD, Visual Testing and AI-Native Automation.">
-<link rel="canonical" href="https://vibetestq.com/docs/iqs/">
+<link rel="canonical" href="https://academy.vibetestq.com/iqs/">
 <meta property="og:title" content="Playwright Interview Questions Hub | VibeTestQ">
 <meta property="og:description" content="The most comprehensive Playwright interview prep — 85 chapters, 1,300+ questions.">
 <meta property="og:image" content="https://vibetestq.com/assets/utitle.jpg">
@@ -593,14 +593,14 @@ a:hover{text-decoration:underline}
   }
 }
 </style>
-    <script src="/docs/auth-guard.js"></script>
+    <script src="/auth-guard.js"></script>
 </head>
 <body>
 
 <!-- TOP BAR -->
 <header id="topbar">
   <button id="sb-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-  <a class="tbar-logo" href="/"><img src="../../assets/ulogo.jpg" alt="VibeTestQ"></a>
+  <a class="tbar-logo" href="/"><img src="/assets/ulogo.jpg" alt="VibeTestQ"></a>
   <span class="tbar-sep">›</span>
   <span class="tbar-pg">Playwright IQs</span>
   <span id="tbar-ch"></span>
@@ -1355,7 +1355,7 @@ async function loadChapter(chNum) {
   if (!entry) { showHome(); return; }
 
   const p = entry.part;
-  const htmlPath = `/docs/iqs/playwright/${p.slug}/${entry.slug}.html`;
+  const htmlPath = `/iqs/playwright/${p.slug}/${entry.slug}.html`;
 
   // Show loading state
   mainEl.innerHTML = `<div class="reader-wrap" style="color:var(--text-dim);padding-top:3rem;text-align:center">

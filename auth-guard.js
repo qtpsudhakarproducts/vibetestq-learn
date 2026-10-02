@@ -2,17 +2,17 @@
   if (window.__docsAuthGuardLoaded) return;
   window.__docsAuthGuardLoaded = true;
 
+  // This script is only included on protected learning pages (see each page's <head>),
+  // so the only page it must skip is the login page itself.
   const pathname = window.location.pathname.replace(/\\/g, '/');
   const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-  const isDocsRoot = normalizedPath === '/docs';
-  const isDocsPage = isDocsRoot || normalizedPath.startsWith('/docs/');
-  const isLoginPage = normalizedPath === '/docs/login.html' || normalizedPath === '/docs/login';
+  const isLoginPage = normalizedPath === '/login.html' || normalizedPath === '/login';
 
-  if (!isDocsPage || isLoginPage) {
+  if (isLoginPage) {
     return;
   }
 
-  const loginUrl = '/docs/login.html?redirect=' + encodeURIComponent(pathname + window.location.search);
+  const loginUrl = '/login.html?redirect=' + encodeURIComponent(pathname + window.location.search);
   window.__docsAuthRedirectUrl = loginUrl;
 
   const isLocalPreview = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
