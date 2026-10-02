@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GenAI Manual Testing Training | VibeTestQ</title>
+    <meta name="description"
+        content="Comprehensive Manual Testing training augmented with GenAI. Master modern QA with AI-powered tools, prompt engineering, and AI-SDLC.">
+    <link rel="canonical" href="https://academy.vibetestq.com/genai-manual-testing" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://academy.vibetestq.com/genai-manual-testing">
+    <meta property="og:title" content="GenAI Manual Testing Training | VibeTestQ">
+    <meta property="og:description"
+        content="Transform your QA career by mastering Manual Testing augmented with Generative AI, Prompt Engineering, and AI-SDLC workflows.">
+    <meta property="og:image" content="https://academy.vibetestq.com/assets/utitle.jpg">
+
+    <!-- Course Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "GenAI Manual Testing",
+      "description": "Transform your QA career by mastering Manual Testing augmented with Generative AI, Prompt Engineering, and AI-SDLC workflows.",
+      "provider": {
+        "@type": "Organization",
+        "name": "VibeTestQ",
+        "sameAs": "https://vibetestq.com"
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=2.7.1">
+    <style>
+        .logo img.logo-light, .footer-col .logo img.logo-light { display: none !important; }
+        .logo img.logo-dark, .footer-col .logo img.logo-dark { display: block !important; }
+        [data-theme="light"] .logo img.logo-dark, [data-theme="light"] .footer-col .logo img.logo-dark { display: none !important; }
+        [data-theme="light"] .logo img.logo-light, [data-theme="light"] .footer-col .logo img.logo-light { display: block !important; }
+    </style>
+</head>
+
+<body>
+        <!-- Top Academy Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="./" class="logo" style="text-decoration:none;">
+                    <div class="academy-brand-wrap">
+                        <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 38px; width: auto;">
+                        <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 38px; width: auto;">
+                        <span class="academy-pill-badge">ACADEMY</span>
+                    </div>
+                </a>
+                <div class="nav-links">
+                    <div class="nav-dropdown">
+                        <a href="./#programs" class="nav-dropdown-toggle">Programs <i class="fas fa-chevron-down"></i></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="qa-ai-era-training.html"><i class="fas fa-code" style="color:#6366f1;"></i> <span>Playwright + GenAI Test Lead</span></a>
+                            <a href="genai-manual-testing.html"><i class="fas fa-brain" style="color:#10b981;"></i> <span>GenAI Manual Testing</span></a>
+                            <a href="selenium-genai.html"><i class="fab fa-python" style="color:#f59e0b;"></i> <span>Selenium with GenAI</span></a>
+                            <a href="cypress-genai.html"><i class="fab fa-js" style="color:#06b6d4;"></i> <span>Cypress with GenAI</span></a>
+                        </div>
+                    </div>
+                    <a href="upcoming-trainings.html" style="color: #f59e0b; font-weight: 700;">
+                        <i class="fas fa-calendar-check" style="margin-right: 0.3rem;"></i> Schedule
+                    </a>
+                    <a href="practicehub/">Practice Hub</a>
+                    <a href="projects/">StepUp Projects</a>
+                    <a href="interviews.html">Interviews</a>
+                    <a href="mentors.html">Mentorship</a>
+                    <a href="https://vibetestq.com" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.85rem;">
+                        Enterprise Platform <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
+                    </a>
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp nav-cta">
+                        <i class="fab fa-whatsapp"></i> Chat with Us
+                    </a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <span class="hero-tagline" style="color: var(--secondary);">Modern QA Series</span>
+                <h1 class="course-title"><span class="gradient-text">GenAI Manual Testing</span></h1>
+                <p class="course-subtitle">Transform your QA career by mastering Manual Testing augmented with
+                    Generative AI, Prompt Engineering, and AI-SDLC workflows.</p>
+                <div class="course-meta-row">
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-book"></i>
+                        <span>Future Ready Training</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-robot"></i>
+                        <span>AI-Augmented QA</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-certificate"></i>
+                        <span>Prompt Engineering</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="toc-container">
+                    <div class="toc-intro">
+                        <h3>Course <span class="highlight">Curriculum</span></h3>
+                        <p>A comprehensive masterclass taking you from manual testing foundations to AI-driven quality
+                            engineering</p>
+                    </div>
+
+                    <div class="toc-list">
+                        <!-- Section 1 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">1</div>
+                                    <div class="section-name">FOUNDATIONS</div>
+                                </div>
+                                <p class="section-description">Master software quality fundamentals, SDLC/STLC, testing
+                                    principles, and the evolution to AI-SDLC.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 2 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">2</div>
+                                    <div class="section-name">AI-SDLC & MODERN TESTING PARADIGMS</div>
+                                </div>
+                                <p class="section-description">Learn the 7-phase AI-SDLC cycle, modern testing
+                                    paradigms, test design techniques, and documentation.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 3 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">3</div>
+                                    <div class="section-name">TEST MANAGEMENT TOOLS</div>
+                                </div>
+                                <p class="section-description">Master Jira, Xray, Zephyr Scale, Bugasura, and Excel for
+                                    comprehensive test management and tracking.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 4 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">4</div>
+                                    <div class="section-name">GENAI + MCP FOR TESTING</div>
+                                </div>
+                                <p class="section-description">Set up Claude Desktop with MCP integrations for Jira,
+                                    Xray, Zephyr, Excel, and end-to-end AI workflows.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 5 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">5</div>
+                                    <div class="section-name">PROMPT ENGINEERING</div>
+                                </div>
+                                <p class="section-description">Master the CRAFT framework, test generation prompts,
+                                    advanced techniques, and build your prompt library.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 6 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">6</div>
+                                    <div class="section-name">AI-POWERED TEST ARTIFACT GENERATION</div>
+                                </div>
+                                <p class="section-description">Generate scenarios, test cases, test data, documentation,
+                                    and perform no-code API testing using GenAI.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 7 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">7</div>
+                                    <div class="section-name">HUMAN-IN-THE-LOOP (HITL)</div>
+                                </div>
+                                <p class="section-description">Learn HITL philosophy, decision criteria, evaluation
+                                    methods, quality assurance, and hands-on practice.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 8 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">8</div>
+                                    <div class="section-name">HUMAN-IRREPLACEABLE SKILLS</div>
+                                </div>
+                                <p class="section-description">Master exploratory, UX, accessibility, performance,
+                                    security, and multi-tenant SaaS testing skills.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 9 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">9</div>
+                                    <div class="section-name">TESTING AI SYSTEMS & PROMPT TESTING</div>
+                                </div>
+                                <p class="section-description">Test AI systems for bias, hallucinations, prompt
+                                    injection, and evaluate AI outputs with governance.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 10 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">10</div>
+                                    <div class="section-name">CAPSTONE PROJECT</div>
+                                </div>
+                                <p class="section-description">Apply all learned concepts in a comprehensive project
+                                    from requirements to delivery with peer review.</p>
+                            </div>
+                        </div>
+
+                        <!-- Section 11 -->
+                        <div class="toc-section">
+                            <div class="toc-section-header">
+                                <div class="toc-section-title">
+                                    <div class="section-number">11</div>
+                                    <div class="section-name">CAREER DEVELOPMENT</div>
+                                </div>
+                                <p class="section-description">Explore modern QA career paths, build your portfolio, and
+                                    prepare for success in AI-driven testing roles.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="cta-box">
+                        <h3>Ready to Transform Your Career?</h3>
+                        <p>Join our expert-led GenAI Manual Testing training and become a future-ready QA professional.
+                        </p>
+                        <a href="contact" class="btn btn-primary">Register Your Interest</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+        <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col" style="grid-column: span 1.4;">
+                    <a href="./" class="logo" style="text-decoration:none; margin-bottom: 1.25rem; display: inline-block;">
+                        <div class="academy-brand-wrap">
+                            <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 34px; width: auto;">
+                            <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 34px; width: auto;">
+                            <span class="academy-pill-badge">ACADEMY</span>
+                        </div>
+                    </a>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; max-width: 320px;">
+                        The premier AI-native Quality Engineering academy. Training forward-thinking test engineers and leaders with code-first curricula, enterprise sandboxes, and personal mentorship.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Masterclasses</h4>
+                    <ul class="footer-links">
+                        <li><a href="qa-ai-era-training.html">Playwright + GenAI Test Lead</a></li>
+                        <li><a href="genai-manual-testing.html">GenAI Manual Testing</a></li>
+                        <li><a href="selenium-genai.html">Selenium with GenAI</a></li>
+                        <li><a href="cypress-genai.html">Cypress with GenAI</a></li>
+                        <li><a href="upcoming-trainings.html">Upcoming Batches &amp; Demos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Practice &amp; Career</h4>
+                    <ul class="footer-links">
+                        <li><a href="practicehub/">Practice Hub (12 Modules)</a></li>
+                        <li><a href="projects/">6-Week StepUp Program</a></li>
+                        <li><a href="locators/">Locators Mastery Lab</a></li>
+                        <li><a href="interviews.html">Mock Interviews &amp; Readiness</a></li>
+                        <li><a href="mentors.html">1-on-1 Mentorship</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect &amp; Corporate</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://vibetestq.com" target="_blank" rel="noopener">VibeTestQ Enterprise Platform ↗</a></li>
+                        <li><a href="https://academy.vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH™ Platform ↗</a></li>
+                        <li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li>
+                        <li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">WhatsApp Support</a></li>
+                    </ul>
+                    <div class="footer-social" style="margin-top: 1rem;">
+                        <a href="https://www.linkedin.com/in/qtpsudhakar/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/c/qtpsudhakarblog" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-row">
+                    <p>&copy; 2026 VibeTestQ Academy. All rights reserved.</p>
+                    <div class="footer-bottom-badges">
+                        <span class="footer-badge"><i class="fas fa-graduation-cap"></i> Professional Academy</span>
+                        <span class="footer-badge"><i class="fas fa-shield-halved"></i> 21+ Years QE Heritage</span>
+                        <span class="footer-badge"><i class="fab fa-whatsapp"></i> Live Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span>Chat with us</span>
+    </a>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js?v=2.7.1"></script>
+</body>
+
+</html>

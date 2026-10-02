@@ -1,335 +1,542 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VibeTestQ Docs Hub</title>
-<meta name="description" content="VibeTestQ documentation hub for AI QA, Playwright, Cypress, GitHub, projects, skills, and practice resources.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  :root {
-    --primary: #2563eb;
-    --primary-dark: #1e40af;
-    --primary-light: #eff6ff;
-    --bg: #f8fafc;
-    --card-bg: #ffffff;
-    --text: #0f172a;
-    --text-light: #64748b;
-    --border: #e2e8f0;
-    --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeTestQ Academy | AI-Native Quality Engineering &amp; Automation Masterclasses</title>
+    <meta name="description"
+        content="Master Playwright, GenAI Manual Testing, Selenium, and AI Agents with 21+ years industry leader Sudhakar Kakunuri. Real enterprise sandboxes, 1-on-1 mentorship, and mock interviews.">
+    <link rel="canonical" href="https://academy.vibetestq.com/" />
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://academy.vibetestq.com/">
+    <meta property="og:title" content="VibeTestQ Academy | AI-Native Quality Engineering Masterclasses">
+    <meta property="og:description"
+        content="From Manual Testing to AI-Powered Automation and Test Leadership. Industry-proven curricula, real enterprise sandboxes, and hands-on mentorship.">
+    <meta property="og:image" content="https://vibetestq.com/assets/utitle.jpg">
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    min-height: 100vh;
-  }
-
-  header {
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 1.25rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.8rem;
-    text-decoration: none;
-    color: var(--primary-dark);
-    font-family: 'Outfit', sans-serif;
-    font-weight: 700;
-    font-size: 1.2rem;
-  }
-
-  .logo img {
-    width: 44px;
-    height: 44px;
-    object-fit: contain;
-  }
-
-  .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 14px;
-    background: var(--primary-light);
-    color: var(--primary);
-    text-decoration: none;
-    border-radius: 999px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-  }
-
-  .back-btn:hover {
-    background: var(--primary);
-    color: white;
-  }
-
-  main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 3rem 1.25rem 4rem;
-  }
-
-  .hero {
-    text-align: center;
-    margin-bottom: 2.4rem;
-  }
-
-  .hero-eyebrow {
-    display: inline-block;
-    background: var(--primary-light);
-    color: var(--primary);
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding: 5px 14px;
-    border-radius: 999px;
-    margin-bottom: 0.9rem;
-  }
-
-  .hero h1 {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 0.8rem;
-    color: var(--primary-dark);
-  }
-
-  .hero p {
-    max-width: 720px;
-    margin: 0 auto;
-    font-size: 1.05rem;
-    color: var(--text-light);
-  }
-
-  .stats-bar {
-    display: flex;
-    justify-content: center;
-    gap: 2.5rem;
-    margin-bottom: 2rem;
-    padding: 1rem 1.2rem;
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-  }
-
-  .stat {
-    text-align: center;
-  }
-
-  .stat-num {
-    display: block;
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--primary);
-  }
-
-  .stat-label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-
-  .card {
-    display: block;
-    text-decoration: none;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 1.2rem 1.1rem;
-    color: inherit;
-    box-shadow: var(--shadow);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
-  }
-
-  .card-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 0.85rem;
-    background: var(--primary-light);
-    color: var(--primary);
-    font-size: 1rem;
-  }
-
-  .card h2 {
-    font-size: 1.02rem;
-    font-weight: 700;
-    margin-bottom: 0.45rem;
-    color: var(--primary-dark);
-  }
-
-  .card p {
-    color: var(--text-light);
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .card .meta {
-    margin-top: 0.75rem;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  @media (max-width: 640px) {
-    .header-content { padding: 0.9rem 1rem; }
-    .stats-bar { gap: 1rem; flex-wrap: wrap; }
-    main { padding: 2.2rem 1rem 3rem; }
-  }
-</style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=2.7.1">
+    <style>
+        .logo img.logo-light, .footer-col .logo img.logo-light { display: none !important; }
+        .logo img.logo-dark, .footer-col .logo img.logo-dark { display: block !important; }
+        [data-theme="light"] .logo img.logo-dark, [data-theme="light"] .footer-col .logo img.logo-dark { display: none !important; }
+        [data-theme="light"] .logo img.logo-light, [data-theme="light"] .footer-col .logo img.logo-light { display: block !important; }
+    </style>
 </head>
+
 <body>
-  <header>
-    <div class="header-content">
-      <a class="logo" href="./">
-        <img src="assets/Title with logo and box.png" alt="VibeTestQ Logo">
-        <span>VibeTestQ Learn</span>
-      </a>
-      <div style="display: flex; align-items: center; gap: 1rem;">
-        <a href="./interviews.html" style="text-decoration:none; color:var(--text); font-weight:600; font-size:0.9rem;"><i class="fas fa-users-viewfinder"></i> Interviews</a>
-        <a href="./mentors.html" style="text-decoration:none; color:var(--text); font-weight:600; font-size:0.9rem;"><i class="fas fa-chalkboard-user"></i> Mentors</a>
-        <a class="back-btn" href="https://vibetestq.com"><i class="fas fa-arrow-left"></i> Corporate Site</a>
-      </div>
-    </div>
-  </header>
+    <!-- Top Academy Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="./" class="logo" style="text-decoration:none;">
+                    <div class="academy-brand-wrap">
+                        <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 38px; width: auto;">
+                        <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 38px; width: auto;">
+                        <span class="academy-pill-badge">ACADEMY</span>
+                    </div>
+                </a>
+                <div class="nav-links">
+                    <div class="nav-dropdown">
+                        <a href="#programs" class="nav-dropdown-toggle">Programs <i class="fas fa-chevron-down"></i></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="qa-ai-era-training.html"><i class="fas fa-code" style="color:#6366f1;"></i> <span>Playwright + GenAI Test Lead</span></a>
+                            <a href="genai-manual-testing.html"><i class="fas fa-brain" style="color:#10b981;"></i> <span>GenAI Manual Testing</span></a>
+                            <a href="selenium-genai.html"><i class="fab fa-python" style="color:#f59e0b;"></i> <span>Selenium with GenAI</span></a>
+                            <a href="cypress-genai.html"><i class="fab fa-js" style="color:#06b6d4;"></i> <span>Cypress with GenAI</span></a>
+                        </div>
+                    </div>
+                    <a href="upcoming-trainings.html" style="color: #f59e0b; font-weight: 700;">
+                        <i class="fas fa-calendar-check" style="margin-right: 0.3rem;"></i> Schedule
+                    </a>
+                    <a href="practicehub/">Practice Hub</a>
+                    <a href="projects/">StepUp Projects</a>
+                    <a href="interviews.html">Interviews</a>
+                    <a href="mentors.html">Mentorship</a>
+                    <a href="https://vibetestq.com" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.85rem;">
+                        Enterprise Platform <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
+                    </a>
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp nav-cta">
+                        <i class="fab fa-whatsapp"></i> Chat with Us
+                    </a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-eyebrow">Documentation Hub</div>
-      <h1>Learn faster with VibeTestQ docs</h1>
-      <p>Explore focused learning collections for AI QA, Playwright, Cypress, GitHub, practice, projects, and skills.</p>
-    </section>
+    <main>
+        <!-- ═══ 1. ACADEMY HERO ═══ -->
+        <section class="academy-hero">
+            <div class="container">
+                <span class="section-chip" style="background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b;">
+                    <i class="fas fa-graduation-cap"></i> AI-NATIVE QUALITY ENGINEERING EDUCATION
+                </span>
+                <h1 class="academy-hero-title">
+                    Transform from Traditional QA into an<br>
+                    <span class="highlight">AI-Native Quality Engineer.</span>
+                </h1>
+                <p class="academy-hero-lead">
+                    Practical, code-driven masterclasses in Playwright, Generative AI testing, Self-Healing, and Test Leadership. Learn directly with 21+ years industry leader Sudhakar Kakunuri.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <a href="#programs" class="btn btn-primary" style="padding: 0.95rem 2.2rem; font-size: 1rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);">
+                        Explore Masterclasses <i class="fas fa-arrow-down"></i>
+                    </a>
+                    <a href="upcoming-trainings.html" class="btn btn-outline" style="padding: 0.95rem 1.8rem; font-size: 1rem;">
+                        <i class="fas fa-calendar-alt"></i> View Batch Schedule
+                    </a>
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding: 0.95rem 1.6rem; font-size: 0.95rem;">
+                        <i class="fab fa-whatsapp"></i> Instant WhatsApp Help
+                    </a>
+                </div>
 
-    <div class="stats-bar">
-      <div class="stat">
-        <span class="stat-num">9</span>
-        <span class="stat-label">Collections</span>
-      </div>
-    </div>
+                <div class="academy-hero-proof">
+                    <div class="proof-stat-item">
+                        <span class="proof-stat-num">21+</span>
+                        <span class="proof-stat-lbl">Years QE Leadership</span>
+                    </div>
+                    <div class="trust-logo-sep" style="height: 30px;"></div>
+                    <div class="proof-stat-item">
+                        <span class="proof-stat-num">10,000+</span>
+                        <span class="proof-stat-lbl">Engineers Trained</span>
+                    </div>
+                    <div class="trust-logo-sep" style="height: 30px;"></div>
+                    <div class="proof-stat-item">
+                        <span class="proof-stat-num">7</span>
+                        <span class="proof-stat-lbl">Live Enterprise Testbeds</span>
+                    </div>
+                    <div class="trust-logo-sep" style="height: 30px;"></div>
+                    <div class="proof-stat-item">
+                        <span class="proof-stat-num">100%</span>
+                        <span class="proof-stat-lbl">Hands-On Code &amp; Practice</span>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section class="grid">
-      <a class="card" href="./mtai/">
-        <div class="card-icon"><i class="fas fa-robot"></i></div>
-        <h2>mtai</h2>
-        <p>AI-native testing and modern automation guidance.</p>
-        <div class="meta">AI / Testing</div>
-      </a>
+        <!-- ═══ 2. ACTIVE COHORT CALLOUT BANNER ═══ -->
+        <section style="padding: 1rem 0;">
+            <div class="container">
+                <div class="live-cohort-banner">
+                    <div class="cohort-banner-content">
+                        <div class="cohort-info">
+                            <h3>
+                                <span class="cohort-badge"><i class="fas fa-bolt"></i> Live Registration</span>
+                                Playwright GenAI Test Lead Masterclass
+                            </h3>
+                            <p style="color: #cbd5e1; font-size: 0.95rem; margin-top: 0.35rem;">
+                                2-Month Comprehensive Program with Theory, Live Guided Practice, Weekend Assignments, and AI-SDLC.
+                            </p>
+                            <div class="cohort-meta">
+                                <span><i class="fas fa-clock"></i> 7:00 AM – 8:30 AM IST (Weekdays)</span>
+                                <span><i class="fas fa-user-tie"></i> Trainer: QtpSudhakar</span>
+                                <span><i class="fas fa-video"></i> Live on Zoom + Full Recordings</span>
+                            </div>
+                        </div>
+                        <div class="cohort-actions">
+                            <a href="https://us06web.zoom.us/meeting/register/F2nCtNS9Q7G1jD_QQbytGA" target="_blank" rel="noopener" class="btn btn-primary" style="padding: 0.85rem 1.6rem; font-size: 0.95rem;">
+                                <i class="fas fa-user-plus"></i> Register for Live Session
+                            </a>
+                            <a href="qa-ai-era-training.html" class="btn btn-outline" style="padding: 0.85rem 1.4rem; font-size: 0.95rem;">
+                                View Syllabus →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <a class="card" href="./aiqa/">
-        <div class="card-icon"><i class="fas fa-brain"></i></div>
-        <h2>aiqa</h2>
-        <p>Quality engineering resources powered by AI.</p>
-        <div class="meta">AI QA</div>
-      </a>
+        <!-- ═══ 3. FLAGSHIP TRAINING PROGRAMS ═══ -->
+        <section class="section" id="programs" style="padding: 4rem 0;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="section-chip">CAREER TRACKS</span>
+                    <h2 class="section-heading mb-2">Our Core <span class="highlight">Training Programs</span></h2>
+                    <p class="section-desc">Designed to bridge the gap between traditional manual/automation testing and modern AI-native engineering.</p>
+                </div>
 
-      <a class="card" href="./playwright/">
-        <div class="card-icon"><i class="fas fa-code"></i></div>
-        <h2>playwright</h2>
-        <p>Playwright learning paths, examples, and references.</p>
-        <div class="meta">Automation</div>
-      </a>
+                <div class="programs-grid">
+                    <!-- Program 1: Playwright GenAI Test Lead -->
+                    <div class="program-card featured">
+                        <div class="program-tag-row">
+                            <span class="program-tier-badge" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border-color: rgba(99, 102, 241, 0.3);">
+                                <i class="fas fa-star"></i> MOST POPULAR &bull; FLAGSHIP
+                            </span>
+                            <span class="program-duration"><i class="fas fa-hourglass-half"></i> 2 Months</span>
+                        </div>
+                        <h3>Playwright GenAI Test Lead</h3>
+                        <p class="program-desc">
+                            Complete instructor-led SDET &amp; Test Lead program. Master TypeScript, Playwright Test Runner, Page Object Model (POM), Cucumber BDD, API Testing, CI/CD Actions, and GenAI Self-Healing agents.
+                        </p>
+                        <ul class="program-curriculum-list">
+                            <li><i class="fas fa-check-circle"></i> JavaScript &amp; TypeScript Deep Dive for Automation</li>
+                            <li><i class="fas fa-check-circle"></i> Playwright Core: Locators, Auto-waiting, Actions, Fixtures</li>
+                            <li><i class="fas fa-check-circle"></i> Enterprise POM Framework Design with Parallel Runs</li>
+                            <li><i class="fas fa-check-circle"></i> Cucumber BDD &amp; RESTful API Mocking/Testing</li>
+                            <li><i class="fas fa-check-circle"></i> GitHub Actions CI/CD Pipeline &amp; HTML Reporting</li>
+                            <li><i class="fas fa-check-circle"></i> GenAI Prompts for QA, WebMCP, and Self-Healing Automation</li>
+                        </ul>
+                        <div class="program-card-actions">
+                            <a href="qa-ai-era-training.html" class="btn btn-primary" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
+                                Full 8-Week Syllabus &rarr;
+                            </a>
+                            <a href="https://us06web.zoom.us/meeting/register/F2nCtNS9Q7G1jD_QQbytGA" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.75rem 1.3rem; font-size: 0.9rem;">
+                                Register for Batch
+                            </a>
+                        </div>
+                    </div>
 
-      <a class="card" href="./cy/">
-        <div class="card-icon"><i class="fas fa-microchip"></i></div>
-        <h2>cy</h2>
-        <p>Cypress-focused learning resources.</p>
-        <div class="meta">Testing</div>
-      </a>
+                    <!-- Program 2: GenAI Manual Testing -->
+                    <div class="program-card">
+                        <div class="program-tag-row">
+                            <span class="program-tier-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.3);">
+                                <i class="fas fa-brain"></i> CAREER TRANSFORMATION
+                            </span>
+                            <span class="program-duration"><i class="fas fa-hourglass-half"></i> 1 Month</span>
+                        </div>
+                        <h3>GenAI Manual Testing to AI QA Engineer</h3>
+                        <p class="program-desc">
+                            Transform traditional manual QA skills into modern AI-empowered quality engineering. Learn how to write prompt chains for test design, synthesize synthetic edge-case data, and conduct AI exploratory testing.
+                        </p>
+                        <ul class="program-curriculum-list">
+                            <li><i class="fas fa-check-circle"></i> Generative AI Essentials: LLMs, Tokens, Hallucination Control</li>
+                            <li><i class="fas fa-check-circle"></i> Prompt Engineering for QA: Persona, Multi-turn, Few-Shot</li>
+                            <li><i class="fas fa-check-circle"></i> Automated Test Case Synthesis from PRDs &amp; User Stories</li>
+                            <li><i class="fas fa-check-circle"></i> Test Data Generation: JSON, CSV, Mock APIs, Edge-Case Data</li>
+                            <li><i class="fas fa-check-circle"></i> AI-Augmented Exploratory Testing &amp; Bug Analysis</li>
+                            <li><i class="fas fa-check-circle"></i> Integrating AI into Agile Sprints &amp; Test Management</li>
+                        </ul>
+                        <div class="program-card-actions">
+                            <a href="genai-manual-testing.html" class="btn btn-primary" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
+                                View Curriculum &rarr;
+                            </a>
+                            <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding: 0.75rem 1.3rem; font-size: 0.9rem;">
+                                <i class="fab fa-whatsapp"></i> Inquire via WhatsApp
+                            </a>
+                        </div>
+                    </div>
 
-      <a class="card" href="./gh/">
-        <div class="card-icon"><i class="fab fa-github"></i></div>
-        <h2>gh</h2>
-        <p>GitHub and DevOps documentation links.</p>
-        <div class="meta">GitHub</div>
-      </a>
+                    <!-- Program 3: Selenium with GenAI -->
+                    <div class="program-card">
+                        <div class="program-tag-row">
+                            <span class="program-tier-badge" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border-color: rgba(245, 158, 11, 0.3);">
+                                <i class="fab fa-python"></i> ENTERPRISE MODERNIZATION
+                            </span>
+                            <span class="program-duration"><i class="fas fa-hourglass-half"></i> 6 Weeks</span>
+                        </div>
+                        <h3>Selenium with GenAI (Java &amp; Python)</h3>
+                        <p class="program-desc">
+                            Modernize existing Selenium WebDriver frameworks with AI capabilities. Build resilient self-healing locator strategies, intelligent test failure diagnosis, and hybrid cloud CI execution.
+                        </p>
+                        <ul class="program-curriculum-list">
+                            <li><i class="fas fa-check-circle"></i> Modern Selenium 4 Architecture: BiDi, CDP, Network Interception</li>
+                            <li><i class="fas fa-check-circle"></i> Framework Architectures: TestNG/PyTest, Data-Driven, Hybrid</li>
+                            <li><i class="fas fa-check-circle"></i> Self-Healing Locator Wrappers with AI Fallback</li>
+                            <li><i class="fas fa-check-circle"></i> Autonomous Test Failure Summarization with LLMs</li>
+                            <li><i class="fas fa-check-circle"></i> Dockerized Selenium Grid in CI/CD Pipelines</li>
+                        </ul>
+                        <div class="program-card-actions">
+                            <a href="selenium-genai.html" class="btn btn-primary" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
+                                View Curriculum &rarr;
+                            </a>
+                            <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding: 0.75rem 1.3rem; font-size: 0.9rem;">
+                                <i class="fab fa-whatsapp"></i> Inquire via WhatsApp
+                            </a>
+                        </div>
+                    </div>
 
-      <a class="card" href="./iqs/">
-        <div class="card-icon"><i class="fas fa-question-circle"></i></div>
-        <h2>iqs</h2>
-        <p>Interview questions, study notes, and practice content.</p>
-        <div class="meta">Interview Prep</div>
-      </a>
+                    <!-- Program 4: Cypress with GenAI -->
+                    <div class="program-card">
+                        <div class="program-tag-row">
+                            <span class="program-tier-badge" style="background: rgba(6, 182, 212, 0.15); color: #67e8f9; border-color: rgba(6, 182, 212, 0.3);">
+                                <i class="fab fa-js"></i> FAST-TRACK
+                            </span>
+                            <span class="program-duration"><i class="fas fa-hourglass-half"></i> 4 Weeks</span>
+                        </div>
+                        <h3>Cypress with GenAI</h3>
+                        <p class="program-desc">
+                            Fast-track modern web automation for frontend and full-stack quality engineers. Master Cypress interceptors, component tests, and AI-driven assertion synthesis.
+                        </p>
+                        <ul class="program-curriculum-list">
+                            <li><i class="fas fa-check-circle"></i> Cypress Core Architecture &amp; Execution Lifecycle</li>
+                            <li><i class="fas fa-check-circle"></i> Network Stubbing, API Testing &amp; Session Management</li>
+                            <li><i class="fas fa-check-circle"></i> Component Testing &amp; Custom Command Libraries</li>
+                            <li><i class="fas fa-check-circle"></i> Generating Cypress Specs using GenAI Contexts</li>
+                            <li><i class="fas fa-check-circle"></i> GitHub Actions CI/CD Integration with Dashboard</li>
+                        </ul>
+                        <div class="program-card-actions">
+                            <a href="cypress-genai.html" class="btn btn-primary" style="padding: 0.75rem 1.4rem; font-size: 0.9rem;">
+                                View Curriculum &rarr;
+                            </a>
+                            <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding: 0.75rem 1.3rem; font-size: 0.9rem;">
+                                <i class="fab fa-whatsapp"></i> Inquire via WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <a class="card" href="./practicehub/">
-        <div class="card-icon"><i class="fas fa-dumbbell"></i></div>
-        <h2>practicehub</h2>
-        <p>Hands-on practice support and topic-based exercises.</p>
-        <div class="meta">Practice</div>
-      </a>
+        <!-- ═══ 4. PRACTICE HUB & LIVE TESTBEDS ═══ -->
+        <section class="section" style="background: rgba(13, 21, 39, 0.5); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 5rem 0;">
+            <div class="container">
+                <div class="text-center mb-4">
+                    <span class="section-chip">HANDS-ON INFRASTRUCTURE</span>
+                    <h2 class="section-heading mb-2">Practice on <span class="highlight">Real Enterprise Testbeds</span></h2>
+                    <p class="section-desc">We do not train you on dummy calculator or todo apps. Our students write real automation against 7 production-grade web applications.</p>
+                </div>
 
-      <a class="card" href="./projects/">
-        <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
-        <h2>projects</h2>
-        <p>Project-based learning and guided assignments.</p>
-        <div class="meta">Projects</div>
-      </a>
+                <div class="sandboxes-grid">
+                    <!-- Sandbox 1: HRMS -->
+                    <a href="https://stage.vibetestq.com/testweb/hrms/" target="_blank" rel="noopener" class="sandbox-card">
+                        <div class="sandbox-icon"><i class="fas fa-users-gear"></i></div>
+                        <h4>Enterprise HRMS</h4>
+                        <p>Complete human resource system with RBAC roles, employee records, leave approvals, attendance logging, and salary slip generation.</p>
+                        <span class="sandbox-link">Launch HRMS Testbed <i class="fas fa-arrow-right"></i></span>
+                    </a>
 
-      <a class="card" href="./skills/">
-        <div class="card-icon"><i class="fas fa-layer-group"></i></div>
-        <h2>skills</h2>
-        <p>Skill-building content and learning modules.</p>
-        <div class="meta">Skills</div>
-      </a>
+                    <!-- Sandbox 2: SuiteCRM -->
+                    <a href="https://stage.vibetestq.com/testweb/crm/" target="_blank" rel="noopener" class="sandbox-card">
+                        <div class="sandbox-icon"><i class="fas fa-chart-pie"></i></div>
+                        <h4>SuiteCRM Sales Suite</h4>
+                        <p>Complex multi-entity CRM with leads, accounts, opportunity pipelines, contact histories, and pipeline status updates.</p>
+                        <span class="sandbox-link">Launch CRM Testbed <i class="fas fa-arrow-right"></i></span>
+                    </a>
 
-      <a class="card" href="./interviews.html">
-        <div class="card-icon"><i class="fas fa-users-viewfinder"></i></div>
-        <h2>Interviews &amp; Evaluation</h2>
-        <p>Mock interviews, evaluation sessions, and real feedback for QA professionals.</p>
-        <div class="meta">Career / Evaluation</div>
-      </a>
+                    <!-- Sandbox 3: Flight Booking -->
+                    <a href="https://stage.vibetestq.com/testweb/flight/" target="_blank" rel="noopener" class="sandbox-card">
+                        <div class="sandbox-icon"><i class="fas fa-plane-departure"></i></div>
+                        <h4>Flight Booking Engine</h4>
+                        <p>Real-time flight search, multi-city itineraries, dynamic seat selection matrices, passenger details, and checkout workflows.</p>
+                        <span class="sandbox-link">Launch Flight Testbed <i class="fas fa-arrow-right"></i></span>
+                    </a>
 
-      <a class="card" href="./mentors.html">
-        <div class="card-icon"><i class="fas fa-chalkboard-user"></i></div>
-        <h2>Mentorship Program</h2>
-        <p>Community-led quality engineering guidance and 1-on-1 mentor sessions.</p>
-        <div class="meta">Community / Mentorship</div>
-      </a>
-    </section>
-  </main>
-  <script src="/docs/auth-guard.js"></script>
+                    <!-- Sandbox 4: VegCart E-Commerce -->
+                    <a href="https://stage.vibetestq.com/testweb/vegcart/" target="_blank" rel="noopener" class="sandbox-card">
+                        <div class="sandbox-icon"><i class="fas fa-cart-shopping"></i></div>
+                        <h4>VegCart E-Commerce</h4>
+                        <p>End-to-end shopping experience: categories, search filters, cart calculations, address management, and order placement flows.</p>
+                        <span class="sandbox-link">Launch E-Commerce Testbed <i class="fas fa-arrow-right"></i></span>
+                    </a>
+
+                    <!-- Sandbox 5: Loan Approval -->
+                    <a href="https://stage.vibetestq.com/testweb/loan/" target="_blank" rel="noopener" class="sandbox-card">
+                        <div class="sandbox-icon"><i class="fas fa-building-columns"></i></div>
+                        <h4>Fintech Loan Portal</h4>
+                        <p>Multi-step financial loan calculations, credit eligibility checks, KYC document uploads, and officer underwriting review.</p>
+                        <span class="sandbox-link">Launch Loan Testbed <i class="fas fa-arrow-right"></i></span>
+                    </a>
+
+                    <!-- Sandbox 6: Locator Mastery Lab -->
+                    <a href="locators/" class="sandbox-card" style="border-color: rgba(99, 102, 241, 0.35);">
+                        <div class="sandbox-icon" style="background: rgba(99, 102, 241, 0.2);"><i class="fas fa-bullseye"></i></div>
+                        <h4>Locator Mastery Lab</h4>
+                        <p>Interactive element locating challenges: Beginner, Intermediate, Advanced, and Expert tiers for Playwright, Cypress, XPath, and CSS.</p>
+                        <span class="sandbox-link">Enter Locators Lab <i class="fas fa-arrow-right"></i></span>
+                    </a>
+                </div>
+
+                <div style="text-align: center; margin-top: 2.5rem;">
+                    <a href="practicehub/" class="btn btn-outline" style="padding: 0.85rem 2rem;">
+                        <i class="fas fa-dumbbell"></i> Explore All 12 Practice Hub Modules &rarr;
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ 5. CAREER & INTERVIEW ACCELERATION ═══ -->
+        <section class="section" style="padding: 5rem 0;">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <span class="section-chip">CAREER ACCELERATION</span>
+                    <h2 class="section-heading mb-2">Beyond Courses: <span class="highlight">Job &amp; Interview Readiness</span></h2>
+                    <p class="section-desc">We prepare you to crack senior SDET, Automation Architect, and Test Lead interviews with confidence.</p>
+                </div>
+
+                <div class="programs-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <!-- Feature 1: 9-Part Playwright Interview Guide -->
+                    <div class="program-card">
+                        <div class="card-icon" style="width: 44px; height: 44px; border-radius: 12px; background: rgba(99, 102, 241, 0.12); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-list-check"></i>
+                        </div>
+                        <h4>9-Part Interview Deep Dive</h4>
+                        <p class="program-desc">
+                            Over 100+ curated technical questions covering JS/TS, Playwright Core, Test Framework, CI/CD, POM, BDD, API Testing, Visual/A11y, and AI-Native QE.
+                        </p>
+                        <a href="iqs/playwright/part-1-javascript-typescript/01-js-ts-fundamentals.html" class="sandbox-link">Browse Questions &rarr;</a>
+                    </div>
+
+                    <!-- Feature 2: Mock Interviews & Evaluation -->
+                    <div class="program-card">
+                        <div class="card-icon" style="width: 44px; height: 44px; border-radius: 12px; background: rgba(16, 185, 129, 0.12); color: #10b981; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-users-viewfinder"></i>
+                        </div>
+                        <h4>Mock Interview Service</h4>
+                        <p class="program-desc">
+                            Participate in 1-on-1 technical mock interviews conducted by senior test architects. Receive detailed written scorecards and tailored feedback.
+                        </p>
+                        <a href="interviews.html" class="sandbox-link">Schedule Mock Interview &rarr;</a>
+                    </div>
+
+                    <!-- Feature 3: 1-on-1 Mentorship -->
+                    <div class="program-card">
+                        <div class="card-icon" style="width: 44px; height: 44px; border-radius: 12px; background: rgba(245, 158, 11, 0.12); color: #f59e0b; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 1rem;">
+                            <i class="fas fa-chalkboard-user"></i>
+                        </div>
+                        <h4>Mentorship Program</h4>
+                        <p class="program-desc">
+                            Connect with experienced community mentors and Sudhakar Kakunuri for strategic career direction, resume reviews, and portfolio architecture.
+                        </p>
+                        <a href="mentors.html" class="sandbox-link">Meet Mentors &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ 6. TRAINER PEDIGREE ═══ -->
+        <section class="section" style="background: rgba(13, 21, 39, 0.5); border-top: 1px solid var(--border); padding: 5rem 0;">
+            <div class="container">
+                <div class="founder-grid" style="display: grid; grid-template-columns: 280px 1fr; gap: 3.5rem; align-items: center;">
+                    <div class="founder-avatar-box" style="text-align: center;">
+                        <img src="assets/photo.png" alt="Sudhakar Kakunuri" class="founder-avatar" style="width: 220px; height: 220px; border-radius: 20px; object-fit: cover; border: 3px solid rgba(99, 102, 241, 0.4); margin: 0 auto 1rem; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);">
+                        <h4 style="font-size: 1.2rem; margin-bottom: 0.2rem;">Sudhakar Kakunuri</h4>
+                        <p style="color: var(--primary); font-size: 0.88rem; font-weight: 600;">Founder &amp; Chief Architect</p>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.3rem;">Hyderabad, India</p>
+                    </div>
+                    <div>
+                        <span class="section-chip">CHIEF INSTRUCTOR &amp; ARCHITECT</span>
+                        <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem;">Learn from 21+ Years of QE Excellence.</h2>
+                        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 1rem;">
+                            Sudhakar Kakunuri (widely known across the testing community as <em>QtpSudhakar</em>) has pioneered test automation frameworks across Fortune 500 enterprises, global banks, and telecom leaders.
+                        </p>
+                        <p style="color: var(--text-muted); font-size: 1rem; line-height: 1.7; margin-bottom: 1.5rem;">
+                            As the creator of the <strong>TAMASH™ Repo-Native Quality Engineering Platform</strong>, he teaches modern quality engineering from real architectural practice — not abstract textbook theory.
+                        </p>
+                        <div class="pedigree-badges" style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                            <span class="p-badge"><i class="fas fa-check-circle"></i> 21+ Years QE Expertise</span>
+                            <span class="p-badge"><i class="fas fa-check-circle"></i> 10,000+ Engineers Mentored</span>
+                            <span class="p-badge"><i class="fas fa-check-circle"></i> 200+ Enterprise Engagements</span>
+                            <span class="p-badge"><i class="fab fa-youtube"></i> 100K+ Community Followers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ═══ 7. ENROLLMENT CTA ═══ -->
+        <section class="final-cta-section fade-in enterprise-cta-block" id="enroll">
+            <div class="container text-center" style="max-width: 800px; margin: 0 auto;">
+                <span class="section-chip">JOIN THE NEXT COHORT</span>
+                <h2 class="enterprise-cta-heading mb-3">
+                    Ready to Level Up Your <span class="highlight">Quality Engineering Career?</span>
+                </h2>
+                <p class="enterprise-cta-sub mb-4" style="margin: 0 auto 2rem;">
+                    Whether you're starting from manual testing or scaling up to Lead SDET, our structured programs provide the live instruction, practice testbeds, and mentorship you need.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <a href="upcoming-trainings.html" class="btn btn-primary" style="padding: 1rem 2.2rem; font-size: 1rem; box-shadow: 0 10px 30px rgba(99, 102, 241, 0.45);">
+                        <i class="fas fa-calendar-check" style="margin-right: 0.5rem;"></i> View Upcoming Batches
+                    </a>
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp" style="padding: 1rem 2rem; font-size: 1rem;">
+                        <i class="fab fa-whatsapp"></i> Chat with Counselor on WhatsApp
+                    </a>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.84rem; margin-top: 1.5rem;">
+                    <i class="fas fa-shield-halved" style="color: #10b981; margin-right: 0.4rem;"></i> Free Demo Sessions &bull; 100% Practical &bull; Weekend Q&amp;A
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Standardized Academy Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <a href="./" class="logo" style="margin-bottom: 1.5rem; display: block; text-decoration: none;">
+                        <div class="academy-brand-wrap">
+                            <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Logo" class="logo-dark" style="height: 38px; width: auto;">
+                            <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Logo" class="logo-light" style="height: 38px; width: auto;">
+                            <span class="academy-pill-badge">ACADEMY</span>
+                        </div>
+                    </a>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">
+                        VibeTestQ Academy is the career acceleration and engineering education division of VibeTestQ. AI-native masterclasses led by Sudhakar Kakunuri.
+                    </p>
+                    <p style="font-size: 0.8rem; color: #64748b; margin-top: 0.75rem;">
+                        Hyderabad, India • Mentoring engineers globally
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Training Programs</h4>
+                    <ul class="footer-links">
+                        <li><a href="qa-ai-era-training.html">Playwright + GenAI Test Lead</a></li>
+                        <li><a href="genai-manual-testing.html">GenAI Manual Testing</a></li>
+                        <li><a href="selenium-genai.html">Selenium with GenAI</a></li>
+                        <li><a href="cypress-genai.html">Cypress with GenAI</a></li>
+                        <li><a href="upcoming-trainings.html">Upcoming Batches &amp; Demos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Practice &amp; Career</h4>
+                    <ul class="footer-links">
+                        <li><a href="practicehub/">Practice Hub (12 Modules)</a></li>
+                        <li><a href="projects/">6-Week StepUp Program</a></li>
+                        <li><a href="locators/">Locators Mastery Lab</a></li>
+                        <li><a href="interviews.html">Mock Interviews &amp; Readiness</a></li>
+                        <li><a href="mentors.html">1-on-1 Mentorship</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect &amp; Corporate</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://vibetestq.com" target="_blank" rel="noopener">VibeTestQ Enterprise Platform ↗</a></li>
+                        <li><a href="https://vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH™ Platform ↗</a></li>
+                        <li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li>
+                        <li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">WhatsApp Support</a></li>
+                    </ul>
+                    <div class="footer-social" style="margin-top: 1rem;">
+                        <a href="https://www.linkedin.com/in/qtpsudhakar/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/c/qtpsudhakarblog" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-row">
+                    <p>&copy; 2026 VibeTestQ Academy. All rights reserved.</p>
+                    <div class="footer-bottom-badges">
+                        <span class="footer-badge"><i class="fas fa-graduation-cap"></i> Professional Academy</span>
+                        <span class="footer-badge"><i class="fas fa-shield-halved"></i> 21+ Years QE Heritage</span>
+                        <span class="footer-badge"><i class="fab fa-whatsapp"></i> Live Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js?v=2.4.4"></script>
 </body>
+
 </html>

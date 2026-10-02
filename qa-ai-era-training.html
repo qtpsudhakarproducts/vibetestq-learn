@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Test Lead Training | VibeTestQ</title>
+    <meta name="description"
+        content="Playwright Test Lead Training — 2-month instructor-led program with theory, guided practice and weekend assignments. Master Playwright, TypeScript, BDD, CI/CD and GenAI agents.">
+    <link rel="canonical" href="https://academy.vibetestq.com/qa-ai-era-training" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://academy.vibetestq.com/qa-ai-era-training">
+    <meta property="og:title" content="Playwright Test Lead Training | VibeTestQ">
+    <meta property="og:description"
+        content="2-month Playwright Test Lead Training: JavaScript/TypeScript, Playwright, POM, Cucumber BDD, API testing, CI/CD, MCP and GenAI agents.">
+    <meta property="og:image" content="https://academy.vibetestq.com/assets/utitle.jpg">
+
+    <!-- Course Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Playwright Test Lead Training",
+      "description": "2-month instructor-led Playwright Test Lead Training covering JavaScript, TypeScript, Playwright, POM, Cucumber BDD, API testing, CI/CD and GenAI agents.",
+      "provider": {
+        "@type": "Organization",
+        "name": "VibeTestQ",
+        "sameAs": "https://vibetestq.com"
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css?v=2.7.1">
+    <style>
+      /* ── Week Accordion — scoped reset mirrors toc/playwright-test-lead-training.html ── */
+      .week-block *, .schedule-notes * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      .week-block { margin-bottom: 22px; border-radius: 12px; overflow: hidden; border: 1.5px solid #e5e7eb; background: #fff; }
+
+      .week-header { display: flex; align-items: center; gap: 14px; padding: 16px 22px; cursor: pointer; user-select: none; background: #fff; border: none; width: 100%; text-align: left; transition: background .15s; }
+      .week-header:hover { background: #f1f5f9; }
+
+      .week-badge { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: .85rem; flex-shrink: 0; }
+
+      .week-title { flex: 1; }
+      .week-title h2 { font-size: 1.05rem; font-weight: 700; color: #1e293b; }
+      .week-title p  { font-size: .82rem; color: #64748b; margin-top: 2px; }
+
+      .week-chevron { font-size: 1rem; color: #64748b; transition: transform .25s; }
+      .week-block.open .week-chevron { transform: rotate(180deg); }
+
+      .week-body { display: none; padding: 0 18px 18px; border-top: 1.5px solid #e5e7eb; }
+      .week-block.open .week-body { display: block; }
+
+      .days-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+
+      .day-card { border-radius: 9px; padding: 14px 16px; border: 1.5px solid #e5e7eb; }
+      .day-card.theory   { background: #eff6ff; border-color: #93c5fd; }
+      .day-card.practice { background: #f0fdf4; border-color: #86efac; }
+
+      .day-label { display: inline-flex; align-items: center; gap: 6px; font-size: .74rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 6px; }
+      .day-label.theory   { color: #1d4ed8; }
+      .day-label.practice { color: #15803d; }
+
+      .day-card h3 { font-size: .92rem; font-weight: 700; margin-bottom: 8px; color: #1e293b; }
+      .day-card ul { padding-left: 17px; }
+      .day-card ul li { font-size: .84rem; line-height: 1.55; color: #334155; margin-bottom: 3px; }
+
+      .session-note { margin-top: 9px; font-size: .79rem; padding: 6px 10px; border-radius: 6px; font-style: italic; color: #475569; }
+      .theory .session-note  { background: #dbeafe; }
+      .practice .session-note { background: #dcfce7; }
+
+      .weekend-box { background: #fff7ed; border: 1.5px solid #fdba74; border-radius: 9px; padding: 13px 16px; }
+      .weekend-box h4 { display: flex; align-items: center; gap: 7px; font-size: .85rem; font-weight: 700; color: #92400e; margin-bottom: 7px; }
+      .weekend-box ul { padding-left: 17px; }
+      .weekend-box ul li { font-size: .83rem; line-height: 1.5; color: #78350f; margin-bottom: 3px; }
+
+      .schedule-notes { background: #fff; border: 1.5px solid #e5e7eb; border-radius: 12px; padding: 22px 26px; margin-bottom: 22px; }
+      .schedule-notes h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; color: #2563eb; border-bottom: 2px solid #e5e7eb; padding-bottom: 6px; }
+      .schedule-notes p, .schedule-notes li { font-size: .88rem; line-height: 1.65; color: #334155; }
+      .schedule-notes ul { padding-left: 20px; margin-top: 6px; }
+
+      @media (max-width: 640px) { .days-grid { grid-template-columns: 1fr; } }
+    </style>
+    <style>
+        .logo img.logo-light, .footer-col .logo img.logo-light { display: none !important; }
+        .logo img.logo-dark, .footer-col .logo img.logo-dark { display: block !important; }
+        [data-theme="light"] .logo img.logo-dark, [data-theme="light"] .footer-col .logo img.logo-dark { display: none !important; }
+        [data-theme="light"] .logo img.logo-light, [data-theme="light"] .footer-col .logo img.logo-light { display: block !important; }
+    </style>
+</head>
+
+<body>
+        <!-- Top Academy Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="./" class="logo" style="text-decoration:none;">
+                    <div class="academy-brand-wrap">
+                        <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 38px; width: auto;">
+                        <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 38px; width: auto;">
+                        <span class="academy-pill-badge">ACADEMY</span>
+                    </div>
+                </a>
+                <div class="nav-links">
+                    <div class="nav-dropdown">
+                        <a href="./#programs" class="nav-dropdown-toggle">Programs <i class="fas fa-chevron-down"></i></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="qa-ai-era-training.html"><i class="fas fa-code" style="color:#6366f1;"></i> <span>Playwright + GenAI Test Lead</span></a>
+                            <a href="genai-manual-testing.html"><i class="fas fa-brain" style="color:#10b981;"></i> <span>GenAI Manual Testing</span></a>
+                            <a href="selenium-genai.html"><i class="fab fa-python" style="color:#f59e0b;"></i> <span>Selenium with GenAI</span></a>
+                            <a href="cypress-genai.html"><i class="fab fa-js" style="color:#06b6d4;"></i> <span>Cypress with GenAI</span></a>
+                        </div>
+                    </div>
+                    <a href="upcoming-trainings.html" style="color: #f59e0b; font-weight: 700;">
+                        <i class="fas fa-calendar-check" style="margin-right: 0.3rem;"></i> Schedule
+                    </a>
+                    <a href="practicehub/">Practice Hub</a>
+                    <a href="projects/">StepUp Projects</a>
+                    <a href="interviews.html">Interviews</a>
+                    <a href="mentors.html">Mentorship</a>
+                    <a href="https://vibetestq.com" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.85rem;">
+                        Enterprise Platform <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
+                    </a>
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp nav-cta">
+                        <i class="fab fa-whatsapp"></i> Chat with Us
+                    </a>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <button class="theme-toggle" aria-label="Toggle theme">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="mobile-menu-btn">
+                        <i class="fas fa-bars"></i>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="course-hero">
+            <div class="container">
+                <span class="hero-tagline" style="color: var(--primary);">Instructor-Led Test Lead Program</span>
+                <h1 class="course-title"><span class="gradient-text">Playwright Test Lead Training</span></h1>
+                <p class="course-subtitle">A comprehensive 2-month instructor-led program: theory + guided practice + weekend assignments — covering JavaScript, TypeScript, Playwright, POM, Cucumber BDD, API testing, CI/CD and GenAI agents.</p>
+                <div class="course-meta-row">
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>2 Months · 8 Weeks</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-clock"></i>
+                        <span>1.5 Hours Daily</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Session Recordings</span>
+                    </div>
+                    <div class="course-meta-item">
+                        <i class="fa-solid fa-calendar-days"></i>
+                        <span>Mon–Fri (3 Theory + 2 Practice)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="background: rgba(99, 102, 241, 0.02);">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="mb-2">Why This <span class="highlight">Program?</span></h2>
+                    <p class="section-desc">A structured 8-week journey from JavaScript fundamentals to a production-ready Playwright framework — built around how real test leads work.</p>
+                </div>
+                <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                    <div class="card">
+                        <i class="fa-solid fa-chalkboard-teacher"></i>
+                        <h3>Instructor-Led Theory</h3>
+                        <p>Every week has 3 theory days plus 2 dedicated practice days — ensuring concepts are taught before they're applied.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-hammer"></i>
+                        <h3>Guided Practice Sessions</h3>
+                        <p>Practice days are structured exercises, not homework. You build real automation under mentor guidance in every session.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-calendar-week"></i>
+                        <h3>Weekend Assignments</h3>
+                        <p>Each week ends with a targeted assignment that reinforces the week's learning with a real-world mini-project.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-code"></i>
+                        <h3>Complete Automation Stack</h3>
+                        <p>JavaScript, TypeScript, Playwright, POM, Cucumber BDD, API testing, GitHub Actions CI/CD — all covered end to end.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-robot"></i>
+                        <h3>GenAI &amp; MCP Integration</h3>
+                        <p>Learn Model Context Protocol, Playwright MCP agents, and AI-driven test generation — built into the final week.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fa-solid fa-trophy"></i>
+                        <h3>Capstone Project</h3>
+                        <p>Finish with an end-to-end framework capstone: POM + BDD + API + CI pipeline + GenAI agent integration and live demo.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="mb-2">Weekly <span class="highlight">Schedule</span></h2>
+                    <p class="section-desc">8 weeks · 40 days · instructor-led theory + guided practice + weekend assignments</p>
+                </div>
+
+                <!-- ═══════════════ WEEK 1 ═══════════════ -->
+                <div class="week-block open" id="week1">
+                  <button class="week-header" onclick="toggleWeek('week1')">
+                    <div class="week-badge" style="background:var(--wk1);">W1</div>
+                    <div class="week-title">
+                      <h2>Week 1 — JavaScript Foundations</h2>
+                      <p>Days 1–5 &nbsp;·&nbsp; Node.js · Variables · Control Flow · Arrays &amp; ES6+</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 1 — Theory</span>
+                        <h3>JS Kickoff &amp; GenAI in QA</h3>
+                        <ul>
+                          <li>Testing evolution in the GenAI era; roles of AI agents in QA</li>
+                          <li>Node.js runtime, npm/yarn, package.json and scripts</li>
+                          <li>Use Codegen to bootstrap feature-driven tests</li>
+                          <li>Variables, data types &amp; operators (JavaScript)</li>
+                        </ul>
+                        <div class="session-note">In-session: demos and short examples; prep for Day 2 practice.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 2 — Practice</span>
+                        <h3>Node Project Setup</h3>
+                        <ul>
+                          <li>Initialize Node project, configure npm scripts</li>
+                          <li>Hands-on: write JS snippets covering variables, types and operators</li>
+                        </ul>
+                        <div class="session-note">Practice: Run scripts and verify outputs; commit to starter repo.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 3 — Theory</span>
+                        <h3>Control Flow &amp; Functions</h3>
+                        <ul>
+                          <li>Control flow: if/else, switch</li>
+                          <li>Loops: for, while, for...of, forEach</li>
+                          <li>Functions: declarations, expressions, arrow functions, scope &amp; closures</li>
+                        </ul>
+                        <div class="session-note">In-session: walk-through examples and code snippets.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 4 — Practice</span>
+                        <h3>Control Flow Exercises</h3>
+                        <ul>
+                          <li>Implement control-flow helpers and small algorithms</li>
+                          <li>Exercises focusing on closures and scoping</li>
+                        </ul>
+                        <div class="session-note">Practice: Build and test helper modules used in automation scripts.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 5 — Theory</span>
+                        <h3>Arrays, Objects &amp; ES6+</h3>
+                        <ul>
+                          <li>Arrays &amp; objects; map/filter/reduce patterns</li>
+                          <li>ES6+ features: destructuring, spread/rest, template literals</li>
+                          <li>Working with JSON and common object manipulation patterns</li>
+                        </ul>
+                        <div class="session-note">In-session: code examples and micro-exercises.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 1</h4>
+                        <ul>
+                          <li>Build utilities operating on arrays/objects; use destructuring and templates</li>
+                          <li>Prepare a short write-up explaining chosen patterns</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 2 ═══════════════ -->
+                <div class="week-block" id="week2">
+                  <button class="week-header" onclick="toggleWeek('week2')">
+                    <div class="week-badge" style="background:var(--wk2);">W2</div>
+                    <div class="week-title">
+                      <h2>Week 2 — Async JS, TypeScript &amp; Playwright Intro</h2>
+                      <p>Days 6–10 &nbsp;·&nbsp; Async/Await · Promises · TypeScript · First Playwright Tests</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 6 — Theory</span>
+                        <h3>Asynchronous JavaScript</h3>
+                        <ul>
+                          <li>Asynchronous JavaScript: callbacks, Promises and async/await</li>
+                          <li>Event loop, timers and common async pitfalls</li>
+                          <li>Error handling patterns</li>
+                        </ul>
+                        <div class="session-note">In-session: async examples and patterns.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 7 — Practice</span>
+                        <h3>Async Utilities</h3>
+                        <ul>
+                          <li>Write async helpers, chain Promises and use async/await</li>
+                          <li>Consume mock APIs and handle errors gracefully</li>
+                        </ul>
+                        <div class="session-note">Practice: Build small async utilities and tests.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 8 — Theory</span>
+                        <h3>TypeScript Essentials</h3>
+                        <ul>
+                          <li>TypeScript essentials: types, interfaces, classes and modules</li>
+                          <li>tsconfig, compilation and editor integration</li>
+                          <li>Best practices for test automation with TypeScript</li>
+                        </ul>
+                        <div class="session-note">In-session: TypeScript demos and typing strategies.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 9 — Practice</span>
+                        <h3>TypeScript Migration</h3>
+                        <ul>
+                          <li>Add TypeScript to the project and type small utilities</li>
+                          <li>Fix common typing issues and integrate with Playwright</li>
+                        </ul>
+                        <div class="session-note">Practice: Migrate a utility to TypeScript and run compilation.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 10 — Theory</span>
+                        <h3>Playwright Test Runner Intro</h3>
+                        <ul>
+                          <li>Playwright introduction and Test Runner fundamentals</li>
+                          <li>Install/init, playwright.config, describe/test, hooks and assertions</li>
+                        </ul>
+                        <div class="session-note">In-session: run first Playwright tests and explore test runner options.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 2</h4>
+                        <ul>
+                          <li>Scaffold Playwright + TypeScript project; write and run a basic test via CLI</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 3 ═══════════════ -->
+                <div class="week-block" id="week3">
+                  <button class="week-header" onclick="toggleWeek('week3')">
+                    <div class="week-badge" style="background:var(--wk3);">W3</div>
+                    <div class="week-title">
+                      <h2>Week 3 — Locators, Forms, Frames &amp; Contexts</h2>
+                      <p>Days 11–15 &nbsp;·&nbsp; Selectors · Assertions · Forms · Tables · Frames · StorageState</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 11 — Theory</span>
+                        <h3>Locators &amp; Assertions</h3>
+                        <ul>
+                          <li>Locators, selector strategies and wait mechanisms</li>
+                          <li>Expect API and web-first assertions</li>
+                        </ul>
+                        <div class="session-note">In-session: locator examples and expectation patterns.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 12 — Practice</span>
+                        <h3>Resilient Locators</h3>
+                        <ul>
+                          <li>Craft resilient locators, use different selector strategies</li>
+                          <li>Practice auto-wait and explicit waits</li>
+                        </ul>
+                        <div class="session-note">Practice: Build locator helpers and validate stability.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 13 — Theory</span>
+                        <h3>Forms &amp; Tables</h3>
+                        <ul>
+                          <li>Form interactions &amp; tables: inputs, checkboxes, radios, dropdowns</li>
+                          <li>Table extraction, pagination and validation strategies</li>
+                        </ul>
+                        <div class="session-note">In-session: form automation patterns and table assertions.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 14 — Practice</span>
+                        <h3>Form Automation Suites</h3>
+                        <ul>
+                          <li>Automate form flows and validate table data</li>
+                          <li>Edge cases for custom components and selects</li>
+                        </ul>
+                        <div class="session-note">Practice: Build representative form automation suites.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 15 — Theory</span>
+                        <h3>Frames, iFrames &amp; Browser Contexts</h3>
+                        <ul>
+                          <li>Frames, iframes &amp; browser contexts</li>
+                          <li>StorageState, cookies, session reuse and isolation strategies</li>
+                        </ul>
+                        <div class="session-note">In-session: examples for storageState and context isolation.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 3</h4>
+                        <ul>
+                          <li>Automate a scenario using frames and contexts; preserve and restore storage state between runs</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 4 ═══════════════ -->
+                <div class="week-block" id="week4">
+                  <button class="week-header" onclick="toggleWeek('week4')">
+                    <div class="week-badge" style="background:var(--wk4);">W4</div>
+                    <div class="week-title">
+                      <h2>Week 4 — Tabs, Interactions, Files &amp; Network</h2>
+                      <p>Days 16–20 &nbsp;·&nbsp; Multi-tab · Mouse/Keyboard · File Upload/Download</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 16 — Theory</span>
+                        <h3>Tabs, Popups &amp; Multi-page</h3>
+                        <ul>
+                          <li>Tabs, popups &amp; multi-page coordination</li>
+                          <li>Handling new pages and cross-window flows</li>
+                        </ul>
+                        <div class="session-note">In-session: coordination strategies across pages.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 17 — Practice</span>
+                        <h3>Multi-tab Automation</h3>
+                        <ul>
+                          <li>Automate multi-tab flows and popup interactions</li>
+                          <li>Coordinate assertions across windows</li>
+                        </ul>
+                        <div class="session-note">Practice: Build flows opening external pages and validate data flow.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 18 — Theory</span>
+                        <h3>Mouse, Keyboard &amp; Scroll</h3>
+                        <ul>
+                          <li>Mouse actions, scrolling, drag &amp; drop and keyboard events</li>
+                          <li>Viewport handling and scroll strategies</li>
+                        </ul>
+                        <div class="session-note">In-session: demos for complex UI interactions.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 19 — Practice</span>
+                        <h3>Complex Interactions</h3>
+                        <ul>
+                          <li>Implement hover, drag &amp; drop and keyboard shortcut automation</li>
+                          <li>Scroll into view and programmatic scrolling exercises</li>
+                        </ul>
+                        <div class="session-note">Practice: Build robust interaction flows requiring mouse/keyboard.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 20 — Theory</span>
+                        <h3>File Upload &amp; Download</h3>
+                        <ul>
+                          <li>File upload &amp; download handling (setInputFiles, download validation)</li>
+                          <li>Security considerations and cleanup strategies</li>
+                        </ul>
+                        <div class="session-note">In-session: download and upload patterns and cleanup.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 4</h4>
+                        <ul>
+                          <li>Automate uploads and downloads; validate file contents and cleanup scripts</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 5 ═══════════════ -->
+                <div class="week-block" id="week5">
+                  <button class="week-header" onclick="toggleWeek('week5')">
+                    <div class="week-badge" style="background:var(--wk5);">W5</div>
+                    <div class="week-title">
+                      <h2>Week 5 — Shadow DOM, Fixtures &amp; Artifacts</h2>
+                      <p>Days 21–25 &nbsp;·&nbsp; Web Components · Custom Fixtures · Trace Viewer · Screenshots</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 21 — Theory</span>
+                        <h3>Shadow DOM &amp; Web Components</h3>
+                        <ul>
+                          <li>Shadow DOM &amp; Web Components: interacting with shadow-root and custom elements</li>
+                          <li>Selectors and piercing strategies for web components</li>
+                        </ul>
+                        <div class="session-note">In-session: access techniques for shadow-root elements.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 22 — Practice</span>
+                        <h3>Web Component Testing</h3>
+                        <ul>
+                          <li>Access and assert shadow-root elements and custom element behavior</li>
+                          <li>Test component lifecycle and slot behaviors</li>
+                        </ul>
+                        <div class="session-note">Practice: Build tests for Web Components and validate behavior.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 23 — Theory</span>
+                        <h3>Fixtures &amp; Test Data</h3>
+                        <ul>
+                          <li>Fixtures — built-in &amp; custom; scoping, setup/teardown and test isolation</li>
+                          <li>Test data factories and reusable setup patterns</li>
+                        </ul>
+                        <div class="session-note">In-session: authoring fixtures and best practices.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 24 — Practice</span>
+                        <h3>Fixture-driven Tests</h3>
+                        <ul>
+                          <li>Author custom fixtures for reusable setup and teardown</li>
+                          <li>Create test data factories and seed data for tests</li>
+                        </ul>
+                        <div class="session-note">Practice: Build fixture-driven tests and validate isolation.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 25 — Theory</span>
+                        <h3>Debugging with Artifacts</h3>
+                        <ul>
+                          <li>Screenshots, video recording and Trace Viewer for debugging</li>
+                          <li>Artifact retention and analysis for flaky tests</li>
+                        </ul>
+                        <div class="session-note">In-session: capture artifacts and navigate Trace Viewer.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 5</h4>
+                        <ul>
+                          <li>Capture artifacts for failing tests and analyze traces to diagnose flakiness</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 6 ═══════════════ -->
+                <div class="week-block" id="week6">
+                  <button class="week-header" onclick="toggleWeek('week6')">
+                    <div class="week-badge" style="background:var(--wk6);">W6</div>
+                    <div class="week-title">
+                      <h2>Week 6 — Suite Organization, Parallelism &amp; Reporting</h2>
+                      <p>Days 26–30 &nbsp;·&nbsp; Tagging · Parallel Runs · HTML/Allure Reports · Codegen</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 26 — Theory</span>
+                        <h3>Test Grouping &amp; Annotations</h3>
+                        <ul>
+                          <li>Grouping tests, hooks, annotations, tagging and conditional runs</li>
+                          <li>Best practices for organizing large suites</li>
+                        </ul>
+                        <div class="session-note">In-session: design patterns for test grouping and tagging.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 27 — Practice</span>
+                        <h3>Selective Execution</h3>
+                        <ul>
+                          <li>Tag suites, apply annotations and run selective suites</li>
+                          <li>Create conditional runs based on environment and labels</li>
+                        </ul>
+                        <div class="session-note">Practice: Build tagged runs and selective execution examples.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 28 — Theory</span>
+                        <h3>Parallel Testing &amp; Sharding</h3>
+                        <ul>
+                          <li>Parallel testing &amp; distribution: workers, sharding and balancing tests for CI</li>
+                          <li>Strategies for stable parallel execution</li>
+                        </ul>
+                        <div class="session-note">In-session: parallelization demos and configuration.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 29 — Practice</span>
+                        <h3>Parallel Runs in CI</h3>
+                        <ul>
+                          <li>Configure parallel runs locally or in CI and measure speedups</li>
+                          <li>Address test ordering and shared state issues</li>
+                        </ul>
+                        <div class="session-note">Practice: Run tests in parallel and analyze results.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 30 — Theory</span>
+                        <h3>Reporting &amp; Maintenance</h3>
+                        <ul>
+                          <li>HTML/JUnit reporting, Allure integration and Report Portal</li>
+                          <li>Playwright Codegen overview and maintenance patterns for generated tests</li>
+                        </ul>
+                        <div class="session-note">In-session: generate reports and discuss maintenance practices.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 6</h4>
+                        <ul>
+                          <li>Generate reports, use Codegen to bootstrap tests and refactor generated code</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 7 ═══════════════ -->
+                <div class="week-block" id="week7">
+                  <button class="week-header" onclick="toggleWeek('week7')">
+                    <div class="week-badge" style="background:var(--wk7);">W7</div>
+                    <div class="week-title">
+                      <h2>Week 7 — POM Framework, Cucumber BDD &amp; CI/CD</h2>
+                      <p>Days 31–35 &nbsp;·&nbsp; Page Object Model · Cucumber BDD · GitHub Actions</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 31 — Theory</span>
+                        <h3>POM Fundamentals</h3>
+                        <ul>
+                          <li>Automation framework design — POM fundamentals and interfaces</li>
+                          <li>Framework goals: maintainability, readability and speed</li>
+                        </ul>
+                        <div class="session-note">In-session: framework design examples and patterns.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 32 — Practice</span>
+                        <h3>Build POM Classes</h3>
+                        <ul>
+                          <li>Create basic Page classes and encapsulate locators/actions</li>
+                          <li>Validate page interfaces and usage in tests</li>
+                          <li>Implement step definitions that delegate to POM methods</li>
+                        </ul>
+                        <div class="session-note">Practice: Implement simple POM classes and consume them in tests.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 33 — Theory</span>
+                        <h3>Cucumber BDD Fundamentals</h3>
+                        <ul>
+                          <li>BDD concepts: Given/When/Then, feature files and scenarios</li>
+                          <li>Integrating Cucumber with Playwright and TypeScript</li>
+                          <li>Step definitions, World object and hooks in Cucumber</li>
+                          <li>Organising feature files and tagging scenarios</li>
+                        </ul>
+                        <div class="session-note">In-session: write first feature file and step definitions end-to-end.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 34 — Practice</span>
+                        <h3>BDD with POM Integration</h3>
+                        <ul>
+                          <li>Author feature files for real user journeys</li>
+                          <li>Wire step definitions to POM page methods</li>
+                          <li>Run tagged scenarios and generate Cucumber HTML report</li>
+                        </ul>
+                        <div class="session-note">Practice: Build a BDD test suite and integrate with CI pipeline.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 35 — Theory</span>
+                        <h3>CI/CD with Playwright</h3>
+                        <ul>
+                          <li>CI/CD with Playwright: GitHub Actions, parallel jobs, artifact publishing and gating merges</li>
+                          <li>Running Cucumber BDD suites in CI; publishing Cucumber reports as artifacts</li>
+                        </ul>
+                        <div class="session-note">In-session: CI pipeline examples and artifact management.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🏠 Weekend Assignment — Week 7</h4>
+                        <ul>
+                          <li>Create a CI workflow to run tests, publish reports and gate merges</li>
+                          <li>Write a Cucumber feature file for a key user journey and run it via CI</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ═══════════════ WEEK 8 ═══════════════ -->
+                <div class="week-block" id="week8">
+                  <button class="week-header" onclick="toggleWeek('week8')">
+                    <div class="week-badge" style="background:var(--wk8);">W8</div>
+                    <div class="week-title">
+                      <h2>Week 8 — API Testing, MCPs, GenAI &amp; Capstone</h2>
+                      <p>Days 36–40 &nbsp;·&nbsp; APIRequestContext · MCP Integration · GenAI Agents · Capstone Kickoff</p>
+                    </div>
+                    <span class="week-chevron">▼</span>
+                  </button>
+                  <div class="week-body">
+                    <div class="days-grid">
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 36 — Theory</span>
+                        <h3>API Testing with Playwright</h3>
+                        <ul>
+                          <li>APIRequestContext, JSON schema validation and auth flows</li>
+                          <li>Hybrid UI+API testing strategies</li>
+                        </ul>
+                        <div class="session-note">In-session: API testing patterns and demos.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 37 — Practice</span>
+                        <h3>API Test Suites</h3>
+                        <ul>
+                          <li>Build API tests and compose them with UI flows</li>
+                          <li>Validate JSON schemas and auth scenarios</li>
+                        </ul>
+                        <div class="session-note">Practice: Implement API test suites and chain flows.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 38 — Theory</span>
+                        <h3>Playwright MCPs &amp; Tooling</h3>
+                        <ul>
+                          <li>Playwright CLI, MCP concepts and integrating with agents</li>
+                          <li>WebMCP / Model Context Protocol overview</li>
+                        </ul>
+                        <div class="session-note">In-session: MCP architecture and agent workflows.</div>
+                      </div>
+                      <div class="day-card practice">
+                        <span class="day-label practice">🛠 Day 39 — Practice</span>
+                        <h3>Agent Integration</h3>
+                        <ul>
+                          <li>Call MCP endpoints, use agent outputs and validate generated tests</li>
+                          <li>Experiment with generator and healer agent examples</li>
+                        </ul>
+                        <div class="session-note">Practice: Integrate agent outputs into test pipelines and validate results.</div>
+                      </div>
+                      <div class="day-card theory">
+                        <span class="day-label theory">📖 Day 40 — Theory &amp; Capstone Kickoff</span>
+                        <h3>GenAI Agents &amp; Capstone Launch</h3>
+                        <ul>
+                          <li>GenAI for test generation &amp; agents; planner workflows</li>
+                          <li>Capstone kickoff: scope, milestones, deliverables and evaluation criteria</li>
+                          <li>Capstone option: BDD — feature files, step definitions and CI integration</li>
+                        </ul>
+                        <div class="session-note">In-session: capstone planning and next steps.</div>
+                      </div>
+                      <div class="weekend-box">
+                        <h4>🎓 Capstone &amp; Assessment</h4>
+                        <ul>
+                          <li>Build end-to-end framework: POM + BDD + API + CI pipeline</li>
+                          <li>Integrate MCP/GenAI agents; present code review and final demo</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Capstone & Notes -->
+                <div class="schedule-notes" style="margin-top:28px;">
+                  <h2>🎓 Capstone &amp; Assessment</h2>
+                  <p>Capstone spans the final two weeks: develop an end-to-end Playwright framework (POM and BDD), include API tests, CI pipeline, reporting and demonstrate integration with MCP/GenAI agents. Assessment is based on code reviews, mentor feedback and final demo.</p>
+                </div>
+                <div class="schedule-notes">
+                  <h2>📋 Notes &amp; Prerequisites</h2>
+                  <ul>
+                    <li>Participants must attend Monday–Friday sessions (1.5 hrs/day) and complete weekend practice assignments.</li>
+                    <li>Required tools: VSCode, Node.js, npm, Playwright, TypeScript, Cucumber, Allure Reports, Git.</li>
+                  </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container text-center">
+                <h2 class="mb-3">Ready to <span class="highlight">Begin?</span></h2>
+                <p class="section-desc mb-5">Transform your QA career with the most comprehensive AI-era training program.</p>
+                <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fab fa-whatsapp"></i> Discuss on WhatsApp
+                    </a>
+                    <a href="contact" class="btn btn-secondary">Register Your Interest</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+        <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col" style="grid-column: span 1.4;">
+                    <a href="./" class="logo" style="text-decoration:none; margin-bottom: 1.25rem; display: inline-block;">
+                        <div class="academy-brand-wrap">
+                            <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 34px; width: auto;">
+                            <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 34px; width: auto;">
+                            <span class="academy-pill-badge">ACADEMY</span>
+                        </div>
+                    </a>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; max-width: 320px;">
+                        The premier AI-native Quality Engineering academy. Training forward-thinking test engineers and leaders with code-first curricula, enterprise sandboxes, and personal mentorship.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h4>Masterclasses</h4>
+                    <ul class="footer-links">
+                        <li><a href="qa-ai-era-training.html">Playwright + GenAI Test Lead</a></li>
+                        <li><a href="genai-manual-testing.html">GenAI Manual Testing</a></li>
+                        <li><a href="selenium-genai.html">Selenium with GenAI</a></li>
+                        <li><a href="cypress-genai.html">Cypress with GenAI</a></li>
+                        <li><a href="upcoming-trainings.html">Upcoming Batches &amp; Demos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Practice &amp; Career</h4>
+                    <ul class="footer-links">
+                        <li><a href="practicehub/">Practice Hub (12 Modules)</a></li>
+                        <li><a href="projects/">6-Week StepUp Program</a></li>
+                        <li><a href="locators/">Locators Mastery Lab</a></li>
+                        <li><a href="interviews.html">Mock Interviews &amp; Readiness</a></li>
+                        <li><a href="mentors.html">1-on-1 Mentorship</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect &amp; Corporate</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://vibetestq.com" target="_blank" rel="noopener">VibeTestQ Enterprise Platform ↗</a></li>
+                        <li><a href="https://academy.vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH™ Platform ↗</a></li>
+                        <li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li>
+                        <li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">WhatsApp Support</a></li>
+                    </ul>
+                    <div class="footer-social" style="margin-top: 1rem;">
+                        <a href="https://www.linkedin.com/in/qtpsudhakar/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/c/qtpsudhakarblog" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-bottom-row">
+                    <p>&copy; 2026 VibeTestQ Academy. All rights reserved.</p>
+                    <div class="footer-bottom-badges">
+                        <span class="footer-badge"><i class="fas fa-graduation-cap"></i> Professional Academy</span>
+                        <span class="footer-badge"><i class="fas fa-shield-halved"></i> 21+ Years QE Heritage</span>
+                        <span class="footer-badge"><i class="fab fa-whatsapp"></i> Live Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" class="floating-whatsapp" aria-label="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+        <span>Chat with us</span>
+    </a>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="script.js?v=2.7.1"></script>
+    <script>
+      function toggleWeek(id) {
+        document.getElementById(id).classList.toggle('open');
+      }
+    </script>
+</body>
+
+</html>

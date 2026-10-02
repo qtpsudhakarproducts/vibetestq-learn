@@ -7,14 +7,14 @@
     <title>Mentor with VibeTestQ | Community-Led Quality Engineering Mentorship</title>
     <meta name="description"
         content="Join VibeTestQ as a mentor and help shape the future of Quality Engineering. A free, community-driven program for experienced professionals to provide guidance.">
-    <link rel="canonical" href="https://vibetestq.com/mentors" />
+    <link rel="canonical" href="https://academy.vibetestq.com/mentors" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css?v=1.1">
+    <link rel="stylesheet" href="styles.css?v=2.7.1">
     <style>
         .mentor-stats {
             display: grid;
@@ -174,40 +174,49 @@
             }
         }
     </style>
+    <style>
+        .logo img.logo-light, .footer-col .logo img.logo-light { display: none !important; }
+        .logo img.logo-dark, .footer-col .logo img.logo-dark { display: block !important; }
+        [data-theme="light"] .logo img.logo-dark, [data-theme="light"] .footer-col .logo img.logo-dark { display: none !important; }
+        [data-theme="light"] .logo img.logo-light, [data-theme="light"] .footer-col .logo img.logo-light { display: block !important; }
+    </style>
 </head>
 
 <body>
+        <!-- Top Academy Navigation -->
     <header>
         <div class="container">
             <nav>
-                <a href="./" class="logo">
-                    <img src="assets/ulogo.jpg" alt="VibeTestQ Logo" style="height: 50px; width: auto; display: block;">
+                <a href="./" class="logo" style="text-decoration:none;">
+                    <div class="academy-brand-wrap">
+                        <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 38px; width: auto;">
+                        <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 38px; width: auto;">
+                        <span class="academy-pill-badge">ACADEMY</span>
+                    </div>
                 </a>
                 <div class="nav-links">
-                    <a href="./">Home</a>
                     <div class="nav-dropdown">
-                        <a href="training" class="nav-dropdown-toggle">Trainings <i class="fas fa-chevron-down"></i></a>
+                        <a href="./#programs" class="nav-dropdown-toggle">Programs <i class="fas fa-chevron-down"></i></a>
                         <div class="nav-dropdown-menu">
-                            <a href="genai-manual-testing"><i class="fas fa-brain"></i> <span>GenAI Manual Testing</span></a>
-                            <a href="qa-ai-era-training"><i class="fas fa-code"></i> <span>Playwright with GenAI</span></a>
-                            <a href="selenium-genai"><i class="fab fa-python"></i> <span>Selenium with GenAI</span></a>
-                            <a href="cypress-genai"><i class="fab fa-js"></i> <span>Cypress with GenAI</span></a>
+                            <a href="qa-ai-era-training.html"><i class="fas fa-code" style="color:#6366f1;"></i> <span>Playwright + GenAI Test Lead</span></a>
+                            <a href="genai-manual-testing.html"><i class="fas fa-brain" style="color:#10b981;"></i> <span>GenAI Manual Testing</span></a>
+                            <a href="selenium-genai.html"><i class="fab fa-python" style="color:#f59e0b;"></i> <span>Selenium with GenAI</span></a>
+                            <a href="cypress-genai.html"><i class="fab fa-js" style="color:#06b6d4;"></i> <span>Cypress with GenAI</span></a>
                         </div>
                     </div>
-                    <a href="interviews">Interviews</a>
-                    <div class="nav-dropdown">
-                        <a href="tamash" class="nav-dropdown-toggle">Products <i class="fas fa-chevron-down"></i></a>
-                        <div class="nav-dropdown-menu">
-                            <a href="tamash/"><i class="fas fa-wand-magic-sparkles"></i> <span>TAMASH</span></a>
-                            <a href="tamash-playwright/"><i class="fas fa-heart-pulse"></i> <span>TAMASH-Playwright</span></a>
-                            <a href="tamash-selenium/"><i class="fas fa-shield-halved"></i> <span>TAMASH-Selenium</span></a>
-                        </div>
-                    </div>
-                    <a href="upcoming-trainings" style="color: var(--accent); font-weight: 600;"><i class="fas fa-calendar-star" style="margin-right: 0.3rem;"></i>Upcoming</a>
-                    <a href="mentors" class="active">Mentors</a>
-                    <a href="blog">Blogs</a>
-                    <a href="about">About</a>
-                    <a href="contact" class="nav-cta">Contact</a>
+                    <a href="upcoming-trainings.html" style="color: #f59e0b; font-weight: 700;">
+                        <i class="fas fa-calendar-check" style="margin-right: 0.3rem;"></i> Schedule
+                    </a>
+                    <a href="practicehub/">Practice Hub</a>
+                    <a href="projects/">StepUp Projects</a>
+                    <a href="interviews.html">Interviews</a>
+                    <a href="mentors.html">Mentorship</a>
+                    <a href="https://vibetestq.com" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.85rem;">
+                        Enterprise Platform <i class="fas fa-external-link-alt" style="font-size: 0.7rem;"></i>
+                    </a>
+                    <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" class="btn btn-whatsapp nav-cta">
+                        <i class="fab fa-whatsapp"></i> Chat with Us
+                    </a>
                 </div>
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <button class="theme-toggle" aria-label="Toggle theme">
@@ -478,43 +487,66 @@
         </section>
     </main>
 
+        <!-- Footer -->
     <footer>
         <div class="container">
             <div class="footer-grid">
-                <div class="footer-col">
-                    <a href="./" class="logo" style="margin-bottom: 1.5rem; display: block;">
-                        <img src="assets/ulogo.jpg" alt="VibeTestQ Logo" style="height: 40px; width: auto;">
+                <div class="footer-col" style="grid-column: span 1.4;">
+                    <a href="./" class="logo" style="text-decoration:none; margin-bottom: 1.25rem; display: inline-block;">
+                        <div class="academy-brand-wrap">
+                            <img src="assets/vq/VQLogoTitleForDark.png" alt="VibeTestQ Academy" class="logo-dark" style="height: 34px; width: auto;">
+                            <img src="assets/vq/VQLogoTitleForLight.png" alt="VibeTestQ Academy" class="logo-light" style="height: 34px; width: auto;">
+                            <span class="academy-pill-badge">ACADEMY</span>
+                        </div>
                     </a>
-                    <p style="color: var(--text-muted);">Elevating Quality Engineering through AI-driven innovation and
-                        expert-led training.</p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 1.5rem; max-width: 320px;">
+                        The premier AI-native Quality Engineering academy. Training forward-thinking test engineers and leaders with code-first curricula, enterprise sandboxes, and personal mentorship.
+                    </p>
                 </div>
                 <div class="footer-col">
-                    <h4>Quick Links</h4>
+                    <h4>Masterclasses</h4>
                     <ul class="footer-links">
-                        <li><a href="./">Home</a></li>
-                        <li><a href="training">Trainings</a></li>
-                        <li><a href="upcoming-trainings" style="color: var(--accent);">📅 Upcoming Sessions</a></li>
-                        <li><a href="interviews">Interviews</a></li>
-                        <li><a href="mentors">Mentors</a></li>
-                        <li><a href="about">About Us</a></li>
-                        <li><a href="contact">Contact</a></li>
+                        <li><a href="qa-ai-era-training.html">Playwright + GenAI Test Lead</a></li>
+                        <li><a href="genai-manual-testing.html">GenAI Manual Testing</a></li>
+                        <li><a href="selenium-genai.html">Selenium with GenAI</a></li>
+                        <li><a href="cypress-genai.html">Cypress with GenAI</a></li>
+                        <li><a href="upcoming-trainings.html">Upcoming Batches &amp; Demos</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4>Connect</h4>
+                    <h4>Practice &amp; Career</h4>
                     <ul class="footer-links">
+                        <li><a href="practicehub/">Practice Hub (12 Modules)</a></li>
+                        <li><a href="projects/">6-Week StepUp Program</a></li>
+                        <li><a href="locators/">Locators Mastery Lab</a></li>
+                        <li><a href="interviews.html">Mock Interviews &amp; Readiness</a></li>
+                        <li><a href="mentors.html">1-on-1 Mentorship</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect &amp; Corporate</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://vibetestq.com" target="_blank" rel="noopener">VibeTestQ Enterprise Platform ↗</a></li>
+                        <li><a href="https://academy.vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH™ Platform ↗</a></li>
                         <li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li>
-                        <li><a href="mailto:services@vibetestq.com">services@vibetestq.com</a></li>
+                        <li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">WhatsApp Support</a></li>
                     </ul>
-                    <div class="footer-social">
-                        <a href="https://www.linkedin.com/in/qtpsudhakar/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="https://www.youtube.com/c/qtpsudhakarblog" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-                        <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    <div class="footer-social" style="margin-top: 1rem;">
+                        <a href="https://www.linkedin.com/in/qtpsudhakar/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="https://www.youtube.com/c/qtpsudhakarblog" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 VibeTestQ. All rights reserved.</p>
+                <div class="footer-bottom-row">
+                    <p>&copy; 2026 VibeTestQ Academy. All rights reserved.</p>
+                    <div class="footer-bottom-badges">
+                        <span class="footer-badge"><i class="fas fa-graduation-cap"></i> Professional Academy</span>
+                        <span class="footer-badge"><i class="fas fa-shield-halved"></i> 21+ Years QE Heritage</span>
+                        <span class="footer-badge"><i class="fab fa-whatsapp"></i> Live Support</span>
+                    </div>
+                </div>
             </div>
         </div>
     </footer>
@@ -530,7 +562,7 @@
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2.7.1"></script>
     <script>
         const scriptURL = 'https://script.google.com/macros/s/AKfycbwoKhl0co2R0MzYx2I3vmqqfeC7TTHokVO6w2G84woYB3rN0-cVjtMBpNIednO5qJ3M/exec';
         const form = document.getElementById('mentorForm');
