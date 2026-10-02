@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LangChain for QA Engineers</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+<link rel="stylesheet" href="../../../linkedin-modal.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c:#b45309;--cd:#78350f;--cs:#451a03;
+  --cl:#fef9ee;--cm:#fde68a;--clt:#fef3c7;
+  --bg:#f8f5f0;--card:#fff;--bdr:#e7e0d5;
+  --tx:#1c1007;--mu:#78716c;--r:10px;
+  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.05);
+  --sidebar:280px;--hh:56px
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;overflow-x:hidden}
+
+/* HEADER */
+.site-header{position:sticky;top:0;z-index:300;background:rgba(255,255,255,.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--bdr);height:var(--hh);display:flex;align-items:center}
+.site-nav{max-width:100%;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;width:100%;gap:.5rem}
+.site-logo img{height:36px}
+.nav-links{display:flex;gap:.25rem;flex-wrap:wrap;justify-content:flex-end}
+.nav-link-ext{padding:.25rem .55rem;border-radius:5px;font-size:.75rem;font-weight:700;color:#334155;text-decoration:none}
+.nav-link-ext:hover{background:#f1f5f9}
+.nav-link-ext.hi{background:#0f172a;color:#fff}
+.nav-link-ext.hi:hover{background:#1e293b}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - var(--hh))}
+
+/* SIDEBAR */
+.sidebar{width:var(--sidebar);flex-shrink:0;background:#fff;border-right:1px solid var(--bdr);position:sticky;top:var(--hh);height:calc(100vh - var(--hh));overflow-y:auto;display:flex;flex-direction:column}
+.sidebar-head{padding:1rem;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.sidebar-head h2{font-size:.82rem;font-weight:900;color:var(--c);text-transform:uppercase;letter-spacing:.06em}
+.sidebar-head p{font-size:.7rem;color:var(--mu);margin-top:.2rem}
+.sb-nav{padding:.5rem 0;flex:1}
+.sb-group{margin-bottom:.25rem}
+.sb-group-label{padding:.4rem 1rem .2rem;font-size:.62rem;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.07em}
+.sb-link{display:flex;align-items:center;gap:.55rem;padding:.42rem 1rem;font-size:.78rem;font-weight:600;color:#44403c;text-decoration:none;cursor:pointer;transition:background .1s;border-left:3px solid transparent}
+.sb-link:hover{background:var(--cl);color:var(--c)}
+.sb-link.active{background:var(--clt);color:var(--c);border-left-color:var(--c);font-weight:700}
+.sb-link .num{margin-left:auto;font-size:.62rem;color:var(--mu);font-weight:600}
+.hamburger{display:none;background:none;border:none;padding:.4rem;cursor:pointer;font-size:1.1rem;color:#334155}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200}
+.overlay.active{display:block}
+
+/* MAIN */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.content-wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem;width:100%}
+
+/* NAV BTNS */
+.nav-btns{display:flex;gap:.75rem;margin-bottom:1.5rem}
+.btn-nav{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;border-radius:7px;font-size:.78rem;font-weight:700;text-decoration:none;cursor:pointer;transition:filter .12s}
+.btn-prev{background:var(--cl);color:var(--c);border:1.5px solid var(--cm)}
+.btn-prev:hover{filter:brightness(.94)}
+.btn-next{background:var(--c);color:#fff}
+.btn-next:hover{filter:brightness(.88)}
+
+/* INTRO SECTION */
+.hero-box{background:linear-gradient(135deg,var(--cs) 0%,var(--cd) 100%);color:#fff;border-radius:12px;padding:2rem;margin-bottom:1.5rem}
+.hero-box h1{font-size:clamp(1.3rem,3.5vw,2rem);font-weight:900;line-height:1.15;color:#fff!important}
+.hero-box h1 em{color:#fcd34d;font-style:normal}
+.hero-box p{color:#fde68a;margin-top:.5rem;font-size:.9rem;max-width:520px}
+.stats-row{display:flex;gap:1.5rem;margin-top:1.2rem;flex-wrap:wrap}
+.stat b{display:block;font-size:1.6rem;font-weight:900;color:#fcd34d}
+.stat s{font-size:.65rem;color:#fde68a;text-transform:uppercase;letter-spacing:.05em;text-decoration:none}
+.chapter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem;margin-top:1rem}
+.ch-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1rem;cursor:pointer;transition:transform .12s,box-shadow .12s;text-decoration:none;display:block;color:var(--tx)}
+.ch-card:hover{transform:translateY(-2px);box-shadow:var(--sh);border-color:var(--cm)}
+.ch-card .ch-num{font-size:.65rem;font-weight:800;color:var(--c);text-transform:uppercase;letter-spacing:.05em}
+.ch-card h3{font-size:.85rem;font-weight:800;margin:.2rem 0 .3rem;line-height:1.3}
+.ch-card p{font-size:.75rem;color:var(--mu);line-height:1.45}
+
+/* RENDERED MARKDOWN */
+section{display:none}
+section.active{display:block}
+.content-wrap h1{font-size:1.7rem;font-weight:900;line-height:1.2;margin-bottom:1rem;color:var(--tx)}
+.content-wrap h2{font-size:1.2rem;font-weight:800;margin:1.8rem 0 .7rem;color:var(--tx);padding-bottom:.35rem;border-bottom:2px solid var(--cm)}
+.content-wrap h3{font-size:1rem;font-weight:700;margin:1.4rem 0 .5rem;color:var(--cd)}
+.content-wrap h4{font-size:.88rem;font-weight:700;margin:1rem 0 .4rem;color:#57534e}
+.content-wrap p{margin-bottom:.85rem;font-size:.93rem;line-height:1.7}
+.content-wrap ul,.content-wrap ol{margin:.5rem 0 .85rem 1.4rem;font-size:.93rem;line-height:1.75}
+.content-wrap li{margin-bottom:.3rem}
+.content-wrap strong{color:var(--cs)}
+.content-wrap code{background:var(--clt);color:var(--cd);padding:.1em .35em;border-radius:4px;font-size:.83em;font-family:'Fira Code','Cascadia Code',monospace}
+.content-wrap pre{background:#1e1e2e;border-radius:8px;padding:1.1rem 1.2rem;overflow-x:auto;margin:1rem 0 1.2rem;position:relative}
+.content-wrap pre code{background:none;color:#cdd6f4;padding:0;font-size:.82rem;line-height:1.65}
+.content-wrap blockquote{border-left:4px solid var(--cm);background:var(--cl);padding:.7rem 1rem;border-radius:0 6px 6px 0;margin:1rem 0;font-size:.88rem;color:#57534e}
+.content-wrap table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+.content-wrap th{background:var(--clt);padding:.55rem .75rem;text-align:left;font-weight:700;border:1px solid var(--cm)}
+.content-wrap td{padding:.5rem .75rem;border:1px solid var(--bdr)}
+.content-wrap tr:nth-child(even) td{background:#fafaf8}
+.table-scroll-wrapper{overflow-x:auto;margin:1rem 0}
+.copy-btn{position:absolute;top:.55rem;right:.6rem;background:rgba(255,255,255,.12);color:#cdd6f4;border:1px solid rgba(255,255,255,.18);border-radius:5px;padding:.2rem .55rem;font-size:.7rem;cursor:pointer;transition:background .12s}
+.copy-btn:hover{background:rgba(255,255,255,.22)}
+
+/* FOOTER */
+.doc-footer{text-align:center;padding:1.5rem;font-size:.75rem;color:var(--mu);border-top:1px solid var(--bdr);margin-top:2rem}
+
+/* MOBILE */
+@media(max-width:768px){
+  .sidebar{position:fixed;top:var(--hh);left:0;height:calc(100vh - var(--hh));transform:translateX(-100%);transition:transform .25s;z-index:250}
+  .sidebar.open{transform:translateX(0)}
+  .hamburger{display:flex}
+  .content-wrap{padding:1.2rem 1rem}
+}
+</style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="site-nav">
+    <button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+    <a href="../../../index.html" class="site-logo"><img src="../../../assets/images/logo.png" alt="VibetestQ" onerror="this.style.display='none'"></a>
+    <div class="nav-links">
+      <a href="../../../index.html" class="nav-link-ext">Home</a>
+      <a href="../index.html" class="nav-link-ext">AI Books</a>
+      <a href="../../../training.html" class="nav-link-ext">Training</a>
+      <a href="../../../contact.html" class="nav-link-ext hi">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <h2>LangChain</h2>
+      <p>Book 1 · 17 chapters · TypeScript</p>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-group">
+        <div class="sb-group-label">Overview</div>
+        <a class="sb-link active" data-section="intro" onclick="showSection('intro')"><i class="fas fa-home" style="width:14px"></i> Book Overview</a>
+        <a class="sb-link" data-section="fm" onclick="showSection('fm')"><i class="fas fa-book-open" style="width:14px"></i> Front Matter <span class="num">00</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Foundations</div>
+        <a class="sb-link" data-section="ch1" onclick="showSection('ch1')"><i class="fas fa-circle-question" style="width:14px"></i> What is LangChain? <span class="num">01</span></a>
+        <a class="sb-link" data-section="ch2" onclick="showSection('ch2')"><i class="fas fa-wrench" style="width:14px"></i> Project Setup <span class="num">02</span></a>
+        <a class="sb-link" data-section="ch3" onclick="showSection('ch3')"><i class="fas fa-robot" style="width:14px"></i> LLMs &amp; Chat Models <span class="num">03</span></a>
+        <a class="sb-link" data-section="ch4" onclick="showSection('ch4')"><i class="fas fa-align-left" style="width:14px"></i> Prompt Templates <span class="num">04</span></a>
+        <a class="sb-link" data-section="ch5" onclick="showSection('ch5')"><i class="fas fa-code" style="width:14px"></i> Output Parsers <span class="num">05</span></a>
+        <a class="sb-link" data-section="ch6" onclick="showSection('ch6')"><i class="fas fa-link" style="width:14px"></i> Chains (LCEL) <span class="num">06</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Intermediate</div>
+        <a class="sb-link" data-section="ch7" onclick="showSection('ch7')"><i class="fas fa-brain" style="width:14px"></i> Memory <span class="num">07</span></a>
+        <a class="sb-link" data-section="ch8" onclick="showSection('ch8')"><i class="fas fa-toolbox" style="width:14px"></i> Tools <span class="num">08</span></a>
+        <a class="sb-link" data-section="ch9" onclick="showSection('ch9')"><i class="fas fa-user-astronaut" style="width:14px"></i> Agents <span class="num">09</span></a>
+        <a class="sb-link" data-section="ch10" onclick="showSection('ch10')"><i class="fas fa-file-import" style="width:14px"></i> RAG Part 1 — Loading <span class="num">10</span></a>
+        <a class="sb-link" data-section="ch11" onclick="showSection('ch11')"><i class="fas fa-database" style="width:14px"></i> RAG Part 2 — Embeddings <span class="num">11</span></a>
+        <a class="sb-link" data-section="ch12" onclick="showSection('ch12')"><i class="fas fa-magnifying-glass" style="width:14px"></i> RAG Part 3 — Retrieval <span class="num">12</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">QA Applications</div>
+        <a class="sb-link" data-section="ch13" onclick="showSection('ch13')"><i class="fas fa-list-check" style="width:14px"></i> Test Case Generator <span class="num">13</span></a>
+        <a class="sb-link" data-section="ch14" onclick="showSection('ch14')"><i class="fas fa-bug" style="width:14px"></i> Bug Report Analyzer <span class="num">14</span></a>
+        <a class="sb-link" data-section="ch15" onclick="showSection('ch15')"><i class="fas fa-flask" style="width:14px"></i> Test Data Generator <span class="num">15</span></a>
+        <a class="sb-link" data-section="ch16" onclick="showSection('ch16')"><i class="fas fa-wand-magic-sparkles" style="width:14px"></i> AI Selector Healer <span class="num">16</span></a>
+        <a class="sb-link" data-section="ch17" onclick="showSection('ch17')"><i class="fas fa-rocket" style="width:14px"></i> Best Practices &amp; CI/CD <span class="num">17</span></a>
+      </div>
+      <div class="sb-group">
+        <div class="sb-group-label">Appendices</div>
+        <a class="sb-link" data-section="apx-a" onclick="showSection('apx-a')"><i class="fas fa-stethoscope" style="width:14px"></i> Appendix A — Debugging</a>
+        <a class="sb-link" data-section="apx-b" onclick="showSection('apx-b')"><i class="fas fa-spell-check" style="width:14px"></i> Appendix B — Glossary</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <div class="content-wrap">
+
+      <div class="nav-btns" id="nav-btns-top" style="display:none">
+        <a class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+        <a class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <section id="intro" class="active">
+        <div class="hero-box">
+          <h1>Book 1 — <em>LangChain</em><br>for QA Engineers</h1>
+          <p>Build AI tools that help you test smarter — TypeScript, beginner to advanced.</p>
+          <div class="stats-row">
+            <div class="stat"><b>17</b><s>Chapters</s></div>
+            <div class="stat"><b>2</b><s>Appendices</s></div>
+            <div class="stat"><b>TypeScript</b><s>All examples</s></div>
+          </div>
+        </div>
+
+        <h2 style="border:none;margin-top:0">All Chapters</h2>
+        <div class="chapter-grid">
+          <a class="ch-card" onclick="showSection('fm')"><div class="ch-num">Front Matter</div><h3>Introduction &amp; Prerequisites</h3><p>What this book covers, how to read it, and what you need to get started.</p></a>
+          <a class="ch-card" onclick="showSection('ch1')"><div class="ch-num">Chapter 01</div><h3>What is LangChain?</h3><p>The three core concepts — models, prompts, chains — explained using QA analogies.</p></a>
+          <a class="ch-card" onclick="showSection('ch2')"><div class="ch-num">Chapter 02</div><h3>Project Setup</h3><p>TypeScript + LangChain + OpenAI. Write your first AI call in 10 minutes.</p></a>
+          <a class="ch-card" onclick="showSection('ch3')"><div class="ch-num">Chapter 03</div><h3>LLMs &amp; Chat Models</h3><p>Understand the difference between completion and chat models. Use both in TypeScript.</p></a>
+          <a class="ch-card" onclick="showSection('ch4')"><div class="ch-num">Chapter 04</div><h3>Prompt Templates</h3><p>Reusable, parameterised prompts. System vs human messages. Maintainable prompt design.</p></a>
+          <a class="ch-card" onclick="showSection('ch5')"><div class="ch-num">Chapter 05</div><h3>Output Parsers</h3><p>Parse LLM responses into TypeScript objects. Zod schemas for validation.</p></a>
+          <a class="ch-card" onclick="showSection('ch6')"><div class="ch-num">Chapter 06</div><h3>Chains (LCEL)</h3><p>Build and compose chains with the LangChain Expression Language.</p></a>
+          <a class="ch-card" onclick="showSection('ch7')"><div class="ch-num">Chapter 07</div><h3>Memory</h3><p>Add conversation memory so your AI tools remember context across calls.</p></a>
+          <a class="ch-card" onclick="showSection('ch8')"><div class="ch-num">Chapter 08</div><h3>Tools</h3><p>Give AI models access to external capabilities — search, calculators, APIs.</p></a>
+          <a class="ch-card" onclick="showSection('ch9')"><div class="ch-num">Chapter 09</div><h3>Agents</h3><p>Build agents that decide what tools to call and when — applied to QA problems.</p></a>
+          <a class="ch-card" onclick="showSection('ch10')"><div class="ch-num">Chapter 10</div><h3>RAG Part 1 — Loading</h3><p>Load test documents, requirements, and bug reports into your AI pipeline.</p></a>
+          <a class="ch-card" onclick="showSection('ch11')"><div class="ch-num">Chapter 11</div><h3>RAG Part 2 — Embeddings</h3><p>Convert documents to vectors. Store and search with vector databases.</p></a>
+          <a class="ch-card" onclick="showSection('ch12')"><div class="ch-num">Chapter 12</div><h3>RAG Part 3 — Retrieval</h3><p>Build retrieval chains that answer questions from your QA knowledge base.</p></a>
+          <a class="ch-card" onclick="showSection('ch13')"><div class="ch-num">Chapter 13</div><h3>AI Test Case Generator</h3><p>Generate structured test cases from requirements using structured output.</p></a>
+          <a class="ch-card" onclick="showSection('ch14')"><div class="ch-num">Chapter 14</div><h3>AI Bug Report Analyzer</h3><p>Classify, prioritise and root-cause bugs automatically from raw bug reports.</p></a>
+          <a class="ch-card" onclick="showSection('ch15')"><div class="ch-num">Chapter 15</div><h3>AI Test Data Generator</h3><p>Generate unlimited, realistic, typed test data for any entity schema.</p></a>
+          <a class="ch-card" onclick="showSection('ch16')"><div class="ch-num">Chapter 16</div><h3>AI Selector Healer</h3><p>Automatically suggest alternative locators when Playwright selectors break.</p></a>
+          <a class="ch-card" onclick="showSection('ch17')"><div class="ch-num">Chapter 17</div><h3>Best Practices &amp; CI/CD</h3><p>Production patterns, security, cost management, and GitHub Actions integration.</p></a>
+          <a class="ch-card" onclick="showSection('apx-a')"><div class="ch-num">Appendix A</div><h3>Debugging Guide</h3><p>Common errors, fixes, and a debugging checklist for LangChain TypeScript projects.</p></a>
+          <a class="ch-card" onclick="showSection('apx-b')"><div class="ch-num">Appendix B</div><h3>Glossary</h3><p>Every AI and LangChain term explained in plain English for QA engineers.</p></a>
+        </div>
+
+        <div style="margin-top:1.5rem;display:flex;gap:.75rem;flex-wrap:wrap">
+          <a class="btn-nav btn-next" onclick="showSection('ch1')">Start Chapter 1 <i class="fas fa-arrow-right"></i></a>
+          <a class="btn-nav btn-prev" href="../index.html"><i class="fas fa-arrow-left"></i> All AI Books</a>
+        </div>
+      </section>
+
+      <div id="docs-content"></div>
+
+      <div class="nav-btns" id="nav-btns-bottom" style="display:none">
+        <a class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+        <a class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <footer class="doc-footer">© 2025 VibetestQ · <a href="../index.html" style="color:var(--c);text-decoration:none">All AI Books</a></footer>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+const sectionMeta = {
+  fm:    { label: 'Front Matter',              file: '00-front-matter.md' },
+  ch1:   { label: 'What is LangChain?',        file: 'chapter-01-what-is-langchain.md' },
+  ch2:   { label: 'Project Setup',             file: 'chapter-02-project-setup.md' },
+  ch3:   { label: 'LLMs & Chat Models',        file: 'chapter-03-llms-and-chat-models.md' },
+  ch4:   { label: 'Prompt Templates',          file: 'chapter-04-prompt-templates.md' },
+  ch5:   { label: 'Output Parsers',            file: 'chapter-05-output-parsers.md' },
+  ch6:   { label: 'Chains (LCEL)',             file: 'chapter-06-chains.md' },
+  ch7:   { label: 'Memory',                    file: 'chapter-07-memory.md' },
+  ch8:   { label: 'Tools',                     file: 'chapter-08-tools.md' },
+  ch9:   { label: 'Agents',                    file: 'chapter-09-agents.md' },
+  ch10:  { label: 'RAG Part 1 — Loading',      file: 'chapter-10-rag-part1-loading-documents.md' },
+  ch11:  { label: 'RAG Part 2 — Embeddings',   file: 'chapter-11-rag-part2-embeddings-vector-stores.md' },
+  ch12:  { label: 'RAG Part 3 — Retrieval',    file: 'chapter-12-rag-part3-retrieval-chains.md' },
+  ch13:  { label: 'AI Test Case Generator',    file: 'chapter-13-ai-test-case-generator.md' },
+  ch14:  { label: 'AI Bug Report Analyzer',    file: 'chapter-14-ai-bug-report-analyzer.md' },
+  ch15:  { label: 'AI Test Data Generator',    file: 'chapter-15-ai-test-data-generator.md' },
+  ch16:  { label: 'AI Selector Healer',        file: 'chapter-16-ai-selector-healer.md' },
+  ch17:  { label: 'Best Practices & CI/CD',    file: 'chapter-17-best-practices-cicd.md' },
+  'apx-a': { label: 'Appendix A — Debugging', file: 'appendix-a-debugging.md' },
+  'apx-b': { label: 'Appendix B — Glossary',  file: 'appendix-b-glossary.md' }
+};
+
+const sectionOrder = ['intro','fm','ch1','ch2','ch3','ch4','ch5','ch6','ch7','ch8','ch9','ch10','ch11','ch12','ch13','ch14','ch15','ch16','ch17','apx-a','apx-b'];
+const loaded = {};
+
+async function loadSection(id) {
+  if (id === 'intro' || loaded[id]) return;
+  const meta = sectionMeta[id];
+  if (!meta) return;
+  try {
+    const res = await fetch(meta.file);
+    if (!res.ok) throw new Error();
+    const md = await res.text();
+    const sec = document.createElement('section');
+    sec.id = id;
+    sec.innerHTML = marked.parse(md);
+    sec.querySelectorAll('pre code:not([class])').forEach(b => { b.className = 'language-typescript'; });
+    addCopyButtons(sec);
+    wrapTables(sec);
+    document.getElementById('docs-content').appendChild(sec);
+    loaded[id] = true;
+    Prism.highlightAllUnder(sec);
+  } catch {
+    const sec = document.createElement('section');
+    sec.id = id;
+    sec.innerHTML = '<p style="color:#78716c;padding:1rem;background:#fef9ee;border-radius:8px;border:1px solid #fde68a"><i class="fas fa-circle-info"></i> Could not load this chapter. Make sure you are serving this folder through a local web server (e.g. <code>npx serve .</code>).</p>';
+    document.getElementById('docs-content').appendChild(sec);
+    loaded[id] = true;
+  }
+}
+
+function addCopyButtons(root) {
+  root.querySelectorAll('pre').forEach(pre => {
+    if (pre.querySelector('.copy-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.innerHTML = '<i class="far fa-copy"></i> Copy';
+    btn.onclick = async () => {
+      const text = pre.querySelector('code')?.innerText || '';
+      await navigator.clipboard.writeText(text).catch(() => {});
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+      setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 1800);
+    };
+    pre.appendChild(btn);
+  });
+}
+
+function wrapTables(root) {
+  root.querySelectorAll('table').forEach(t => {
+    if (t.parentElement.classList.contains('table-scroll-wrapper')) return;
+    const w = document.createElement('div');
+    w.className = 'table-scroll-wrapper';
+    t.parentNode.insertBefore(w, t);
+    w.appendChild(t);
+  });
+}
+
+function getLabel(id) {
+  if (id === 'intro') return 'Book Overview';
+  return sectionMeta[id]?.label || '';
+}
+
+async function showSection(id, pushHistory = true) {
+  const targetId = sectionMeta[id] || id === 'intro' ? id : 'intro';
+  await loadSection(targetId);
+
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('active'));
+
+  const sec = document.getElementById(targetId);
+  if (sec) sec.classList.add('active');
+  document.querySelectorAll(`.sb-link[data-section="${targetId}"]`).forEach(l => l.classList.add('active'));
+
+  updateNavBtns(targetId);
+  if (pushHistory && history.pushState) history.pushState(null, '', '#' + targetId);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const sb = document.getElementById('sidebar');
+  if (sb.classList.contains('open')) toggleSidebar();
+}
+
+function updateNavBtns(id) {
+  const idx = sectionOrder.indexOf(id);
+  const topEl = document.getElementById('nav-btns-top');
+  const botEl = document.getElementById('nav-btns-bottom');
+  if (idx <= 0) { topEl.style.display = 'none'; botEl.style.display = 'none'; return; }
+  topEl.style.display = 'flex'; botEl.style.display = 'flex';
+  [topEl, botEl].forEach(nav => {
+    const prev = nav.querySelector('.prev-btn');
+    const next = nav.querySelector('.next-btn');
+    if (idx > 0) {
+      const pId = sectionOrder[idx - 1];
+      prev.style.visibility = 'visible';
+      prev.onclick = e => { e.preventDefault(); showSection(pId); };
+      prev.innerHTML = '<i class="fas fa-arrow-left"></i> ' + getLabel(pId);
+    } else { prev.style.visibility = 'hidden'; }
+    if (idx < sectionOrder.length - 1) {
+      const nId = sectionOrder[idx + 1];
+      next.style.visibility = 'visible';
+      next.onclick = e => { e.preventDefault(); showSection(nId); };
+      next.innerHTML = getLabel(nId) + ' <i class="fas fa-arrow-right"></i>';
+    } else { next.style.visibility = 'hidden'; }
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('active');
+}
+
+window.onpopstate = () => showSection(location.hash.replace('#','') || 'intro', false);
+showSection(location.hash.replace('#','') || 'intro', false);
+</script>
+</body>
+</html>

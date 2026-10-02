@@ -1,0 +1,867 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 508 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Reporting</span> <span class="w2">&amp;</span> <span class="w3">Test</span> <span class="w4">Organisation</span> <span class="w5">(L7)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers test tagging, targeted runs, failure capture configuration, runtime annotations, and custom reporter implementation. Interviewers ask about reporting to assess whether candidates understand the difference between a test suite that runs and one that communicates — the ability to explain a three-tag strategy, describe the <code class="sn-ic">testInfo</code> annotation pattern, and write a custom <code class="sn-ic">Reporter</code> implementation are senior-level differentiators.</span>
+  </div>
+
+
+  <!-- Q508.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.1</span>
+      <h2 class="sn-q-text">What problem does Level 7 solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">After six levels the suite has real depth — but its results do not communicate. A CI run produces:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">53 passed, 4 failed (2m 14s)</div>
+      </div>
+<p class="sn-para">Four tests failed. Which module? How critical? New regression or known flakiness? The developer stares at a wall of terminal output. The QA lead asks for a status update and gets a screenshot of the terminal.</p>
+<p class="sn-para">Level 7 fixes this in four ways: tags enable targeted runs; <code class="sn-ic">screenshot</code>, <code class="sn-ic">video</code>, and <code class="sn-ic">trace</code> capture failure context automatically; <code class="sn-ic">testInfo.annotations</code> attach runtime data to each test result; a custom <code class="sn-ic">SummaryReporter</code> groups the output by module and severity.</p>
+    </div>
+  </div>
+
+  <!-- Q508.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.2</span>
+      <h2 class="sn-q-text">What is the three-dimension tagging strategy?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every test carries exactly three tags — one per dimension:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Module</strong> — which application area:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">@login  @pim  @admin  @leave</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Type</strong> — what kind of run:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">@smoke       core happy paths, ~2 min, gates every deploy
+@regression  full coverage + edge cases, runs nightly
+@sanity      quick post-release check</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Severity</strong> — how critical:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">@critical  broken application for all users
+@high      primary workflow blocked
+@medium    important feature degraded
+@low       inconvenience, workaround exists</div>
+      </div>
+<p class="sn-para">Tagging syntax on a test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'admin can add a new employee'</span>,
+  { tag: [<span class="tc-str">'@pim'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] },
+  <span class="tc-kw">async</span> ({ addEmployeePage }, testInfo) =&gt; {
+    <span class="tc-cm">// ...</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">The rule: every test gets exactly one module tag, one type tag, one severity tag. No test is untagged. No test has two module tags or two severity tags. This discipline is what makes <code class="sn-ic">--grep</code> filtering reliable.</p>
+    </div>
+  </div>
+
+  <!-- Q508.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.3</span>
+      <h2 class="sn-q-text">How does --grep enable targeted runs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--grep</code> accepts a regex and runs only tests whose title or tags match:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep @pim
+npx playwright test --grep @admin
+
+npx playwright test --grep @smoke       # fast gate before deploy
+npx playwright test --grep @regression  # full suite, run nightly
+
+npx playwright test --grep @critical
+npx playwright test --grep &quot;@critical|@high&quot;
+
+npx playwright test --grep &quot;(?=.*@smoke)(?=.*@pim)&quot;
+
+npx playwright test --grep &quot;(?=.*@critical)(?=.*(@admin|@leave))&quot;
+
+npx playwright test --grep-invert @leave
+
+npx playwright test --grep-invert @low</div>
+      </div>
+<p class="sn-para">The lookahead <code class="sn-ic">(?=.*@smoke)(?=.*@pim)</code> matches tests that contain both <code class="sn-ic">@smoke</code> AND <code class="sn-ic">@pim</code> — not OR. This is how you run the intersection of two tag dimensions.</p>
+    </div>
+  </div>
+
+  <!-- Q508.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.4</span>
+      <h2 class="sn-q-text">How do you configure screenshot, video, and trace on failure?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three lines in the <code class="sn-ic">use</code> block of <code class="sn-ic">playwright.config.ts</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  screenshot: <span class="tc-str">'only-on-failure'</span>,    <span class="tc-cm">// PNG captured at the moment of failure</span>
+  video:      <span class="tc-str">'retain-on-failure'</span>,  <span class="tc-cm">// full session recording, kept only on failure</span>
+  trace:      <span class="tc-str">'on-first-retry'</span>,     <span class="tc-cm">// step-by-step replay, recorded on first retry</span>
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">screenshot: 'only-on-failure'</code></strong> — captures the page at the exact moment the test throws. Attached to the HTML report under the failing test. Shows exactly what the user would have seen.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">video: 'retain-on-failure'</code></strong> — records the full browser session from start to failure. Retained if the test fails, discarded if it passes. Invaluable for failures that only occur in CI where the browser is headless.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">trace: 'on-first-retry'</code></strong> — records every action, every network request, every DOM snapshot. Records only on the first retry so stable tests have zero overhead. Open the trace with <code class="sn-ic">npx playwright show-trace trace.zip</code> for a step-by-step timeline replay.</p>
+<p class="sn-para">Other trace options:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">trace: <span class="tc-str">'off'</span>               <span class="tc-cm">// never — fastest, no debugging info</span>
+trace: <span class="tc-str">'on'</span>                <span class="tc-cm">// always — slowest, captures everything</span>
+trace: <span class="tc-str">'retain-on-failure'</span> <span class="tc-cm">// always record, delete if test passes</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">on-first-retry</code> is the recommended balance: zero overhead for stable tests, full replay when a test first becomes flaky.</p>
+    </div>
+  </div>
+
+  <!-- Q508.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.5</span>
+      <h2 class="sn-q-text">What are test annotations and how do they help with debugging?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">testInfo.annotations</code> lets you attach key-value metadata to a test at runtime — after generated data has been created:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'admin can approve leave request'</span>,
+  { tag: [<span class="tc-str">'@leave'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] },
+  <span class="tc-kw">async</span> ({ leaveListPage }, testInfo) =&gt; {
+
+    <span class="tc-cm">// Attach the IDs that were created for this test run</span>
+    testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'empNumber'</span>, description: empNumber });
+    testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'leaveId'</span>,   description: String(leaveId) });
+
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">approveLeaveRequest</span>(employee.fullName);
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">assertLeaveApproved</span>();
+  }
+);</div>
+      </div>
+<p class="sn-para">Without annotations, a failure shows:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Error: Expected row &quot;Alice Johnson&quot; to be visible — element not found</div>
+      </div>
+<p class="sn-para">With annotations, the same failure shows:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Error: Expected row &quot;Alice Johnson&quot; to be visible — element not found
+
+Annotations:
+  empNumber: EMP-A4KX92PL
+  leaveId:   1047</div>
+      </div>
+<p class="sn-para">The employee number and leave ID are right there. You can query OrangeHRM's API or database with those exact IDs to reproduce the failure without guessing which data was involved.</p>
+    </div>
+  </div>
+
+  <!-- Q508.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.6</span>
+      <h2 class="sn-q-text">Why are annotations added inside tests rather than in beforeAll?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">testInfo</code> belongs to the currently running test — it is not available inside <code class="sn-ic">beforeAll</code>. When data is created in <code class="sn-ic">beforeAll</code> (as at Level 4+), the IDs are stored in describe-scope variables and then annotated inside each test that needs them:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin — User Management'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> empNumber: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> user: ReturnType&lt;<span class="tc-kw">typeof</span> generateUser&gt;;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();
+    empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);  <span class="tc-cm">// ID created here</span>
+    user      = <span class="tc-fn">generateUser</span>(employee);
+  });
+
+  <span class="tc-cm">// testInfo is available here — annotation happens at test time</span>
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can add user'</span>, <span class="tc-kw">async</span> ({ addUserPage }, testInfo) =&gt; {
+    testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'empNumber'</span>, description: empNumber });
+    testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'username'</span>,  description: user.username });
+
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(user);
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertUserSavedSuccessfully</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The pattern: create data in <code class="sn-ic">beforeAll</code>, annotate in each individual test. Only tests that could benefit from seeing the data (typically those that interact with the created entity) need annotations — a negative search test that uses its own phantom data does not need <code class="sn-ic">empNumber</code> from <code class="sn-ic">beforeAll</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q508.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.7</span>
+      <h2 class="sn-q-text">What does the Reporter interface look like and what methods can you implement?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The Playwright <code class="sn-ic">Reporter</code> interface has several optional lifecycle methods:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { Reporter, TestCase, TestResult, FullResult, Suite } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test/reporter'</span>;
+
+<span class="tc-kw">class</span> MyReporter <span class="tc-kw">implements</span> Reporter {
+  <span class="tc-cm">// Called once before any tests run</span>
+  <span class="tc-fn">onBegin</span>(config: FullConfig, suite: Suite): <span class="tc-kw">void</span> { }
+
+  <span class="tc-cm">// Called when a test starts</span>
+  <span class="tc-fn">onTestBegin</span>(<span class="tc-kw">test</span>: TestCase): <span class="tc-kw">void</span> { }
+
+  <span class="tc-cm">// Called when a test ends — test.status can be: passed | failed | skipped | timedOut | interrupted</span>
+  <span class="tc-fn">onTestEnd</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult): <span class="tc-kw">void</span> { }
+
+  <span class="tc-cm">// Called once after all tests complete</span>
+  <span class="tc-fn">onEnd</span>(result: FullResult): <span class="tc-kw">void</span> { }
+
+  <span class="tc-cm">// Called for stdout/stderr from tests</span>
+  <span class="tc-fn">onStdOut</span>(chunk: <span class="tc-kw">string</span>, <span class="tc-kw">test</span>?: TestCase, result?: TestResult): <span class="tc-kw">void</span> { }
+  <span class="tc-fn">onStdErr</span>(chunk: <span class="tc-kw">string</span>, <span class="tc-kw">test</span>?: TestCase, result?: TestResult): <span class="tc-kw">void</span> { }
+}</div>
+      </div>
+<p class="sn-para">For a summary reporter you only need <code class="sn-ic">onTestEnd</code> (collect results) and <code class="sn-ic">onEnd</code> (print the summary). The other methods are optional — omit them if you have no use for them.</p>
+    </div>
+  </div>
+
+  <!-- Q508.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.8</span>
+      <h2 class="sn-q-text">What is the complete SummaryReporter implementation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// reporters/SummaryReporter.ts</span>
+<span class="tc-kw">import</span> { Reporter, TestCase, TestResult, FullResult } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test/reporter'</span>;
+
+<span class="tc-kw">interface</span> TestRecord {
+  title:    <span class="tc-kw">string</span>;
+  status:   <span class="tc-kw">string</span>;
+  tags:     <span class="tc-kw">string</span>[];
+  duration: <span class="tc-kw">number</span>;
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-kw">class</span> SummaryReporter <span class="tc-kw">implements</span> Reporter {
+
+  <span class="tc-kw">private</span> results: TestRecord[] = [];
+
+  <span class="tc-fn">onTestEnd</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult): <span class="tc-kw">void</span> {
+    <span class="tc-kw">this</span>.results.<span class="tc-fn">push</span>({
+      title:    <span class="tc-kw">test</span>.title,
+      status:   result.status,
+      tags:     <span class="tc-kw">test</span>.tags,
+      duration: result.duration,
+    });
+  }
+
+  <span class="tc-fn">onEnd</span>(result: FullResult): <span class="tc-kw">void</span> {
+    <span class="tc-kw">const</span> passed  = <span class="tc-kw">this</span>.results.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'passed'</span>);
+    <span class="tc-kw">const</span> failed  = <span class="tc-kw">this</span>.results.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'failed'</span>);
+    <span class="tc-kw">const</span> skipped = <span class="tc-kw">this</span>.results.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'skipped'</span>);
+    <span class="tc-kw">const</span> flaky   = <span class="tc-kw">this</span>.results.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'flaky'</span>);
+    <span class="tc-kw">const</span> totalSec = (<span class="tc-kw">this</span>.results.<span class="tc-fn">reduce</span>((sum, r) =&gt; sum + r.duration, <span class="tc-num">0</span>) / <span class="tc-num">1000</span>).<span class="tc-fn">toFixed</span>(<span class="tc-num">1</span>);
+
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'\n'</span> + <span class="tc-str">'─'</span>.<span class="tc-fn">repeat</span>(<span class="tc-num">60</span>));
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'  TEST RUN SUMMARY'</span>);
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'─'</span>.<span class="tc-fn">repeat</span>(<span class="tc-num">60</span>));
+    console.<span class="tc-fn">log</span>(
+      <span class="tc-str">`\n  ✅ Passed:  ${String(passed.length).padEnd(4)}`</span> +
+      <span class="tc-str">`❌ Failed:  ${String(failed.length).padEnd(4)}`</span> +
+      <span class="tc-str">`⏭  Skipped: ${String(skipped.length).padEnd(4)}`</span> +
+      (flaky.length ? <span class="tc-str">`⚠️  Flaky: ${flaky.length}`</span> : <span class="tc-str">''</span>) +
+      <span class="tc-str">`\n  ⏱  Duration: ${totalSec}s`</span>
+    );
+
+    <span class="tc-cm">// Group by module</span>
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'\n  By Module:'</span>);
+    <span class="tc-kw">for</span> (<span class="tc-kw">const</span> mod <span class="tc-kw">of</span> [<span class="tc-str">'@login'</span>, <span class="tc-str">'@pim'</span>, <span class="tc-str">'@admin'</span>, <span class="tc-str">'@leave'</span>]) {
+      <span class="tc-kw">const</span> modResults = <span class="tc-kw">this</span>.results.<span class="tc-fn">filter</span>(r =&gt; r.tags.<span class="tc-fn">includes</span>(mod));
+      <span class="tc-kw">if</span> (!modResults.length) <span class="tc-kw">continue</span>;
+      <span class="tc-kw">const</span> modPassed = modResults.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'passed'</span>).length;
+      <span class="tc-kw">const</span> modFailed = modResults.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'failed'</span>).length;
+      <span class="tc-kw">const</span> status    = modFailed &gt; <span class="tc-num">0</span>
+        ? <span class="tc-str">`❌  ${modPassed} passed   ${modFailed} failed`</span>
+        : <span class="tc-str">`✅  ${modPassed} passed`</span>;
+      console.<span class="tc-fn">log</span>(<span class="tc-str">`    ${mod.padEnd(10)}  ${status}`</span>);
+    }
+
+    <span class="tc-cm">// Failed test list with severity</span>
+    <span class="tc-kw">if</span> (failed.length &gt; <span class="tc-num">0</span>) {
+      console.<span class="tc-fn">log</span>(<span class="tc-str">'\n  Failed Tests:'</span>);
+      <span class="tc-kw">for</span> (<span class="tc-kw">const</span> f <span class="tc-kw">of</span> failed) {
+        <span class="tc-kw">const</span> severity = f.tags.<span class="tc-fn">find</span>(t =&gt;
+          [<span class="tc-str">'@critical'</span>, <span class="tc-str">'@high'</span>, <span class="tc-str">'@medium'</span>, <span class="tc-str">'@low'</span>].<span class="tc-fn">includes</span>(t)
+        ) ?? <span class="tc-str">'@unknown'</span>;
+        console.<span class="tc-fn">log</span>(<span class="tc-str">`    ❌ [${severity.replace('@', '')}]  ${f.title}`</span>);
+      }
+    }
+
+    <span class="tc-cm">// Flaky test list</span>
+    <span class="tc-kw">if</span> (flaky.length &gt; <span class="tc-num">0</span>) {
+      console.<span class="tc-fn">log</span>(<span class="tc-str">'\n  Flaky Tests (passed on retry):'</span>);
+      <span class="tc-kw">for</span> (<span class="tc-kw">const</span> f <span class="tc-kw">of</span> flaky) console.<span class="tc-fn">log</span>(<span class="tc-str">`    ⚠️  ${f.title}`</span>);
+    }
+
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'\n'</span> + <span class="tc-str">'─'</span>.<span class="tc-fn">repeat</span>(<span class="tc-num">60</span>) + <span class="tc-str">'\n'</span>);
+  }
+}</div>
+      </div>
+<p class="sn-para">Registered in <code class="sn-ic">playwright.config.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [
+  [<span class="tc-str">'list'</span>],
+  [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'never'</span> }],
+  [<span class="tc-str">'json'</span>, { outputFile: <span class="tc-str">'test-results/results.json'</span> }],
+  [<span class="tc-str">'./reporters/SummaryReporter.ts'</span>],
+]</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q508.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.9</span>
+      <h2 class="sn-q-text">What does the SummaryReporter output look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">────────────────────────────────────────────────────────────
+  TEST RUN SUMMARY
+────────────────────────────────────────────────────────────
+
+  ✅ Passed:  49    ❌ Failed:  3     ⏭  Skipped: 1
+  ⏱  Duration: 127.4s
+
+  By Module:
+    @login      ✅  4 passed
+    @pim        ✅  18 passed
+    @admin      ❌  10 passed   2 failed
+    @leave      ❌  17 passed   1 failed
+
+  Failed Tests:
+    ❌ [critical]  Admin — Add User — employee name autocomplete failed
+    ❌ [high]      Admin — Search User — unexpected empty results
+    ❌ [high]      Leave — Approve Request — confirmation dialog not found
+
+────────────────────────────────────────────────────────────</div>
+      </div>
+<p class="sn-para">A QA lead reads this in five seconds. Two admin failures, one leave failure. Both admin failures are in user management — likely the same root cause. Investigate there first. The leave failure is in approval, not application — isolated to the admin workflow.</p>
+<p class="sn-para">This is the difference between a result and a communication.</p>
+    </div>
+  </div>
+
+  <!-- Q508.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.10</span>
+      <h2 class="sn-q-text">How does the four-reporter configuration serve different audiences?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [
+  [<span class="tc-str">'list'</span>],                                              <span class="tc-cm">// developer: real-time terminal</span>
+  [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'never'</span>, outputFolder: <span class="tc-str">'...'</span> }],     <span class="tc-cm">// developer/QA: interactive report</span>
+  [<span class="tc-str">'json'</span>, { outputFile: <span class="tc-str">'test-results/results.json'</span> }],<span class="tc-cm">// CI tooling: machine-readable</span>
+  [<span class="tc-str">'./reporters/SummaryReporter.ts'</span>],                    <span class="tc-cm">// QA lead: grouped digest</span>
+]</div>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">list</code></strong> — developer watching the terminal during a run. Shows each test as it completes: <code class="sn-ic">✓ PIM — Add Employee [admin] (3.2s)</code>.</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">html</code></strong> — the fully interactive report at <code class="sn-ic">playwright-report/index.html</code>. Click any test to see its steps, screenshots, video, trace, and annotations. Filter by status, tag, project. Used for post-run investigation.</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">json</code></strong> — machine-readable. Every test, every step, every attachment. Used by CI dashboards, the custom reporter, and automated tooling that reads results programmatically.</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">SummaryReporter</code></strong> — grouped by module and severity, printed at run end. The digest a QA lead reads to assess the run in 10 seconds without opening a browser.</p>
+<p class="sn-para">All four run simultaneously — no configuration switch needed between environments.</p>
+    </div>
+  </div>
+
+  <!-- Q508.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.11</span>
+      <h2 class="sn-q-text">How are tests tagged in the updated test files?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every test receives exactly three tags and, where API-created data is involved, annotations for the IDs:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/pim/employee.spec.ts</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can add a new employee via UI'</span>,
+  { tag: [<span class="tc-str">'@pim'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] },
+  <span class="tc-kw">async</span> ({ addEmployeePage, employeeListPage }, testInfo) =&gt; {
+    <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();
+
+    <span class="tc-cm">// Attach generated IDs for failure reproduction</span>
+    testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'employeeId'</span>, description: employee.employeeId });
+    testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'fullName'</span>,   description: employee.fullName });
+
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(employee);
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+    <span class="tc-cm">// ...</span>
+  }
+);
+
+<span class="tc-kw">test</span>(<span class="tc-str">'search with non-existent name shows no records'</span>,
+  { tag: [<span class="tc-str">'@pim'</span>, <span class="tc-str">'@regression'</span>, <span class="tc-str">'@medium'</span>] },
+  <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+    <span class="tc-cm">// No annotations — this test generates a phantom; no real data to track</span>
+    <span class="tc-kw">const</span> phantom = <span class="tc-fn">generateEmployee</span>();
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByEmployeeName</span>(phantom.firstName + phantom.employeeId);
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">assertNoRecordsFound</span>();
+  }
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q508.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.12</span>
+      <h2 class="sn-q-text">What is the difference between test.tags and testInfo.annotations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange"><code class="sn-ic">test.tags</code></strong> (<code class="sn-ic">{ tag: [...] }</code> in the test options) — static metadata defined when the test is written. Used for filtering with <code class="sn-ic">--grep</code>. Available before the test runs. Examples: <code class="sn-ic">@pim</code>, <code class="sn-ic">@smoke</code>, <code class="sn-ic">@critical</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">testInfo.annotations</code></strong> — runtime metadata added during test execution. Used for reporting context. Available only while the test is running. Examples: generated employee IDs, usernames, leave request IDs.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Tags — static, defined at write time, used for filtering</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can add user'</span>, { tag: [<span class="tc-str">'@admin'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] }, <span class="tc-kw">async</span> ...) {}
+
+<span class="tc-cm">// Annotations — dynamic, added at run time, used for debugging</span>
+testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'username'</span>, description: user.username });</div>
+      </div>
+<p class="sn-para">Tags answer "which tests should I run?". Annotations answer "what was happening when this test failed?". They serve completely different purposes and are never interchangeable.</p>
+    </div>
+  </div>
+
+  <!-- Q508.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.13</span>
+      <h2 class="sn-q-text">What does the full playwright.config.ts look like at Level 7?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">import</span> { defineConfig, devices } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { readEnv }               <span class="tc-kw">from</span> <span class="tc-str">'./data/readers'</span>;
+
+<span class="tc-kw">const</span> env = <span class="tc-fn">readEnv</span>();
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  testDir:   <span class="tc-str">'./tests'</span>,
+  outputDir: <span class="tc-str">'test-results/'</span>,
+  timeout:   60_000,
+  retries:   <span class="tc-num">1</span>,
+  workers:   <span class="tc-num">2</span>,
+
+  reporter: [
+    [<span class="tc-str">'list'</span>],
+    [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'never'</span>, outputFolder: <span class="tc-str">'playwright-report'</span> }],
+    [<span class="tc-str">'json'</span>, { outputFile: <span class="tc-str">'test-results/results.json'</span> }],
+    [<span class="tc-str">'./reporters/SummaryReporter.ts'</span>],
+  ],
+
+  use: {
+    baseURL:           env.baseURL,
+    headless:          <span class="tc-kw">true</span>,
+    viewport:          { width: <span class="tc-num">1280</span>, height: <span class="tc-num">720</span> },
+    actionTimeout:     10_000,
+    navigationTimeout: 30_000,
+    screenshot:        <span class="tc-str">'only-on-failure'</span>,
+    video:             <span class="tc-str">'retain-on-failure'</span>,
+    trace:             <span class="tc-str">'on-first-retry'</span>,
+  },
+
+  projects: [
+    {
+      name:      <span class="tc-str">'admin'</span>,
+      use:       { storageState: <span class="tc-str">'playwright/.auth/admin.json'</span> },
+      testMatch: [<span class="tc-str">'**/pim S1 admin S2 leave/leave.spec.ts'</span>],
+    },
+    {
+      name:      <span class="tc-str">'ess'</span>,
+      use:       { storageState: <span class="tc-str">'playwright/.auth/ess.json'</span> },
+      testMatch: [<span class="tc-str">'**/leave/apply.spec.ts'</span>],
+    },
+    {
+      name:      <span class="tc-str">'no-auth'</span>,
+      testMatch: [<span class="tc-str">'**/login.spec.ts'</span>],
+    },
+  ],
+
+  globalSetup: <span class="tc-str">'./global-setup.ts'</span>,
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q508.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.14</span>
+      <h2 class="sn-q-text">How do you use --grep-invert to exclude tags from a run?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--grep-invert</code> runs everything that does NOT match the pattern:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep-invert @low
+
+npx playwright test --grep-invert @leave
+
+npx playwright test --grep-invert &quot;leave approval&quot;</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">--grep-invert</code> and <code class="sn-ic">--grep</code> can be combined:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep @regression --grep-invert @leave</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q508.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.15</span>
+      <h2 class="sn-q-text">What does test.status === 'flaky' mean?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright marks a test as <code class="sn-ic">flaky</code> when it fails on the first attempt but passes on a retry. This is different from <code class="sn-ic">passed</code> (never failed) and <code class="sn-ic">failed</code> (failed on all attempts):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// In SummaryReporter</span>
+<span class="tc-kw">const</span> flaky = <span class="tc-kw">this</span>.results.<span class="tc-fn">filter</span>(r =&gt; r.status === <span class="tc-str">'flaky'</span>);</div>
+      </div>
+<p class="sn-para">A <code class="sn-ic">flaky</code> status is a signal — not a failure, but not clean either. It means the test is not deterministic. Possible causes: timing issues, shared demo site intermittency, missing waits, data collision.</p>
+<p class="sn-para">The SummaryReporter lists flaky tests separately so they are visible without being treated as failures. Over multiple CI runs, a test that is consistently flaky is a candidate for investigation — either the test needs hardening or the application has a genuine intermittent behaviour.</p>
+    </div>
+  </div>
+
+  <!-- Q508.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.16</span>
+      <h2 class="sn-q-text">What is testInfo and what else can it do beyond annotations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">testInfo</code> is Playwright's test metadata object — it has the test's current state and context, and lets you attach artefacts:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'example'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+
+  <span class="tc-cm">// Access test metadata</span>
+  console.<span class="tc-fn">log</span>(testInfo.title);          <span class="tc-cm">// test title</span>
+  console.<span class="tc-fn">log</span>(testInfo.status);         <span class="tc-cm">// 'passed' | 'failed' | 'timedOut' | ...</span>
+  console.<span class="tc-fn">log</span>(testInfo.retry);          <span class="tc-cm">// 0 for first run, 1 for first retry</span>
+  console.<span class="tc-fn">log</span>(testInfo.project.name);   <span class="tc-cm">// 'admin' | 'ess' | 'no-auth'</span>
+  console.<span class="tc-fn">log</span>(testInfo.tags);           <span class="tc-cm">// ['@pim', '@smoke', '@critical']</span>
+
+  <span class="tc-cm">// Add runtime annotations</span>
+  testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'userId'</span>, description: <span class="tc-str">'12345'</span> });
+
+  <span class="tc-cm">// Attach a file directly to the report (PDF, JSON, logs)</span>
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'api-response'</span>, {
+    body:        Buffer.<span class="tc-kw">from</span>(JSON.<span class="tc-fn">stringify</span>(apiResponse)),
+    contentType: <span class="tc-str">'application/json'</span>,
+  });
+
+  <span class="tc-cm">// Attach a screenshot manually (separate from the auto-capture on failure)</span>
+  <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>();
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'mid-test-screenshot'</span>, {
+    body:        screenshot,
+    contentType: <span class="tc-str">'image/png'</span>,
+  });
+
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">testInfo.retry &gt; 0</code> is useful for conditionally running extra diagnostics only on retries — for example, taking a full-page screenshot or dumping the DOM only when the test is already known to be failing.</p>
+    </div>
+  </div>
+
+  <!-- Q508.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.17</span>
+      <h2 class="sn-q-text">What changed at Level 7 and what did not change?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Changed:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">playwright.config.ts</code> — four reporters, screenshot/video/trace, <code class="sn-ic">actionTimeout</code>, <code class="sn-ic">navigationTimeout</code></span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Every test file — three tags per test, <code class="sn-ic">testInfo.annotations</code> for API-created data</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">reporters/SummaryReporter.ts</code> — new file implementing the <code class="sn-ic">Reporter</code> interface</span></li>
+</ul>
+<p class="sn-para"><strong class="k-blue">Unchanged:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>All page objects — zero changes</span></li>
+<li><span class="icon">📌</span><span>All helpers — zero changes</span></li>
+<li><span class="icon">🔑</span><span>All fixtures — zero changes</span></li>
+<li><span class="icon">🚀</span><span>The data layer (<code class="sn-ic">types.ts</code>, <code class="sn-ic">generate.ts</code>, <code class="sn-ic">readers.ts</code>) — zero changes</span></li>
+<li><span class="icon">🌟</span><span>The API layer — zero changes</span></li>
+</ul>
+<p class="sn-para">The test layer changed (tags + annotations) and the config changed (reporters + capture). The framework infrastructure did not change. This is the correct signal: tagging and reporting are concerns of the test layer, not the abstraction layers below it.</p>
+    </div>
+  </div>
+
+  <!-- Q508.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q508.18</span>
+      <h2 class="sn-q-text">What does Level 7 not solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 7 produces clean, meaningful reports. The remaining problem:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Everything runs locally and manually.</strong> A developer can merge a pull request without running tests. A regression introduced on Tuesday may not be found until Friday. There is no automated trigger, no quality gate blocking merges, no history across runs, no nightly schedule.</p>
+<p class="sn-para">Level 8 (CI/CD Integration) addresses all four: three GitHub Actions workflows run the smoke suite on pull requests, the full suite nightly, and allow manual targeted runs. Allure history accumulates across nightly runs — trends and flakiness become visible over time. Results are published to GitHub Pages after every nightly run.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>The tagging problem: without tags, a CI failure is <code class="sn-ic">53 passed, 4 failed</code> with no actionable context.</span></li>
+            <li><span class="icon">⭐</span><span>Three-dimension tagging: module (<code class="sn-ic">@pim</code>, <code class="sn-ic">@admin</code>, <code class="sn-ic">@leave</code>, <code class="sn-ic">@login</code>) + type (<code class="sn-ic">@smoke</code>, <code class="sn-ic">@regression</code>, <code class="sn-ic">@sanity</code>) + severity (<code class="sn-ic">@critical</code>, <code class="sn-ic">@high</code>, <code class="sn-ic">@medium</code>, <code class="sn-ic">@low</code>).</span></li>
+            <li><span class="icon">⭐</span><span>Every test gets exactly one tag per dimension; no test is untagged; enforcement is team discipline, not a technical guard.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--grep @smoke</code> runs all smoke tests; <code class="sn-ic">(?=.*@smoke)(?=.*@pim)</code> runs the intersection; <code class="sn-ic">--grep-invert @leave</code> excludes a module.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">screenshot: 'only-on-failure'</code> captures page state at failure; <code class="sn-ic">video: 'retain-on-failure'</code> records the full session; <code class="sn-ic">trace: 'on-first-retry'</code> records a replayable trace on the first retry only.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">testInfo.annotations.push({ type, description })</code> attaches runtime data (generated IDs) to the test result; visible in the HTML report under that test.</span></li>
+            <li><span class="icon">⭐</span><span>Annotations happen inside tests, not in <code class="sn-ic">beforeAll</code> — <code class="sn-ic">testInfo</code> belongs to the currently running test.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Tags vs annotations: tags are static (filtering), annotations are dynamic (debugging); they answer different questions.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">SummaryReporter</code> implements <code class="sn-ic">onTestEnd</code> (collect) and <code class="sn-ic">onEnd</code> (print grouped summary); registered as <code class="sn-ic">['./reporters/SummaryReporter.ts']</code> in config.</span></li>
+            <li><span class="icon">⭐</span><span>Four reporters simultaneously: <code class="sn-ic">list</code> (developer terminal), <code class="sn-ic">html</code> (interactive), <code class="sn-ic">json</code> (CI tooling), <code class="sn-ic">SummaryReporter</code> (QA digest).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">testInfo.status === 'flaky'</code> means failed then passed on retry — not a failure, but a stability signal.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">testInfo</code> provides: title, status, retry count, project name, tags, annotations, and file attachment via <code class="sn-ic">testInfo.attach()</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Pages, helpers, fixtures, data, and API layers are completely unchanged at Level 7 — only the test layer and config change.</span></li>
+            <li><span class="icon">⭐</span><span>Level 7 solves reporting; it leaves automated triggers, quality gates, and cross-run history (Level 8) for the next level.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

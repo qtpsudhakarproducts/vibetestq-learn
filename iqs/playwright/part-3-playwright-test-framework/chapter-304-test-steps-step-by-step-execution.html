@@ -1,0 +1,863 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 304 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Test</span> <span class="w2">Steps</span> <span class="w3">—</span> <span class="w4">Step-by-Step</span> <span class="w5">Execution</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers <code class="sn-ic">test.step()</code> — Playwright's mechanism for labelling phases inside a single test. Interviewers ask about steps when testing debugging and reporting skills. Candidates who use steps well write tests where a failure report tells you exactly what broke and where in the workflow it happened, without opening a file or reproducing the failure locally.</span>
+  </div>
+
+
+  <!-- Q304.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.1</span>
+      <h2 class="sn-q-text">What is test.step() and why does it exist?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.step()</code> wraps a block of test code under a named label. Each step appears in the HTML report and trace viewer with its own name, pass/fail status, and timing. When a test fails, instead of seeing "error at line 47", you see which named phase of the workflow failed.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without steps — failure shows &amp;quot;error at line 22&amp;quot;</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'employee onboarding @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-cm">// ... 20 more lines</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-cm">// line 22 — but which phase of the workflow is this?</span>
+});
+
+<span class="tc-cm">// With steps — failure shows &amp;quot;❌ Save and verify success message&amp;quot;</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'employee onboarding @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Log in as Admin'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Fill employee details'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Save and verify success message'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-cm">// failure here is labelled — no archaeology required</span>
+  });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Verify employee in list'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para">The report shows exactly which phase failed and which phases passed before it — making multi-step workflow failures debuggable in seconds.</p>
+    </div>
+  </div>
+
+  <!-- Q304.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.2</span>
+      <h2 class="sn-q-text">What is the signature of test.step()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">step</span>(title: <span class="tc-kw">string</span>, body: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt;
+<span class="tc-kw">test</span>.<span class="tc-fn">step</span>(title: <span class="tc-kw">string</span>, body: () =&gt; Promise&lt;T&gt;, options?: { box?: <span class="tc-kw">boolean</span> }): Promise&lt;T&gt;</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.step()</code> is async and returns a Promise. You must always <code class="sn-ic">await</code> it. The body function is also async. Missing <code class="sn-ic">await</code> on either causes the test to continue before the step finishes — a silent race condition.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Missing outer await — test continues before step completes</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Fill form'</span>, <span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice'</span>);
+});
+
+<span class="tc-cm">// ✅ Correct — await the step itself</span>
+<span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Fill form'</span>, <span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q304.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.3</span>
+      <h2 class="sn-q-text">When should you use test.step() and when should you not?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Use steps when:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The test covers a multi-step workflow where knowing which phase failed</span></li>
+</ul>
+<p class="sn-para">  changes the debugging approach significantly</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>The test body is long enough (15+ lines) that a line number gives little context</span></li>
+<li><span class="icon">⚡</span><span>You are writing an E2E test that spans multiple pages or feature areas</span></li>
+</ul>
+<p class="sn-para"><strong class="k-purple">Do not use steps when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>The test is short and already maps to AAA clearly — steps add visual noise</span></li>
+</ul>
+<p class="sn-para">  without adding diagnostic value</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Every test in a suite gets wrapped in steps mechanically — this is ceremony,</span></li>
+</ul>
+<p class="sn-para">  not communication</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Steps add noise — 3-line test is already self-explanatory</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'invalid password shows error @regression'</span>, <span class="tc-kw">async</span> ({ loginPage }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Go to login'</span>, <span class="tc-kw">async</span> () =&gt; { <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>(); });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Enter bad password'</span>, <span class="tc-kw">async</span> () =&gt; { <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'wrong'</span>); });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Verify error'</span>, <span class="tc-kw">async</span> () =&gt; { <span class="tc-kw">await</span> loginPage.<span class="tc-fn">expectError</span>(); });
+});
+
+<span class="tc-cm">// ✅ No steps needed here</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'invalid password shows error @regression'</span>, <span class="tc-kw">async</span> ({ loginPage }) =&gt; {
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'wrong'</span>);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">expectError</span>();
+});
+
+<span class="tc-cm">// ✅ Steps add real value in a 25-line workflow test</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'full leave application workflow @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Employee applies for annual leave'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Manager approves the request'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Leave balance is deducted'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q304.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.4</span>
+      <h2 class="sn-q-text">How do steps appear in the HTML report?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a test with steps runs, the HTML report shows each step as a collapsible entry under the test, with:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The step name</span></li>
+<li><span class="icon">💡</span><span>A ✅ / ❌ status icon</span></li>
+<li><span class="icon">⚡</span><span>The time the step took</span></li>
+</ul>
+<p class="sn-para">When a step fails, subsequent steps show as skipped (⏭). The error message appears under the failing step — not buried in a stack trace at the bottom of the page.</p>
+<p class="sn-para">Example report output for a failing test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Employee onboarding end-to-end
+  ✅ Log in as Admin                     (1.2s)
+  ✅ Navigate to Add Employee form        (0.4s)
+  ✅ Fill employee details                (0.8s)
+  ❌ Save and verify success message      (5.0s)
+       Error: Timeout 5000ms exceeded waiting for 'Successfully Saved'
+  ⏭ Verify employee appears in list      (skipped)</div>
+      </div>
+<p class="sn-para">Without steps, the same failure would show a single error at line 22 with no context about what the test had already completed.</p>
+    </div>
+  </div>
+
+  <!-- Q304.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.5</span>
+      <h2 class="sn-q-text">How do steps appear in the trace viewer?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The Playwright trace viewer (<code class="sn-ic">npx playwright show-trace trace.zip</code>) shows steps as collapsible sections in the timeline on the left side. Clicking a step shows the browser state at that exact moment — the screenshot, the DOM snapshot, and the network requests that occurred during that step.</p>
+      </div>
+<p class="sn-para">This makes trace-based debugging work at the step level rather than the action level. You click "Save and verify success message" in the trace, see the page at the moment the step failed, and identify the issue without replaying the entire test.</p>
+<p class="sn-para">Steps are one of the primary reasons trace debugging in Playwright is significantly faster than screenshot-based debugging in Selenium.</p>
+    </div>
+  </div>
+
+  <!-- Q304.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.6</span>
+      <h2 class="sn-q-text">Can test.step() return a value? When is this useful?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes. The body function can return a value, and <code class="sn-ic">test.step()</code> passes it through. This is useful when one step produces data that subsequent steps need:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'create employee and verify @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+
+  <span class="tc-cm">// Step 1 returns the generated employee ID</span>
+  <span class="tc-kw">const</span> employeeId = <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Create employee'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees/add'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Ravi'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Last Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Kumar'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">return</span> <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Id'</span>).<span class="tc-fn">inputValue</span>(); <span class="tc-cm">// return value</span>
+  });
+
+  <span class="tc-cm">// Step 2 uses the returned value — also appears in its title</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">`Search for employee ${employeeId}`</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Id'</span>).<span class="tc-fn">fill</span>(employeeId);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Ravi Kumar'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">`Delete employee ${employeeId}`</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>, { name: /Ravi Kumar/ })
+               .<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Delete'</span> }).<span class="tc-fn">click</span>();
+    page.<span class="tc-fn">once</span>(<span class="tc-str">'dialog'</span>, d =&gt; d.<span class="tc-fn">accept</span>());
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Ravi Kumar'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+  });
+});</div>
+      </div>
+<p class="sn-para">Including the returned value in subsequent step titles makes the report self-documenting — the step title shows exactly which employee ID was being searched for or deleted.</p>
+    </div>
+  </div>
+
+  <!-- Q304.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.7</span>
+      <h2 class="sn-q-text">What is the box option in test.step()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">{ box: true }</code> hides the internal actions of a step from the report and trace. The step appears as a single pass/fail entry without showing the individual <code class="sn-ic">click</code>, <code class="sn-ic">fill</code>, and <code class="sn-ic">expect</code> calls inside it.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without box — report shows all internal actions</span>
+<span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Log in as Admin'</span>, <span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);               <span class="tc-cm">// visible in report</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>); <span class="tc-cm">// visible in report</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>); <span class="tc-cm">// visible in report</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>(); <span class="tc-cm">// visible in report</span>
+});
+
+<span class="tc-cm">// With box — report shows only &amp;quot;Log in as Admin: passed/failed&amp;quot;</span>
+<span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Log in as Admin'</span>, <span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+}, { box: <span class="tc-kw">true</span> });</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Use <code class="sn-ic">box: true</code> for:</strong> utility steps that are incidental to the test — login, navigation to a starting state, teardown. These are tested elsewhere and their internals are not relevant when investigating failures in the current test.</p>
+<p class="sn-para"><strong class="k-red">Do not use <code class="sn-ic">box: true</code> for:</strong> steps that contain the core logic being tested — you need to see those internals when they fail.</p>
+    </div>
+  </div>
+
+  <!-- Q304.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.8</span>
+      <h2 class="sn-q-text">Can you nest test.step() calls? What is the recommended depth?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes. Steps can be nested inside other steps. The report and trace viewer show the hierarchy:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'full leave workflow @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Apply for leave'</span>, <span class="tc-kw">async</span> () =&gt; {
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Navigate to Apply Leave form'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/leave/apply'</span>);
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Apply Leave'</span> })).<span class="tc-fn">toBeVisible</span>();
+    });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Fill leave details'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Leave Type'</span>).<span class="tc-fn">selectOption</span>(<span class="tc-str">'Annual'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'From Date'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'2026-04-01'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'To Date'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'2026-04-03'</span>);
+    });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Submit application'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Apply'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Applied'</span>)).<span class="tc-fn">toBeVisible</span>();
+    });
+
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Verify leave in My Leave list'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/leave/my-leave'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Pending Approval'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">Report output:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Full leave workflow
+  ✅ Apply for leave                        (3.2s)
+       ✅ Navigate to Apply Leave form      (0.6s)
+       ✅ Fill leave details                (0.9s)
+       ✅ Submit application                (1.7s)
+  ✅ Verify leave in My Leave list          (0.8s)</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Recommended maximum depth: one level of nesting.</strong> Two levels (step inside a step) is occasionally useful. Three levels makes the report hierarchy hard to read and suggests the test is covering too much — consider splitting it.</p>
+    </div>
+  </div>
+
+  <!-- Q304.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.9</span>
+      <h2 class="sn-q-text">How do you use test.step() inside page objects?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Steps work inside page object methods. Wrapping methods in steps makes trace output more informative — instead of seeing a list of raw <code class="sn-ic">click</code> and <code class="sn-ic">fill</code> actions, you see which page object method they came from.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/AddEmployeePage.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span>, Page } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AddEmployeePage {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page) {}
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>() {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'AddEmployeePage.goto'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees/add'</span>);
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Add Employee'</span> }))
+        .<span class="tc-fn">toBeVisible</span>();
+    });
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">fillBasicInfo</span>(firstName: <span class="tc-kw">string</span>, lastName: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">`AddEmployeePage.fillBasicInfo(${firstName} ${lastName})`</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">fill</span>(firstName);
+      <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Last Name'</span>).<span class="tc-fn">fill</span>(lastName);
+    });
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">save</span>(): Promise&lt;<span class="tc-kw">string</span>&gt; {
+    <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'AddEmployeePage.save'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+      <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Id'</span>).<span class="tc-fn">inputValue</span>();
+    });
+  }
+}</div>
+      </div>
+<p class="sn-para">When <code class="sn-ic">addEmployeePage.save()</code> fails, the trace shows:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">AddEmployeePage.save
+  → click on button 'Save'
+  → wait for text 'Successfully Saved' ← timed out here</div>
+      </div>
+<p class="sn-para">Without steps, the trace just shows anonymous <code class="sn-ic">click</code> and <code class="sn-ic">waitFor</code> actions with no context about which page object method they came from.</p>
+    </div>
+  </div>
+
+  <!-- Q304.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.10</span>
+      <h2 class="sn-q-text">What is the difference between test.step() and test.describe()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both group code under a name, but they serve completely different purposes:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">test.describe</code></th><th class="sn-th-green"><code class="sn-ic">test.step</code></th></tr></thead>
+          <tbody>
+          <tr><td><strong>Purpose</strong></td><td>Groups multiple tests</td><td>Phases one test</td></tr>
+          <tr><td><strong>Scope</strong></td><td>Multiple <code class="sn-ic">test()</code> calls</td><td>Inside a single <code class="sn-ic">test()</code> call</td></tr>
+          <tr><td><strong>Can have hooks</strong></td><td>Yes — <code class="sn-ic">beforeEach</code>, <code class="sn-ic">beforeAll</code></td><td>No hooks</td></tr>
+          <tr><td><strong>Parallel execution</strong></td><td>Can be parallelised</td><td>Always sequential</td></tr>
+          <tr><td><strong>When one fails</strong></td><td>Other tests still run</td><td>Subsequent steps are skipped</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// describe — use for grouping independent tests</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login'</span>, () =&gt; {
+  <span class="tc-kw">test</span>(<span class="tc-str">'valid credentials succeed @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'invalid password shows error @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-cm">// If test 1 fails, test 2 still runs</span>
+});
+
+<span class="tc-cm">// step — use for phases of one sequential workflow</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'full checkout workflow @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Add item to cart'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Proceed to checkout'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Complete payment'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-cm">// If step 1 fails, steps 2 and 3 are skipped</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Use describe</strong> to organise tests that each verify one independent behaviour. <strong class="k-green">Use step</strong> to document the phases of a single test that verifies a workflow.</p>
+    </div>
+  </div>
+
+  <!-- Q304.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.11</span>
+      <h2 class="sn-q-text">What happens when a step fails? Do subsequent steps run?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">No. When a step fails, Playwright marks it as failed and skips all subsequent steps in the test. The test is reported as failed.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">test('checkout @e2e', ...) → FAILED
+  ✅ Add item to cart         (0.8s)
+  ✅ Proceed to checkout      (0.5s)
+  ❌ Complete payment         (5.0s)  ← failed here
+  ⏭ View confirmation         (skipped)</div>
+      </div>
+<p class="sn-para">This behaviour is correct — subsequent steps depend on previous steps completing successfully. Running "view confirmation" after "payment" failed would produce meaningless results.</p>
+    </div>
+  </div>
+
+  <!-- Q304.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.12</span>
+      <h2 class="sn-q-text">How do you handle a step that might fail without failing the test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Wrap it in a try/catch. This lets you run a best-effort step (like cleanup inside a workflow test) without failing the test if it fails:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'create and verify employee @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">let</span> employeeId: <span class="tc-kw">string</span>;
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Create employee'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-cm">// ... create logic</span>
+    employeeId = <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Id'</span>).<span class="tc-fn">inputValue</span>();
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Verify in list'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-cm">// ... verification</span>
+  });
+
+  <span class="tc-cm">// Best-effort cleanup step — should not fail the test if it breaks</span>
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Cleanup: delete test employee'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-fn">deleteEmployee</span>(employeeId);
+    });
+  } <span class="tc-kw">catch</span> {
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Cleanup failed for ${employeeId} — may need manual removal`</span>);
+  }
+});</div>
+      </div>
+<p class="sn-para">Use this sparingly. If cleanup is critical, do it in <code class="sn-ic">afterEach</code> instead — hooks are the correct mechanism for cleanup, not try/catch inside steps.</p>
+    </div>
+  </div>
+
+  <!-- Q304.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.13</span>
+      <h2 class="sn-q-text">Write a complete E2E test for an employee onboarding workflow using test.step().</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/baseFixture'</span>;
+
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'new employee is created, assigned, and can log in @e2e'</span>,
+  { tag: <span class="tc-str">'@e2e'</span>, timeout: 120_000 },
+  <span class="tc-kw">async</span> ({ page }) =&gt; {
+
+    <span class="tc-kw">let</span> employeeId: <span class="tc-kw">string</span>;
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Admin creates employee record'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees/add'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Nisha'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Last Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Patel'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+      employeeId = <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Id'</span>).<span class="tc-fn">inputValue</span>();
+    });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Admin assigns employee to department'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Department'</span>).<span class="tc-fn">selectOption</span>(<span class="tc-str">'Engineering'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Job Title'</span>).<span class="tc-fn">selectOption</span>(<span class="tc-str">'QA Engineer'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+    });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Admin creates login credentials'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'tab'</span>, { name: <span class="tc-str">'Account'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Enable Login'</span>).<span class="tc-fn">check</span>();
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'nisha.patel'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Employee@123'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Confirm Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Employee@123'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+    });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">`Employee ${employeeId} appears in employee list`</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Id'</span>).<span class="tc-fn">fill</span>(employeeId);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Nisha Patel'</span>)).<span class="tc-fn">toBeVisible</span>();
+    });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Employee can log in with new credentials'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/logout'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'nisha.patel'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Employee@123'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/dashboard/);
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Nisha Patel'</span>)).<span class="tc-fn">toBeVisible</span>();
+    });
+  }
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q304.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.14</span>
+      <h2 class="sn-q-text">How did your project use test.step() and what impact did it have?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we introduced <code class="sn-ic">test.step()</code> specifically for E2E tests in the checkout and onboarding flows. These tests span 4–6 pages and 25–40 lines of actions. Before steps, a failure in CI showed something like:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Error: locator.click: Element not found
+  at tests/e2e/checkout.spec.ts:34:10</div>
+      </div>
+<p class="sn-para">Line 34. We had to open the file, count lines, understand context. For a test that long, that took 10 minutes minimum.</p>
+<p class="sn-para">After wrapping each phase in a step:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">❌ Step 3: Complete payment (5.0s)
+   Error: Timeout waiting for 'Payment Confirmed'</div>
+      </div>
+<p class="sn-para">Immediately obvious. The payment step failed. No file opening needed.</p>
+<p class="sn-para">We also added steps to page object methods. When a page object method fails in a step-decorated form, the trace shows the method name alongside the raw action — cutting trace review time roughly in half.</p>
+<p class="sn-para">The rule we settled on: any E2E test with 4+ pages or 20+ lines gets steps. Shorter unit-style tests do not.</p>
+    </div>
+  </div>
+
+  <!-- Q304.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.15</span>
+      <h2 class="sn-q-text">What is the relationship between test.step() and the trace viewer?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The trace viewer (<code class="sn-ic">npx playwright show-trace</code>) shows steps as collapsible sections in the timeline panel on the left. Each step has:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A label with pass/fail indicator</span></li>
+<li><span class="icon">💡</span><span>A timestamp showing when it started and ended</span></li>
+<li><span class="icon">⚡</span><span>Expandable child entries for each Playwright action inside the step</span></li>
+</ul>
+<p class="sn-para">Clicking a step shows the browser screenshot at that exact moment — the visual state of the application when that step was executing.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --trace on
+
+npx playwright show-trace test-results/checkout-e2e/trace.zip</div>
+      </div>
+<p class="sn-para">Without steps, the trace timeline shows a flat list of raw actions — <code class="sn-ic">click</code>, <code class="sn-ic">fill</code>, <code class="sn-ic">navigate</code>, <code class="sn-ic">waitFor</code>. With steps, the timeline shows named phases that map to the workflow. You navigate the trace at the workflow level rather than the action level.</p>
+<p class="sn-para">This is the primary reason to use steps in page objects: every page object method call becomes a named entry in the trace, making the trace read like the test's narrative rather than a log of low-level browser events.</p>
+    </div>
+  </div>
+
+  <!-- Q304.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.16</span>
+      <h2 class="sn-q-text">How do you handle variable data between steps?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Variables shared between steps must be declared outside all steps at the test level. JavaScript closure gives each step access to those variables:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'create and verify order @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Declare variables at test level — accessible in all steps</span>
+  <span class="tc-kw">let</span> orderId: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> orderTotal: <span class="tc-kw">string</span>;
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Place order'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/cart'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Checkout'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Place Order'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-confirmation'</span>)).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-cm">// Read and store values for use in later steps</span>
+    orderId    = <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-id'</span>).<span class="tc-fn">textContent</span>() ?? <span class="tc-str">''</span>;
+    orderTotal = <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-total'</span>).<span class="tc-fn">textContent</span>() ?? <span class="tc-str">''</span>;
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">`Verify order ${orderId} in order history`</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/orders'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(orderId)).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(orderTotal)).<span class="tc-fn">toBeVisible</span>();
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Email confirmation is sent'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-cm">// Check email API using orderId</span>
+    <span class="tc-kw">const</span> email = <span class="tc-kw">await</span> <span class="tc-fn">getLastEmailForOrder</span>(orderId);
+    <span class="tc-kw">expect</span>(email.subject).<span class="tc-fn">toContain</span>(orderId);
+  });
+});</div>
+      </div>
+<p class="sn-para">This is the correct pattern — declare shared variables at the test scope, mutate them inside steps, read them in later steps.</p>
+    </div>
+  </div>
+
+  <!-- Q304.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.17</span>
+      <h2 class="sn-q-text">What is the step title naming convention your team follows?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, step titles follow this convention:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>For user-action steps: <strong class="k-blue">verb + noun</strong> describing what the user does:</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">'Apply for annual leave'</code>, <code class="sn-ic">'Admin approves the request'</code></p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>For verification steps: <strong class="k-blue">noun + assertion</strong> describing what is verified:</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">'Leave balance reflects approved days'</code>, <code class="sn-ic">'Confirmation email is sent'</code></p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>For page object steps: <strong class="k-blue">ClassName.methodName</strong> with key parameters:</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">'PaymentPage.fillCard(4242...)'</code>, <code class="sn-ic">'OrdersPage.searchById(ORD-001)'</code></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>For setup/teardown steps inside tests: prefix with <code class="sn-ic">'Setup:'</code> or</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">'Teardown:'</code> to signal they are not the core test logic</p>
+<p class="sn-para">Consistent naming means any team member reading a failure report can understand which phase broke and what the test was attempting — without opening the source file.</p>
+    </div>
+  </div>
+
+  <!-- Q304.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q304.18</span>
+      <h2 class="sn-q-text">When would you choose test.step over splitting the test into multiple tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">test.step</code> when the steps are <strong class="k-green">genuinely sequential and interdependent</strong> — when step 2 only makes sense if step 1 succeeded, and step 3 only makes sense if step 2 succeeded.</p>
+      </div>
+<p class="sn-para">Split into multiple tests when steps are <strong class="k-green">independent</strong> — when the outcome of one does not determine whether the others should run.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Use steps — steps are sequential and interdependent</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'checkout workflow @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Add to cart'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Enter shipping'</span>, <span class="tc-kw">async</span> () =&gt; { ... }); <span class="tc-cm">// meaningless without cart</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Complete payment'</span>, <span class="tc-kw">async</span> () =&gt; { ... }); <span class="tc-cm">// meaningless without shipping</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'View confirmation'</span>, <span class="tc-kw">async</span> () =&gt; { ... }); <span class="tc-cm">// meaningless without payment</span>
+});
+
+<span class="tc-cm">// ✅ Split — these are independent outcomes of the same action</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'save shows success message @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+<span class="tc-kw">test</span>(<span class="tc-str">'saved employee appears in list @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+<span class="tc-kw">test</span>(<span class="tc-str">'form resets after save @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+<span class="tc-cm">// All three can fail independently — splitting gives clearer failure signals</span></div>
+      </div>
+<p class="sn-para">The practical test: if step 2 failing tells you nothing about whether step 3 would pass independently, they should be separate tests. If step 2 failing makes step 3 meaningless, keep them as steps in one test.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.step(title, body)</code> labels a phase of a test. It appears in HTML reports and the trace viewer with its own name, status, and timing.</span></li>
+            <li><span class="icon">⭐</span><span>Always <code class="sn-ic">await</code> both the step call and the body's async operations.</span></li>
+            <li><span class="icon">⭐</span><span>Steps can return values — use this when one step produces data the next step needs.</span></li>
+            <li><span class="icon">⭐</span><span>When a step fails, subsequent steps are skipped. The report shows exactly which phase broke.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">{ box: true }</code> to hide step internals for utility steps (login, navigation).</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Nest steps at most one level deep. Two levels is occasionally useful; three levels is too much.</span></li>
+            <li><span class="icon">⭐</span><span>Use steps in page objects to make traces readable at the method level, not just the action level.</span></li>
+            <li><span class="icon">⭐</span><span>Steps are for sequential, interdependent workflow phases. Independent outcomes belong in separate tests.</span></li>
+            <li><span class="icon">⭐</span><span>The trace viewer shows steps as collapsible timeline sections with browser state at each step.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

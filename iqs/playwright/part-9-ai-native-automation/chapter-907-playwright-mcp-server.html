@@ -1,0 +1,659 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 907 &nbsp;·&nbsp; 16 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Playwright</span> <span class="w2">MCP</span> <span class="w3">Server</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">The Playwright MCP server (<code class="sn-ic">@playwright/mcp</code>) gives AI agents direct control of a real browser through the Model Context Protocol. This chapter covers installation, configuration for all major AI tools, the full tool set, browser_snapshot vs browser_screenshot, practical locator discovery, and test generation by demonstration.</span>
+  </div>
+
+
+  <!-- Q907.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.1</span>
+      <h2 class="sn-q-text">What is the Playwright MCP server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The Playwright MCP server is an official Microsoft package (<code class="sn-ic">@playwright/mcp</code>) that runs a Playwright browser and exposes it as an MCP server. When an AI agent connects to it, the agent can navigate pages, click elements, fill forms, take screenshots, and read the accessibility tree — all through MCP tool calls in a live browser session.</p>
+      </div>
+<p class="sn-para">Traditional workflow: Human writes code → runs it → reads output → adjusts.</p>
+<p class="sn-para">Playwright MCP workflow: Agent calls browser_navigate → reads snapshot → calls browser_click → reads updated snapshot → generates correct locator → writes test.</p>
+<p class="sn-para">The agent acts on a live browser in real time and uses what it observes to generate accurate code. Locators come from the actual page structure, not from guessing.</p>
+    </div>
+  </div>
+
+  <!-- Q907.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.2</span>
+      <h2 class="sn-q-text">How do you install and start the Playwright MCP server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx @playwright/mcp@latest
+
+npx @playwright/mcp --headed                       # visible browser
+npx @playwright/mcp --browser firefox              # use Firefox
+npx @playwright/mcp --browser webkit               # use WebKit
+npx @playwright/mcp --viewport-size '1280,720'     # custom viewport
+npx @playwright/mcp --base-url 'http://localhost:4200'  # base URL
+npx @playwright/mcp --device 'iPhone 14'           # mobile emulation</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q907.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.3</span>
+      <h2 class="sn-q-text">How do you configure the server for VS Code, Cursor, and Claude?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">VS Code Copilot — <code class="sn-ic">.vscode/mcp.json</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;servers&quot;: {
+    &quot;playwright&quot;: {
+      &quot;type&quot;: &quot;stdio&quot;,
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;@playwright/mcp&quot;, &quot;--browser&quot;, &quot;chromium&quot;]
+    }
+  }
+}</div>
+      </div>
+<p class="sn-para">Cursor — Settings → MCP Servers:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;playwright&quot;: {
+    &quot;command&quot;: &quot;npx&quot;,
+    &quot;args&quot;: [&quot;@playwright/mcp&quot;, &quot;--headed&quot;]
+  }
+}</div>
+      </div>
+<p class="sn-para">Claude Desktop — <code class="sn-ic">claude_desktop_config.json</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;mcpServers&quot;: {
+    &quot;playwright&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;@playwright/mcp&quot;]
+    }
+  }
+}</div>
+      </div>
+<p class="sn-para">Docker/SSE (for CI or shared environments):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;playwright&quot;: {
+    &quot;type&quot;: &quot;sse&quot;,
+    &quot;url&quot;: &quot;http://localhost:3001/sse&quot;
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q907.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.4</span>
+      <h2 class="sn-q-text">What interaction tools does the Playwright MCP server expose?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Navigation tools:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">browser_navigate</code> — go to a URL</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">browser_go_back</code> / <code class="sn-ic">browser_go_forward</code> — browser history navigation</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">browser_reload</code> — reload the current page</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">browser_wait_for_page_with_url</code> — wait until URL matches a pattern</span></li>
+</ul>
+<p class="sn-para">Interaction tools:</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span><code class="sn-ic">browser_click</code> — click an element by description or ref</span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">browser_type</code> — type text character by character (triggers key events)</span></li>
+<li><span class="icon">🚀</span><span><code class="sn-ic">browser_fill</code> — fill a field directly (faster, for value assignment)</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">browser_clear</code> — clear an input field</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">browser_hover</code> — hover over an element</span></li>
+<li><span class="icon">🔶</span><span><code class="sn-ic">browser_check</code> / <code class="sn-ic">browser_uncheck</code> — toggle checkboxes</span></li>
+<li><span class="icon">🎪</span><span><code class="sn-ic">browser_select_option</code> — select a dropdown value</span></li>
+<li><span class="icon">🔹</span><span><code class="sn-ic">browser_press_key</code> — press a keyboard key (Enter, Tab, Escape, ArrowDown, etc.)</span></li>
+<li><span class="icon">🔷</span><span><code class="sn-ic">browser_drag</code> — drag an element to a target position</span></li>
+</ul>
+<p class="sn-para">Observation tools:</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span><code class="sn-ic">browser_snapshot</code> — return the accessibility tree (primary observation tool)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">browser_screenshot</code> — take a screenshot as base64 PNG</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">browser_get_visible_text</code> — return all visible text on the page</span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">browser_get_visible_html</code> — return the page's HTML</span></li>
+</ul>
+<p class="sn-para">Tab and dialog tools:</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span><code class="sn-ic">browser_new_tab</code> / <code class="sn-ic">browser_close_tab</code> / <code class="sn-ic">browser_switch_to_tab</code></span></li>
+<li><span class="icon">🚀</span><span><code class="sn-ic">browser_handle_dialog</code> — accept, dismiss, or fill browser alerts</span></li>
+</ul>
+<p class="sn-para">Network and console tools:</p>
+<ul class="sn-list">
+<li><span class="icon">🌟</span><span><code class="sn-ic">browser_network_requests</code> — list recent network requests</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">browser_console_messages</code> — return browser console output</span></li>
+</ul>
+<p class="sn-para">File and state tools:</p>
+<ul class="sn-list">
+<li><span class="icon">🔶</span><span><code class="sn-ic">browser_upload_file</code> — upload a file via a file input element</span></li>
+<li><span class="icon">🎪</span><span><code class="sn-ic">browser_save_as_pdf</code> — save the current page as PDF</span></li>
+<li><span class="icon">🔹</span><span><code class="sn-ic">browser_close</code> — close the browser</span></li>
+<li><span class="icon">🔷</span><span><code class="sn-ic">browser_frame_locator</code> — switch to an iframe context</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q907.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.5</span>
+      <h2 class="sn-q-text">What is browser_snapshot and why is it preferred over browser_screenshot?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">browser_snapshot</code> returns the accessibility tree as structured text with element references. It is the primary page observation tool for most agent tasks.</p>
+      </div>
+<p class="sn-para">Sample snapshot output:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">navigation [landmark]:
+  link 'Dashboard' [href=/dashboard, ref=e1]
+  link 'Employee List' [href=/employees, ref=e2]
+main [landmark]:
+  heading 'Employee List' [level=1]
+  button 'Add Employee' [ref=e3]
+  table [ref=e4]:
+    row [ref=e5]: 'John Smith | QA Lead | Active'
+    row [ref=e6]: 'Jane Doe | Developer | Active'</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">ref</code> values let the agent call tools precisely:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{ &quot;name&quot;: &quot;browser_click&quot;, &quot;arguments&quot;: { &quot;ref&quot;: &quot;e3&quot; } }</div>
+      </div>
+<p class="sn-para">Snapshot vs screenshot comparison:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Feature</th><th class="sn-th-blue">browser_snapshot</th><th class="sn-th-green">browser_screenshot</th></tr></thead>
+          <tbody>
+          <tr><td>Token cost</td><td>~300-800 tokens</td><td>~3,000-15,000 tokens</td></tr>
+          <tr><td>Vision model needed</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Returns element refs</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Shows accessibility info</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Works in headless</td><td>Yes</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">browser_screenshot</code> only to verify visual appearance. Use <code class="sn-ic">browser_snapshot</code> for navigation, interaction, and locator discovery.</p>
+    </div>
+  </div>
+
+  <!-- Q907.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.6</span>
+      <h2 class="sn-q-text">How do you use Playwright MCP for locator discovery?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: What is the correct Playwright locator for the 'Apply' button on the leave form?
+
+Agent: [calls browser_navigate to /leave/applyLeave]
+Agent: [calls browser_snapshot]
+Snapshot: button 'Apply' [role=button, name='Apply', ref=e12]
+Agent: The correct locator is: page.getByRole('button', { name: 'Apply' })</div>
+      </div>
+<p class="sn-para">This produces more reliable locators than guessing from code because the agent reads the actual accessibility tree of the live page.</p>
+    </div>
+  </div>
+
+  <!-- Q907.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.7</span>
+      <h2 class="sn-q-text">How does test generation by demonstration work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You walk the agent through a flow step by step. The agent navigates and observes each step. Then you ask it to generate the test.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: Navigate to the leave application page.
+Agent: [navigates] I see: Leave Type dropdown, From Date, To Date, Comment, Apply button.
+
+Human: Select 'Annual Leave' from Leave Type.
+Agent: [calls browser_select_option on Leave Type with value 'Annual Leave']
+
+Human: Set From Date to 2026-03-15 and To Date to 2026-03-16.
+Agent: [fills date fields]
+
+Human: Click Apply.
+Agent: [clicks Apply button] Page shows: 'Successfully Saved' message.
+
+Human: Now generate the Playwright test for this flow.
+Agent: [generates complete TypeScript test using the observed locators and steps]</div>
+      </div>
+<p class="sn-para">The agent uses refs from snapshots for reliable locators and structures the test to match the observed flow exactly.</p>
+    </div>
+  </div>
+
+  <!-- Q907.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.8</span>
+      <h2 class="sn-q-text">How do you use Playwright MCP for debugging a failing test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a test fails because a locator has changed, use the MCP server to find the new one:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: This test is failing — the locator page.getByTestId('save-btn') no longer works.
+       Navigate to the employee edit page and find the current Save button locator.
+
+Agent: [navigates to employee edit page]
+Agent: [calls browser_snapshot]
+Snapshot: button 'Save' [role=button, name='Save', ref=e8]
+Agent: The save button no longer has a data-testid attribute.
+       Use: page.getByRole('button', { name: 'Save' })
+       This is also a more stable locator — no dependency on data-testid.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q907.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.9</span>
+      <h2 class="sn-q-text">How do you use Playwright MCP in headless vs headed mode and when to choose each?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Headless (default):</strong> No visible browser window. Faster to start, works in CI and Docker. Use for: bulk locator discovery, automated test generation pipelines, CI-integrated tasks.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Headed:</strong> Browser window is visible. Slower to start but the agent can see and describe exactly what the user would see. Use for: demonstrations, debugging visual issues, generating tests for visual flows where appearance matters, initial exploration of a new application.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx @playwright/mcp --headed   # for interactive debugging sessions
+npx @playwright/mcp            # headless (default) for automated tasks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q907.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.10</span>
+      <h2 class="sn-q-text">How do you handle authentication when using the Playwright MCP server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Option 1 — Log in through MCP before each session:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: Log in with username 'admin' and password 'admin123'.
+Agent: [navigates to login page, fills credentials, clicks Login]
+Agent: Login successful. Now on dashboard.</div>
+      </div>
+<p class="sn-para">Option 2 — Start with saved browser storage state:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx @playwright/mcp --storage-state ./auth/admin.json</div>
+      </div>
+<p class="sn-para">You generate the storage state file once:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// scripts/save-auth.ts</span>
+<span class="tc-kw">const</span> browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>();
+<span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+<span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">fill</span>(<span class="tc-str">'[name=username]'</span>, <span class="tc-str">'admin'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">fill</span>(<span class="tc-str">'[name=password]'</span>, <span class="tc-str">'admin123'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">click</span>(<span class="tc-str">'[type=submit]'</span>);
+<span class="tc-kw">await</span> context.<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'./auth/admin.json'</span> });
+<span class="tc-kw">await</span> browser.<span class="tc-fn">close</span>();</div>
+      </div>
+<p class="sn-para">Option 2 is faster for repeated sessions — the agent starts already authenticated.</p>
+    </div>
+  </div>
+
+  <!-- Q907.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.11</span>
+      <h2 class="sn-q-text">How does the Playwright MCP server work in Docker for CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">For CI pipelines or team-shared access, run the MCP server in Docker with SSE transport:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">dockerfile</span>
+        </div>
+        <div class="sn-terminal-code">FROM mcr.microsoft.com/playwright:v1.<span class="tc-num">50.0</span>-jammy
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+EXPOSE <span class="tc-num">3001</span>
+CMD [&quot;npx&quot;, &quot;@playwright/mcp&quot;, &quot;--port&quot;, &quot;<span class="tc-num">3001</span>&quot;]</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">services:
+  playwright-mcp:
+    build: .
+    ports:
+      - <span class="tc-str">'3001:3001'</span>
+    environment:
+      - BASE_URL=http:<span class="tc-cm">//app:4200</span></div>
+      </div>
+<p class="sn-para">AI agents connect via SSE URL:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;playwright&quot;: {
+    &quot;type&quot;: &quot;sse&quot;,
+    &quot;url&quot;: &quot;http://localhost:3001/sse&quot;
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q907.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.12</span>
+      <h2 class="sn-q-text">What are the network monitoring capabilities of the Playwright MCP server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">browser_network_requests</code> returns a list of recent HTTP requests and responses. This lets the agent observe API calls made by the application during a flow:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: After clicking Apply on the leave form, what API call was made?
+
+Agent: [calls browser_click on Apply button]
+Agent: [calls browser_network_requests]
+Result:
+  POST /api/v2/leave/applyLeave
+  Status: 200
+  Request body: { leaveTypeId: 1, fromDate: '2026-03-15', toDate: '2026-03-16' }
+  Response: { id: 12345, status: 'Pending Approval' }
+
+Agent: The leave application API is POST /api/v2/leave/applyLeave.
+       I can generate both a UI test and an API test from this information.</div>
+      </div>
+<p class="sn-para">This is useful for: discovering API endpoints to use in API-first test setup, understanding what the UI does behind the scenes, and debugging network errors.</p>
+    </div>
+  </div>
+
+  <!-- Q907.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.13</span>
+      <h2 class="sn-q-text">What are the main use cases for Playwright MCP in a test automation team?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Use case 1 — New feature coverage (most common).</strong> Developer delivers a new feature. QA engineer connects Playwright MCP to an AI agent, walks through the feature, gets locators and flow description, generates the first draft test. Saves 1–2 hours per feature compared to manual test authoring.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Use case 2 — Regression repair.</strong> UI changes break existing locators. Agent navigates to affected pages, reads new accessibility tree, suggests updated locators. Saves 30 minutes per broken test.</p>
+<p class="sn-para"><strong class="k-teal">Use case 3 — Accessibility audit.</strong> <code class="sn-ic">browser_snapshot</code> produces the accessibility tree for every page. If an element is missing from the tree, it is inaccessible. The agent can identify accessibility gaps by comparing what is visible in the browser against what appears in the snapshot.</p>
+<p class="sn-para"><strong class="k-teal">Use case 4 — Exploratory test generation.</strong> For a page with no existing tests, the agent navigates, explores, and generates a set of test scenarios based on what it finds — without a human describing each step.</p>
+<p class="sn-para"><strong class="k-teal">Use case 5 — Training and onboarding.</strong> New engineers use the MCP server to learn the application — they describe what they want to find and the agent shows them the correct locators and page structure.</p>
+    </div>
+  </div>
+
+  <!-- Q907.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.14</span>
+      <h2 class="sn-q-text">What are the limitations of the Playwright MCP server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">Context window consumption.</strong> The server exposes 30+ tools. Each tool schema uses ~200–250 tokens. Connecting the server costs ~7,500 tokens before the first message. For pure code-generation tasks in a large codebase, this competes with the tokens needed for source file context.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Not for CI test execution.</strong> The MCP server is an authoring and debugging tool. Production CI tests should run as stable Playwright code — not via MCP tool calls. MCP sessions are non-deterministic and tool call overhead makes them too slow for CI.</p>
+<p class="sn-para"><strong class="k-pink">Security.</strong> An AI agent with a connected Playwright MCP server has full browser control. Point it at test environments only. Never connect it to production without explicit permission and access controls.</p>
+<p class="sn-para"><strong class="k-pink">Session state.</strong> The browser session is stateful. If a previous agent action leaves the browser in an unexpected state, subsequent tool calls may fail in confusing ways. Use <code class="sn-ic">browser_navigate</code> to reset to a known URL at the start of each task.</p>
+    </div>
+  </div>
+
+  <!-- Q907.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.15</span>
+      <h2 class="sn-q-text">How do you use browser_upload_file and browser_handle_dialog?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">browser_upload_file</code> uploads a file to a file input element:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: Upload the file '/home/user/test-contract.pdf' to the attachment field.
+Agent: [calls browser_upload_file with element description and file path]
+Agent: File uploaded. The attachment field shows 'test-contract.pdf'.</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">browser_handle_dialog</code> handles browser-native dialogs (alert, confirm, prompt):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Human: Click Delete Employee, then accept the confirmation dialog.
+Agent: [calls browser_click on Delete Employee button]
+Agent: [calls browser_handle_dialog with action='accept']
+Agent: Employee deleted. Page shows: 'Successfully Deleted'.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q907.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q907.16</span>
+      <h2 class="sn-q-text">In your project, how do you use the Playwright MCP server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, the Playwright MCP server is a developer tool used in three scenarios:</p>
+      </div>
+<p class="sn-para">First, when a new page or form is added, a developer starts a Playwright MCP session in Cursor, navigates to the new page, reads the snapshot, and asks the agent to generate the page object. The snapshot-based locators are more reliable than writing them by hand from reading HTML source.</p>
+<p class="sn-para">Second, after a UI update that breaks locators, we connect the server and navigate to the affected pages. The agent reads the new accessibility tree and suggests updated locators. For a recent redesign that changed 8 form labels, using MCP to rediscover all 8 locators took 12 minutes. Doing it manually by inspecting elements would have taken 45 minutes.</p>
+<p class="sn-para">Third, during accessibility review sessions, we use <code class="sn-ic">browser_snapshot</code> on every page and check whether all interactive elements appear in the accessibility tree. Elements that are visually present but missing from the tree are flagged as accessibility issues.</p>
+<p class="sn-para">We never use the MCP server as the test runner — all actual test execution uses the standard Playwright test runner with stable TypeScript tests.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>The Playwright MCP server (<code class="sn-ic">@playwright/mcp</code>) exposes a real browser as an MCP server. AI agents connect to it to navigate, interact, observe, and generate locators on live pages.</span></li>
+            <li><span class="icon">⭐</span><span>Install via <code class="sn-ic">npx @playwright/mcp</code>. Configure with <code class="sn-ic">--headed</code>, <code class="sn-ic">--browser</code>, <code class="sn-ic">--base-url</code>, <code class="sn-ic">--device</code> options. Connect via stdio (local) or SSE (Docker/remote).</span></li>
+            <li><span class="icon">⭐</span><span>Configure in VS Code via <code class="sn-ic">.vscode/mcp.json</code>, Cursor via Settings > MCP Servers, Claude Desktop via <code class="sn-ic">claude_desktop_config.json</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Tool categories: navigation, interaction, observation, tabs/dialogs, network/console, files/state.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">browser_snapshot</code> returns the accessibility tree with element refs. Preferred over <code class="sn-ic">browser_screenshot</code> — uses 10–20x fewer tokens, needs no vision model, returns actionable refs.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Key use cases: locator discovery, test generation by demonstration, regression locator repair, accessibility audit, new feature coverage.</span></li>
+            <li><span class="icon">⭐</span><span>Authentication: log in through MCP or start with <code class="sn-ic">--storage-state</code> pointing to a saved auth file.</span></li>
+            <li><span class="icon">⭐</span><span>Docker/SSE: run the server in Docker for CI and team-shared access, connect via SSE URL.</span></li>
+            <li><span class="icon">⭐</span><span>Limitations: 30+ tools = ~7,500 tokens on session start; not suitable for CI test execution; security risk if pointed at production.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

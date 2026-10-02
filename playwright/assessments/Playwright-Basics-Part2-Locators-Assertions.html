@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: Playwright Locators & Assertions - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --secondary: #22c55e;
+    --accent: #f97316;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.logo img {
+    height: 50px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.assessment-title {
+    text-align: right;
+}
+
+.assessment-title h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.assessment-title p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.question-number {
+    color: var(--primary);
+    min-width: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background-color: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.option input {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.option.correct {
+    border-color: var(--secondary);
+    background-color: #ecfdf5;
+}
+
+.option.incorrect {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.question.unanswered {
+    border: 2px solid var(--danger) !important;
+    background-color: #fef2f2 !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.result-section {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.name-input-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.name-input-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.name-input-section input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: none;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary);
+}
+
+@media print {
+
+    .btn,
+    .name-input-section {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .explanation,
+    .result-section {
+        display: block !important;
+    }
+
+    #printed-name {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+}
+
+#printed-name {
+    display: none;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #e11d48;
+    font-family: monospace;
+}
+
+pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo"></div>
+            <a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i> Back to Assessments Home</a>
+            <div class="assessment-title">
+                <h1>Assessment</h1>
+                <p>Loading topics...</p>
+            </div>
+        </header>
+
+        <div id="result-container" class="card result-section">
+            <div id="printed-name"></div>
+            <h2>Assessment Completed!</h2>
+            <div id="score-display" class="score-display">0 / 0</div>
+            <p id="feedback-text" class="feedback-text"></p>
+            <div class="name-input-section">
+                <label for="student-name">Enter your name for the report:</label>
+                <input type="text" id="student-name" placeholder="Your Full Name"><br>
+                <button class="btn btn-success" onclick="preparePrint()"><i class="fas fa-print"></i> Print
+                    Result</button>
+            </div>
+        </div>
+
+        <div id="quiz-container">
+            <div class="card">
+                <form id="quiz-form"></form>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-light); font-size: 0.8rem;">
+            &copy; 2026 VibeTestQ. All rights reserved.
+        </footer>
+    </div>
+
+    <script type="text/plain" id="assessment-markdown">
+# Assessment: Playwright Locators & Assertions - Part 2
+
+**Total Questions:** 20
+**Time:** 20 minutes
+**Pass Mark:** 60%
+**Topics:** Locator Strategies, Built-in Locators, CSS/XPath Selectors, Assertions, Test Structure, Debugging
+
+---
+
+## Questions
+
+### Question 1
+What is the recommended locator strategy in Playwright?
+
+A) CSS selectors
+B) XPath
+C) getByRole (accessibility-based)
+D) ID selectors
+
+**Answer: C) getByRole (accessibility-based)**
+
+**Explanation:** getByRole is recommended as it provides better accessibility and resilience to code changes.
+
+---
+
+### Question 2
+Which method finds an element by its associated label text?
+
+A) getByText()
+B) getByLabel()
+C) getByPlaceholder()
+D) getByTitle()
+
+**Answer: B) getByLabel()**
+
+**Explanation:** getByLabel() finds form inputs by their associated label text.
+
+---
+
+### Question 3
+How do you find an element by its placeholder text?
+
+A) page.locator('[placeholder="text"]')
+B) page.getByPlaceholder('text')
+C) page.findByPlaceholder('text')
+D) page.placeholder('text')
+
+**Answer: B) page.getByPlaceholder('text')**
+
+**Explanation:** getByPlaceholder() is the built-in method for finding inputs by placeholder.
+
+---
+
+### Question 4
+What does getByTestId() use by default?
+
+A) id attribute
+B) data-testid attribute
+C) name attribute
+D) class attribute
+
+**Answer: B) data-testid attribute**
+
+**Explanation:** getByTestId() looks for elements with data-testid attribute by default.
+
+---
+
+### Question 5
+How do you use CSS selectors in Playwright?
+
+A) page.css('#myId')
+B) page.locator('#myId')
+C) page.find('#myId')
+D) page.select('#myId')
+
+**Answer: B) page.locator('#myId')**
+
+**Explanation:** page.locator() accepts CSS selectors as its argument.
+
+---
+
+### Question 6
+How do you chain locators to narrow down selection?
+
+A) page.locator('.parent').locator('.child')
+B) page.locator('.parent .child')
+C) Both A and B work
+D) Neither works
+
+**Answer: C) Both A and B work**
+
+**Explanation:** You can chain locators or use CSS descendant selectors.
+
+---
+
+### Question 7
+What assertion checks if an element is visible?
+
+A) expect(element).toBeVisible()
+B) expect(element).isVisible()
+C) expect(element).visible()
+D) expect(element).toExist()
+
+**Answer: A) expect(element).toBeVisible()**
+
+**Explanation:** toBeVisible() is the assertion method for checking element visibility.
+
+---
+
+### Question 8
+How do you verify a page URL contains a specific path?
+
+A) expect(page.url()).toContain('/path')
+B) expect(page).toHaveURL(/path/)
+C) expect(page).urlContains('/path')
+D) Both A and B work
+
+**Answer: D) Both A and B work**
+
+**Explanation:** Both methods can verify URL content, but toHaveURL with regex is more idiomatic.
+
+---
+
+### Question 9
+What does expect(element).toHaveCount(5) verify?
+
+A) The element has 5 child elements
+B) The locator matches exactly 5 elements
+C) The element has 5 characters
+D) The test takes 5 seconds
+
+**Answer: B) The locator matches exactly 5 elements**
+
+**Explanation:** toHaveCount() verifies the number of elements matching the locator.
+
+---
+
+### Question 10
+How do you assert text content of an element?
+
+A) expect(element).toHaveText('expected text')
+B) expect(element).textContent('expected text')
+C) expect(element).text('expected text')
+D) expect(element).content('expected text')
+
+**Answer: A) expect(element).toHaveText('expected text')**
+
+**Explanation:** toHaveText() verifies the text content of an element.
+
+---
+
+### Question 11
+What is a soft assertion?
+
+A) An assertion that always passes
+B) An assertion that doesn't stop test execution on failure
+C) An assertion without message
+D) An assertion for UI elements
+
+**Answer: B) An assertion that doesn't stop test execution on failure**
+
+**Explanation:** expect.soft() continues test execution even when the assertion fails.
+
+---
+
+### Question 12
+Which hook runs before each test in a describe block?
+
+A) beforeAll
+B) beforeEach
+C) setup
+D) init
+
+**Answer: B) beforeEach**
+
+**Explanation:** beforeEach runs before every test in the test suite or describe block.
+
+---
+
+### Question 13
+What does test.only() do?
+
+A) Skips the test
+B) Runs only that test and ignores others
+C) Marks test as important
+D) Runs test twice
+
+**Answer: B) Runs only that test and ignores others**
+
+**Explanation:** test.only() is used to run a single test while debugging.
+
+---
+
+### Question 14
+How do you skip a test?
+
+A) test.ignore()
+B) test.skip()
+C) test.disable()
+D) test.exclude()
+
+**Answer: B) test.skip()**
+
+**Explanation:** test.skip() marks a test to be skipped during execution.
+
+---
+
+### Question 15
+What command runs tests in debug mode?
+
+A) npx playwright test --debug
+B) npx playwright debug
+C) npx playwright test -d
+D) npm run debug
+
+**Answer: A) npx playwright test --debug**
+
+**Explanation:** The --debug flag opens Playwright Inspector for step-by-step debugging.
+
+---
+
+### Question 16
+What does page.pause() do?
+
+A) Stops the test permanently
+B) Pauses execution and opens Playwright Inspector
+C) Waits for 1 second
+D) Cancels the test
+
+**Answer: B) Pauses execution and opens Playwright Inspector**
+
+**Explanation:** page.pause() is used to pause test execution for interactive debugging.
+
+---
+
+### Question 17
+What is the Trace Viewer used for?
+
+A) Creating new tests
+B) Time-travel debugging with screenshots and DOM snapshots
+C) Running tests faster
+D) Generating locators
+
+**Answer: B) Time-travel debugging with screenshots and DOM snapshots**
+
+**Explanation:** Trace Viewer shows full test execution with screenshots, network, and console logs.
+
+---
+
+### Question 18
+How do you enable trace recording in config?
+
+A) trace: true
+B) trace: 'on'
+C) enableTrace: true
+D) recording: 'trace'
+
+**Answer: B) trace: 'on'**
+
+**Explanation:** Set trace to 'on', 'on-first-retry', or 'retain-on-failure' in config.
+
+---
+
+### Question 19
+What is the priority order for locator strategies?
+
+A) CSS, XPath, Text, Role
+B) getByRole, getByLabel, getByTestId, CSS/XPath
+C) XPath, CSS, Text, Role
+D) Text, Role, CSS, XPath
+
+**Answer: B) getByRole, getByLabel, getByTestId, CSS/XPath**
+
+**Explanation:** Playwright recommends semantic locators first, with CSS/XPath as last resort.
+
+---
+
+### Question 20
+How do you take a screenshot of an element?
+
+A) page.screenshot({ element: locator })
+B) locator.screenshot({ path: 'file.png' })
+C) page.screenshotElement(locator)
+D) element.capture()
+
+**Answer: B) locator.screenshot({ path: 'file.png' })**
+
+**Explanation:** Locators have a screenshot() method for capturing specific elements.
+
+---
+
+</script>
+    <script>
+(() => {
+    const markdownNode = document.getElementById('assessment-markdown');
+    if (!markdownNode) {
+        return;
+    }
+
+    const markdown = markdownNode.textContent.trim();
+    const form = document.getElementById('quiz-form');
+    const titleElement = document.querySelector('.assessment-title h1');
+    const subtitleElement = document.querySelector('.assessment-title p');
+    const scoreDisplay = document.getElementById('score-display');
+
+    const assessmentData = parseAssessmentMarkdown(markdown);
+    renderAssessment(assessmentData);
+
+    function parseAssessmentMarkdown(raw) {
+        const lines = raw.replace(/\r\n/g, '\n').split('\n');
+        const titleLine = lines.find((line) => line.trim().startsWith('# ')) || '';
+        const rawTitle = titleLine.replace(/^#\s*/, '').trim();
+        const cleanedTitle = rawTitle
+            .replace(/^Assessment\s*\d*\s*:?\s*/i, '')
+            .replace(/\bMCQ\b/i, '')
+            .trim();
+
+        let topics = '';
+        const topicsLine =
+            lines.find((line) => /^\*\*Topics/i.test(line)) ||
+            lines.find((line) => /^\*\*Topics Covered/i.test(line));
+        if (topicsLine) {
+            const parts = topicsLine.split(':');
+            topics = parts.length > 1 ? parts.slice(1).join(':').replace(/\*\*/g, '').trim() : '';
+        }
+
+        if (!topics) {
+            const subtitleLine = lines.find((line) => line.trim().startsWith('## '));
+            if (subtitleLine) {
+                topics = subtitleLine.replace(/^##\s*/, '').trim();
+            }
+        }
+
+        const questionBlocks = [];
+        const hasQuestionsHeading = lines.some((line) => /^##\s*Questions/i.test(line.trim()));
+        let inQuestions = !hasQuestionsHeading;
+        let stopQuestions = false;
+        let current = null;
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (/^##\s*Questions/i.test(trimmed)) {
+                inQuestions = true;
+                continue;
+            }
+
+            if (inQuestions && /^##\s+/i.test(trimmed) && !/^##\s*Questions/i.test(trimmed)) {
+                stopQuestions = true;
+                if (current) {
+                    questionBlocks.push(current);
+                    current = null;
+                }
+                continue;
+            }
+
+            if (!inQuestions || stopQuestions) {
+                continue;
+            }
+
+            if (/^###\s*Question\s*\d+/i.test(trimmed)) {
+                if (current) {
+                    questionBlocks.push(current);
+                }
+                current = [];
+                continue;
+            }
+
+            if (current) {
+                current.push(line);
+            }
+        }
+
+        if (current) {
+            questionBlocks.push(current);
+        }
+
+        const questions = questionBlocks
+            .map((block) => parseQuestionBlock(block))
+            .filter((question) => question.options.length > 0);
+
+        return {
+            title: cleanedTitle || rawTitle || 'Assessment',
+            topics,
+            questions
+        };
+    }
+
+    function parseQuestionBlock(lines) {
+        const questionLines = [];
+        const options = [];
+        let answer = '';
+        const explanationLines = [];
+        let capturingExplanation = false;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (/^\*\*Answer:/i.test(trimmed)) {
+                const match = trimmed.match(/Answer:\s*([A-D])/i);
+                if (match) {
+                    answer = match[1].toLowerCase();
+                }
+                capturingExplanation = false;
+                return;
+            }
+
+            if (/^\*\*Explanation:/i.test(trimmed)) {
+                capturingExplanation = true;
+                const expText = trimmed.replace(/^\*\*Explanation:\s*/i, '').replace(/\*\*/g, '');
+                if (expText) {
+                    explanationLines.push(expText);
+                }
+                return;
+            }
+
+            if (capturingExplanation) {
+                if (trimmed && !trimmed.startsWith('---')) {
+                    explanationLines.push(trimmed);
+                } else {
+                    capturingExplanation = false;
+                }
+                return;
+            }
+
+            const optMatch = trimmed.match(/^([A-D])\)\s*(.+)$/);
+            if (optMatch) {
+                const optLetter = optMatch[1].toLowerCase();
+                const optText = optMatch[2].trim();
+                options.push({ id: optLetter, text: optText });
+                return;
+            }
+
+            if (trimmed && !trimmed.startsWith('---') && !trimmed.startsWith('**')) {
+                questionLines.push(trimmed);
+            }
+        });
+
+        return {
+            question: questionLines.join(' ').trim(),
+            options,
+            answer,
+            explanation: explanationLines.join(' ').trim()
+        };
+    }
+
+    function renderAssessment(data) {
+        titleElement.textContent = data.title;
+        subtitleElement.textContent = data.topics || 'Professional Automation Training';
+
+        let html = '';
+        data.questions.forEach((q, idx) => {
+            html += '<div class="question" data-question="' + idx + '">';
+            html += '<div class="question-text">';
+            html += '<span class="question-number">Q' + (idx + 1) + '.</span>';
+            html += '<span>' + q.question + '</span>';
+            html += '</div>';
+            html += '<div class="options">';
+            q.options.forEach((opt) => {
+                html += '<label class="option">';
+                html +=
+                    '<input type="radio" name="q' +
+                    idx +
+                    '" value="' +
+                    opt.id +
+                    '" data-question="' +
+                    idx +
+                    '">';
+                html += '<span>' + opt.id.toUpperCase() + ') ' + opt.text + '</span>';
+                html += '</label>';
+            });
+            html += '</div>';
+            if (q.explanation) {
+                html += '<div class="explanation">' + q.explanation + '</div>';
+            }
+            html += '</div>';
+        });
+
+        form.innerHTML = html;
+
+        const submitBtn = document.createElement('div');
+        submitBtn.style.textAlign = 'center';
+        submitBtn.style.marginTop = '30px';
+        submitBtn.innerHTML =
+            '<button type="button" class="btn btn-primary" onclick="submitQuiz()"><i class="fas fa-paper-plane"></i> Submit Assessment</button>';
+        form.appendChild(submitBtn);
+
+        window.assessmentData = data;
+    }
+
+    window.submitQuiz = function () {
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        let unanswered = [];
+
+        questions.forEach((q, idx) => {
+            q.classList.remove('unanswered');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const correctAnswer = window.assessmentData.questions[idx].answer;
+
+            if (!selected) {
+                unanswered.push(idx + 1);
+                q.classList.add('unanswered');
+                return;
+            }
+
+            const options = q.querySelectorAll('.option');
+            options.forEach((opt) => {
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (selected && radio === selected && radio.value !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected.value === correctAnswer) {
+                score += 1;
+            }
+
+            const explanation = q.querySelector('.explanation');
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+        });
+
+        if (unanswered.length > 0) {
+            alert('Please answer all questions before submitting. Unanswered: Q' + unanswered.join(', Q'));
+            return;
+        }
+
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('score-display').innerText = score + ' / ' + window.assessmentData.questions.length;
+
+        const percentage = (score / window.assessmentData.questions.length) * 100;
+        let feedback = '';
+        if (percentage === 100) feedback = 'Perfect Score! Outstanding work!';
+        else if (percentage >= 80) feedback = 'Excellent! You have a strong understanding.';
+        else if (percentage >= 60) feedback = 'Good job! You passed the assessment.';
+        else feedback = 'Keep practicing. Review the topics and try again.';
+
+        document.getElementById('feedback-text').innerText = feedback;
+    };
+
+    window.preparePrint = function () {
+        const name = document.getElementById('student-name').value.trim();
+        if (!name) {
+            alert('Please enter your name before printing.');
+            return;
+        }
+        document.getElementById('printed-name').textContent = 'Student: ' + name;
+        window.print();
+    };
+})();
+    </script>
+</body>
+
+</html>

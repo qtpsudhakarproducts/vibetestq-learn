@@ -1,0 +1,497 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 108 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Strings</span> <span class="w2">&amp;</span> <span class="w3">Regular</span> <span class="w4">Expressions</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers string manipulation and regex. Interviewers test this because extracting values from URLs, normalising text, and validating formats are everyday tasks in test automation. Questions move from string basics through the key methods to short practical code.</span>
+  </div>
+
+
+  <!-- Q108.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.1</span>
+      <h2 class="sn-q-text">What is a string in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A string is a sequence of characters used to represent text. Strings are <strong class="k-blue">immutable</strong> — any method that "changes" a string returns a new string; the original is never modified.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> s = &quot;hello&quot;;
+s.<span class="tc-fn">toUpperCase</span>(); <span class="tc-cm">// returns &amp;quot;HELLO&amp;quot; — s is still &amp;quot;hello&amp;quot;</span>
+s = s.<span class="tc-fn">toUpperCase</span>(); <span class="tc-cm">// reassign to keep the result</span>
+console.<span class="tc-fn">log</span>(s); <span class="tc-cm">// &amp;quot;HELLO&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q108.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.2</span>
+      <h2 class="sn-q-text">What are template literals and why are they useful?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Template literals use backticks `<code class="sn-ic"> </code> `` and support embedding expressions with <code class="sn-ic">${ }</code> and multi-line text without <code class="sn-ic">\n</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> name    = &quot;Alice&quot;;
+<span class="tc-kw">const</span> timeout = <span class="tc-num">5000</span>;
+
+<span class="tc-cm">// Without template literal — messy concatenation</span>
+<span class="tc-kw">const</span> msg1 = &quot;Hello &quot; + name + &quot;, timeout is &quot; + timeout + &quot;ms&quot;;
+
+<span class="tc-cm">// With template literal — cleaner</span>
+<span class="tc-kw">const</span> msg2 = <span class="tc-str">`Hello ${name}, timeout is ${timeout}ms`</span>;
+
+<span class="tc-cm">// Multi-line</span>
+<span class="tc-kw">const</span> sql = <span class="tc-str">`
+  SELECT *
+  FROM users
+  WHERE role = 'admin'
+`</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q108.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.3</span>
+      <h2 class="sn-q-text">When do you use string manipulation in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span>Building URLs from base and path: `<code class="sn-ic"> </code>${baseUrl}/orders/${id}<code class="sn-ic"> </code>`</span></li>
+<li><span class="icon">💡</span><span>Normalising text from the page before asserting (trim, lowercase)</span></li>
+<li><span class="icon">⚡</span><span>Extracting an ID or token from a redirect URL</span></li>
+<li><span class="icon">🎯</span><span>Generating unique test data: `<code class="sn-ic"> </code>user+${Date.now()}@test.com<code class="sn-ic"> </code>`</span></li>
+<li><span class="icon">📌</span><span>Validating that a value matches an expected format with regex</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q108.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.4</span>
+      <h2 class="sn-q-text">How do you use strings and regex in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">We use template literals for all URL and message construction. We have a <code class="sn-ic">normalise()</code> helper that trims and lowercases text before any assertion — this prevents false failures from invisible whitespace.</p>
+      </div>
+<p class="sn-para">For extracting IDs from redirect URLs after form submissions, we use a short regex with a capture group and <code class="sn-ic">match()</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q108.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.5</span>
+      <h2 class="sn-q-text">What are the most useful string methods for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Method</th><th class="sn-th-blue">What it does</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">trim()</code></td><td>Remove leading/trailing whitespace</td></tr>
+          <tr><td><code class="sn-ic">toLowerCase()</code></td><td>Convert to lowercase</td></tr>
+          <tr><td><code class="sn-ic">includes(sub)</code></td><td>Returns true if substring exists</td></tr>
+          <tr><td><code class="sn-ic">startsWith(s)</code></td><td>Check beginning</td></tr>
+          <tr><td><code class="sn-ic">endsWith(s)</code></td><td>Check end</td></tr>
+          <tr><td><code class="sn-ic">replace(a, b)</code></td><td>Replace first match</td></tr>
+          <tr><td><code class="sn-ic">replaceAll(a, b)</code></td><td>Replace all matches</td></tr>
+          <tr><td><code class="sn-ic">split(sep)</code></td><td>Split into array</td></tr>
+          <tr><td><code class="sn-ic">slice(s, e)</code></td><td>Extract substring</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">&quot;  Hello World  &quot;.<span class="tc-fn">trim</span>()          <span class="tc-cm">// &amp;quot;Hello World&amp;quot;</span>
+&quot;Hello&quot;.<span class="tc-fn">toLowerCase</span>()             <span class="tc-cm">// &amp;quot;hello&amp;quot;</span>
+&quot;order-<span class="tc-num">123</span>&quot;.<span class="tc-fn">includes</span>(&quot;<span class="tc-num">123</span>&quot;)       <span class="tc-cm">// true</span>
+&quot;https:<span class="tc-cm">//&amp;quot;.startsWith(&amp;quot;https&amp;quot;)    // true</span>
+&quot;report.pdf&quot;.<span class="tc-fn">endsWith</span>(&quot;.pdf&quot;)     <span class="tc-cm">// true</span>
+&quot;a,b,c&quot;.<span class="tc-fn">split</span>(&quot;,&quot;)                <span class="tc-cm">// [&amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;, &amp;quot;c&amp;quot;]</span>
+&quot;ORD-<span class="tc-num">123456</span>&quot;.<span class="tc-fn">slice</span>(<span class="tc-num">4</span>)             <span class="tc-cm">// &amp;quot;123456&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q108.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.6</span>
+      <h2 class="sn-q-text">What is a regular expression?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A regular expression (regex) is a pattern used to match text. In JavaScript, written between forward slashes: <code class="sn-ic">/pattern/flags</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> email = &quot;<span class="tc-kw">test</span>@example.com&quot;;
+/^[^\s@]+@[^\s@]+\.[^\s@]+$/.<span class="tc-kw">test</span>(email); <span class="tc-cm">// true</span>
+
+<span class="tc-kw">const</span> id = &quot;ORD-<span class="tc-num">00456</span>&quot;;
+id.<span class="tc-fn">match</span>(/ORD-(\d+)/)[<span class="tc-num">1</span>]; <span class="tc-cm">// &amp;quot;00456&amp;quot;</span></div>
+      </div>
+<p class="sn-para">Common flags: <code class="sn-ic">i</code> (case-insensitive), <code class="sn-ic">g</code> (find all matches).</p>
+    </div>
+  </div>
+
+  <!-- Q108.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.7</span>
+      <h2 class="sn-q-text">How do you use regex to validate test data or page content?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use regex when the value has a variable part (digits, timestamps, IDs).</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> orderId = &quot;ORD-<span class="tc-num">123456</span>&quot;;
+/^ORD-\d{<span class="tc-num">6</span>}$/.<span class="tc-kw">test</span>(orderId);   <span class="tc-cm">// true</span>
+
+<span class="tc-kw">const</span> date = &quot;<span class="tc-num">15</span>/<span class="tc-num">01</span>/<span class="tc-num">2024</span>&quot;;
+/^\d{<span class="tc-num">2</span>}\/\d{<span class="tc-num">2</span>}\/\d{<span class="tc-num">4</span>}$/.<span class="tc-kw">test</span>(date); <span class="tc-cm">// true</span>
+
+<span class="tc-kw">const</span> price = &quot;£<span class="tc-num">29.99</span>&quot;;
+/^[£$€]\d+\.\d{<span class="tc-num">2</span>}$/.<span class="tc-kw">test</span>(price); <span class="tc-cm">// true</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q108.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.8</span>
+      <h2 class="sn-q-text">What is the difference between test, match, and replace with regex?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">regex.test(str)</code> — returns <code class="sn-ic">true</code> or <code class="sn-ic">false</code>. Use to check existence.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">str.match(regex)</code> — returns match array or <code class="sn-ic">null</code>. Use to extract values.</p>
+<p class="sn-para"><code class="sn-ic">str.replace(regex, newStr)</code> — returns new string with replacements.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">/\d+/.<span class="tc-kw">test</span>(&quot;abc123&quot;);          <span class="tc-cm">// true</span>
+&quot;abc123&quot;.<span class="tc-fn">match</span>(/\d+/);         <span class="tc-cm">// [&amp;quot;123&amp;quot;]</span>
+&quot;abc123&quot;.<span class="tc-fn">match</span>(/(\d+)/)[<span class="tc-num">1</span>];    <span class="tc-cm">// &amp;quot;123&amp;quot; — capture group</span>
+&quot;hello world&quot;.<span class="tc-fn">replace</span>(/o/g, &quot;<span class="tc-num">0</span>&quot;); <span class="tc-cm">// &amp;quot;hell0 w0rld&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q108.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.9</span>
+      <h2 class="sn-q-text">What is the difference between includes, startsWith, and endsWith?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">All three check for a substring — they differ in where they look.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> url = &quot;https:<span class="tc-cm">//staging.example.com/orders&amp;quot;;</span>
+
+url.<span class="tc-fn">includes</span>(&quot;staging&quot;);          <span class="tc-cm">// true — anywhere</span>
+url.<span class="tc-fn">startsWith</span>(&quot;https&quot;);          <span class="tc-cm">// true — beginning</span>
+url.<span class="tc-fn">endsWith</span>(&quot;/orders&quot;);          <span class="tc-cm">// true — end</span>
+url.<span class="tc-fn">startsWith</span>(&quot;http:<span class="tc-cm">//&amp;quot;);        // false</span></div>
+      </div>
+<p class="sn-para">All return <code class="sn-ic">boolean</code>. Use them over regex when the match is a fixed string — simpler and more readable.</p>
+    </div>
+  </div>
+
+  <!-- Q108.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.10</span>
+      <h2 class="sn-q-text">When is regex the right tool and when is it overkill?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use regex when the pattern has variable parts — digits, optional segments, unknown lengths.</p>
+      </div>
+<p class="sn-para">Avoid regex when a simple string method works:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Overkill</span>
+<span class="tc-kw">if</span> (/staging/.<span class="tc-kw">test</span>(url)) { }
+
+<span class="tc-cm">// ✅ Simpler</span>
+<span class="tc-kw">if</span> (url.<span class="tc-fn">includes</span>(&quot;staging&quot;)) { }
+
+<span class="tc-cm">// ✅ Regex is correct here — dynamic digits</span>
+<span class="tc-kw">if</span> (/ORD-\d{<span class="tc-num">6</span>}/.<span class="tc-kw">test</span>(orderId)) { }</div>
+      </div>
+<p class="sn-para">Rule: reach for regex when there is structure or variation in the pattern. Use string methods for fixed substrings.</p>
+    </div>
+  </div>
+
+  <!-- Q108.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.11</span>
+      <h2 class="sn-q-text">What is wrong with hardcoded string comparisons — show the anti-pattern?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Brittle — fails if whitespace or case differs</span>
+<span class="tc-kw">const</span> text = &quot;  Active  &quot;;
+text === &quot;Active&quot; <span class="tc-cm">// false — whitespace causes mismatch</span>
+
+<span class="tc-cm">// ❌ Brittle — fails if currency symbol changes</span>
+<span class="tc-kw">const</span> price = &quot;$<span class="tc-num">29.99</span>&quot;;
+price === &quot;£<span class="tc-num">29.99</span>&quot;; <span class="tc-cm">// false</span></div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Normalise before comparing</span>
+text.<span class="tc-fn">trim</span>() === &quot;Active&quot; <span class="tc-cm">// true</span>
+
+<span class="tc-cm">// ✅ Regex for variable parts</span>
+/^[£$€]<span class="tc-num">29</span>\.<span class="tc-num">99</span>$/.<span class="tc-kw">test</span>(price); <span class="tc-cm">// true for any currency</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q108.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.12</span>
+      <h2 class="sn-q-text">What is the difference between slice, substring, and substr?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">slice(start, end)</code> — extracts from start to end (exclusive). Supports negative indices (counts from end).</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">substring(start, end)</code> — same as slice but no negative index support.</p>
+<p class="sn-para"><code class="sn-ic">substr</code> — deprecated. Do not use.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">&quot;order-<span class="tc-num">123</span>&quot;.<span class="tc-fn">slice</span>(<span class="tc-num">6</span>);      <span class="tc-cm">// &amp;quot;123&amp;quot; — from index 6 to end</span>
+&quot;order-<span class="tc-num">123</span>&quot;.<span class="tc-fn">slice</span>(-<span class="tc-num">3</span>);     <span class="tc-cm">// &amp;quot;123&amp;quot; — last 3 characters</span>
+&quot;order-<span class="tc-num">123</span>&quot;.<span class="tc-fn">slice</span>(<span class="tc-num">0</span>, <span class="tc-num">5</span>);   <span class="tc-cm">// &amp;quot;order&amp;quot;</span>
+
+&quot;order-<span class="tc-num">123</span>&quot;.<span class="tc-fn">substring</span>(<span class="tc-num">6</span>);  <span class="tc-cm">// &amp;quot;123&amp;quot;</span>
+&quot;order-<span class="tc-num">123</span>&quot;.<span class="tc-fn">substring</span>(-<span class="tc-num">3</span>); <span class="tc-cm">// &amp;quot;order-123&amp;quot; — negative treated as 0</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">slice</code> — it handles negative indices and <code class="sn-ic">substr</code> is deprecated.</p>
+    </div>
+  </div>
+
+  <!-- Q108.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.13</span>
+      <h2 class="sn-q-text">Write code to extract an order ID from a URL using regex</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">extractOrderId</span>(url) {
+  <span class="tc-kw">const</span> match = url.<span class="tc-fn">match</span>(/\/orders\/(ORD-\d+)/);
+  <span class="tc-kw">return</span> match ? match[<span class="tc-num">1</span>] : <span class="tc-kw">null</span>;
+}
+
+console.<span class="tc-fn">log</span>(<span class="tc-fn">extractOrderId</span>(&quot;https:<span class="tc-cm">//example.com/orders/ORD-123456&amp;quot;));</span>
+<span class="tc-cm">// &amp;quot;ORD-123456&amp;quot;</span>
+
+console.<span class="tc-fn">log</span>(<span class="tc-fn">extractOrderId</span>(&quot;https:<span class="tc-cm">//example.com/dashboard&amp;quot;));</span>
+<span class="tc-cm">// null</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">match()</code> returns an array: index 0 is the full match, index 1 is the first capture group <code class="sn-ic">(ORD-\d+)</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q108.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.14</span>
+      <h2 class="sn-q-text">Write a string helper that normalises text before assertion</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">normalise</span>(raw) {
+  <span class="tc-kw">if</span> (raw == <span class="tc-kw">null</span>) <span class="tc-kw">return</span> &quot;&quot;;
+  <span class="tc-kw">return</span> raw
+    .<span class="tc-fn">replace</span>(/\u00A0/g, &quot; &quot;) <span class="tc-cm">// non-breaking space → regular space</span>
+    .<span class="tc-fn">replace</span>(/\s+/g, &quot; &quot;)    <span class="tc-cm">// collapse multiple spaces</span>
+    .<span class="tc-fn">trim</span>()
+    .<span class="tc-fn">toLowerCase</span>();
+}
+
+<span class="tc-fn">normalise</span>(&quot;  Active  &quot;);              <span class="tc-cm">// &amp;quot;active&amp;quot;</span>
+<span class="tc-fn">normalise</span>(&quot;Hello\u00A0World&quot;);        <span class="tc-cm">// &amp;quot;hello world&amp;quot;</span>
+<span class="tc-fn">normalise</span>(<span class="tc-kw">null</span>);                      <span class="tc-cm">// &amp;quot;&amp;quot;</span></div>
+      </div>
+<p class="sn-para">Without this, invisible whitespace and inconsistent casing cause false failures in text assertions.</p>
+    </div>
+  </div>
+
+  <!-- Q108.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q108.15</span>
+      <h2 class="sn-q-text">Describe a regex pattern you wrote to solve a real automation problem</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, export filenames were generated with a timestamp: <code class="sn-ic">export_2024-01-15_14-32-07.csv</code>. The exact timestamp was always different — we couldn't hardcode it.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> EXPORT_PATTERN = /^export_\d{<span class="tc-num">4</span>}-\d{<span class="tc-num">2</span>}-\d{<span class="tc-num">2</span>}_\d{<span class="tc-num">2</span>}-\d{<span class="tc-num">2</span>}-\d{<span class="tc-num">2</span>}\.csv$/;
+
+<span class="tc-kw">const</span> filename = download.<span class="tc-fn">suggestedFilename</span>();
+<span class="tc-kw">expect</span>(EXPORT_PATTERN.<span class="tc-kw">test</span>(filename)).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);</div>
+      </div>
+<p class="sn-para">The pattern validated the structure without caring about the specific timestamp. A wrong filename (like <code class="sn-ic">export.csv</code> or <code class="sn-ic">data-export.csv</code>) would fail immediately.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Strings are immutable. String methods return new strings — always assign the result.</span></li>
+            <li><span class="icon">⭐</span><span>Template literals with <code class="sn-ic">${}</code> replace concatenation. Always use them.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">trim()</code>, <code class="sn-ic">toLowerCase()</code>, <code class="sn-ic">includes()</code>, <code class="sn-ic">split()</code>, <code class="sn-ic">slice()</code> — know these cold.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">regex.test()</code> returns boolean. <code class="sn-ic">str.match()</code> returns the match array.</span></li>
+            <li><span class="icon">⭐</span><span>Normalise text before asserting — trim and lowercase prevent false failures.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">slice</code> not <code class="sn-ic">substr</code> (deprecated). Use regex for variable patterns, string methods for fixed substrings.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

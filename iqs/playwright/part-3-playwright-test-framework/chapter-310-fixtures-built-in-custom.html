@@ -1,0 +1,1053 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 310 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Fixtures</span> <span class="w2">—</span> <span class="w3">Built-in</span> <span class="w4">&amp;</span> <span class="w5">Custom</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's fixture system — the dependency injection mechanism that replaces manual page object creation, per-test setup duplication, and scattered teardown code. Fixtures are the single most tested topic in senior Playwright interviews. Candidates who understand fixtures deeply can articulate test architecture decisions, debug scope problems, and explain why their suite scales cleanly. Candidates who do not know fixtures produce suites that are expensive to maintain.</span>
+  </div>
+
+
+  <!-- Q310.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.1</span>
+      <h2 class="sn-q-text">What is a fixture in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A fixture is a named value that Playwright creates and injects into a test as a parameter. When a test declares <code class="sn-ic">{ page }</code> in its signature, Playwright does not pass a variable — it creates a fresh browser page for that specific test, injects it, and closes it when the test finishes.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">page</code>, <code class="sn-ic">browser</code>, <code class="sn-ic">context</code>, and <code class="sn-ic">request</code> are all built-in fixtures. The power is that you can create your own — for page objects, authenticated sessions, test data factories, API clients, or any reusable resource.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Built-in fixtures — Playwright creates and destroys these automatically</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'uses built-in fixtures'</span>, <span class="tc-kw">async</span> ({ page, request, browserName }) =&gt; {
+  console.<span class="tc-fn">log</span>(browserName); <span class="tc-cm">// 'chromium'</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);                         <span class="tc-cm">// fresh browser tab</span>
+  <span class="tc-kw">const</span> r = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/employees'</span>);     <span class="tc-cm">// HTTP client</span>
+  <span class="tc-kw">expect</span>(r.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+});</div>
+      </div>
+<p class="sn-para">Key principles:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-blue">Created on demand</strong> — a fixture is only created if a test declares it</span></li>
+<li><span class="icon">💡</span><span><strong class="k-blue">Automatically cleaned up</strong> — teardown runs after the test, whether it passed or failed</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-blue">Scoped</strong> — test-scoped (fresh per test) or worker-scoped (shared across tests in a worker)</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span><strong class="k-blue">Composable</strong> — fixtures can depend on other fixtures; Playwright resolves the chain</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q310.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.2</span>
+      <h2 class="sn-q-text">What problem do fixtures solve that hooks do not?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hooks solve duplication within a file. Fixtures solve duplication across files.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Before fixtures — setup repeated in every spec file</span>
+<span class="tc-cm">// employee-list.spec.ts</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'search by name @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">const</span> empPage = <span class="tc-kw">new</span> EmployeeListPage(page);
+  <span class="tc-kw">await</span> empPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> empPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Linda'</span>);
+});
+
+<span class="tc-cm">// leave.spec.ts — same boilerplate</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'apply leave @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">const</span> leavePage = <span class="tc-kw">new</span> LeavePage(page);
+  <span class="tc-cm">// ...</span>
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ After fixtures — spec files contain only test logic</span>
+<span class="tc-cm">// employee-list.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures/baseFixture'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'search by name @smoke'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Linda'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(employeeListPage.<span class="tc-fn">getResultRow</span>(<span class="tc-str">'Linda Anderson'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Additionally:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Manual <code class="sn-ic">new Page()</code> instantiation can be forgotten — fixtures enforce creation</span></li>
+<li><span class="icon">💡</span><span>Teardown in fixtures is colocated with setup — you see cleanup next to the thing being created</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>A <code class="sn-ic">LoginPage</code> constructor change requires updating one fixture, not every spec file</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q310.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.3</span>
+      <h2 class="sn-q-text">How do you create a custom fixture with test.extend()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.extend&lt;TestFixtures, WorkerFixtures&gt;()</code> creates a new <code class="sn-ic">test</code> object with your custom fixtures layered on top of the built-ins:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/baseFixture.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { LoginPage }        <span class="tc-kw">from</span> <span class="tc-str">'../pages/LoginPage'</span>;
+<span class="tc-kw">import</span> { EmployeeListPage } <span class="tc-kw">from</span> <span class="tc-str">'../pages/EmployeeListPage'</span>;
+<span class="tc-kw">import</span> { AddEmployeePage }  <span class="tc-kw">from</span> <span class="tc-str">'../pages/AddEmployeePage'</span>;
+
+<span class="tc-kw">type</span> PageFixtures = {
+  loginPage:        LoginPage;
+  employeeListPage: EmployeeListPage;
+  addEmployeePage:  AddEmployeePage;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;PageFixtures&gt;({
+
+  loginPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LoginPage(page));
+    <span class="tc-cm">// No teardown needed — page closes automatically</span>
+  },
+
+  employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> EmployeeListPage(page));
+  },
+
+  addEmployeePage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> AddEmployeePage(page));
+  },
+
+});
+
+<span class="tc-kw">export</span> { <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;</div>
+      </div>
+<p class="sn-para">Every spec file then imports from this file, not from <code class="sn-ic">@playwright/test</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures/baseFixture'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'saves with required fields @smoke'</span>, <span class="tc-kw">async</span> ({ addEmployeePage }) =&gt; {
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">fillBasicInfo</span>(<span class="tc-str">'Priya'</span>, <span class="tc-str">'Sharma'</span>, <span class="tc-str">'EMP0099'</span>);
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">clickSave</span>();
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">expectSuccessMessage</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q310.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.4</span>
+      <h2 class="sn-q-text">What is the use() function and how does it structure setup and teardown?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">use()</code> is the function Playwright provides inside every fixture definition. You call it with the value you want to inject into the test. Everything before <code class="sn-ic">use()</code> is setup. Everything after <code class="sn-ic">use()</code> is teardown:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">myFixture: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-cm">// ── SETUP ──────────────────────────────────────────────</span>
+  <span class="tc-kw">const</span> resource = <span class="tc-kw">await</span> <span class="tc-fn">createExpensiveResource</span>();
+  <span class="tc-kw">await</span> resource.<span class="tc-fn">initialise</span>();
+
+  <span class="tc-cm">// ── HAND TO TEST ────────────────────────────────────────</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>(resource);
+  <span class="tc-cm">// Execution pauses here. The test body runs.</span>
+  <span class="tc-cm">// The test body can use `resource` freely.</span>
+
+  <span class="tc-cm">// ── TEARDOWN ────────────────────────────────────────────</span>
+  <span class="tc-cm">// Always runs — whether the test passed, failed, or timed out</span>
+  <span class="tc-kw">await</span> resource.<span class="tc-fn">cleanup</span>();
+  <span class="tc-kw">await</span> resource.<span class="tc-fn">close</span>();
+},</div>
+      </div>
+<p class="sn-para">This structure means:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Setup and teardown are colocated — you see them together</span></li>
+<li><span class="icon">💡</span><span>Teardown is guaranteed — no <code class="sn-ic">try/finally</code> needed</span></li>
+<li><span class="icon">⚡</span><span>The fixture is self-contained — it manages the full lifecycle of what it creates</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q310.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.5</span>
+      <h2 class="sn-q-text">What is the import rule for fixtures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Always import <code class="sn-ic">test</code> and <code class="sn-ic">expect</code> from your fixtures file, not from <code class="sn-ic">@playwright/test</code>.</strong></p>
+      </div>
+<p class="sn-para">This is the most common fixture mistake in real projects:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Wrong — imports the base test; custom fixtures are not available</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'search employees @smoke'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+  <span class="tc-cm">// TypeError: employeeListPage is not a fixture on the base test object</span>
+});
+
+<span class="tc-cm">// ✅ Correct — imports your extended test; all custom fixtures available</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures/baseFixture'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'search employees @smoke'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+  <span class="tc-cm">// employeeListPage injected by your fixture</span>
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">expect</code> re-export in the fixtures file (<code class="sn-ic">export { expect } from '@playwright/test'</code>) means tests only need one import — from the fixtures file — for both <code class="sn-ic">test</code> and <code class="sn-ic">expect</code>. Add an ESLint rule or PR checklist item to enforce this.</p>
+    </div>
+  </div>
+
+  <!-- Q310.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.6</span>
+      <h2 class="sn-q-text">What are the built-in fixtures and their scopes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Fixture</th><th class="sn-th-blue">Scope</th><th class="sn-th-green">What It Provides</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">page</code></td><td>test</td><td>Fresh browser tab per test — closes when test ends</td></tr>
+          <tr><td><code class="sn-ic">context</code></td><td>test</td><td>Fresh <code class="sn-ic">BrowserContext</code> — isolated cookies, storage, auth state</td></tr>
+          <tr><td><code class="sn-ic">browser</code></td><td>worker</td><td><code class="sn-ic">Browser</code> instance shared across all tests in a worker</td></tr>
+          <tr><td><code class="sn-ic">browserName</code></td><td>worker</td><td><code class="sn-ic">'chromium'</code>, <code class="sn-ic">'firefox'</code>, or <code class="sn-ic">'webkit'</code></td></tr>
+          <tr><td><code class="sn-ic">request</code></td><td>test</td><td><code class="sn-ic">APIRequestContext</code> for HTTP requests without a browser</td></tr>
+          <tr><td><code class="sn-ic">baseURL</code></td><td>worker</td><td>The <code class="sn-ic">baseURL</code> from config — used by <code class="sn-ic">page.goto('/')</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><code class="sn-ic">page</code> and <code class="sn-ic">context</code> are test-scoped — fresh per test, ensuring isolation. <code class="sn-ic">browser</code> and <code class="sn-ic">browserName</code> are worker-scoped — shared across tests in a worker. Playwright re-uses a single browser process per worker and creates isolated contexts per test.</p>
+    </div>
+  </div>
+
+  <!-- Q310.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.7</span>
+      <h2 class="sn-q-text">What is the difference between test-scoped and worker-scoped fixtures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Test-scoped (default):</strong> A fresh instance is created for each test and destroyed when the test finishes. Safe for mutable state — one test's changes cannot affect another's.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Worker-scoped:</strong> Created once when the worker starts. Shared across all tests that worker runs. Destroyed when the worker finishes all its tests. Must not be mutated by individual tests.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test-scoped:   [create] → TEST 1 → [destroy] → [create] → TEST 2 → [destroy]
+Worker-scoped: [create] → TEST 1 → TEST 2 → TEST 3 → ... → [destroy]</div>
+      </div>
+<p class="sn-para">Define a worker-scoped fixture with the second type parameter and <code class="sn-ic">{ scope: 'worker' }</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> WorkerFixtures = {
+  authToken: <span class="tc-kw">string</span>;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{}, WorkerFixtures&gt;({
+
+  authToken: [<span class="tc-kw">async</span> ({ request }, use) =&gt; {
+    <span class="tc-cm">// Runs once per worker — not per test</span>
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+      data: { username: <span class="tc-str">'Admin'</span>, password: <span class="tc-str">'admin123'</span> },
+    });
+    <span class="tc-kw">const</span> { token } = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(token);
+    <span class="tc-cm">// Teardown runs once when the worker finishes all tests</span>
+  }, { scope: <span class="tc-str">'worker'</span> }],
+
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'fetch leave balance @smoke'</span>, <span class="tc-kw">async</span> ({ authToken, request }) =&gt; {
+  <span class="tc-cm">// authToken was obtained once for this worker — not re-fetched per test</span>
+  <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/leave/balance'</span>, {
+    headers: { Authorization: <span class="tc-str">`Bearer ${authToken}`</span> },
+  });
+  <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Rule:</strong> use worker scope when setup is expensive and the result is safe to share (auth tokens, read-only DB connections). Use test scope for everything else.</p>
+    </div>
+  </div>
+
+  <!-- Q310.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.8</span>
+      <h2 class="sn-q-text">How do fixture dependencies work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A fixture can depend on other fixtures by listing them in its parameter list — exactly as a test does. Playwright resolves the dependency chain automatically:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> Fixtures = {
+  loginPage:        LoginPage;
+  dashboardPage:    DashboardPage;
+  employeeListPage: EmployeeListPage;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;Fixtures&gt;({
+
+  loginPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LoginPage(page));
+  },
+
+  <span class="tc-cm">// dashboardPage depends on loginPage — uses it to log in</span>
+  dashboardPage: <span class="tc-kw">async</span> ({ loginPage, page }, use) =&gt; {
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> DashboardPage(page));
+  },
+
+  <span class="tc-cm">// employeeListPage depends on dashboardPage — user must be logged in first</span>
+  employeeListPage: <span class="tc-kw">async</span> ({ dashboardPage, page }, use) =&gt; {
+    <span class="tc-kw">await</span> dashboardPage.<span class="tc-fn">navigateTo</span>(<span class="tc-str">'PIM'</span>);
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> EmployeeListPage(page));
+  },
+
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'search employee @smoke'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+  <span class="tc-cm">// Playwright resolved the chain automatically:</span>
+  <span class="tc-cm">// loginPage created → dashboardPage used it to log in → employeeListPage navigated to PIM</span>
+  <span class="tc-cm">// The test just asks for employeeListPage</span>
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Linda'</span>);
+});</div>
+      </div>
+<p class="sn-para">This is dependency injection: the test declares what it needs, the framework figures out how to provide it. The test body is pure logic.</p>
+    </div>
+  </div>
+
+  <!-- Q310.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.9</span>
+      <h2 class="sn-q-text">What is an auto fixture and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An auto fixture runs for every test automatically — without any test declaring it as a parameter. It is marked with <code class="sn-ic">{ auto: true }</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> AutoFixtures = {
+  screenshotOnFailure: <span class="tc-kw">void</span>;  <span class="tc-cm">// void because the fixture provides nothing directly</span>
+  testLogger: <span class="tc-kw">void</span>;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;AutoFixtures&gt;({
+
+  screenshotOnFailure: [<span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(); <span class="tc-cm">// setup is empty — the value provided is void</span>
+
+    <span class="tc-cm">// Teardown: runs after every test</span>
+    <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+      <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+        body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+        contentType: <span class="tc-str">'image/png'</span>,
+      });
+    }
+  }, { auto: <span class="tc-kw">true</span> }],
+
+  testLogger: [<span class="tc-kw">async</span> ({}, use) =&gt; {
+    <span class="tc-kw">const</span> { title, project } = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`▶ [${project.name}] ${title}`</span>);
+    <span class="tc-kw">const</span> start = Date.<span class="tc-fn">now</span>();
+
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>();
+
+    <span class="tc-kw">const</span> duration = Date.<span class="tc-fn">now</span>() - start;
+    <span class="tc-kw">const</span> { status, expectedStatus } = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+    <span class="tc-kw">const</span> icon = status === expectedStatus ? <span class="tc-str">'✅'</span> : <span class="tc-str">'❌'</span>;
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`${icon} ${title} — ${duration}ms`</span>);
+  }, { auto: <span class="tc-kw">true</span> }],
+
+});</div>
+      </div>
+<p class="sn-para">Every test in your suite now automatically gets:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A screenshot attached to the report if it fails</span></li>
+<li><span class="icon">💡</span><span>A log line when it starts and ends</span></li>
+</ul>
+<p class="sn-para">No test needs to declare <code class="sn-ic">{ screenshotOnFailure }</code>. No <code class="sn-ic">beforeEach</code>/<code class="sn-ic">afterEach</code> needed in every spec file. The cross-cutting concern lives in one place.</p>
+<p class="sn-para"><strong class="k-blue">Use auto fixtures for:</strong> logging, screenshot capture on failure, performance timing, global monitoring. Anything that should apply to all tests without requiring explicit declaration.</p>
+    </div>
+  </div>
+
+  <!-- Q310.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.10</span>
+      <h2 class="sn-q-text">How do you override a built-in fixture?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Override built-in fixtures by declaring them in <code class="sn-ic">extend()</code> with the same name:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Override page to always set a consistent viewport</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ page: Page }&gt;({
+  page: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">setViewportSize</span>({ width: <span class="tc-num">1280</span>, height: <span class="tc-num">720</span> });
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+  },
+});
+
+<span class="tc-cm">// Override context to always inject auth cookies</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ context: BrowserContext }&gt;({
+  context: <span class="tc-kw">async</span> ({ context }, use) =&gt; {
+    <span class="tc-kw">await</span> context.<span class="tc-fn">addCookies</span>([{
+      name: <span class="tc-str">'session_token'</span>,
+      value: process.env.SESSION_TOKEN!,
+      domain: <span class="tc-str">'demo.orangehrmlive.com'</span>,
+      path: <span class="tc-str">'/'</span>,
+    }]);
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(context);
+  },
+});
+
+<span class="tc-cm">// Override page to mock all analytics requests</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ page: Page }&gt;({
+  page: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/analytics/**'</span>, route =&gt; route.<span class="tc-fn">abort</span>());
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+  },
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Use sparingly.</strong> Overriding a built-in changes behaviour for every test using that fixture. Document why the override exists so team members understand the deviation from default behaviour.</p>
+    </div>
+  </div>
+
+  <!-- Q310.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.11</span>
+      <h2 class="sn-q-text">What is test.use() and how is it different from creating a fixture?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.use()</code> overrides fixture values within a <code class="sn-ic">describe</code> block or file — without writing a full fixture definition:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Mobile Layout Tests'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ viewport: { width: <span class="tc-num">390</span>, height: <span class="tc-num">844</span> } });
+  <span class="tc-cm">// All tests in this describe use a mobile viewport</span>
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'login form is usable @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Staging Environment'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ baseURL: <span class="tc-str">'https: S1 
+
+  test('</span>login works on staging @smoke<span class="tc-str">', async ({ page }) =&amp;gt; {
+    await page.goto('</span>/login'); <span class="tc-cm">// goes to staging</span>
+  });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use <code class="sn-ic">test.use()</code> for:</strong> lightweight config overrides (viewport, locale, baseURL) that apply to a subset of tests. No setup logic, no teardown, just a value override.</p>
+<p class="sn-para"><strong class="k-purple">Use custom fixtures for:</strong> anything that requires setup logic, teardown, dependencies on other fixtures, or reuse across multiple files.</p>
+    </div>
+  </div>
+
+  <!-- Q310.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.12</span>
+      <h2 class="sn-q-text">How do fixture options enable fixture parameterisation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Fixture options are fixtures with <code class="sn-ic">{ option: true }</code> — they provide a default value that can be overridden per test or per describe via <code class="sn-ic">test.use()</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> FixtureOptions = {
+  userRole: <span class="tc-str">'admin'</span> | <span class="tc-str">'employee'</span> | <span class="tc-str">'manager'</span>;
+};
+
+<span class="tc-kw">type</span> PageFixtures = {
+  authenticatedPage: Page;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;PageFixtures &amp; FixtureOptions&gt;({
+
+  <span class="tc-cm">// Option: default 'admin', overridable</span>
+  userRole: [<span class="tc-str">'admin'</span>, { option: <span class="tc-kw">true</span> }],
+
+  authenticatedPage: <span class="tc-kw">async</span> ({ page, userRole }, use) =&gt; {
+    <span class="tc-kw">const</span> credentials = {
+      admin:    { username: <span class="tc-str">'Admin'</span>,    password: <span class="tc-str">'admin123'</span>     },
+      employee: { username: <span class="tc-str">'John'</span>,     password: <span class="tc-str">'Employee@123'</span> },
+      manager:  { username: <span class="tc-str">'Manager1'</span>, password: <span class="tc-str">'Manager@123'</span>  },
+    }[userRole];
+
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(credentials.username);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(credentials.password);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+  },
+
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Default — logs in as admin</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin sees all employees @smoke'</span>, <span class="tc-kw">async</span> ({ authenticatedPage }) =&gt; { ... });
+
+<span class="tc-cm">// Override per describe</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee Role Tests'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ userRole: <span class="tc-str">'employee'</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'employee cannot see admin settings @regression'</span>, <span class="tc-kw">async</span> ({ authenticatedPage }) =&gt; {
+    <span class="tc-cm">// Logged in as employee</span>
+    <span class="tc-kw">await</span> authenticatedPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/admin'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(authenticatedPage.<span class="tc-fn">getByText</span>(<span class="tc-str">'Access Denied'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+});</div>
+      </div>
+<p class="sn-para">This is fixture-based parameterisation — the same test infrastructure runs under different configurations based on what <code class="sn-ic">test.use()</code> declares.</p>
+    </div>
+  </div>
+
+  <!-- Q310.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.13</span>
+      <h2 class="sn-q-text">What fixtures can you use in beforeAll and why is page unavailable?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">beforeAll</code> runs at the worker level — before any individual test exists. The <code class="sn-ic">page</code> fixture is test-scoped: it is created for a specific test and closed when that test ends. Since there is no test when <code class="sn-ic">beforeAll</code> runs, there is no test-scoped <code class="sn-ic">page</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Available in <code class="sn-ic">beforeAll</code>:</strong> worker-scoped fixtures — <code class="sn-ic">browser</code>, <code class="sn-ic">request</code>, <code class="sn-ic">browserName</code>, and any custom worker-scoped fixtures you define.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Worker-scoped fixtures — available in beforeAll</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ browser, request }) =&gt; {
+  <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/test/seed'</span>, { data: { env: <span class="tc-str">'test'</span> } });
+});
+
+<span class="tc-cm">// ⚠️ page is test-scoped — Playwright warns if used in beforeAll</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Avoid this — page's lifecycle is undefined outside a test</span>
+});</div>
+      </div>
+<p class="sn-para">If you need browser interaction in <code class="sn-ic">beforeAll</code>, create a page manually from <code class="sn-ic">browser</code> and close it yourself:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({ storageState: <span class="tc-str">'.auth/admin.json'</span> });
+  <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/seed'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Seed Data'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Seeding complete'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>(); <span class="tc-cm">// must close manually — Playwright will not close it</span>
+});</div>
+      </div>
+<p class="sn-para">The rule: when you create a resource manually in <code class="sn-ic">beforeAll</code>, you own its lifecycle — create it and close it yourself.</p>
+    </div>
+  </div>
+
+  <!-- Q310.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.14</span>
+      <h2 class="sn-q-text">What is the fixture execution order relative to hooks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">1. Worker-scoped fixture setup      (once per worker)
+2. beforeAll
+3.   Test-scoped fixture setup      (once per test)
+4.   beforeEach
+5.   TEST RUNS
+6.   afterEach
+7.   Test-scoped fixture teardown
+8. afterAll
+9. Worker-scoped fixture teardown   (once per worker)</div>
+      </div>
+<p class="sn-para">The practical implication: in <code class="sn-ic">afterEach</code>, test-scoped fixtures are still alive — you can use <code class="sn-ic">page</code> and your page objects. In <code class="sn-ic">afterAll</code>, test-scoped fixtures for the last test have already been torn down — <code class="sn-ic">page</code> is not available.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page, leavePage }) =&gt; {
+  <span class="tc-cm">// ✅ page and leavePage are alive in afterEach — use them freely</span>
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-cm">// ❌ page is NOT available here — test-scoped fixtures are already torn down</span>
+  <span class="tc-cm">// ✅ worker-scoped fixtures ARE still available</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q310.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.15</span>
+      <h2 class="sn-q-text">How do you use custom fixtures in beforeEach and afterEach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Fixtures in <code class="sn-ic">beforeEach</code> and <code class="sn-ic">afterEach</code> work exactly like in tests — declare them in the parameter list and Playwright injects them:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave Application'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ leavePage }) =&gt; {
+    <span class="tc-cm">// Custom fixture available in beforeEach</span>
+    <span class="tc-kw">await</span> leavePage.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> leavePage.<span class="tc-fn">waitForPageReady</span>();
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ leavePage, page }) =&gt; {
+    <span class="tc-cm">// Both custom fixture and raw page available in afterEach</span>
+    <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+      <span class="tc-kw">const</span> section = <span class="tc-kw">await</span> leavePage.<span class="tc-fn">getCurrentSection</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-context'</span>, {
+        body: Buffer.<span class="tc-kw">from</span>(<span class="tc-str">`Section: ${section}\nURL: ${page.url()}`</span>),
+        contentType: <span class="tc-str">'text/plain'</span>,
+      });
+      <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+        body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+        contentType: <span class="tc-str">'image/png'</span>,
+      });
+    }
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'annual leave submits @smoke'</span>, <span class="tc-kw">async</span> ({ leavePage }) =&gt; {
+    <span class="tc-kw">await</span> leavePage.<span class="tc-fn">selectLeaveType</span>(<span class="tc-str">'Annual'</span>);
+    <span class="tc-kw">await</span> leavePage.<span class="tc-fn">setDates</span>(<span class="tc-str">'2026-06-01'</span>, <span class="tc-str">'2026-06-05'</span>);
+    <span class="tc-kw">await</span> leavePage.<span class="tc-fn">clickApply</span>();
+    <span class="tc-kw">await</span> leavePage.<span class="tc-fn">expectSuccessMessage</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">leavePage</code> fixture is created once before the <code class="sn-ic">beforeEach</code> runs and shared across <code class="sn-ic">beforeEach</code>, the test body, and <code class="sn-ic">afterEach</code>. Using the page object in <code class="sn-ic">afterEach</code> instead of raw <code class="sn-ic">page</code> keeps the hook consistent with the test code.</p>
+    </div>
+  </div>
+
+  <!-- Q310.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.16</span>
+      <h2 class="sn-q-text">Write a complete, production-ready baseFixture.ts for an OrangeHRM project.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/baseFixture.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, <span class="tc-kw">expect</span>, Page, BrowserContext } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { LoginPage }        <span class="tc-kw">from</span> <span class="tc-str">'../pages/LoginPage'</span>;
+<span class="tc-kw">import</span> { EmployeeListPage } <span class="tc-kw">from</span> <span class="tc-str">'../pages/EmployeeListPage'</span>;
+<span class="tc-kw">import</span> { AddEmployeePage }  <span class="tc-kw">from</span> <span class="tc-str">'../pages/AddEmployeePage'</span>;
+<span class="tc-kw">import</span> { LeavePage }        <span class="tc-kw">from</span> <span class="tc-str">'../pages/LeavePage'</span>;
+<span class="tc-kw">import</span> { AdminPage }        <span class="tc-kw">from</span> <span class="tc-str">'../pages/AdminPage'</span>;
+
+<span class="tc-kw">type</span> PageFixtures = {
+  loginPage:        LoginPage;
+  employeeListPage: EmployeeListPage;
+  addEmployeePage:  AddEmployeePage;
+  leavePage:        LeavePage;
+  adminPage:        AdminPage;
+};
+
+<span class="tc-kw">type</span> WorkerFixtures = {
+  authToken: <span class="tc-kw">string</span>;
+};
+
+<span class="tc-kw">type</span> AutoFixtures = {
+  screenshotOnFailure: <span class="tc-kw">void</span>;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;PageFixtures &amp; AutoFixtures, WorkerFixtures&gt;({
+
+  <span class="tc-cm">// ── Page object fixtures ──────────────────────────────────────────────────</span>
+
+  loginPage:        <span class="tc-kw">async</span> ({ page }, use) =&gt; { <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LoginPage(page));        },
+  employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; { <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> EmployeeListPage(page)); },
+  addEmployeePage:  <span class="tc-kw">async</span> ({ page }, use) =&gt; { <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> AddEmployeePage(page));  },
+  leavePage:        <span class="tc-kw">async</span> ({ page }, use) =&gt; { <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LeavePage(page));        },
+  adminPage:        <span class="tc-kw">async</span> ({ page }, use) =&gt; { <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> AdminPage(page));        },
+
+  <span class="tc-cm">// ── Auto fixture — screenshot on failure for every test ──────────────────</span>
+
+  screenshotOnFailure: [<span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>();
+    <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+      <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+        body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+        contentType: <span class="tc-str">'image/png'</span>,
+      });
+      <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-url'</span>, {
+        body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+        contentType: <span class="tc-str">'text/plain'</span>,
+      });
+    }
+  }, { auto: <span class="tc-kw">true</span> }],
+
+  <span class="tc-cm">// ── Worker-scoped fixture — auth token shared within worker ──────────────</span>
+
+  authToken: [<span class="tc-kw">async</span> ({ request }, use) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+      data: { username: <span class="tc-str">'Admin'</span>, password: <span class="tc-str">'admin123'</span> },
+    });
+    <span class="tc-kw">const</span> { token } = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(token);
+    <span class="tc-cm">// No teardown needed — tokens expire naturally</span>
+  }, { scope: <span class="tc-str">'worker'</span> }],
+
+});
+
+<span class="tc-kw">export</span> { <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q310.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.17</span>
+      <h2 class="sn-q-text">What is the difference between fixtures and hooks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Use fixtures when:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Setup is needed across multiple spec files</span></li>
+<li><span class="icon">💡</span><span>Setup involves creating objects (page objects, API clients, data factories)</span></li>
+<li><span class="icon">⚡</span><span>Teardown needs to be colocated with setup for clarity</span></li>
+<li><span class="icon">🎯</span><span>You want declarative setup — tests state what they need, Playwright provides it</span></li>
+</ul>
+<p class="sn-para"><strong class="k-blue">Use hooks when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Setup is local to one file or describe block</span></li>
+<li><span class="icon">🔑</span><span>Setup is navigation-specific (go to this URL before each test in this file)</span></li>
+<li><span class="icon">🚀</span><span>You need to share mutable state across tests within a group (e.g., a <code class="sn-ic">let createdId</code> variable)</span></li>
+</ul>
+<p class="sn-para">In practice, use both:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// baseFixture.ts — reusable page object, shared across files</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ employeeListPage: EmployeeListPage }&gt;({
+  employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> EmployeeListPage(page));
+  },
+});
+
+<span class="tc-cm">// employee-list.spec.ts — local navigation, specific to this file</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee List'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>); <span class="tc-cm">// local setup — only needed here</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'search by name @smoke'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Linda'</span>); <span class="tc-cm">// fixture provides the object</span>
+  });
+});</div>
+      </div>
+<p class="sn-para">Fixtures handle shared infrastructure. Hooks handle local context.</p>
+    </div>
+  </div>
+
+  <!-- Q310.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q310.18</span>
+      <h2 class="sn-q-text">What was the most impactful fixture change you introduced in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The most impactful change was introducing the <code class="sn-ic">screenshotOnFailure</code> auto fixture. Before it, every spec file had the same <code class="sn-ic">afterEach</code> block:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">This was copy-pasted across 12 spec files. When we wanted to also attach the failure URL, we had to update 12 files. When a developer added a new spec file, they had to remember to add the <code class="sn-ic">afterEach</code> — and occasionally forgot.</p>
+<p class="sn-para">After moving it to an auto fixture in <code class="sn-ic">baseFixture.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">screenshotOnFailure: [<span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>();
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-url'</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+  }
+}, { auto: <span class="tc-kw">true</span> }],</div>
+      </div>
+<p class="sn-para">Every spec file gets it automatically. Adding a new spec file gives it screenshots for free. Adding the URL attachment required one change in one place. The afterEach blocks across 12 files were deleted — 36 lines of identical code gone.</p>
+<p class="sn-para">The second most impactful change was the <code class="sn-ic">authToken</code> worker-scoped fixture for API tests. Previously, every API test called the login endpoint to get a token. With 40 API tests and 4 workers, that was 40 login calls. After the worker-scoped fixture, it was 4 calls — one per worker. API test suite startup time dropped from 18 seconds to 2 seconds.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Fixtures are Playwright's dependency injection — declare what a test needs, Playwright creates, injects, and tears it down.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.extend&lt;TestFixtures, WorkerFixtures&gt;()</code> creates a new <code class="sn-ic">test</code> object with custom fixtures on top of built-ins.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">use()</code> is the fixture boundary: everything before it is setup, everything after is teardown. Teardown always runs.</span></li>
+            <li><span class="icon">⭐</span><span><strong>Always import <code class="sn-ic">test</code> and <code class="sn-ic">expect</code> from your fixtures file, not from <code class="sn-ic">@playwright/test</code>.</strong> This is the most common mistake.</span></li>
+            <li><span class="icon">⭐</span><span>Built-in scopes: <code class="sn-ic">page</code>, <code class="sn-ic">context</code>, <code class="sn-ic">request</code> are test-scoped. <code class="sn-ic">browser</code>, <code class="sn-ic">browserName</code>, <code class="sn-ic">baseURL</code> are worker-scoped.</span></li>
+            <li><span class="icon">⭐</span><span>Test-scoped: fresh per test, safe for mutable state. Worker-scoped: shared across tests in a worker, must not be mutated.</span></li>
+            <li><span class="icon">⭐</span><span>Fixtures can depend on other fixtures — declare the dependency in the parameter list, Playwright resolves the chain.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Auto fixtures (<code class="sn-ic">{ auto: true }</code>) run for every test without declaration — use for screenshot capture, logging, monitoring.</span></li>
+            <li><span class="icon">⭐</span><span>Override built-in fixtures to change default behaviour for all tests. Use <code class="sn-ic">test.use()</code> for scoped lightweight overrides.</span></li>
+            <li><span class="icon">⭐</span><span>Fixture options (<code class="sn-ic">{ option: true }</code>) enable fixture parameterisation — the fixture reads a configurable value via <code class="sn-ic">test.use()</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeAll</code>/<code class="sn-ic">afterAll</code> can only use worker-scoped fixtures — <code class="sn-ic">page</code> is test-scoped and unavailable. Use <code class="sn-ic">browser</code> instead.</span></li>
+            <li><span class="icon">⭐</span><span>Fixture execution order: fixture setup → beforeEach → test → afterEach → fixture teardown. In <code class="sn-ic">afterAll</code>, test fixtures are gone.</span></li>
+            <li><span class="icon">⭐</span><span>Fixtures for shared infrastructure across files; hooks for local file-specific setup.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

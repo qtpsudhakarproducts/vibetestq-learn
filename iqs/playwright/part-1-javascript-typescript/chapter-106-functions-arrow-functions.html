@@ -1,0 +1,520 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 106 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Functions</span> <span class="w2">&amp;</span> <span class="w3">Arrow</span> <span class="w4">Functions</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers JavaScript functions — the building block of every page object method and test helper. Interviewers test functions because closures, <code class="sn-ic">this</code> binding, and callback patterns cause real bugs. Questions move from function syntax through closures to short, focused code tasks.</span>
+  </div>
+
+
+  <!-- Q106.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.1</span>
+      <h2 class="sn-q-text">What is a function in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A function is a reusable block of code that performs a specific task. Define it once, call it many times.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">add</span>(a, b) {
+  <span class="tc-kw">return</span> a + b;
+}
+
+console.<span class="tc-fn">log</span>(<span class="tc-fn">add</span>(<span class="tc-num">3</span>, <span class="tc-num">4</span>)); <span class="tc-cm">// 7</span>
+console.<span class="tc-fn">log</span>(<span class="tc-fn">add</span>(<span class="tc-num">10</span>, <span class="tc-num">5</span>)); <span class="tc-cm">// 15</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q106.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.2</span>
+      <h2 class="sn-q-text">What is an arrow function and how does it differ from a regular function?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An arrow function is a shorter syntax for writing functions.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Regular function</span>
+<span class="tc-kw">function</span> <span class="tc-fn">double</span>(n) { <span class="tc-kw">return</span> n * <span class="tc-num">2</span>; }
+
+<span class="tc-cm">// Arrow function — same behaviour, shorter syntax</span>
+<span class="tc-kw">const</span> double = n =&gt; n * <span class="tc-num">2</span>;
+
+<span class="tc-cm">// Multi-line arrow function</span>
+<span class="tc-kw">const</span> greet = (name) =&gt; {
+  <span class="tc-kw">const</span> msg = <span class="tc-str">`Hello, ${name}`</span>;
+  <span class="tc-kw">return</span> msg;
+};</div>
+      </div>
+<p class="sn-para">The key difference: arrow functions do not have their own <code class="sn-ic">this</code>. They inherit <code class="sn-ic">this</code> from the surrounding scope.</p>
+    </div>
+  </div>
+
+  <!-- Q106.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.3</span>
+      <h2 class="sn-q-text">When do you use arrow functions vs regular functions in test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <strong class="k-purple">arrow functions</strong> for:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Callbacks passed to <code class="sn-ic">map</code>, <code class="sn-ic">filter</code>, <code class="sn-ic">forEach</code></span></li>
+<li><span class="icon">💡</span><span>Short inline expressions</span></li>
+<li><span class="icon">⚡</span><span>Class properties where you want guaranteed <code class="sn-ic">this</code> binding</span></li>
+</ul>
+<p class="sn-para">Use <strong class="k-purple">regular functions or methods</strong> for:</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Class methods where <code class="sn-ic">this</code> refers to the class instance</span></li>
+<li><span class="icon">📌</span><span>Functions used as constructors</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Arrow callback — idiomatic</span>
+<span class="tc-kw">const</span> names = users.<span class="tc-fn">map</span>(u =&gt; u.name);
+
+<span class="tc-cm">// Class method — regular function</span>
+<span class="tc-kw">class</span> Cart {
+  <span class="tc-fn">addItem</span>(item) {
+    <span class="tc-kw">this</span>.items.<span class="tc-fn">push</span>(item); <span class="tc-cm">// this = Cart instance</span>
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q106.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.4</span>
+      <h2 class="sn-q-text">How do you use functions in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, functions appear at two levels: page object methods (one per user action) and shared helpers (retry, API calls, data factories). Each function has one job and a clear name. We avoid functions longer than 20 lines.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q106.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.5</span>
+      <h2 class="sn-q-text">What is a closure and how does it work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A closure is a function that remembers variables from its outer scope even after the outer function has returned.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">makeCounter</span>() {
+  <span class="tc-kw">let</span> count = <span class="tc-num">0</span>;           <span class="tc-cm">// outer variable</span>
+
+  <span class="tc-kw">return</span> <span class="tc-kw">function</span> () {
+    count++;               <span class="tc-cm">// inner function closes over count</span>
+    <span class="tc-kw">return</span> count;
+  };
+}
+
+<span class="tc-kw">const</span> counter = <span class="tc-fn">makeCounter</span>();
+console.<span class="tc-fn">log</span>(<span class="tc-fn">counter</span>()); <span class="tc-cm">// 1</span>
+console.<span class="tc-fn">log</span>(<span class="tc-fn">counter</span>()); <span class="tc-cm">// 2</span>
+console.<span class="tc-fn">log</span>(<span class="tc-fn">counter</span>()); <span class="tc-cm">// 3</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">count</code> survives because the inner function holds a reference to it.</p>
+    </div>
+  </div>
+
+  <!-- Q106.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.6</span>
+      <h2 class="sn-q-text">What is a callback function?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A callback is a function passed as an argument to another function. The receiving function calls it later.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">greet</span>(name, callback) {
+  <span class="tc-kw">const</span> msg = <span class="tc-str">`Hello, ${name}`</span>;
+  <span class="tc-fn">callback</span>(msg);
+}
+
+<span class="tc-fn">greet</span>(&quot;Alice&quot;, msg =&gt; console.<span class="tc-fn">log</span>(msg)); <span class="tc-cm">// &amp;quot;Hello, Alice&amp;quot;</span></div>
+      </div>
+<p class="sn-para">Every <code class="sn-ic">array.map(fn)</code>, <code class="sn-ic">array.filter(fn)</code>, and <code class="sn-ic">setTimeout(fn, ms)</code> uses a callback. In Playwright, the test body itself is a callback passed to <code class="sn-ic">test()</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q106.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.7</span>
+      <h2 class="sn-q-text">What is an IIFE and when would you use one?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An IIFE (Immediately Invoked Function Expression) is a function that runs the moment it is defined.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> result = (() =&gt; {
+  <span class="tc-kw">const</span> base = <span class="tc-num">100</span>;
+  <span class="tc-kw">return</span> base * <span class="tc-num">1.2</span>;
+})();
+
+console.<span class="tc-fn">log</span>(result); <span class="tc-cm">// 120</span></div>
+      </div>
+<p class="sn-para">Useful for creating a local scope to compute a value without polluting the surrounding scope. Common in config files where you need a <code class="sn-ic">switch</code> or <code class="sn-ic">if</code> to produce a single value.</p>
+    </div>
+  </div>
+
+  <!-- Q106.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.8</span>
+      <h2 class="sn-q-text">What are default parameters and rest parameters?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Default parameter</strong> — a fallback value when the argument is not provided.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">connect</span>(host, port = <span class="tc-num">3000</span>) {
+  <span class="tc-kw">return</span> <span class="tc-str">`${host}:${port}`</span>;
+}
+<span class="tc-fn">connect</span>(&quot;localhost&quot;);       <span class="tc-cm">// &amp;quot;localhost:3000&amp;quot;</span>
+<span class="tc-fn">connect</span>(&quot;localhost&quot;, <span class="tc-num">8080</span>); <span class="tc-cm">// &amp;quot;localhost:8080&amp;quot;</span></div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Rest parameter</strong> — collects remaining arguments into an array.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">log</span>(level, ...messages) {
+  messages.<span class="tc-fn">forEach</span>(m =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">`[${level}] ${m}`</span>));
+}
+<span class="tc-fn">log</span>(&quot;INFO&quot;, &quot;Started&quot;, &quot;Listening&quot;, &quot;Ready&quot;);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q106.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.9</span>
+      <h2 class="sn-q-text">What is the difference between arrow functions and regular functions regarding the this keyword?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Regular functions get their own <code class="sn-ic">this</code> — it depends on how the function is called.</p>
+      </div>
+<p class="sn-para">Arrow functions have no <code class="sn-ic">this</code> — they inherit it from the enclosing scope.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> obj = {
+  name: &quot;Alice&quot;,
+  regular: <span class="tc-kw">function</span> () { <span class="tc-kw">return</span> <span class="tc-kw">this</span>.name; }, <span class="tc-cm">// this = obj</span>
+  arrow:   ()         =&gt; <span class="tc-kw">this</span>.name,           <span class="tc-cm">// this = outer scope (not obj)</span>
+};
+
+console.<span class="tc-fn">log</span>(obj.<span class="tc-fn">regular</span>()); <span class="tc-cm">// &amp;quot;Alice&amp;quot;</span>
+console.<span class="tc-fn">log</span>(obj.<span class="tc-fn">arrow</span>());   <span class="tc-cm">// undefined</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q106.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.10</span>
+      <h2 class="sn-q-text">When should you NOT use an arrow function?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When <code class="sn-ic">this</code> must refer to the object the method belongs to.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> cart = {
+  items: [],
+  <span class="tc-cm">// ❌ Arrow — this is outer scope, not cart</span>
+  add: (item) =&gt; { <span class="tc-kw">this</span>.items.<span class="tc-fn">push</span>(item); }, <span class="tc-cm">// TypeError</span>
+
+  <span class="tc-cm">// ✅ Regular method — this is cart</span>
+  <span class="tc-fn">add</span>(item) { <span class="tc-kw">this</span>.items.<span class="tc-fn">push</span>(item); },
+};</div>
+      </div>
+<p class="sn-para">Also: arrow functions cannot be used as constructors (<code class="sn-ic">new arrowFn()</code> throws a TypeError).</p>
+    </div>
+  </div>
+
+  <!-- Q106.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.11</span>
+      <h2 class="sn-q-text">What is wrong with this function — show a closure bug and fix it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ var closure bug</span>
+<span class="tc-kw">const</span> fns = [];
+<span class="tc-kw">for</span> (<span class="tc-kw">var</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">3</span>; i++) {
+  fns.<span class="tc-fn">push</span>(() =&gt; i); <span class="tc-cm">// all capture the same var i</span>
+}
+console.<span class="tc-fn">log</span>(fns[<span class="tc-num">0</span>](), fns[<span class="tc-num">1</span>](), fns[<span class="tc-num">2</span>]()); <span class="tc-cm">// 3, 3, 3</span>
+
+<span class="tc-cm">// ✅ Fix — let creates a new binding per iteration</span>
+<span class="tc-kw">const</span> fns2 = [];
+<span class="tc-kw">for</span> (<span class="tc-kw">let</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">3</span>; i++) {
+  fns2.<span class="tc-fn">push</span>(() =&gt; i);
+}
+console.<span class="tc-fn">log</span>(fns2[<span class="tc-num">0</span>](), fns2[<span class="tc-num">1</span>](), fns2[<span class="tc-num">2</span>]()); <span class="tc-cm">// 0, 1, 2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q106.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.12</span>
+      <h2 class="sn-q-text">What is the difference between a named function and an anonymous function?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A named function has an identifier. An anonymous function does not.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Named — appears in stack traces with its name</span>
+<span class="tc-kw">function</span> <span class="tc-fn">calculate</span>(x) { <span class="tc-kw">return</span> x * <span class="tc-num">2</span>; }
+
+<span class="tc-cm">// Named function expression</span>
+<span class="tc-kw">const</span> calc = <span class="tc-kw">function</span> <span class="tc-fn">calculate</span>(x) { <span class="tc-kw">return</span> x * <span class="tc-num">2</span>; };
+
+<span class="tc-cm">// Anonymous function expression</span>
+<span class="tc-kw">const</span> calc2 = <span class="tc-kw">function</span> (x) { <span class="tc-kw">return</span> x * <span class="tc-num">2</span>; };
+
+<span class="tc-cm">// Arrow — always anonymous (variable name is not the function's name)</span>
+<span class="tc-kw">const</span> calc3 = x =&gt; x * <span class="tc-num">2</span>;</div>
+      </div>
+<p class="sn-para">Named functions are easier to debug because stack traces show the name. Name any function that is not a trivial one-liner.</p>
+    </div>
+  </div>
+
+  <!-- Q106.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.13</span>
+      <h2 class="sn-q-text">Write a simple retry wrapper function</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">retry</span>(fn, maxAttempts = <span class="tc-num">3</span>) {
+  <span class="tc-kw">for</span> (<span class="tc-kw">let</span> attempt = <span class="tc-num">1</span>; attempt &lt;= maxAttempts; attempt++) {
+    <span class="tc-kw">try</span> {
+      <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-fn">fn</span>();
+    } <span class="tc-kw">catch</span> (err) {
+      <span class="tc-kw">if</span> (attempt === maxAttempts) <span class="tc-kw">throw</span> err;
+      console.<span class="tc-fn">log</span>(<span class="tc-str">`Attempt ${attempt} failed, retrying...`</span>);
+      <span class="tc-kw">await</span> <span class="tc-kw">new</span> Promise(r =&gt; <span class="tc-fn">setTimeout</span>(r, <span class="tc-num">500</span>));
+    }
+  }
+}
+
+<span class="tc-cm">// Usage</span>
+<span class="tc-kw">const</span> data = <span class="tc-kw">await</span> <span class="tc-fn">retry</span>(() =&gt; <span class="tc-fn">fetch</span>(&quot;/api/users&quot;).<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>()));</div>
+      </div>
+<p class="sn-para">Short, one job, reusable. The caller provides the operation; <code class="sn-ic">retry</code> handles the loop and delay.</p>
+    </div>
+  </div>
+
+  <!-- Q106.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.14</span>
+      <h2 class="sn-q-text">Write a counter using closures to encapsulate private state</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">makeCounter</span>(start = <span class="tc-num">0</span>) {
+  <span class="tc-kw">let</span> count = start; <span class="tc-cm">// private — not accessible outside</span>
+
+  <span class="tc-kw">return</span> {
+    increment: () =&gt; ++count,
+    decrement: () =&gt; --count,
+    reset:     () =&gt; { count = start; },
+    value:     () =&gt; count,
+  };
+}
+
+<span class="tc-kw">const</span> c = <span class="tc-fn">makeCounter</span>();
+c.<span class="tc-fn">increment</span>();
+c.<span class="tc-fn">increment</span>();
+console.<span class="tc-fn">log</span>(c.<span class="tc-fn">value</span>()); <span class="tc-cm">// 2</span>
+c.<span class="tc-fn">reset</span>();
+console.<span class="tc-fn">log</span>(c.<span class="tc-fn">value</span>()); <span class="tc-cm">// 0</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">count</code> cannot be read or modified directly — only through the returned interface. This is the closure pattern for private state.</p>
+    </div>
+  </div>
+
+  <!-- Q106.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q106.15</span>
+      <h2 class="sn-q-text">Describe a time when a function design choice improved your test maintainability</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, the login steps were copied inline across 40 test files. When a 2FA step was added to the login flow, we had to update 40 files.</p>
+      </div>
+<p class="sn-para">After that we extracted login to a single function and called it everywhere. When the login flow changed again, one function changed — zero test files needed updating.</p>
+<p class="sn-para">The lesson: any sequence of steps repeated more than twice should be a named function. The naming also documents intent clearly.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Arrow functions inherit <code class="sn-ic">this</code> from their outer scope. Regular functions get their own <code class="sn-ic">this</code> based on how they are called.</span></li>
+            <li><span class="icon">⭐</span><span>Closures capture a reference to the outer variable, not a copy.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">forEach</code> with <code class="sn-ic">await</code> silently ignores promises — always <code class="sn-ic">for...of</code>.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Callbacks are functions passed as arguments — every <code class="sn-ic">map</code>/<code class="sn-ic">filter</code>/ <code class="sn-ic">test()</code> uses them.</span></li>
+            <li><span class="icon">⭐</span><span>Keep functions small and single-purpose. Name them clearly.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

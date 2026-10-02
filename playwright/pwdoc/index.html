@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Part 2 — Playwright Core | Playwright Mastery</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/docs/playwright/shared/sketchnote-styles.css">
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="logo">
+            <div class="desktop-logo">
+                <img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo">
+                <span>Playwright Mastery for Testers</span>
+            </div>
+        </div>
+        <div class="mobile-logo">
+            <img src="/assets/White-Logo.png" alt="VibeTestQ Mobile Logo">
+        </div>
+        <a href="/docs/playwright" class="hub-link"><i class="fas fa-th-large"></i> Playwright Hub</a>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-content">
+                <div class="nav-section">
+                    <h4>Ch. 13–15 — Intro, Setup &amp; Architecture</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#intro" class="nav-link active" onclick="showSection('intro')"><i
+                                    class="fas fa-book"></i> Getting Started</a></li>
+                        <li class="nav-item"><a href="#installation" class="nav-link"
+                                onclick="showSection('installation')"><i class="fas fa-download"></i> Installation</a>
+                        </li>
+                        <li class="nav-item"><a href="#architecture" class="nav-link"
+                                onclick="showSection('architecture')"><i class="fas fa-project-diagram"></i>
+                                Architecture</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Ch. 16–19 — Locators &amp; Interactions</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#locators" class="nav-link" onclick="showSection('locators')"><i
+                                    class="fas fa-crosshairs"></i> Locators</a></li>
+                        <li class="nav-item"><a href="#basic-interactions" class="nav-link"
+                                onclick="showSection('basic-interactions')"><i class="fas fa-mouse-pointer"></i> Basic
+                                Interactions</a></li>
+                        <li class="nav-item"><a href="#advanced-interactions" class="nav-link"
+                                onclick="showSection('advanced-interactions')"><i class="fas fa-keyboard"></i> Advanced
+                                Interactions</a></li>
+                        <li class="nav-item"><a href="#files" class="nav-link" onclick="showSection('files')"><i
+                                    class="fas fa-file-upload"></i> Files & Downloads</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Ch. 20–22 — Navigation, Frames &amp; Waits</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#navigation" class="nav-link"
+                                onclick="showSection('navigation')"><i class="fas fa-compass"></i> Navigation &
+                                Pages</a></li>
+                        <li class="nav-item"><a href="#scopes" class="nav-link" onclick="showSection('scopes')"><i
+                                    class="fas fa-window-restore"></i> Frames & Dialogs</a></li>
+                        <li class="nav-item"><a href="#waits" class="nav-link" onclick="showSection('waits')"><i
+                                    class="fas fa-hourglass-half"></i> Waits & Timeouts</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Part 3 — Test Runner &amp; Framework</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#test-runner" class="nav-link"
+                                onclick="showSection('test-runner')"><i class="fas fa-play-circle"></i> Test Runner</a>
+                        </li>
+                        <li class="nav-item"><a href="#assertions" class="nav-link"
+                                onclick="showSection('assertions')"><i class="fas fa-check-double"></i> Assertions</a>
+                        </li>
+                        <li class="nav-item"><a href="#config" class="nav-link" onclick="showSection('config')"><i
+                                    class="fas fa-cog"></i> Configuration</a></li>
+                        <li class="nav-item"><a href="#debug" class="nav-link" onclick="showSection('debug')"><i
+                                    class="fas fa-bug"></i> Debugging Tools</a></li>
+                        <li class="nav-item"><a href="#fixtures" class="nav-link" onclick="showSection('fixtures')"><i
+                                    class="fas fa-flask"></i> Fixtures & Hooks</a></li>
+                        <li class="nav-item"><a href="#reports" class="nav-link" onclick="showSection('reports')"><i
+                                    class="fas fa-chart-bar"></i> Reporters & CI</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Part 4 — Execution &amp; Scaling</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#parameterization" class="nav-link"
+                                onclick="showSection('parameterization')"><i class="fas fa-table"></i>
+                                Parameterization</a></li>
+                        <li class="nav-item"><a href="#parallelism" class="nav-link"
+                                onclick="showSection('parallelism')"><i class="fas fa-bolt"></i> Parallelism</a></li>
+                        <li class="nav-item"><a href="#pom" class="nav-link" onclick="showSection('pom')"><i
+                                    class="fas fa-cubes"></i> Page Object Model</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Part 6 — API, Auth &amp; Network</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#api" class="nav-link" onclick="showSection('api')"><i
+                                    class="fas fa-network-wired"></i> API Testing</a></li>
+                        <li class="nav-item"><a href="#mocking" class="nav-link" onclick="showSection('mocking')"><i
+                                    class="fas fa-random"></i> Network Mocking</a></li>
+                        <li class="nav-item"><a href="#auth" class="nav-link" onclick="showSection('auth')"><i
+                                    class="fas fa-user-lock"></i> Authentication</a></li>
+                        <li class="nav-item"><a href="#media" class="nav-link" onclick="showSection('media')"><i
+                                    class="fas fa-camera"></i> Screenshots & Video</a></li>
+                        <li class="nav-item"><a href="#emulation" class="nav-link" onclick="showSection('emulation')"><i
+                                    class="fas fa-mobile-alt"></i> Mobile Emulation</a></li>
+                        <li class="nav-item"><a href="#best-practices" class="nav-link"
+                                onclick="showSection('best-practices')"><i class="fas fa-thumbs-up"></i> Best
+                                Practices</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Part 7 &amp; 8 — Visual, Accessibility &amp; AI</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#ai-fundamentals" class="nav-link"
+                                onclick="showSection('ai-fundamentals')"><i class="fas fa-brain"></i> GenAI
+                                Fundamentals</a></li>
+                        <li class="nav-item"><a href="#prompting" class="nav-link" onclick="showSection('prompting')"><i
+                                    class="fas fa-terminal"></i> Prompt Engineering</a></li>
+                        <li class="nav-item"><a href="#ai-ides" class="nav-link" onclick="showSection('ai-ides')"><i
+                                    class="fas fa-laptop-code"></i> AI IDEs & MCP</a></li>
+                        <li class="nav-item"><a href="#ai-agents" class="nav-link" onclick="showSection('ai-agents')"><i
+                                    class="fas fa-robot"></i> Playwright Agents</a></li>
+                        <li class="nav-item"><a href="#testing-ai" class="nav-link"
+                                onclick="showSection('testing-ai')"><i class="fas fa-microscope"></i> Testing AI
+                                Apps</a></li>
+                        <li class="nav-item"><a href="#visual" class="nav-link" onclick="showSection('visual')"><i
+                                    class="fas fa-eye"></i> Visual Testing</a></li>
+                        <li class="nav-item"><a href="#capstone" class="nav-link" onclick="showSection('capstone')"><i
+                                    class="fas fa-graduation-cap"></i> Capstone Project</a></li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="content-area">
+                <div class="rings">
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div><div class="ring"></div><div class="ring"></div>
+                    <div class="ring"></div>
+                </div>
+                <div class="btn-group top-nav" id="nav-btns-top" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i>
+                        Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <section id="intro" class="active">
+                    <div class="sk-h1">Part 2 — Playwright Core</div>
+                    <p class="lead">Chapters 13–22 — Browser API, locators, interactions, navigation &amp; waits. Parts 3, 4, 6, 7 &amp; 8 also covered in this hub.</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div><strong>Part 2 of 8:</strong> Playwright Browser API — core engine for all automation scenarios. Ch. 13–22.</div>
+                    </div>
+                    <div class="sh"><span class="sh-num bg1">1</span><span class="sh-text c1">Curriculum Overview</span></div>
+                    <p>Select a module from the sidebar to dive deep into Playwright's ecosystem, covering architecture,
+                        locators, framework design, and AI-driven testing.</p>
+                    <div class="btn-group">
+                        <div></div>
+                        <a href="javascript:void(0)" class="btn-nav btn-next"
+                            onclick="showSection('installation')">Start
+                            Reading <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </section>
+                <div id="docs-content"></div>
+                <div class="btn-group" id="nav-btns-bottom" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i>
+                        Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+            <footer class="page-footer">&copy; 2026 VibeTestQ. All rights reserved.</footer>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="/docs/playwright/shared/sketchnote-renderer.js"></script>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: false, curve: 'linear' },
+            graph: { useMaxWidth: true, htmlLabels: false }
+        });
+
+        const sectionOrder = [
+            'intro', 'installation', 'architecture', 'locators', 'basic-interactions', 'advanced-interactions',
+            'files', 'navigation', 'scopes', 'waits', 'test-runner', 'assertions', 'config', 'debug',
+            'fixtures', 'reports', 'parameterization', 'parallelism', 'pom', 'api', 'mocking', 'auth',
+            'media', 'emulation', 'best-practices', 'ai-fundamentals', 'prompting', 'ai-ides', 'ai-agents',
+            'testing-ai', 'visual', 'capstone'
+        ];
+
+        const sections = {
+            'installation': '01_Introduction_Installation.md',
+            'architecture': '02_Architecture_Manual_Launch.md',
+            'locators': '03_Locators.md',
+            'basic-interactions': '04_Basic_Interactions.md',
+            'advanced-interactions': '05_Advanced_Interactions.md',
+            'files': '06_Files_Downloads.md',
+            'navigation': '07_Navigation_Pages.md',
+            'scopes': '08_Scopes_Frames_Dialogs.md',
+            'waits': '09_Waits_Timeouts.md',
+            'test-runner': '10_Test_Runner_Intro.md',
+            'assertions': '11_Assertions.md',
+            'config': '12_Test_Configuration.md',
+            'debug': '13_Debugging_Tools.md',
+            'fixtures': '14_Fixtures_Hooks.md',
+            'reports': '15_Reporters_CI.md',
+            'parameterization': '16_Parameterization.md',
+            'parallelism': '17_Parallelism.md',
+            'pom': '18_Page_Object_Model.md',
+            'api': '19_API_Testing.md',
+            'mocking': '20_Network_Mocking.md',
+            'auth': '21_Authentication.md',
+            'media': '22_Media_Screenshots.md',
+            'emulation': '23_Emulation.md',
+            'best-practices': '24_Best_Practices.md',
+            'ai-fundamentals': '25_GenAI_Fundamentals.md',
+            'prompting': '26_Prompt_Engineering.md',
+            'ai-ides': '27_AI_IDEs_MCP.md',
+            'ai-agents': '28_Playwright_Agents.md',
+            'testing-ai': '29_Testing_AI_Apps.md',
+            'visual': '30_Visual_Testing.md',
+            'capstone': '31_Capstone_Project.md'
+        };
+        const loadedSections = {};
+
+        function normalizeMarkdown(text) {
+            if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.normalizeMarkdown === 'function') {
+                return window.SketchnoteRenderer.normalizeMarkdown(text);
+            }
+            return text;
+        }
+
+        function postProcess(section) {
+            if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.postProcess === 'function') {
+                window.SketchnoteRenderer.postProcess(section);
+            }
+        }
+
+        async function loadSection(id) {
+            if (id === 'intro' || loadedSections[id]) return;
+            const filename = sections[id];
+            if (!filename) return;
+            try {
+                const url = window.SketchnoteRenderer && typeof window.SketchnoteRenderer.resolveDocUrl === 'function'
+                    ? window.SketchnoteRenderer.resolveDocUrl(filename, window.location)
+                    : filename;
+                let text;
+                if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.fetchMarkdown === 'function') {
+                    text = await window.SketchnoteRenderer.fetchMarkdown(url, { cache: 'no-store' });
+                } else {
+                    const response = await fetch(url, { cache: 'no-store' });
+                    if (!response.ok) throw new Error('File not found');
+                    text = await response.text();
+                }
+                text = normalizeMarkdown(text);
+
+                const section = document.createElement('section');
+                section.id = id;
+                section.innerHTML = marked.parse(text);
+                section.querySelectorAll('pre code').forEach(block => {
+                    if (!block.className) block.className = 'language-javascript';
+                });
+                document.getElementById('docs-content').appendChild(section);
+                loadedSections[id] = true;
+
+                postProcess(section);
+
+                // Transform mermaid code blocks to divs
+                const mermaidBlocks = section.querySelectorAll('pre code.language-mermaid');
+                mermaidBlocks.forEach(block => {
+                    const div = document.createElement('div');
+                    div.className = 'mermaid';
+                    div.textContent = block.textContent.trim();
+                    block.parentElement.replaceWith(div);
+                });
+
+                addCopyButtons(section);
+                Prism.highlightAllUnder(section);
+
+                if (mermaidBlocks.length > 0) {
+                    try {
+                        await mermaid.run({
+                            nodes: section.querySelectorAll('.mermaid')
+                        });
+                    } catch (e) {
+                        console.error('Mermaid render error:', e);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function addCopyButtons(root) {
+            if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.addCopyButtons === 'function') {
+                window.SketchnoteRenderer.addCopyButtons(root);
+                return;
+            }
+            root.querySelectorAll('pre').forEach(pre => {
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                button.onclick = () => copyCode(button);
+                pre.appendChild(button);
+            });
+        }
+
+        async function copyCode(button) {
+            if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.copyCode === 'function') {
+                await window.SketchnoteRenderer.copyCode(button);
+                return;
+            }
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').innerText;
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+
+        async function showSection(id) {
+            if (id !== 'intro') await loadSection(id);
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            const link = document.querySelector(`a[href="#${id}"]`);
+            if (link) link.classList.add('active');
+            updateNavButtons(id);
+            history.pushState(null, null, `#${id}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close sidebar on mobile
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function updateNavButtons(currentId) {
+            const index = sectionOrder.indexOf(currentId);
+            const topNav = document.getElementById('nav-btns-top');
+            const bottomNav = document.getElementById('nav-btns-bottom');
+
+            if (index === 0) {
+                topNav.style.display = 'none';
+                bottomNav.style.display = 'none';
+                return;
+            }
+
+            topNav.style.display = 'flex';
+            bottomNav.style.display = 'flex';
+
+            [topNav, bottomNav].forEach(nav => {
+                const prevBtn = nav.querySelector('.prev-btn');
+                const nextBtn = nav.querySelector('.next-btn');
+
+                if (index > 0) {
+                    prevBtn.style.visibility = 'visible';
+                    prevBtn.onclick = () => showSection(sectionOrder[index - 1]);
+                    prevBtn.innerHTML = `<i class="fas fa-arrow-left"></i> ${getSectionName(sectionOrder[index - 1])}`;
+                } else {
+                    prevBtn.style.visibility = 'hidden';
+                }
+
+                if (index < sectionOrder.length - 1) {
+                    nextBtn.style.visibility = 'visible';
+                    nextBtn.onclick = () => showSection(sectionOrder[index + 1]);
+                    nextBtn.innerHTML = `${getSectionName(sectionOrder[index + 1])} <i class="fas fa-arrow-right"></i>`;
+                } else {
+                    nextBtn.style.visibility = 'hidden';
+                }
+            });
+        }
+
+        function getSectionName(id) {
+            const link = document.querySelector(`a[href="#${id}"]`);
+            return link ? link.innerText.trim() : 'Next';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+        window.addEventListener('load', async () => {
+            const hash = window.location.hash.slice(1) || 'intro';
+            await showSection(hash);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,693 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 110 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Classes,</span> <span class="w2">Modules</span> <span class="w3">&amp;</span> <span class="w4">Scopes</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers JavaScript classes and the ES Module system — the two foundations of every page object framework. Interviewers test classes because the POM (Page Object Model) is built on them, and modules because import/export errors are a common setup mistake. Questions move from class syntax through inheritance to the module system and how both are used in a real Playwright project.</span>
+  </div>
+
+
+  <!-- Q110.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.1</span>
+      <h2 class="sn-q-text">What is a class in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A class is a template for creating objects. It defines the properties and methods that every instance of that class will have.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> LoginPage {
+  <span class="tc-fn">constructor</span>(page) {
+    <span class="tc-kw">this</span>.page = page; <span class="tc-cm">// each instance gets its own page reference</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(email, password) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(email);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(&quot;Password&quot;).<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; }).<span class="tc-fn">click</span>();
+  }
+}
+
+<span class="tc-kw">const</span> login = <span class="tc-kw">new</span> LoginPage(page); <span class="tc-cm">// create an instance</span>
+<span class="tc-kw">await</span> login.<span class="tc-fn">login</span>(&quot;user@<span class="tc-kw">test</span>.com&quot;, &quot;pass123&quot;);</div>
+      </div>
+<p class="sn-para">JavaScript classes were added in ES6. They are syntactic sugar over the prototype-based system described in Chapter 7. Under the hood, a class creates a constructor function and puts methods on its prototype — but the class syntax is much cleaner to read and write.</p>
+    </div>
+  </div>
+
+  <!-- Q110.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.2</span>
+      <h2 class="sn-q-text">What is the difference between a class and a function?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both can produce objects. The difference is intent, syntax, and what they support.</p>
+      </div>
+<p class="sn-para">A <strong class="k-green">class</strong> is designed to be a blueprint. It has a <code class="sn-ic">constructor</code>, can be <code class="sn-ic">extends</code>ed, supports <code class="sn-ic">private</code> and <code class="sn-ic">protected</code> fields, and is used to create multiple objects with the same shape.</p>
+<p class="sn-para">A <strong class="k-green">function</strong> is a reusable block of code. It can be called, passed around, and used as a constructor with <code class="sn-ic">new</code> — but the class syntax is more explicit and TypeScript understands it better.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Function factory — creates objects</span>
+<span class="tc-kw">function</span> <span class="tc-fn">createPage</span>(page) {
+  <span class="tc-kw">return</span> {
+    goto: <span class="tc-kw">async</span> () =&gt; page.<span class="tc-fn">goto</span>(&quot;/login&quot;),
+    login: <span class="tc-kw">async</span> (e, p) =&gt; { <span class="tc-cm">/* ... */</span> },
+  };
+}
+
+<span class="tc-cm">// Class — cleaner, TypeScript-friendly, supports inheritance</span>
+<span class="tc-kw">class</span> LoginPage {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> page: Page) {}
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>()       { <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(&quot;/login&quot;); }
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(e, p)  { <span class="tc-cm">/* ... */</span> }
+}</div>
+      </div>
+<p class="sn-para">In Playwright projects, always use classes for page objects. Functions are for utilities and helpers that do not need to maintain state or support inheritance.</p>
+    </div>
+  </div>
+
+  <!-- Q110.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.3</span>
+      <h2 class="sn-q-text">When do you use classes in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Classes appear in two specific contexts in a Playwright project:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Page objects</strong> — each page or component in the application becomes a class. The class owns the locators for that page and the methods that perform actions on it.</p>
+<p class="sn-para"><strong class="k-purple">Base classes</strong> — a <code class="sn-ic">BasePage</code> class that holds shared setup (URL, page reference, common navigation methods). Other page classes extend it.</p>
+<p class="sn-para">Everything else in a test suite — helpers, data factories, config readers — is usually a module of exported functions, not a class. A class makes sense when you have related state (the <code class="sn-ic">page</code> reference) and multiple methods that operate on that state together.</p>
+    </div>
+  </div>
+
+  <!-- Q110.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.4</span>
+      <h2 class="sn-q-text">How do you use classes and modules in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, classes and modules work together at every level.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Classes</strong> — one class per page or major component. <code class="sn-ic">LoginPage</code>, <code class="sn-ic">DashboardPage</code>, <code class="sn-ic">CheckoutPage</code>, <code class="sn-ic">ProductCard</code>. Each class lives in its own file under <code class="sn-ic">tests/pages/</code>.</p>
+<p class="sn-para"><strong class="k-orange">Modules</strong> — helper functions, data factories, and config readers are plain modules. They export named functions. Nothing in them needs state or inheritance.</p>
+<p class="sn-para"><strong class="k-orange">Barrel exports</strong> — <code class="sn-ic">tests/pages/index.ts</code> re-exports all page classes. A test imports from one place: `import { LoginPage, DashboardPage } from '../pages'`.</p>
+<p class="sn-para"><strong class="k-orange">Fixtures</strong> — Playwright fixtures instantiate page objects and inject them into tests. Tests never call <code class="sn-ic">new LoginPage()</code> directly — the fixture does it.</p>
+    </div>
+  </div>
+
+  <!-- Q110.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.5</span>
+      <h2 class="sn-q-text">What is inheritance and how does it work with the extends keyword?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Inheritance lets one class (subclass) reuse methods and properties from another class (superclass). The subclass gets everything the superclass has, plus its own additions.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> BasePage {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">protected</span> page: Page) {}
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(path: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(path);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">waitForLoad</span>() {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(&quot;networkidle&quot;);
+  }
+}
+
+<span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> url = &quot;/login&quot;;
+
+  <span class="tc-cm">// Inherits goto() and waitForLoad() from BasePage</span>
+  <span class="tc-cm">// Adds its own login-specific method</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(email: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">goto</span>(<span class="tc-kw">this</span>.url);        <span class="tc-cm">// from BasePage</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(email);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByLabel</span>(&quot;Password&quot;).<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; }).<span class="tc-fn">click</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">super()</code> must be called in the subclass constructor before using <code class="sn-ic">this</code>. If the subclass has no constructor, JavaScript calls <code class="sn-ic">super()</code> automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q110.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.6</span>
+      <h2 class="sn-q-text">What is a constructor?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A constructor is a special method that runs automatically when you create a new instance of a class with <code class="sn-ic">new</code>. It initialises the instance's properties.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> CheckoutPage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> submitButton: Locator;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.page = page;
+    <span class="tc-cm">// Store locators as instance properties — created once in the constructor</span>
+    <span class="tc-kw">this</span>.submitButton = page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Place Order&quot; });
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">placeOrder</span>() {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.submitButton.<span class="tc-fn">click</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para">In TypeScript, you can use the shorthand constructor parameter syntax to declare and assign properties in one step:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> CheckoutPage {
+  <span class="tc-fn">constructor</span>(
+    <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page,
+    <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> baseUrl: <span class="tc-kw">string</span> = &quot;/checkout&quot;
+  ) {}
+  <span class="tc-cm">// this.page and this.baseUrl are automatically created</span>
+}</div>
+      </div>
+<p class="sn-para">Each call to <code class="sn-ic">new CheckoutPage(page)</code> runs the constructor and creates a fresh instance with its own <code class="sn-ic">this.page</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q110.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.7</span>
+      <h2 class="sn-q-text">What are ES Modules and how do import and export work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">ES Modules are the standard module system in modern JavaScript and TypeScript. Each file is its own module with its own scope. To share code between files, you export from one file and import in another.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Named exports</strong> — export one or more specific values:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/helpers/wait.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">waitForApiIdle</span>(page: Page) { <span class="tc-cm">/* ... */</span> }
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> DEFAULT_TIMEOUT = 30_000;
+
+<span class="tc-cm">// Import</span>
+<span class="tc-kw">import</span> { waitForApiIdle, DEFAULT_TIMEOUT } <span class="tc-kw">from</span> <span class="tc-str">'./helpers/wait'</span>;</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Default export</strong> — one main export per file:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/pages/LoginPage.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-kw">class</span> LoginPage { <span class="tc-cm">/* ... */</span> }
+
+<span class="tc-cm">// Import — can use any name</span>
+<span class="tc-kw">import</span> LoginPage <span class="tc-kw">from</span> <span class="tc-str">'./pages/LoginPage'</span>;
+<span class="tc-kw">import</span> Login <span class="tc-kw">from</span> <span class="tc-str">'./pages/LoginPage'</span>; <span class="tc-cm">// also valid</span></div>
+      </div>
+<p class="sn-para">In a Playwright TypeScript project, use <strong class="k-red">named exports</strong> for everything except page object classes where the default export is natural. Avoid mixing default and named exports in the same file — it creates confusion.</p>
+    </div>
+  </div>
+
+  <!-- Q110.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.8</span>
+      <h2 class="sn-q-text">What is the difference between default export and named export?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Default export</th><th class="sn-th-green">Named export</th></tr></thead>
+          <tbody>
+          <tr><td>Syntax (export)</td><td><code class="sn-ic">export default class X {}</code></td><td><code class="sn-ic">export class X {}</code></td></tr>
+          <tr><td>Syntax (import)</td><td><code class="sn-ic">import X from './file'</code></td><td><code class="sn-ic">import { X } from './file'</code></td></tr>
+          <tr><td>Name on import</td><td>Any name is valid</td><td>Must match the exported name</td></tr>
+          <tr><td>Per file</td><td>Only one allowed</td><td>Many allowed</td></tr>
+          <tr><td>Refactor safety</td><td>Riskier (name can drift)</td><td>Safer (name is enforced)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Named export — import must match</span>
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">createUser</span>() { ... }
+<span class="tc-kw">import</span> { createUser } <span class="tc-kw">from</span> <span class="tc-str">'./users'</span>; <span class="tc-cm">// ✅</span>
+<span class="tc-kw">import</span> { makeUser } <span class="tc-kw">from</span> <span class="tc-str">'./users'</span>;   <span class="tc-cm">// ❌ Error — no export called makeUser</span>
+
+<span class="tc-cm">// Default export — import can use any name</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-kw">function</span> <span class="tc-fn">createUser</span>() { ... }
+<span class="tc-kw">import</span> createUser <span class="tc-kw">from</span> <span class="tc-str">'./users'</span>;  <span class="tc-cm">// ✅</span>
+<span class="tc-kw">import</span> buildUser  <span class="tc-kw">from</span> <span class="tc-str">'./users'</span>;  <span class="tc-cm">// ✅ also valid — any name works</span></div>
+      </div>
+<p class="sn-para">For test projects, named exports are preferred for utilities. Many teams use default exports for page object classes as a convention (one class per file, imported with the class name).</p>
+    </div>
+  </div>
+
+  <!-- Q110.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.9</span>
+      <h2 class="sn-q-text">What is the difference between import/export and require/module.exports?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">import/export</code> is the ES Module (ESM) syntax — modern, standard, TypeScript-native.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">require/module.exports</code> is the CommonJS (CJS) syntax — older, Node.js default before ESM was standardised.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// CommonJS (CJS)</span>
+<span class="tc-kw">const</span> { <span class="tc-kw">test</span> } = <span class="tc-kw">require</span>(<span class="tc-str">'@playwright/test'</span>);
+<span class="tc-kw">module</span>.exports = { LoginPage };
+
+<span class="tc-cm">// ES Modules (ESM)</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">export</span> { LoginPage };</div>
+      </div>
+<p class="sn-para">In a Playwright TypeScript project, always use <code class="sn-ic">import/export</code>. The TypeScript compiler handles everything. Your <code class="sn-ic">tsconfig.json</code> sets <code class="sn-ic">&quot;module&quot;: &quot;commonjs&quot;</code> or <code class="sn-ic">&quot;module&quot;: &quot;ESNext&quot;</code> to control how TypeScript compiles the imports, but you always write <code class="sn-ic">import</code> in your source.</p>
+<p class="sn-para"><code class="sn-ic">require()</code> appears in old JavaScript code and in config files that Node.js runs directly before compilation. Never mix <code class="sn-ic">import</code> and <code class="sn-ic">require</code> in the same file — it creates confusing errors.</p>
+    </div>
+  </div>
+
+  <!-- Q110.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.10</span>
+      <h2 class="sn-q-text">What is lexical scope and how does it relate to classes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Lexical scope means a variable's scope is determined by where it is written in the source code — not where the function is called from.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> appUrl = &quot;https:<span class="tc-cm">//example.com&amp;quot;; // outer scope</span>
+
+<span class="tc-kw">function</span> <span class="tc-fn">navigate</span>() {
+  <span class="tc-cm">// appUrl is accessible here — it is in the lexical scope</span>
+  console.<span class="tc-fn">log</span>(appUrl);
+}</div>
+      </div>
+<p class="sn-para">In classes, lexical scope determines what a method can access. A class method can access:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The instance's own properties via <code class="sn-ic">this.property</code></span></li>
+<li><span class="icon">💡</span><span>Any variable in the outer scope where the class is defined (module</span></li>
+</ul>
+<p class="sn-para">  scope or function scope)</p>
+<p class="sn-para">Arrow function class properties use lexical scope for <code class="sn-ic">this</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> LoginPage {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> page: Page) {}
+
+  <span class="tc-cm">// Arrow property — this is always the LoginPage instance (lexical binding)</span>
+  login = <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(&quot;/login&quot;); <span class="tc-cm">// this refers to the LoginPage instance</span>
+  };
+}
+
+<span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+<span class="tc-kw">const</span> fn = loginPage.login; <span class="tc-cm">// detach the method</span>
+<span class="tc-kw">await</span> <span class="tc-fn">fn</span>(); <span class="tc-cm">// this still refers to loginPage — lexical binding preserved</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q110.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.11</span>
+      <h2 class="sn-q-text">What is wrong with putting test logic inside a page object class?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A page object class should only contain: locators and methods that perform actions on the page. It should not contain assertions or test decision logic.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Test logic inside a page object — wrong</span>
+<span class="tc-kw">class</span> DashboardPage {
+  <span class="tc-kw">async</span> <span class="tc-fn">validateDashboard</span>() {
+    <span class="tc-cm">// This is an assertion — it belongs in the test, not the page object</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(&quot;heading&quot;)).<span class="tc-fn">toHaveText</span>(&quot;Dashboard&quot;);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">getByTestId</span>(&quot;user-count&quot;)).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">if</span> (process.env.ROLE === &quot;admin&quot;) {
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">getByTestId</span>(&quot;admin-panel&quot;)).<span class="tc-fn">toBeVisible</span>();
+    }
+  }
+}</div>
+      </div>
+<p class="sn-para">Problems:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The page object makes assumptions about what the test should assert</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The <code class="sn-ic">if</code> condition hides conditional behaviour — the test cannot see it</span></li>
+<li><span class="icon">⚡</span><span>Reusing the page object in a test that checks a different condition</span></li>
+</ul>
+<p class="sn-para">  requires modifying the class instead of the test</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Page object — actions only</span>
+<span class="tc-kw">class</span> DashboardPage {
+  <span class="tc-kw">readonly</span> heading   = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(&quot;heading&quot;);
+  <span class="tc-kw">readonly</span> userCount = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByTestId</span>(&quot;user-count&quot;);
+  <span class="tc-kw">readonly</span> adminPanel = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByTestId</span>(&quot;admin-panel&quot;);
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>() { <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(&quot;/dashboard&quot;); }
+}
+
+<span class="tc-cm">// ✅ Test — assertions stay in the test</span>
+<span class="tc-kw">test</span>(&quot;admin sees admin panel&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> dashboard = <span class="tc-kw">new</span> DashboardPage(page);
+  <span class="tc-kw">await</span> dashboard.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(dashboard.heading).<span class="tc-fn">toHaveText</span>(&quot;Dashboard&quot;);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(dashboard.adminPanel).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q110.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.12</span>
+      <h2 class="sn-q-text">What is the difference between extends and composition?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">Inheritance (<code class="sn-ic">extends</code>)</strong> — one class is built on top of another. The subclass gets all the superclass's methods and can override them.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Composition</strong> — a class holds a reference to another object and delegates work to it. The class "has a" helper, rather than "is a" type of helper.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Inheritance — LoginPage IS A BasePage</span>
+<span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>() { <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">goto</span>(); <span class="tc-cm">/* ... */</span> }
+}
+
+<span class="tc-cm">// Composition — LoginPage HAS A FormHelper</span>
+<span class="tc-kw">class</span> LoginPage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> form: FormHelper;
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.form = <span class="tc-kw">new</span> FormHelper(page);
+  }
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(email: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.form.<span class="tc-fn">fill</span>(&quot;Email&quot;, email);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.form.<span class="tc-fn">fill</span>(&quot;Password&quot;, password);
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Use <code class="sn-ic">extends</code></strong> for <code class="sn-ic">BasePage</code> → specific page — when the relationship is genuinely "is a type of" and shared methods make sense.</p>
+<p class="sn-para"><strong class="k-orange">Use composition</strong> for mixing in helpers (form filling, table reading, date picker) — these are capabilities, not types. Prefer composition when the relationship is "uses a" rather than "is a". Deeply nested inheritance chains become hard to reason about quickly.</p>
+    </div>
+  </div>
+
+  <!-- Q110.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.13</span>
+      <h2 class="sn-q-text">Write a simple page object class with a constructor, locators, and methods</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/pages/LoginPage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+  <span class="tc-cm">// Locators defined as readonly properties — created once, reused in methods</span>
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> emailInput:    Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> passwordInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> signInButton:  Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> errorMessage:  Locator;
+
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page) {
+    <span class="tc-kw">this</span>.emailInput    = page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;);
+    <span class="tc-kw">this</span>.passwordInput = page.<span class="tc-fn">getByLabel</span>(&quot;Password&quot;);
+    <span class="tc-kw">this</span>.signInButton  = page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; });
+    <span class="tc-kw">this</span>.errorMessage  = page.<span class="tc-fn">getByRole</span>(&quot;alert&quot;);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>() {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(&quot;/login&quot;);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(email: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.emailInput.<span class="tc-fn">fill</span>(email);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.passwordInput.<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.signInButton.<span class="tc-fn">click</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">getErrorText</span>(): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt; {
+    <span class="tc-kw">return</span> <span class="tc-kw">this</span>.errorMessage.<span class="tc-fn">textContent</span>();
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q110.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.14</span>
+      <h2 class="sn-q-text">Write a module that exports shared test utilities</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/helpers/api.ts</span>
+<span class="tc-cm">// Shared API utilities — named exports only, no class needed</span>
+
+<span class="tc-kw">import</span> { APIRequestContext } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">interface</span> CreateUserPayload {
+  email: <span class="tc-kw">string</span>;
+  role?: &quot;admin&quot; | &quot;viewer&quot;;
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">createUser</span>(
+  request: APIRequestContext,
+  payload: CreateUserPayload
+): Promise&lt;{ id: <span class="tc-kw">string</span>; email: <span class="tc-kw">string</span> }&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(&quot;/api/users&quot;, { data: payload });
+
+  <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`createUser failed: ${response.status()} ${await response.text()}`</span>);
+  }
+
+  <span class="tc-kw">return</span> response.<span class="tc-fn">json</span>();
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">deleteUser</span>(
+  request: APIRequestContext,
+  userId: <span class="tc-kw">string</span>
+): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${userId}`</span>);
+
+  <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`deleteUser failed: ${response.status()}`</span>);
+  }
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">generateEmail</span>(prefix = &quot;user&quot;): <span class="tc-kw">string</span> {
+  <span class="tc-kw">return</span> <span class="tc-str">`${prefix}+${Date.now()}@test.example.com`</span>;
+}</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Usage in tests</span>
+<span class="tc-kw">import</span> { createUser, deleteUser, generateEmail } <span class="tc-kw">from</span> <span class="tc-str">'../helpers/api'</span>;
+
+<span class="tc-kw">test</span>(&quot;admin can view <span class="tc-kw">new</span> users&quot;, <span class="tc-kw">async</span> ({ request, page }) =&gt; {
+  <span class="tc-kw">const</span> email = <span class="tc-fn">generateEmail</span>(&quot;testadmin&quot;);
+  <span class="tc-kw">const</span> user  = <span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(request, { email, role: &quot;admin&quot; });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">`/admin/users/${user.id}`</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(email)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-kw">await</span> <span class="tc-fn">deleteUser</span>(request, user.id); <span class="tc-cm">// cleanup</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q110.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q110.15</span>
+      <h2 class="sn-q-text">Describe how your project uses classes and modules to organise test code</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, the code is organised into four layers, each with a clear responsibility.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Pages layer (<code class="sn-ic">tests/pages/</code>)</strong> — one TypeScript class per page or major component. Each class has private locators and public methods. All page classes extend <code class="sn-ic">BasePage</code> which holds the <code class="sn-ic">page</code> reference and a common <code class="sn-ic">goto()</code> method. Page objects never contain assertions.</p>
+<p class="sn-para"><strong class="k-red">Helpers layer (<code class="sn-ic">tests/helpers/</code>)</strong> — plain modules with named exported functions. <code class="sn-ic">api.ts</code> for request helpers, <code class="sn-ic">text.ts</code> for text normalisation, <code class="sn-ic">retry.ts</code> for backoff utilities. No classes here — functions are enough.</p>
+<p class="sn-para"><strong class="k-red">Data layer (<code class="sn-ic">tests/data/</code>)</strong> — factory functions that return typed data objects. <code class="sn-ic">createUser()</code>, <code class="sn-ic">createOrder()</code>. TypeScript interfaces define every shape.</p>
+<p class="sn-para"><strong class="k-red">Fixtures layer (<code class="sn-ic">tests/fixtures/</code>)</strong> — Playwright fixtures that instantiate page objects and inject them into tests. The fixture is the only code that calls <code class="sn-ic">new LoginPage(page)</code>. Tests receive the instance ready to use.</p>
+<p class="sn-para">When a new team member joins, the rule is simple: test logic in test files, page actions in page classes, utilities in helpers, data in data files. No cross-contamination. This structure means any test file can be read and understood without knowing the rest of the codebase.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Classes are blueprints for objects. In test automation, one class per page object. Use <code class="sn-ic">extends</code> for BasePage inheritance.</span></li>
+            <li><span class="icon">⭐</span><span>Constructors run when you call <code class="sn-ic">new</code>. Store the <code class="sn-ic">page</code> reference and create locators in the constructor.</span></li>
+            <li><span class="icon">⭐</span><span>Page objects own locators and actions. They do not own assertions. Keep assertions in test files.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>ES Modules: <code class="sn-ic">export</code> to share, <code class="sn-ic">import</code> to use. Named exports are safer for refactoring. Default exports work well for classes (one per file).</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">extends</code> when the relationship is genuinely "is a type of". Use composition when the class "uses a" helper — avoid deep inheritance chains.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">import/export</code> is the standard. Never mix with <code class="sn-ic">require/module.exports</code> in TypeScript files.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

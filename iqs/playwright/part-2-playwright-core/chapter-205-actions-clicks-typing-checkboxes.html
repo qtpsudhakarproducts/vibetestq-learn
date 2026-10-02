@@ -1,0 +1,801 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 205 &nbsp;·&nbsp; 20 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Actions</span> <span class="w2">—</span> <span class="w3">Clicks,</span> <span class="w4">Typing</span> <span class="w5">&amp;</span> <span class="w6">Checkboxes</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the fundamental browser interactions in Playwright — the actions you use in every test. Interviewers test interactions because fill, click, and select have subtleties (actionability, clearing, type vs fill) that distinguish experienced engineers from those who just follow tutorials.</span>
+  </div>
+
+
+  <!-- Q205.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.1</span>
+      <h2 class="sn-q-text">What are the basic interaction methods in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The most commonly used interaction methods:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Method</th><th class="sn-th-blue">Action</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">locator.click()</code></td><td>Single click on element</td></tr>
+          <tr><td><code class="sn-ic">locator.fill(text)</code></td><td>Clear and fill an input</td></tr>
+          <tr><td><code class="sn-ic">locator.check()</code></td><td>Check a checkbox or radio</td></tr>
+          <tr><td><code class="sn-ic">locator.uncheck()</code></td><td>Uncheck a checkbox</td></tr>
+          <tr><td><code class="sn-ic">locator.selectOption(value)</code></td><td>Select a <code class="sn-ic">&lt;select&gt;</code> option</td></tr>
+          <tr><td><code class="sn-ic">locator.press(key)</code></td><td>Press a keyboard key</td></tr>
+          <tr><td><code class="sn-ic">locator.clear()</code></td><td>Clear an input field</td></tr>
+          <tr><td><code class="sn-ic">locator.focus()</code></td><td>Move focus to an element</td></tr>
+          <tr><td><code class="sn-ic">locator.blur()</code></td><td>Remove focus from an element</td></tr>
+          <tr><td><code class="sn-ic">locator.hover()</code></td><td>Hover the mouse over an element</td></tr>
+          <tr><td><code class="sn-ic">locator.dblclick()</code></td><td>Double click</td></tr>
+          <tr><td><code class="sn-ic">locator.setInputFiles(path)</code></td><td>Upload a file</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">All of these perform actionability checks before executing. They return Promises and must be awaited.</p>
+    </div>
+  </div>
+
+  <!-- Q205.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.2</span>
+      <h2 class="sn-q-text">What is the difference between click and fill?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">click()</code> simulates a mouse click. It works on any visible, enabled element. It performs all six actionability checks (attached, visible, stable, receives events, enabled).</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">fill(text)</code> is specifically for text inputs. It:</p>
+<ol class="sn-olist">
+<li>Focuses the element</li>
+<li>Clears any existing content</li>
+<li>Types the new text value in one operation</li>
+</ol>
+<p class="sn-para"><code class="sn-ic">fill</code> is not character-by-character — it sets the input value directly and triggers the necessary input/change events. This makes it fast and reliable for form automation.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();   <span class="tc-cm">// mouse click</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);         <span class="tc-cm">// set input value</span></div>
+      </div>
+<p class="sn-para">The key difference: <code class="sn-ic">click</code> is for elements you interact with by pointer. <code class="sn-ic">fill</code> is for text fields you populate with data.</p>
+    </div>
+  </div>
+
+  <!-- Q205.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.3</span>
+      <h2 class="sn-q-text">When do you use check, uncheck, and selectOption?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple"><code class="sn-ic">check()</code></strong> — for <code class="sn-ic">&lt;input type=&quot;checkbox&quot;&gt;</code> and <code class="sn-ic">&lt;input type=&quot;radio&quot;&gt;</code>. It clicks the element if it is not already checked. Does nothing if already checked.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">uncheck()</code></strong> — for checkboxes only. Clicks to uncheck if currently checked.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Accept terms'</span>).<span class="tc-fn">check</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Newsletter'</span>).<span class="tc-fn">uncheck</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Subscribe'</span>).<span class="tc-fn">setChecked</span>(<span class="tc-kw">true</span>); <span class="tc-cm">// set to a specific state</span></div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">selectOption(value)</code></strong> — for <code class="sn-ic">&lt;select&gt;</code> elements. Can select by value attribute, visible text, or index:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>).<span class="tc-fn">selectOption</span>(<span class="tc-str">'GB'</span>);                    <span class="tc-cm">// by value</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>).<span class="tc-fn">selectOption</span>({ label: <span class="tc-str">'United Kingdom'</span> }); <span class="tc-cm">// by visible text</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>).<span class="tc-fn">selectOption</span>({ index: <span class="tc-num">0</span> });            <span class="tc-cm">// by index</span>
+<span class="tc-cm">// Multi-select</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Skills'</span>).<span class="tc-fn">selectOption</span>([<span class="tc-str">'js'</span>, <span class="tc-str">'ts'</span>, <span class="tc-str">'python'</span>]);</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">check/uncheck</code> for checkbox state where the final state matters. Use <code class="sn-ic">selectOption</code> for native <code class="sn-ic">&lt;select&gt;</code> dropdowns. For custom dropdowns (not <code class="sn-ic">&lt;select&gt;</code>), use <code class="sn-ic">click</code> to open and <code class="sn-ic">getByRole('option')</code> to pick.</p>
+    </div>
+  </div>
+
+  <!-- Q205.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.4</span>
+      <h2 class="sn-q-text">How do you perform basic interactions in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, basic interactions live inside page object methods. Tests never call <code class="sn-ic">page.fill()</code> or <code class="sn-ic">page.click()</code> directly — they call semantic methods on page objects.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Interactions scattered in test code</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'user logs in'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'pass123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+});
+
+<span class="tc-cm">// ✅ Interactions in page object method</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'user logs in'</span>, <span class="tc-kw">async</span> ({ loginPage }) =&gt; {
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'user@test.com'</span>, <span class="tc-str">'pass123'</span>);
+});</div>
+      </div>
+<p class="sn-para">Each page object method encapsulates the locators and the interaction sequence for one user action. If the login form adds a 2FA step, we update <code class="sn-ic">login()</code> in one place.</p>
+<p class="sn-para">For complex interactions (file uploads, drag and drop, multi-step forms), we have helper methods in <code class="sn-ic">tests/helpers/</code> that page objects delegate to.</p>
+    </div>
+  </div>
+
+  <!-- Q205.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.5</span>
+      <h2 class="sn-q-text">What actionability checks does Playwright run before a click?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Before clicking, Playwright verifies the element is:</p>
+      </div>
+<ol class="sn-olist">
+<li><strong class="k-teal">Attached</strong> — exists in the DOM</li>
+<li><strong class="k-teal">Visible</strong> — not hidden by CSS (no <code class="sn-ic">display:none</code>, <code class="sn-ic">visibility:hidden</code>,</li>
+</ol>
+<p class="sn-para">   <code class="sn-ic">opacity:0</code>, zero dimensions)</p>
+<ol class="sn-olist">
+<li><strong class="k-teal">Stable</strong> — position not changing (animation completed)</li>
+<li><strong class="k-teal">Receives pointer events</strong> — not covered by another element (no modal</li>
+</ol>
+<p class="sn-para">   overlay, no tooltip blocking)</p>
+<ol class="sn-olist">
+<li><strong class="k-teal">Enabled</strong> — no <code class="sn-ic">disabled</code> attribute</li>
+</ol>
+<p class="sn-para">If any check fails, Playwright retries the entire check set every ~100ms until the action timeout is reached. This is why you rarely need explicit <code class="sn-ic">waitFor</code> calls before clicks — the click itself waits.</p>
+<p class="sn-para">The only checks that do NOT run before <code class="sn-ic">click()</code> are <code class="sn-ic">editable</code> checks — those apply to <code class="sn-ic">fill()</code> and similar input methods.</p>
+    </div>
+  </div>
+
+  <!-- Q205.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.6</span>
+      <h2 class="sn-q-text">What happens when you call fill on an input that already has a value?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">fill(text)</code> always clears the current value before entering the new one. You do not need to call <code class="sn-ic">clear()</code> before <code class="sn-ic">fill()</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Equivalent — both result in &amp;quot;new@test.com&amp;quot; in the field</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'new@test.com'</span>);
+
+<span class="tc-cm">// Redundant clear — fill already clears</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">clear</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'new@test.com'</span>);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">fill()</code> triggers:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">focus</code> event</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">input</code> event (with the new value)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">change</code> event</span></li>
+</ul>
+<p class="sn-para">These are the events that React, Vue, and Angular listen to for controlled input updates. <code class="sn-ic">fill()</code> reliably triggers reactive form updates in all major frameworks.</p>
+    </div>
+  </div>
+
+  <!-- Q205.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.7</span>
+      <h2 class="sn-q-text">What is the difference between type and fill?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">fill(text)</code> — sets the input value in one operation. Fast, reliable for most inputs. Triggers input/change events.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">pressSequentially(text, options?)</code> (formerly <code class="sn-ic">type()</code>) — types character by character, dispatching individual keydown/keypress/input/keyup events for each character.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fill — fast, sets value directly</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Search'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'playwright testing'</span>);
+
+<span class="tc-cm">// pressSequentially — character by character, like a real user typing</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Search'</span>).<span class="tc-fn">pressSequentially</span>(<span class="tc-str">'playwright'</span>, { delay: <span class="tc-num">100</span> });</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Use <code class="sn-ic">fill</code> for 99% of inputs.</strong> It is faster and more reliable.</p>
+<p class="sn-para"><strong class="k-red">Use <code class="sn-ic">pressSequentially</code> for:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Autocomplete inputs that trigger on each keystroke (the suggestions only</span></li>
+</ul>
+<p class="sn-para">  appear while the user is actively typing)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Applications that have JavaScript keystroke handlers that behave differently</span></li>
+</ul>
+<p class="sn-para">  for character-by-character input vs paste operations</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>Testing typeahead/autocomplete behaviour specifically</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q205.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.8</span>
+      <h2 class="sn-q-text">What is the difference between click and dblclick and tap?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow"><code class="sn-ic">click()</code></strong> — single left mouse button click with actionability checks.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow"><code class="sn-ic">dblclick()</code></strong> — double click (two rapid clicks). Used for opening files, editing inline text, selecting words.</p>
+<p class="sn-para"><strong class="k-yellow"><code class="sn-ic">tap()</code></strong> — simulates a touch event (touchstart + touchend). Used when testing mobile emulation where the device has touch enabled.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Select'</span> }).<span class="tc-fn">click</span>();    <span class="tc-cm">// single click</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'File Name.doc'</span>).<span class="tc-fn">dblclick</span>();               <span class="tc-cm">// open file</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">tap</span>();       <span class="tc-cm">// touch event</span></div>
+      </div>
+<p class="sn-para">On desktop browsers, <code class="sn-ic">tap()</code> maps to a click. It becomes meaningful when testing with mobile device emulation where some UI elements only respond to touch events.</p>
+    </div>
+  </div>
+
+  <!-- Q205.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.9</span>
+      <h2 class="sn-q-text">What is the difference between focus and click?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">focus()</code> moves keyboard focus to an element without clicking it. It triggers the <code class="sn-ic">focus</code> event and activates the element for keyboard interaction.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">click()</code> simulates a complete mouse interaction: mousedown + mouseup + click. A click also gives the element focus as a side effect.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// focus — keyboard navigation testing</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">focus</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>)).<span class="tc-fn">toBeFocused</span>();
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>); <span class="tc-cm">// move focus to next field</span>
+
+<span class="tc-cm">// click — user interaction testing</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">click</span>(); <span class="tc-cm">// focuses AND triggers click event</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">focus()</code> when testing keyboard navigation or accessibility (tab order), or when you need to trigger a focus-dependent UI state (like a tooltip or dropdown) without clicking.</p>
+    </div>
+  </div>
+
+  <!-- Q205.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.10</span>
+      <h2 class="sn-q-text">When should you use clear before fill?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Almost never. <code class="sn-ic">fill()</code> clears the input automatically before entering new text.</p>
+      </div>
+<p class="sn-para">The one case where <code class="sn-ic">clear()</code> alone is useful: you want to clear a field without entering new content — for example, testing that a form validates an empty required field.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Test empty field validation</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>); <span class="tc-cm">// fill with valid value</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">clear</span>();               <span class="tc-cm">// clear without re-filling</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Email is required'</span>);</div>
+      </div>
+<p class="sn-para">For everything else — including replacing an existing value with a new one — <code class="sn-ic">fill(newValue)</code> is sufficient.</p>
+    </div>
+  </div>
+
+  <!-- Q205.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.11</span>
+      <h2 class="sn-q-text">What is wrong with using page.click(selector) instead of locator.click()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.click(selector)</code> is an older API that takes a CSS selector string. It works but bypasses the locator's explicit type and the readability that comes with semantic locator methods.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Old API — string selector, no semantic meaning</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">click</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]'</span>);
+
+<span class="tc-cm">// ✅ Locator API — semantic, self-documenting</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">Problems with <code class="sn-ic">page.click(selector)</code>:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Uses a CSS selector string — fragile, not semantic</span></li>
+<li><span class="icon">💡</span><span>Less readable — the intent is buried in the selector</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Does not benefit from the locator's chainability, filtering, or strict mode</span></li>
+</ul>
+<p class="sn-para">The <code class="sn-ic">page.click()</code> string API still works and is not removed, but Playwright's documentation and best practices recommend the locator API. In new code, always use <code class="sn-ic">locator.click()</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q205.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.12</span>
+      <h2 class="sn-q-text">How do Playwright interactions differ from Selenium interactions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright</th><th class="sn-th-green">Selenium</th></tr></thead>
+          <tbody>
+          <tr><td>Auto-waiting before action</td><td>Yes — built-in actionability checks</td><td>No — manual <code class="sn-ic">WebDriverWait</code> needed</td></tr>
+          <tr><td>Fill / clear</td><td><code class="sn-ic">fill()</code> clears and fills in one step</td><td><code class="sn-ic">clear()</code> then <code class="sn-ic">sendKeys()</code></td></tr>
+          <tr><td>Stale elements</td><td>Never — locator re-queries on action</td><td>Common — requires try/catch and re-find</td></tr>
+          <tr><td>Checkbox</td><td><code class="sn-ic">check()</code> / <code class="sn-ic">uncheck()</code> semantic methods</td><td><code class="sn-ic">click()</code> (must check current state manually)</td></tr>
+          <tr><td>Select</td><td><code class="sn-ic">selectOption()</code> with semantic options</td><td><code class="sn-ic">Select</code> class with <code class="sn-ic">selectByVisibleText()</code></td></tr>
+          <tr><td>File upload</td><td><code class="sn-ic">setInputFiles()</code> with buffer support</td><td><code class="sn-ic">sendKeys()</code> with absolute file path</td></tr>
+          <tr><td>Keyboard</td><td><code class="sn-ic">press()</code>, <code class="sn-ic">keyboard.down()</code></td><td><code class="sn-ic">sendKeys(Keys.CONTROL, 'a')</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The most practical difference: Playwright actions almost never need a preceding wait. Selenium actions on dynamic pages almost always do.</p>
+    </div>
+  </div>
+
+  <!-- Q205.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.13</span>
+      <h2 class="sn-q-text">Write code to fill a registration form with multiple field types</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can complete registration'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/register'</span>);
+
+  <span class="tc-cm">// Text inputs — getByLabel finds the associated input</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Last Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Johnson'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'alice.johnson@test.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'SecurePass1!'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Confirm Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'SecurePass1!'</span>);
+
+  <span class="tc-cm">// Select dropdown — by visible text</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>).<span class="tc-fn">selectOption</span>({ label: <span class="tc-str">'United Kingdom'</span> });
+
+  <span class="tc-cm">// Radio button — semantic check</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'radio'</span>, { name: <span class="tc-str">'Individual'</span> }).<span class="tc-fn">check</span>();
+
+  <span class="tc-cm">// Checkbox</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'I accept the Terms and Conditions'</span>).<span class="tc-fn">check</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Subscribe to newsletter'</span>).<span class="tc-fn">uncheck</span>(); <span class="tc-cm">// ensure unchecked</span>
+
+  <span class="tc-cm">// Submit</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Create Account'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Assert success</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'/registration-success'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: /Account Created/ })
+  ).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q205.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.14</span>
+      <h2 class="sn-q-text">Write code to select an option from a dropdown by visible text and by value</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'all selectOption modes'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/shipping-form'</span>);
+
+  <span class="tc-cm">// ---- Native  elements ----</span>
+
+  <span class="tc-cm">// By value attribute</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>).<span class="tc-fn">selectOption</span>(<span class="tc-str">'GB'</span>);
+  <span class="tc-cm">// United Kingdom</span>
+
+  <span class="tc-cm">// By visible label text</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Shipping Method'</span>).<span class="tc-fn">selectOption</span>({ label: <span class="tc-str">'Express (2-3 days)'</span> });
+
+  <span class="tc-cm">// By index (use sparingly — position is fragile)</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Size'</span>).<span class="tc-fn">selectOption</span>({ index: <span class="tc-num">2</span> });
+
+  <span class="tc-cm">// Multi-select</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Preferred Days'</span>).<span class="tc-fn">selectOption</span>([<span class="tc-str">'mon'</span>, <span class="tc-str">'wed'</span>, <span class="tc-str">'fri'</span>]);
+
+  <span class="tc-cm">// ---- Custom dropdown (not a ) ----</span>
+  <span class="tc-cm">// Open the dropdown by clicking</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'combobox'</span>, { name: <span class="tc-str">'Currency'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-cm">// Select option by role inside the expanded listbox</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: <span class="tc-str">'GBP — British Pound'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Verify the selected value</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>)).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'GB'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q205.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.15</span>
+      <h2 class="sn-q-text">Describe an interaction bug — a click or fill that was not working and how you fixed it</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had a test that clicked a "Save" button in a settings form. The test was reliably failing with `TimeoutError: locator.click — Timeout 30000ms exceeded`. The button was visible on the page. No overlay was blocking it.</p>
+      </div>
+<p class="sn-para">I opened the trace and saw that the button had <code class="sn-ic">disabled</code> attribute for the first 2 seconds after page load. A JavaScript initialisation script validated the form state asynchronously and only removed <code class="sn-ic">disabled</code> after the validation completed.</p>
+<p class="sn-para">Playwright's actionability check for <code class="sn-ic">enabled</code> was correctly waiting — but the test was timing out before the button became enabled. The root cause was that the page's initial load triggered two asynchronous API calls to populate form fields, and the Save button stayed disabled until both completed.</p>
+<p class="sn-para">The fix: wait for the API calls to complete before attempting to click.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Fixed — wait for both API calls before clicking Save</span>
+<span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/settings/profile'</span>)),
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/settings/preferences'</span>)),
+  page.<span class="tc-fn">goto</span>(<span class="tc-str">'/settings'</span>),
+]);
+
+<span class="tc-cm">// Now the button is enabled</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">The lesson: when an actionability check times out on <code class="sn-ic">enabled</code>, look for JavaScript that enables the element asynchronously. Playwright correctly waited for the condition — the problem was upstream: the form needed API data before it could be ready.</p>
+    </div>
+  </div>
+
+  <!-- Q205.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.16</span>
+      <h2 class="sn-q-text">What is the selectOption method and what are its different selection modes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">selectOption()</code> interacts with native <code class="sn-ic">&lt;select&gt;</code> elements. It accepts four selection modes:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> country = page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Country'</span>);
+
+<span class="tc-cm">// String — matches the value attribute</span>
+<span class="tc-kw">await</span> country.<span class="tc-fn">selectOption</span>(<span class="tc-str">'US'</span>);
+
+<span class="tc-cm">// Object with label — matches visible text</span>
+<span class="tc-kw">await</span> country.<span class="tc-fn">selectOption</span>({ label: <span class="tc-str">'United States'</span> });
+
+<span class="tc-cm">// Object with index — matches position (0-based)</span>
+<span class="tc-kw">await</span> country.<span class="tc-fn">selectOption</span>({ index: <span class="tc-num">0</span> });
+
+<span class="tc-cm">// Object with value — explicit value match</span>
+<span class="tc-kw">await</span> country.<span class="tc-fn">selectOption</span>({ value: <span class="tc-str">'US'</span> });
+
+<span class="tc-cm">// Array — for multi-select</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Tags'</span>).<span class="tc-fn">selectOption</span>([<span class="tc-str">'javascript'</span>, <span class="tc-str">'typescript'</span>, <span class="tc-str">'playwright'</span>]);</div>
+      </div>
+<p class="sn-para">After selection, <code class="sn-ic">selectOption()</code> dispatches <code class="sn-ic">input</code> and <code class="sn-ic">change</code> events, so reactive forms update correctly.</p>
+<p class="sn-para"><code class="sn-ic">selectOption()</code> does not work on custom-built dropdowns (styled divs acting as selects). For those, click to open, then click the option.</p>
+    </div>
+  </div>
+
+  <!-- Q205.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.17</span>
+      <h2 class="sn-q-text">How do you interact with a checkbox group?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Check by label text</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email notifications'</span>).<span class="tc-fn">check</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'SMS notifications'</span>).<span class="tc-fn">uncheck</span>();
+
+<span class="tc-cm">// Set to explicit state — useful when you don't know the current state</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Marketing emails'</span>).<span class="tc-fn">setChecked</span>(<span class="tc-kw">true</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Marketing emails'</span>).<span class="tc-fn">setChecked</span>(<span class="tc-kw">false</span>);
+
+<span class="tc-cm">// Check all checkboxes in a group</span>
+<span class="tc-kw">const</span> group = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'group'</span>, { name: <span class="tc-str">'Notification Preferences'</span> });
+<span class="tc-kw">const</span> checkboxes = <span class="tc-kw">await</span> group.<span class="tc-fn">getByRole</span>(<span class="tc-str">'checkbox'</span>).<span class="tc-fn">all</span>();
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> checkbox <span class="tc-kw">of</span> checkboxes) {
+  <span class="tc-kw">await</span> checkbox.<span class="tc-fn">check</span>();
+}
+
+<span class="tc-cm">// Assert checked state</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email notifications'</span>)).<span class="tc-fn">toBeChecked</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'SMS notifications'</span>)).not.<span class="tc-fn">toBeChecked</span>();</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">setChecked(boolean)</code> when the test needs to guarantee a specific final state regardless of the current state. <code class="sn-ic">check()</code> and <code class="sn-ic">uncheck()</code> are idempotent — they only click if the state needs to change.</p>
+    </div>
+  </div>
+
+  <!-- Q205.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.18</span>
+      <h2 class="sn-q-text">What is the dispatchEvent method and when do you use it instead of click?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">dispatchEvent(type, eventInit?)</code> dispatches a synthetic event on an element without going through Playwright's actionability checks.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Normal click — goes through actionability checks</span>
+<span class="tc-kw">await</span> button.<span class="tc-fn">click</span>();
+
+<span class="tc-cm">// dispatchEvent — bypasses actionability, fires the event directly</span>
+<span class="tc-kw">await</span> button.<span class="tc-fn">dispatchEvent</span>(<span class="tc-str">'click'</span>);
+
+<span class="tc-cm">// Custom event</span>
+<span class="tc-kw">await</span> element.<span class="tc-fn">dispatchEvent</span>(<span class="tc-str">'customEvent'</span>, { detail: { value: <span class="tc-num">42</span> } });</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">dispatchEvent</code> only when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The element is technically invisible or disabled by CSS, but your application</span></li>
+</ul>
+<p class="sn-para">  has JavaScript that listens for the event regardless — testing a non-standard   interaction pattern</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>You are testing how the application responds to a specific JavaScript event</span></li>
+</ul>
+<p class="sn-para">  that cannot be triggered by normal user actions</p>
+<p class="sn-para">Do NOT use <code class="sn-ic">dispatchEvent</code> to bypass actionability checks because your locator is wrong. If <code class="sn-ic">click()</code> fails because the element is covered or disabled, that is the real issue — the element is not ready. Fix the locator or the wait, not the interaction method.</p>
+    </div>
+  </div>
+
+  <!-- Q205.19 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.19</span>
+      <h2 class="sn-q-text">Write code to interact with a multi-select dropdown</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can select multiple skills'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/profile/edit'</span>);
+
+  <span class="tc-cm">// Native multi-select</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Skills'</span>).<span class="tc-fn">selectOption</span>([
+    <span class="tc-str">'javascript'</span>,
+    <span class="tc-str">'typescript'</span>,
+    <span class="tc-str">'playwright'</span>,
+  ]);
+
+  <span class="tc-cm">// Verify all three are selected</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Skills'</span>)).<span class="tc-fn">toHaveValues</span>([
+    <span class="tc-str">'javascript'</span>,
+    <span class="tc-str">'typescript'</span>,
+    <span class="tc-str">'playwright'</span>,
+  ]);
+
+  <span class="tc-cm">// Custom multi-select (checkbox-based dropdown)</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Select Frameworks'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Each option in the dropdown is a checkbox</span>
+  <span class="tc-kw">const</span> dropdown = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'listbox'</span>, { name: <span class="tc-str">'Select Frameworks'</span> });
+  <span class="tc-kw">await</span> dropdown.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: <span class="tc-str">'React'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> dropdown.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: <span class="tc-str">'Vue'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> dropdown.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: <span class="tc-str">'Angular'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Close dropdown</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Escape'</span>);
+
+  <span class="tc-cm">// Verify selected tags appear</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'React'</span> })).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Vue'</span> })).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q205.20 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q205.20</span>
+      <h2 class="sn-q-text">How do you verify that a form interaction was successful?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Verification after a form interaction depends on what the application shows:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Pattern 1 — URL change after submit</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Create Account'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'/dashboard'</span>);
+
+<span class="tc-cm">// Pattern 2 — Success message appears</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(/Saved successfully/);
+
+<span class="tc-cm">// Pattern 3 — Specific element updates</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Display Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice Johnson'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'profile-name'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Alice Johnson'</span>);
+
+<span class="tc-cm">// Pattern 4 — Wait for API and then assert</span>
+<span class="tc-kw">const</span> [response] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/profile'</span>) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>(),
+]);
+<span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+<span class="tc-kw">expect</span>(body.displayName).<span class="tc-fn">toBe</span>(<span class="tc-str">'Alice Johnson'</span>);</div>
+      </div>
+<p class="sn-para">Always assert something after an action. A test that clicks Submit and then ends without an assertion is testing nothing.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">fill()</code> clears and fills in one step. <code class="sn-ic">pressSequentially()</code> types character by character — only needed for autocomplete and keystroke-sensitive inputs.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">check()</code> and <code class="sn-ic">uncheck()</code> are idempotent — they only act if the state needs to change. <code class="sn-ic">setChecked(bool)</code> forces a specific state.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">selectOption()</code> works on native <code class="sn-ic">&lt;select&gt;</code>. For custom dropdowns, click to open then click the option.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>All actions perform actionability checks and auto-wait. When an action times out, the check that failed tells you what the element's state is.</span></li>
+            <li><span class="icon">⭐</span><span>Always assert after a form interaction. Never end a test with an action as the final line.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

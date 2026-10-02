@@ -1,0 +1,514 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 203 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">BrowserContext</span> <span class="w2">—</span> <span class="w3">Isolated</span> <span class="w4">Environments</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's internal architecture — how it communicates with browsers, what the Browser/BrowserContext/Page hierarchy means, and why context isolation matters. Interviewers at mid-level and above ask these questions because understanding the architecture predicts how well a candidate will design their framework and debug complex failures.</span>
+  </div>
+
+
+  <!-- Q203.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.1</span>
+      <h2 class="sn-q-text">How does Playwright communicate with the browser?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright communicates via a persistent WebSocket connection. When you launch a browser, Playwright opens a WebSocket to the browser process. Every command — click, fill, navigate — is sent as a JSON message over this connection. The browser executes the command and sends back a response.</p>
+      </div>
+<p class="sn-para">For Chromium, this protocol is the Chrome DevTools Protocol (CDP). For Firefox and WebKit, Playwright uses similar custom protocols.</p>
+<p class="sn-para">The WebSocket is bidirectional and persistent. This is fundamentally different from Selenium, which makes a new HTTP request for every command. The persistent connection eliminates network round-trip overhead per command and allows Playwright to receive real-time events from the browser — network responses, console messages, dialog appearances — without polling.</p>
+    </div>
+  </div>
+
+  <!-- Q203.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.2</span>
+      <h2 class="sn-q-text">What is the Chrome DevTools Protocol (CDP)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">CDP is the protocol that Chrome's DevTools UI uses internally to control the browser. It exposes the full power of Chrome — not just navigation and element interaction, but network events, performance metrics, JavaScript evaluation, DOM inspection, and more.</p>
+      </div>
+<p class="sn-para">Playwright uses CDP for Chromium-based browsers. This gives Playwright capabilities that WebDriver does not expose:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Intercepting and modifying network requests and responses (including bodies)</span></li>
+<li><span class="icon">💡</span><span>Capturing full network HAR logs</span></li>
+<li><span class="icon">⚡</span><span>Injecting code at browser startup before any page loads</span></li>
+<li><span class="icon">🎯</span><span>Accessing service workers</span></li>
+<li><span class="icon">📌</span><span>Real-time console output capture</span></li>
+</ul>
+<p class="sn-para">CDP is a public protocol documented by Chrome. Other tools — Puppeteer, Chrome DevTools, various debugging tools — also use it.</p>
+    </div>
+  </div>
+
+  <!-- Q203.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.3</span>
+      <h2 class="sn-q-text">What is the Browser, BrowserContext, Page hierarchy in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Playwright (Node.js process)
+└── Browser (one browser process)
+    ├── BrowserContext 1 (isolated session A)
+    │   ├── Page (tab 1)
+    │   └── Page (tab 2)
+    └── BrowserContext 2 (isolated session B)
+        └── Page (tab 3)</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Browser</strong> — one running browser process (Chromium, Firefox, or WebKit). Launching a browser is expensive. Tests share a browser but not contexts.</p>
+<p class="sn-para"><strong class="k-purple">BrowserContext</strong> — an isolated browser session. Like an incognito window. Has its own: cookies, local storage, session storage, IndexedDB, permissions, and network state. By default, Playwright creates one context per test.</p>
+<p class="sn-para"><strong class="k-purple">Page</strong> — one browser tab within a context. You interact with elements through a page. A context can have multiple pages (tabs), but most tests use one.</p>
+    </div>
+  </div>
+
+  <!-- Q203.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.4</span>
+      <h2 class="sn-q-text">How does your project use BrowserContexts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, BrowserContexts are managed entirely by Playwright's fixture system. We never call <code class="sn-ic">browser.newContext()</code> manually in tests.</p>
+      </div>
+<p class="sn-para">The default <code class="sn-ic">context</code> fixture creates one fresh BrowserContext per test. Tests that need a pre-authenticated session use a custom <code class="sn-ic">authenticatedContext</code> fixture that creates a context with <code class="sn-ic">storageState</code> pre-loaded:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.<span class="tc-fn">extend</span>({
+  authenticatedPage: <span class="tc-kw">async</span> ({ browser }, use) =&gt; {
+    <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+      storageState: <span class="tc-str">'playwright/.auth/user.json'</span>,
+    });
+    <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+    <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();
+  },
+});</div>
+      </div>
+<p class="sn-para">Each test gets its own isolated context. Cookies from one test never leak into another. This is what makes our tests run safely in parallel.</p>
+    </div>
+  </div>
+
+  <!-- Q203.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.5</span>
+      <h2 class="sn-q-text">What is a BrowserContext and why is it important for test isolation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A BrowserContext is a fully isolated browser session. It has its own:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Cookies and session storage</span></li>
+<li><span class="icon">💡</span><span>Authentication state (login sessions)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Permissions (geolocation, notifications)</span></li>
+<li><span class="icon">🎯</span><span>Network request history</span></li>
+<li><span class="icon">📌</span><span>Downloaded files</span></li>
+</ul>
+<p class="sn-para">When Playwright creates a new context for each test, that test starts with a completely clean browser state. It is as if the user opened a fresh incognito window for every test. No cookie from a previous test persists. No login session leaks.</p>
+<p class="sn-para">This is the mechanism that enables parallel test execution. Two tests running at the same time use separate contexts on the same browser process. They cannot interfere with each other's state.</p>
+<p class="sn-para">If you share a context between tests — or use a global <code class="sn-ic">page</code> variable across tests — tests become order-dependent and intermittently fail when run in parallel. The fix is always: one context per test, managed by a fixture.</p>
+    </div>
+  </div>
+
+  <!-- Q203.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.6</span>
+      <h2 class="sn-q-text">What happens inside Playwright when you call page.click()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Six things happen in sequence:</p>
+      </div>
+<ol class="sn-olist">
+<li><strong class="k-pink">Playwright resolves the locator</strong> — the selector is evaluated against</li>
+</ol>
+<p class="sn-para">   the live DOM to find the matching element.</p>
+<ol class="sn-olist">
+<li><strong class="k-pink">Actionability checks</strong> — Playwright verifies the element is: attached</li>
+</ol>
+<p class="sn-para">   to the DOM, visible, stable (not animating), not obscured by another    element, and enabled (not disabled).</p>
+<ol class="sn-olist">
+<li><strong class="k-pink">If any check fails</strong> — Playwright waits and retries until the check</li>
+</ol>
+<p class="sn-para">   passes or the action timeout is reached.</p>
+<ol class="sn-olist">
+<li><strong class="k-pink">Playwright scrolls the element into view</strong> if it is not in the viewport.</li>
+</ol>
+<ol class="sn-olist">
+<li><strong class="k-pink">Playwright sends the click command</strong> over the WebSocket/CDP connection</li>
+</ol>
+<p class="sn-para">   to the browser.</p>
+<ol class="sn-olist">
+<li><strong class="k-pink">The browser performs the click</strong> on the element and sends confirmation</li>
+</ol>
+<p class="sn-para">   back to Playwright.</p>
+<p class="sn-para">If any actionability check never passes within the timeout, Playwright throws a <code class="sn-ic">TimeoutError</code> with a description of which check failed.</p>
+    </div>
+  </div>
+
+  <!-- Q203.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.7</span>
+      <h2 class="sn-q-text">What is the difference between a Page and a BrowserContext?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <strong class="k-red">BrowserContext</strong> holds the session state — cookies, storage, auth. A <strong class="k-red">Page</strong> is a single tab within that context — it has its own URL and DOM.</p>
+      </div>
+<p class="sn-para">A context can have multiple pages (tabs). Pages within the same context share the context's cookies and storage. Pages in different contexts are completely isolated.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+
+<span class="tc-kw">const</span> page1 = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>(); <span class="tc-cm">// tab 1</span>
+<span class="tc-kw">const</span> page2 = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>(); <span class="tc-cm">// tab 2 — shares cookies with page1</span>
+
+<span class="tc-kw">const</span> context2 = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+<span class="tc-kw">const</span> page3 = <span class="tc-kw">await</span> context2.<span class="tc-fn">newPage</span>(); <span class="tc-cm">// tab 3 — isolated from page1 and page2</span></div>
+      </div>
+<p class="sn-para">In most tests, one context has one page. Multiple pages per context appear when testing multi-tab workflows (links that open new tabs, popups).</p>
+    </div>
+  </div>
+
+  <!-- Q203.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.8</span>
+      <h2 class="sn-q-text">What is auto-waiting and how does Playwright implement it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Auto-waiting is Playwright's mechanism of retrying actionability checks before executing a browser action. Instead of executing immediately, every action runs a check loop:</p>
+      </div>
+<ol class="sn-olist">
+<li>Resolve the locator</li>
+<li>Check actionability conditions</li>
+<li>If all pass — execute the action</li>
+<li>If any fails — wait 100ms and retry from step 1</li>
+<li>If the action timeout is reached — throw TimeoutError</li>
+</ol>
+<p class="sn-para">This loop runs inside the browser, not in Node.js. Playwright evaluates the conditions directly in the browser process using the protocol connection.</p>
+<p class="sn-para">For assertions, <code class="sn-ic">expect(locator).toBeVisible()</code> runs a similar retry loop — re-evaluating the condition every 100ms until it passes or the assertion timeout is reached.</p>
+<p class="sn-para">This design eliminates virtually all <code class="sn-ic">waitForTimeout</code> calls. Instead of "wait 2 seconds then click", Playwright's "click" already waits for the element to be ready — however long that takes.</p>
+    </div>
+  </div>
+
+  <!-- Q203.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.9</span>
+      <h2 class="sn-q-text">What is the difference between playwright-core and @playwright/test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">playwright-core</code> is the raw automation library. No test runner. No <code class="sn-ic">test()</code> function. No fixtures. No reporters. Just the browser control API.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">@playwright/test</code> includes playwright-core plus the full testing infrastructure:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">test()</code> and <code class="sn-ic">describe()</code> — test structure</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">expect()</code> with web-first assertions</span></li>
+<li><span class="icon">⚡</span><span>Fixtures — <code class="sn-ic">page</code>, <code class="sn-ic">context</code>, <code class="sn-ic">browser</code>, <code class="sn-ic">request</code> (and custom ones)</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">playwright.config.ts</code> — centralised config</span></li>
+<li><span class="icon">📌</span><span>Parallel workers — run tests across multiple processes</span></li>
+<li><span class="icon">🔑</span><span>Reporters — html, list, junit, json</span></li>
+<li><span class="icon">🚀</span><span>CLI — <code class="sn-ic">npx playwright test</code> with all flags</span></li>
+</ul>
+<p class="sn-para">For test automation projects: always use <code class="sn-ic">@playwright/test</code>.</p>
+<p class="sn-para"><code class="sn-ic">playwright-core</code> is for non-test use cases — building a monitoring tool, a PDF generator, a web scraper — where you want browser control without a test runner wrapper.</p>
+    </div>
+  </div>
+
+  <!-- Q203.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.10</span>
+      <h2 class="sn-q-text">What is the difference between Playwright's architecture and Selenium WebDriver?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright</th><th class="sn-th-green">Selenium WebDriver</th></tr></thead>
+          <tbody>
+          <tr><td>Connection</td><td>Persistent WebSocket</td><td>HTTP per command</td></tr>
+          <tr><td>Protocol</td><td>CDP / WebKit / Firefox protocols</td><td>W3C WebDriver HTTP</td></tr>
+          <tr><td>Overhead</td><td>Low — one connection reused</td><td>High — HTTP round-trip per action</td></tr>
+          <tr><td>Auto-waiting</td><td>Built-in via protocol events</td><td>Must implement manually</td></tr>
+          <tr><td>Event listening</td><td>Real-time via WebSocket</td><td>Polling required</td></tr>
+          <tr><td>Browser management</td><td>Downloads own builds</td><td>Requires separate driver</td></tr>
+          <tr><td>Driver versioning</td><td>Not needed</td><td>Must keep driver synced with browser</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The architectural difference explains most of Playwright's reliability advantages. Selenium's HTTP model means there is latency and potential for stale state between every command. Playwright's WebSocket model gives it a live view of the browser and enables reliable event-driven waiting.</p>
+    </div>
+  </div>
+
+  <!-- Q203.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.11</span>
+      <h2 class="sn-q-text">Why does sharing a BrowserContext between tests cause problems?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A BrowserContext maintains state: cookies, session storage, local storage, auth tokens. If two tests share one context:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Test A</strong> logs in as <code class="sn-ic">admin@test.com</code> — the auth cookie is set in the context.</p>
+<p class="sn-para"><strong class="k-purple">Test B</strong> expects to be unauthenticated — but the context still has the auth cookie from Test A.</p>
+<p class="sn-para"><strong class="k-purple">Test C</strong> logs in as <code class="sn-ic">user@test.com</code> — but Test B (which ran between A and C) may have partially modified the session.</p>
+<p class="sn-para">Result: tests pass or fail depending on their execution order, and parallel execution makes everything unpredictable.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Anti-pattern — shared context between tests</span>
+<span class="tc-kw">let</span> page: Page;
+<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+  page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>(); <span class="tc-cm">// shared across all tests in this suite</span>
+});
+
+<span class="tc-cm">// ✅ Correct — Playwright creates one context per test automatically</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'test A'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { <span class="tc-cm">/* fresh context */</span> });
+<span class="tc-kw">test</span>(<span class="tc-str">'test B'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { <span class="tc-cm">/* fresh context */</span> });</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">page</code> fixture in <code class="sn-ic">@playwright/test</code> creates a fresh context for every test automatically. This is its most important property.</p>
+    </div>
+  </div>
+
+  <!-- Q203.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.12</span>
+      <h2 class="sn-q-text">What are the six actionability checks Playwright performs before clicking?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Before any click (and most other actions), Playwright verifies:</p>
+      </div>
+<ol class="sn-olist">
+<li><strong class="k-orange">Attached</strong> — the element exists in the DOM and has not been removed</li>
+</ol>
+<ol class="sn-olist">
+<li><strong class="k-orange">Visible</strong> — the element is not hidden by <code class="sn-ic">display: none</code>,</li>
+</ol>
+<p class="sn-para">   <code class="sn-ic">visibility: hidden</code>, or <code class="sn-ic">opacity: 0</code></p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Stable</strong> — the element's position is not changing (not mid-animation)</li>
+</ol>
+<ol class="sn-olist">
+<li><strong class="k-orange">Receives events</strong> — the element is not covered by another element that</li>
+</ol>
+<p class="sn-para">   would intercept the click (no overlay, no modal in the way)</p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Enabled</strong> — the element does not have the <code class="sn-ic">disabled</code> attribute</li>
+</ol>
+<ol class="sn-olist">
+<li><strong class="k-orange">Editable</strong> — (for <code class="sn-ic">fill</code> and related actions only) the element is</li>
+</ol>
+<p class="sn-para">   not <code class="sn-ic">readonly</code></p>
+<p class="sn-para">All six checks run inside a retry loop. If any check fails, Playwright waits and retries. If all six pass, the action executes.</p>
+    </div>
+  </div>
+
+  <!-- Q203.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.13</span>
+      <h2 class="sn-q-text">Write code that manually creates a BrowserContext with custom options</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span>, Browser } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-cm">// Custom context — override specific options for a single test or group</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'logged-in user with mobile viewport'</span>, <span class="tc-kw">async</span> ({ browser }: { browser: Browser }) =&gt; {
+  <span class="tc-cm">// Create a context with custom viewport, locale, and pre-loaded auth state</span>
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+    viewport:     { width: <span class="tc-num">390</span>, height: <span class="tc-num">844</span> },   <span class="tc-cm">// iPhone 14</span>
+    locale:       <span class="tc-str">'en-GB'</span>,
+    timezoneId:   <span class="tc-str">'Europe/London'</span>,
+    storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,  <span class="tc-cm">// pre-authenticated session</span>
+    extraHTTPHeaders: {
+      <span class="tc-str">'x-test-run'</span>: <span class="tc-str">'playwright'</span>,               <span class="tc-cm">// custom header on every request</span>
+    },
+  });
+
+  <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Always close custom contexts — Playwright does not manage these automatically</span>
+  <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();
+});</div>
+      </div>
+<p class="sn-para">In most tests, you do not create contexts manually — fixtures handle this. Manual context creation is for edge cases that need settings different from the global config — specific locales, device emulation, or special HTTP headers.</p>
+    </div>
+  </div>
+
+  <!-- Q203.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.14</span>
+      <h2 class="sn-q-text">Write code that demonstrates context isolation between two tests</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span>, chromium } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-cm">// This demonstrates isolation at the low level — normally fixtures handle this</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Context isolation demonstration'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'test A sets a cookie'</span>, <span class="tc-kw">async</span> ({ context, page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+    <span class="tc-cm">// Set a cookie in context A</span>
+    <span class="tc-kw">await</span> context.<span class="tc-fn">addCookies</span>([{
+      name:   <span class="tc-str">'test-session'</span>,
+      value:  <span class="tc-str">'session-from-test-A'</span>,
+      url:    <span class="tc-str">'https: S2 
+    }]);
+
+     S3 
+    const cookies = await context.cookies();
+    expect(cookies.some(c =&amp;gt; c.name === '</span><span class="tc-kw">test</span>-session<span class="tc-str">')).toBe(true);
+  });
+
+  test('</span><span class="tc-kw">test</span> B has no cookie <span class="tc-kw">from</span> <span class="tc-kw">test</span> A<span class="tc-str">', async ({ context, page }) =&amp;gt; {
+    await page.goto('</span>/<span class="tc-str">');
+
+     S4 
+    const cookies = await context.cookies();
+    const testCookie = cookies.find(c =&amp;gt; c.name === '</span><span class="tc-kw">test</span>-session');
+
+    <span class="tc-kw">expect</span>(testCookie).<span class="tc-fn">toBeUndefined</span>(); <span class="tc-cm">// clean context, nothing from test A</span>
+  });
+});</div>
+      </div>
+<p class="sn-para">Each <code class="sn-ic">test()</code> block gets a fresh <code class="sn-ic">context</code> fixture. Any state from a previous test — cookies, storage, auth — does not exist in the next test's context.</p>
+    </div>
+  </div>
+
+  <!-- Q203.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q203.15</span>
+      <h2 class="sn-q-text">Describe a time when understanding Playwright's architecture helped you debug a problem</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, a test that verified the shopping cart was intermittently failing in CI but always passing locally. The error was <code class="sn-ic">ElementNotFound</code> on the cart icon — an element that should always be visible after login.</p>
+      </div>
+<p class="sn-para">I opened the trace file (<code class="sn-ic">trace.zip</code>) in the Playwright Trace Viewer. The trace showed the full network timeline: the login API call completed, the page navigated to the dashboard, and then — the cart data loaded from a separate <code class="sn-ic">/api/cart</code> endpoint that the test was not waiting for. The cart icon was rendered by React only after this API call resolved. On a fast local machine, the API responded in 200ms. On CI, it took 1,200ms.</p>
+<p class="sn-para">Understanding that Playwright's auto-waiting only handles DOM-level element state — not whether async data has loaded and caused React to render the element — explained the failure. The fix was:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Wait for the cart API response before asserting the icon</span>
+<span class="tc-kw">const</span> [cartResponse] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/cart'</span>)),
+  page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>),
+]);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'cart-icon'</span>)).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+<p class="sn-para">The Trace Viewer's network timeline made a 20-minute debug session instant. Without understanding that Playwright sees the DOM but the API call happens outside that view, I would have added a <code class="sn-ic">waitForTimeout</code> and moved on — creating a slow, fragile test instead of a correct one.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Playwright uses a persistent WebSocket to communicate with browsers. Chromium uses CDP. Firefox and WebKit use equivalent protocols.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Browser</code> > <code class="sn-ic">BrowserContext</code> > <code class="sn-ic">Page</code> is the hierarchy. One context per test is the rule. Context holds session state; Page is one tab.</span></li>
+            <li><span class="icon">⭐</span><span>Auto-waiting: before every action, Playwright checks 6 actionability conditions and retries until they pass or the timeout is reached.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">@playwright/test</code> includes the runner, fixtures, assertions. <code class="sn-ic">playwright-core</code> is the raw library without any of that.</span></li>
+            <li><span class="icon">⭐</span><span>Never share a BrowserContext between tests. Shared state causes order-dependent failures and breaks parallelism.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

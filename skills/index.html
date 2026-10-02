@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Skills for Testing - VibeTestQ Skills Documentation</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --primary-dark: #5b21b6;
+            --primary-light: #f3f4f6;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 300px;
+            --header-height: 70px;
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Outfit', sans-serif;
+            color: var(--text);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 0.5rem;
+            margin-top: 3rem;
+        }
+
+        h3 {
+            font-size: 1.4rem;
+            color: var(--secondary);
+        }
+
+        p {
+            margin-bottom: 1.2rem;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            color: #d946ef;
+            font-variant-ligatures: none;
+            font-feature-settings: "calt" 0;
+        }
+
+        pre[class*="language-"] {
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: var(--header-height);
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+        }
+
+        .logo img {
+            height: 40px;
+        }
+
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-container input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+        }
+
+        /* Sidebar */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: var(--header-height);
+            overflow-y: auto;
+            z-index: 900;
+        }
+
+        .sidebar-content {
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            padding-top: var(--header-height);
+        }
+
+        .content-area {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        section:not(.active) {
+            display: none;
+        }
+
+        .lead {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        section th {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        section img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* UI Elements */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 15px;
+            border-left: 5px solid;
+        }
+
+        .alert-info {
+            background: #f3f4f6;
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            border-color: #22c55e;
+            color: #166534;
+        }
+
+        .alert-warning {
+            background: #fefce8;
+            border-color: #eab308;
+            color: #a16207;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 5rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .btn-prev {
+            color: var(--text-light);
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-nav:hover {
+            transform: translateY(-1px);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+            padding: 8px;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 800;
+        }
+
+        .desktop-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-logo {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar-overlay.show {
+                display: block;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .desktop-logo {
+                display: none;
+            }
+
+            .mobile-logo {
+                display: block;
+            }
+
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .search-container {
+                display: none;
+            }
+
+            .content-area {
+                padding: 2rem 1rem;
+            }
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        pre[class*="language-"]:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .copy-btn i {
+            margin-right: 4px;
+        }
+
+        pre[class*="language-"] {
+            position: relative;
+        }
+
+        .btn-group.top-nav {
+            margin-top: 0;
+            margin-bottom: 3rem;
+            padding-top: 0;
+            padding-bottom: 2rem;
+            border-top: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .path-highlight {
+            background: linear-gradient(135deg, var(--primary-light), #f8fafc);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+            margin: 1.5rem 0;
+        }
+
+        .path-highlight h4 {
+            color: var(--primary-dark);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .path-code {
+            font-family: 'Fira Code', monospace;
+            background: #f1f5f9;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="logo">
+            <div class="desktop-logo">
+                <img src="../../assets/Title with logo and box.png" alt="VibeTestQ Logo">
+                <span>AI Skills for Testing</span>
+            </div>
+        </div>
+        <div class="mobile-logo">
+            <img src="../../assets/White-Logo.png" alt="VibeTestQ Mobile Logo">
+        </div>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search skills..." id="searchInput">
+        </div>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-content">
+                <div class="nav-section">
+                    <h4>Getting Started</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#intro" class="nav-link active" onclick="showSection('intro')"><i
+                                    class="fas fa-rocket"></i> Introduction</a></li>
+                        <li class="nav-item"><a href="#why-this-matters" class="nav-link"
+                                onclick="showSection('why-this-matters')"><i class="fas fa-lightbulb"></i> Why This Matters</a>
+                        </li>
+                        <li class="nav-item"><a href="#getting-started-today" class="nav-link"
+                                onclick="showSection('getting-started-today')"><i class="fas fa-play"></i> Getting Started Today</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Core Concepts</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#prompt-engineering" class="nav-link"
+                                onclick="showSection('prompt-engineering')"><i class="fas fa-edit"></i> Prompt Engineering</a></li>
+                        <li class="nav-item"><a href="#context-engineering" class="nav-link"
+                                onclick="showSection('context-engineering')"><i class="fas fa-database"></i> Context Engineering</a></li>
+                        <li class="nav-item"><a href="#skill-md" class="nav-link" onclick="showSection('skill-md')"><i
+                                    class="fas fa-file-code"></i> SKILL.md Files</a></li>
+                        <li class="nav-item"><a href="#skill-deployment" class="nav-link"
+                                onclick="showSection('skill-deployment')"><i class="fas fa-upload"></i> Skill Deployment</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Practical Applications</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#skills-manual-testing" class="nav-link"
+                                onclick="showSection('skills-manual-testing')"><i class="fas fa-hand-paper"></i> Manual Testing Skills</a></li>
+                        <li class="nav-item"><a href="#skills-exploratory-mcp" class="nav-link"
+                                onclick="showSection('skills-exploratory-mcp')"><i class="fas fa-search"></i> Exploratory MCP</a></li>
+                        <li class="nav-item"><a href="#skills-automation" class="nav-link"
+                                onclick="showSection('skills-automation')"><i class="fas fa-robot"></i> Automation Skills</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Team & Leadership</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#skills-team-standards" class="nav-link"
+                                onclick="showSection('skills-team-standards')"><i class="fas fa-users"></i> Team Standards</a></li>
+                        <li class="nav-item"><a href="#qa-leads-guide" class="nav-link"
+                                onclick="showSection('qa-leads-guide')"><i class="fas fa-user-tie"></i> QA Leads Guide</a></li>
+                        <li class="nav-item"><a href="#skill-maintenance" class="nav-link"
+                                onclick="showSection('skill-maintenance')"><i class="fas fa-tools"></i> Skill Maintenance</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Reference</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#what-goes-wrong" class="nav-link"
+                                onclick="showSection('what-goes-wrong')"><i class="fas fa-exclamation-triangle"></i> What Goes Wrong</a></li>
+                        <li class="nav-item"><a href="#quick-reference" class="nav-link"
+                                onclick="showSection('quick-reference')"><i class="fas fa-bookmark"></i> Quick Reference</a></li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="content-area">
+                <div class="btn-group top-nav" id="nav-btns-top" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i>
+                        Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <section id="intro" class="active">
+                    <h1>Prompting, Context & Skills</h1>
+                    <p class="lead">A Complete Guide for Testers and Test Automation Engineers</p>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-quote-left"></i>
+                        <div><em>"The quality of your AI output is not determined by how smart the model is. It is determined by how well you set it up to succeed."</em></div>
+                    </div>
+
+                    <h2>What This Guide Teaches</h2>
+                    <p>This guide teaches you three things that every tester working with AI needs to know:</p>
+                    
+                    <div style="display: grid; gap: 1.5rem; margin: 2rem 0;">
+                        <div class="path-highlight">
+                            <h4><i class="fas fa-edit" style="color: var(--primary);"></i> Prompt Engineering</h4>
+                            <p>How to write instructions that get useful, specific output from an AI model every single time. Not sometimes. Every time.</p>
+                        </div>
+                        
+                        <div class="path-highlight">
+                            <h4><i class="fas fa-database" style="color: var(--primary);"></i> Context Engineering</h4>
+                            <p>How to control what the AI knows before it answers. This is the difference between output that is technically correct and output that is correct for your project, your team, and your standards.</p>
+                        </div>
+                        
+                        <div class="path-highlight">
+                            <h4><i class="fas fa-file-code" style="color: var(--primary);"></i> Skills (SKILL.md)</h4>
+                            <p>How to encode your standards once and have them applied automatically across every session, every tool, and every engineer on your team. Zero setup per session. Consistent output forever.</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-success">
+                        <i class="fas fa-lightbulb"></i>
+                        <div><strong>Complete System:</strong> Each concept builds on the previous. Together they form a complete system for using AI in testing work — from writing a single test case to enforcing team-wide quality standards.</div>
+                    </div>
+
+                    <h2>Who This Guide Is For</h2>
+                    
+                    <h3><i class="fas fa-hand-paper"></i> Manual Testers</h3>
+                    <p>Who have tried AI tools and gotten inconsistent results. You want to understand why and fix it permanently. You do not need to write code. Everything in your reading path is written in plain English.</p>
+                    
+                    <h3><i class="fas fa-robot"></i> Automation Engineers</h3>
+                    <p>Who write Playwright, Cypress, Selenium, or similar frameworks. You want AI to produce code that matches your project's conventions without re-explaining them every session.</p>
+                    
+                    <h3><i class="fas fa-user-tie"></i> QA Leads and Managers</h3>
+                    <p>Who want to standardise how their team uses AI tools and make quality standards self-enforcing rather than dependent on individuals.</p>
+
+                    <h2>Reading Paths by Role</h2>
+                    <p>Do not feel obligated to read every chapter. Find your role below and follow that path.</p>
+
+                    <div class="path-highlight">
+                        <h4>Manual Tester Path</h4>
+                        <div class="path-code">00 → 01 → 02 → 03 → 04 → 05 → 06 → 07 → 14</div>
+                        <p>You will finish with a complete skill system for your daily testing work — test cases, bug reports, story reviews, exploratory charters — all produced in your team's format without explaining it every session.</p>
+                    </div>
+
+                    <div class="path-highlight">
+                        <h4>Automation Engineer Path</h4>
+                        <div class="path-code">00 → 01 → 02 → 03 → 04 → 05 → 06 → 08 → 09 → 14</div>  
+                        <p>You will finish with a complete skill system for your automation project — page objects, spec files, fixtures, API tests, debugging — all produced to your project's standards automatically.</p>
+                    </div>
+
+                    <div class="btn-group">
+                        <div></div>
+                        <a href="javascript:void(0)" class="btn-nav btn-next"
+                            onclick="showSection('why-this-matters')">Start Learning <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </section>
+                
+                <div id="docs-content"></div>
+                
+                <div class="btn-group" id="nav-btns-bottom" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i>
+                        Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+                
+                <footer>&copy; 2026 VibeTestQ. All rights reserved.</footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: false, curve: 'linear' },
+            graph: { useMaxWidth: true, htmlLabels: false }
+        });
+
+        const sectionOrder = [
+            'intro', 'why-this-matters', 'prompt-engineering', 'context-engineering', 'skill-md', 
+            'skill-deployment', 'getting-started-today', 'skills-manual-testing', 'skills-exploratory-mcp', 
+            'skills-automation', 'skills-team-standards', 'skill-maintenance', 'qa-leads-guide', 
+            'what-goes-wrong', 'quick-reference'
+        ];
+
+        const sections = {
+            'why-this-matters': '01-why-this-matters.md',
+            'prompt-engineering': '02-prompt-engineering.md',
+            'context-engineering': '03-context-engineering.md',
+            'skill-md': '04-skill-md.md',
+            'skill-deployment': '05-skill-deployment.md',
+            'getting-started-today': '06-getting-started-today.md',
+            'skills-manual-testing': '07-skills-manual-testing.md',
+            'skills-exploratory-mcp': '08-skills-exploratory-mcp.md',
+            'skills-automation': '09-skills-automation.md',
+            'skills-team-standards': '10-skills-team-standards.md',
+            'skill-maintenance': '11-skill-maintenance.md',
+            'qa-leads-guide': '12-qa-leads-guide.md',
+            'what-goes-wrong': '13-what-goes-wrong.md',
+            'quick-reference': '14-quick-reference.md'
+        };
+
+        let currentSection = 'intro';
+
+        async function loadMarkdown(filename) {
+            try {
+                const response = await fetch(filename);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const markdown = await response.text();
+                return marked.parse(markdown);
+            } catch (error) {
+                console.error('Error loading markdown:', error);
+                return `<p>Error loading content from ${filename}</p>`;
+            }
+        }
+
+        async function showSection(sectionId) {
+            // Update active section
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+            // Show intro section immediately
+            if (sectionId === 'intro') {
+                document.getElementById('intro').classList.add('active');
+                document.querySelector(`[onclick="showSection('intro')"]`).classList.add('active');
+                currentSection = sectionId;
+                updateNavButtons();
+                return;
+            }
+
+            // Load and show markdown sections
+            if (sections[sectionId]) {
+                const content = await loadMarkdown(sections[sectionId]);
+                document.getElementById('docs-content').innerHTML = `<section id="${sectionId}" class="active">${content}</section>`;
+                
+                // Add copy buttons to code blocks
+                addCopyButtons();
+                
+                // Highlight syntax
+                Prism.highlightAll();
+                
+                // Render mermaid diagrams
+                mermaid.init(undefined, document.querySelectorAll('.language-mermaid'));
+            }
+
+            // Update active navigation
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+            currentSection = sectionId;
+            updateNavButtons();
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function updateNavButtons() {
+            const currentIndex = sectionOrder.indexOf(currentSection);
+            const prevSection = currentIndex > 0 ? sectionOrder[currentIndex - 1] : null;
+            const nextSection = currentIndex < sectionOrder.length - 1 ? sectionOrder[currentIndex + 1] : null;
+
+            // Update top navigation
+            const topNavBtns = document.getElementById('nav-btns-top');
+            const bottomNavBtns = document.getElementById('nav-btns-bottom');
+
+            if (currentSection === 'intro') {
+                topNavBtns.style.display = 'none';
+                bottomNavBtns.style.display = 'none';
+            } else {
+                topNavBtns.style.display = 'flex';
+                bottomNavBtns.style.display = 'flex';
+
+                // Update previous buttons
+                document.querySelectorAll('.prev-btn').forEach(btn => {
+                    if (prevSection) {
+                        btn.style.visibility = 'visible';
+                        btn.onclick = () => showSection(prevSection);
+                        btn.innerHTML = `<i class="fas fa-arrow-left"></i> Previous`;
+                    } else {
+                        btn.style.visibility = 'hidden';
+                    }
+                });
+
+                // Update next buttons
+                document.querySelectorAll('.next-btn').forEach(btn => {
+                    if (nextSection) {
+                        btn.style.visibility = 'visible';
+                        btn.onclick = () => showSection(nextSection);
+                        btn.innerHTML = `Next <i class="fas fa-arrow-right"></i>`;
+                    } else {
+                        btn.style.visibility = 'hidden';
+                    }
+                });
+            }
+        }
+
+        function addCopyButtons() {
+            document.querySelectorAll('pre[class*="language-"]').forEach(pre => {
+                if (pre.querySelector('.copy-btn')) return; // Skip if button already exists
+                
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.innerHTML = '<i class="fas fa-copy"></i>Copy';
+                button.onclick = () => {
+                    const code = pre.querySelector('code').textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.innerHTML = '<i class="fas fa-check"></i>Copied!';
+                        setTimeout(() => {
+                            button.innerHTML = '<i class="fas fa-copy"></i>Copy';
+                        }, 2000);
+                    });
+                };
+                pre.appendChild(button);
+            });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            const currentIndex = sectionOrder.indexOf(currentSection);
+            
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                showSection(sectionOrder[currentIndex - 1]);
+            } else if (e.key === 'ArrowRight' && currentIndex < sectionOrder.length - 1) {
+                showSection(sectionOrder[currentIndex + 1]);
+            }
+        });
+
+        // Initialize
+        updateNavButtons();
+    </script>
+
+</body>
+</html>

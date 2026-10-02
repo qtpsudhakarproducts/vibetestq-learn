@@ -1,0 +1,911 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">👁️ Part 7 &nbsp;·&nbsp; Chapter 705 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Authentication</span> <span class="w2">—</span> <span class="w3">Advanced</span></h1>
+    <p class="sn-title-sub">API &amp; Network — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers advanced authentication patterns: OAuth2 and SSO flows, MFA handling, token refresh, multi-tenant testing, and concurrent role scenarios. Interviewers ask these questions for senior SDET roles where the candidate is expected to own the auth strategy for a whole team. Questions focus on architectural decisions — when to bypass OAuth in tests, how to handle flows that Playwright cannot automate directly, and how to keep a large multi-role suite stable over time.</span>
+  </div>
+
+
+  <!-- Q705.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.1</span>
+      <h2 class="sn-q-text">What makes OAuth2 and SSO flows difficult to automate?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">OAuth2 and SSO flows involve third-party identity providers — Google, Okta, Auth0, Azure AD. Three specific difficulties:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Third-party pages.</strong> The login page belongs to the identity provider, not your application. Google's login page has CAPTCHAs and bot detection that actively blocks automation. Okta and Auth0 have rate limits on automated login attempts.</p>
+<p class="sn-para"><strong class="k-blue">Anti-automation protections.</strong> Identity providers detect headless browsers from User-Agent strings, fingerprinting, and behaviour patterns. Tests that automate the real OAuth provider are fragile and may be blocked.</p>
+<p class="sn-para"><strong class="k-blue">Terms of service.</strong> Google's ToS explicitly prohibits automating Google account login for testing purposes. Automating against production identity providers risks account lockout.</p>
+<p class="sn-para">The correct strategy for most tests: bypass the OAuth flow entirely and test what your application does after authentication succeeds. Reserve a single test (or none at all) for the actual OAuth redirect.</p>
+    </div>
+  </div>
+
+  <!-- Q705.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.2</span>
+      <h2 class="sn-q-text">What are the four strategies for testing OAuth-protected applications?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Strategy 1 — Backend test endpoint (recommended).</strong> Add a <code class="sn-ic">POST /api/test/auth/session</code> endpoint to the application that is only enabled in test environments. It accepts a user identifier and returns a valid session directly, bypassing the OAuth provider:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-fn">setup</span>(<span class="tc-str">'authenticate via test endpoint'</span>, <span class="tc-kw">async</span> ({ request, context }) =&gt; {
+  <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/test/auth/session'</span>, {
+    data:    { userId: <span class="tc-str">'test-admin-001'</span>, role: <span class="tc-str">'admin'</span> },
+    headers: { <span class="tc-str">'X-Test-Secret'</span>: process.env.TEST_AUTH_SECRET! },
+  });
+  <span class="tc-kw">expect</span>(res.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBeTruthy</span>();
+
+  <span class="tc-cm">// Set the returned cookies on the browser context</span>
+  <span class="tc-kw">const</span> cookies = (<span class="tc-kw">await</span> res.<span class="tc-fn">json</span>()).cookies;
+  <span class="tc-kw">await</span> context.<span class="tc-fn">addCookies</span>(cookies);
+  <span class="tc-kw">await</span> context.<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'playwright/.auth/admin.json'</span> });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Strategy 2 — Mock the OAuth callback.</strong> Intercept the OAuth redirect and simulate the callback your backend would receive from the identity provider:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/auth/google/callback*'</span>, route =&gt;
+  route.<span class="tc-fn">fulfill</span>({
+    status:  <span class="tc-num">302</span>,
+    headers: { <span class="tc-str">'Location'</span>: <span class="tc-str">'/dashboard?session=test_session_token'</span> },
+  })
+);</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Strategy 3 — Fake OAuth server.</strong> Deploy a fake OAuth2 server (Keycloak, <code class="sn-ic">node-oauth2-server</code>) in the test environment. The application's <code class="sn-ic">OAUTH_PROVIDER_URL</code> env var points to the fake server. It accepts any credentials and returns valid tokens.</p>
+<p class="sn-para"><strong class="k-green">Strategy 4 — Real OAuth, one test only.</strong> Store real test account credentials in CI secrets. Automate the full OAuth flow once in <code class="sn-ic">auth.setup.ts</code> and reuse the <code class="sn-ic">storageState</code>. Never automate OAuth in individual tests.</p>
+    </div>
+  </div>
+
+  <!-- Q705.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.3</span>
+      <h2 class="sn-q-text">How do you handle Google OAuth login in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">If you must automate real Google OAuth (Strategy 4 — rarely needed), the approach is:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-fn">setup</span>(<span class="tc-str">'google oauth'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign in with Google'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Google's login page — handle in a new page/popup</span>
+  <span class="tc-kw">const</span> googlePage = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'popup'</span>);
+
+  <span class="tc-kw">await</span> googlePage.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(process.env.GOOGLE_TEST_EMAIL!);
+  <span class="tc-kw">await</span> googlePage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Next'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> googlePage.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(process.env.GOOGLE_TEST_PASS!);
+  <span class="tc-kw">await</span> googlePage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Next'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Wait for redirect back to your app</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'**/dashboard'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'playwright/.auth/google-user.json'</span> });
+});</div>
+      </div>
+<p class="sn-para">Important caveats:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Use a dedicated test Google account, never a personal or production account</span></li>
+<li><span class="icon">💡</span><span>Google may add 2FA prompts or phone verification — these break automation</span></li>
+<li><span class="icon">⚡</span><span>This test may fail periodically due to bot detection; build in retries</span></li>
+<li><span class="icon">🎯</span><span>The saved <code class="sn-ic">storageState</code> typically lasts 1–2 hours before the token expires</span></li>
+</ul>
+<p class="sn-para">For 99% of tests, use Strategy 1 or Strategy 2 instead.</p>
+    </div>
+  </div>
+
+  <!-- Q705.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.4</span>
+      <h2 class="sn-q-text">How do you handle Multi-Factor Authentication (MFA) in tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">MFA is designed to resist automation. Three approaches:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Bypass MFA for test accounts.</strong> In most enterprise identity providers (Okta, Auth0, Azure AD), you can configure specific test accounts or groups to have MFA disabled in the test environment. This is the cleanest solution — the application and auth flow are tested, but the MFA step is skipped.</p>
+<p class="sn-para"><strong class="k-orange">Use TOTP seeds for automated MFA.</strong> Time-based One-Time Password (TOTP) can be automated if you have the seed (the secret that generates the codes). Store the seed in CI secrets and generate the code in the test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> * as OTPAuth <span class="tc-kw">from</span> <span class="tc-str">'otpauth'</span>;
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'authenticate with MFA'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> totp = <span class="tc-kw">new</span> OTPAuth.TOTP({
+    secret: OTPAuth.Secret.<span class="tc-fn">fromBase32</span>(process.env.MFA_SEED!),
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(process.env.USER_EMAIL!);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(process.env.USER_PASS!);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// MFA step</span>
+  <span class="tc-kw">const</span> code = totp.<span class="tc-fn">generate</span>(); <span class="tc-cm">// generates current 6-digit code</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Authentication code'</span>).<span class="tc-fn">fill</span>(code);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Verify'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'playwright/.auth/mfa-user.json'</span> });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Mock the MFA step.</strong> If MFA is validated by your own backend (not a third-party provider), intercept the MFA endpoint and return a success response:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/auth/mfa/verify'</span>, route =&gt;
+  route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span>, body: JSON.<span class="tc-fn">stringify</span>({ verified: <span class="tc-kw">true</span> }) })
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.5</span>
+      <h2 class="sn-q-text">How do you test token refresh behaviour?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Token refresh tests verify that the application correctly requests a new access token when the current one expires, without requiring the user to log in again:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'expired access token triggers silent refresh'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+
+  <span class="tc-cm">// Start with a valid session</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'main-content'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Simulate token expiry by intercepting the next API call</span>
+  <span class="tc-cm">// and returning 401 once, then allowing subsequent calls through</span>
+  <span class="tc-kw">let</span> tokenRefreshed = <span class="tc-kw">false</span>;
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/**'</span>, <span class="tc-kw">async</span> route =&gt; {
+    <span class="tc-kw">if</span> (!tokenRefreshed &amp;&amp; route.<span class="tc-fn">request</span>().<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/data'</span>)) {
+      <span class="tc-cm">// First call — simulate expired token</span>
+      tokenRefreshed = <span class="tc-kw">true</span>;
+      <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">401</span>, body: <span class="tc-str">'{&amp;quot;error&amp;quot;:&amp;quot;token_expired&amp;quot;}'</span> });
+    } <span class="tc-kw">else</span> {
+      <span class="tc-kw">await</span> route.<span class="tc-kw">continue</span>();
+    }
+  });
+
+  <span class="tc-cm">// Trigger an action that requires an API call</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Refresh Data'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// The app should silently refresh and retry — user sees no error</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'main-content'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Also test the refresh endpoint directly via API:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'refresh token returns new access token'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-cm">// Get initial tokens</span>
+  <span class="tc-kw">const</span> loginRes = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+    data: { email: process.env.USER_EMAIL!, password: process.env.USER_PASS! },
+  });
+  <span class="tc-kw">const</span> { accessToken, refreshToken } = <span class="tc-kw">await</span> loginRes.<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// Use the refresh token to get a new access token</span>
+  <span class="tc-kw">const</span> refreshRes = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/refresh'</span>, {
+    data: { refreshToken },
+  });
+  <span class="tc-kw">expect</span>(refreshRes.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+
+  <span class="tc-kw">const</span> { accessToken: newToken } = <span class="tc-kw">await</span> refreshRes.<span class="tc-fn">json</span>();
+  <span class="tc-kw">expect</span>(newToken).<span class="tc-fn">toBeDefined</span>();
+  <span class="tc-kw">expect</span>(newToken).not.<span class="tc-fn">toBe</span>(accessToken); <span class="tc-cm">// Should be a new token</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.6</span>
+      <h2 class="sn-q-text">How do you test that an expired refresh token forces re-login?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When the refresh token itself expires, the application should redirect the user to the login page rather than silently failing:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'expired refresh token redirects to login'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// Simulate both access token and refresh token being expired</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/auth/refresh'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">401</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>({ error: <span class="tc-str">'refresh_token_expired'</span> }),
+    })
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/data'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">401</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>({ error: <span class="tc-str">'access_token_expired'</span> }),
+    })
+  );
+
+  <span class="tc-cm">// Trigger an API call — both token refresh and the retry should fail</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Load Data'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// App should redirect to login</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/login/);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Your session has expired'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.7</span>
+      <h2 class="sn-q-text">How do you test multi-tenant applications where users belong to different organisations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Multi-tenant applications have auth state that includes both the user identity and the tenant context. Each tenant gets its own auth file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/auth.setup.ts</span>
+<span class="tc-kw">const</span> tenants = [
+  { name: <span class="tc-str">'acme'</span>,    email: process.env.ACME_EMAIL!,    pass: process.env.ACME_PASS!    },
+  { name: <span class="tc-str">'globex'</span>,  email: process.env.GLOBEX_EMAIL!,  pass: process.env.GLOBEX_PASS!  },
+  { name: <span class="tc-str">'initech'</span>, email: process.env.INITECH_EMAIL!, pass: process.env.INITECH_PASS! },
+];
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> tenant <span class="tc-kw">of</span> tenants) {
+  <span class="tc-fn">setup</span>(<span class="tc-str">`authenticate ${tenant.name}`</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">`/login?tenant=${tenant.name}`</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(tenant.email);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(tenant.pass);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({
+      path: <span class="tc-str">`playwright/.auth/${tenant.name}.json`</span>,
+    });
+  });
+}</div>
+      </div>
+<p class="sn-para">Tests that verify tenant isolation run as two different tenants in the same test using a dual-context fixture (as shown in Ch57):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'acme data is not visible to globex'</span>, <span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-kw">const</span> acmeCtx  = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({ storageState: <span class="tc-str">'playwright/.auth/acme.json'</span> });
+  <span class="tc-kw">const</span> globexCtx = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({ storageState: <span class="tc-str">'playwright/.auth/globex.json'</span> });
+
+  <span class="tc-kw">const</span> acmePage  = <span class="tc-kw">await</span> acmeCtx.<span class="tc-fn">newPage</span>();
+  <span class="tc-kw">const</span> globexPage = <span class="tc-kw">await</span> globexCtx.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-kw">await</span> acmePage.<span class="tc-fn">goto</span>(<span class="tc-str">'/customers'</span>);
+  <span class="tc-kw">const</span> acmeCustomer = <span class="tc-kw">await</span> acmePage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">textContent</span>();
+
+  <span class="tc-kw">await</span> globexPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/customers'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(globexPage.<span class="tc-fn">getByText</span>(acmeCustomer!)).not.<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-kw">await</span> acmeCtx.<span class="tc-fn">close</span>();
+  <span class="tc-kw">await</span> globexCtx.<span class="tc-fn">close</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.8</span>
+      <h2 class="sn-q-text">How do you test role-based access control (RBAC)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">RBAC tests verify that users can access what they should and cannot access what they should not. Organise by role + resource:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/rbac/admin.spec.ts</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ storageState: <span class="tc-str">'playwright/.auth/admin.json'</span> });
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin RBAC'</span>, () =&gt; {
+  <span class="tc-kw">test</span>(<span class="tc-str">'can access user management'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/admin/users'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'User Management'</span> })).<span class="tc-fn">toBeVisible</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'can delete any record'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">'/api/records/any-id'</span>);
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).not.<span class="tc-fn">toBe</span>(<span class="tc-num">403</span>);
+  });
+});
+
+<span class="tc-cm">// tests/rbac/viewer.spec.ts</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ storageState: <span class="tc-str">'playwright/.auth/viewer.json'</span> });
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Viewer RBAC'</span>, () =&gt; {
+  <span class="tc-kw">test</span>(<span class="tc-str">'cannot access user management'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/admin/users'</span>);
+    <span class="tc-cm">// Should redirect or show access denied — not show the page</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).not.<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'/admin/users'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'receives 403 on delete attempt'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">'/api/records/any-id'</span>);
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">403</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'can view records'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/records'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+});</div>
+      </div>
+<p class="sn-para">Both the UI-level access and the API-level access should be tested. A UI that hides the delete button but whose API accepts delete requests from viewers is a security vulnerability.</p>
+    </div>
+  </div>
+
+  <!-- Q705.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.9</span>
+      <h2 class="sn-q-text">How do you test concurrent sessions across multiple roles?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use separate browser contexts — each context is an independent session:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'admin changes propagate to user view'</span>, <span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-cm">// Admin context</span>
+  <span class="tc-kw">const</span> adminCtx = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+    storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,
+  });
+  <span class="tc-kw">const</span> adminPage = <span class="tc-kw">await</span> adminCtx.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-cm">// User context</span>
+  <span class="tc-kw">const</span> userCtx = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+    storageState: <span class="tc-str">'playwright/.auth/user.json'</span>,
+  });
+  <span class="tc-kw">const</span> userPage = <span class="tc-kw">await</span> userCtx.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-cm">// Admin makes a change</span>
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/products'</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Add Product'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'New Widget'</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(adminPage.<span class="tc-fn">getByText</span>(<span class="tc-str">'New Widget'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// User should see the new product</span>
+  <span class="tc-kw">await</span> userPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/products'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(userPage.<span class="tc-fn">getByText</span>(<span class="tc-str">'New Widget'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-kw">await</span> adminCtx.<span class="tc-fn">close</span>();
+  <span class="tc-kw">await</span> userCtx.<span class="tc-fn">close</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.10</span>
+      <h2 class="sn-q-text">What is the difference between cookies, localStorage, and sessionStorage for auth?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Storage</th><th class="sn-th-blue">Scope</th><th class="sn-th-green">Persists</th><th class="sn-th-purple">Captured by storageState</th></tr></thead>
+          <tbody>
+          <tr><td>Cookies</td><td>Domain + path</td><td>Until expiry or manual clear</td><td class="yes">✅ Yes</td></tr>
+          <tr><td>localStorage</td><td>Origin</td><td>Until manual clear</td><td class="yes">✅ Yes</td></tr>
+          <tr><td>sessionStorage</td><td>Tab</td><td>Until tab closes</td><td class="no">❌ No</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-green">Cookies</strong> are the traditional auth mechanism. Set by the server via <code class="sn-ic">Set-Cookie</code>. Sent automatically on every request to the domain. Can be <code class="sn-ic">HttpOnly</code> (no JS access) and <code class="sn-ic">Secure</code> (HTTPS only). <code class="sn-ic">storageState</code> captures all cookies.</p>
+<p class="sn-para"><strong class="k-green">localStorage</strong> is used by SPAs that store JWT tokens client-side. Not sent automatically — JavaScript reads it and adds it to request headers. <code class="sn-ic">storageState</code> captures all <code class="sn-ic">localStorage</code> values.</p>
+<p class="sn-para"><strong class="k-green">sessionStorage</strong> is tab-scoped. Cleared when the tab closes. <code class="sn-ic">storageState</code> cannot capture it — inject it manually via <code class="sn-ic">page.evaluate()</code> before each test.</p>
+    </div>
+  </div>
+
+  <!-- Q705.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.11</span>
+      <h2 class="sn-q-text">How do you test that security headers are set on auth responses?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Security headers on auth responses (Set-Cookie, Content-Security-Policy, HSTS) are a security requirement:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'login sets secure cookie attributes'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+    data: { email: <span class="tc-str">'user@test.com'</span>, password: <span class="tc-str">'pass123'</span> },
+  });
+
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+  <span class="tc-kw">const</span> setCookie = response.<span class="tc-fn">headers</span>()[<span class="tc-str">'set-cookie'</span>];
+  <span class="tc-kw">expect</span>(setCookie).<span class="tc-fn">toBeDefined</span>();
+
+  <span class="tc-cm">// Security attributes</span>
+  <span class="tc-kw">expect</span>(setCookie).<span class="tc-fn">toContain</span>(<span class="tc-str">'HttpOnly'</span>);     <span class="tc-cm">// JS cannot read the cookie</span>
+  <span class="tc-kw">expect</span>(setCookie).<span class="tc-fn">toContain</span>(<span class="tc-str">'Secure'</span>);       <span class="tc-cm">// HTTPS only</span>
+  <span class="tc-kw">expect</span>(setCookie).<span class="tc-fn">toMatch</span>(/SameSite=Lax|SameSite=Strict/); <span class="tc-cm">// CSRF protection</span>
+
+  <span class="tc-cm">// No long-lived session without explicit &amp;quot;remember me&amp;quot;</span>
+  <span class="tc-kw">expect</span>(setCookie).not.<span class="tc-fn">toContain</span>(<span class="tc-str">'Max-Age='</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'auth endpoints include security headers'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/user/me'</span>, {
+    headers: { <span class="tc-str">'Authorization'</span>: <span class="tc-str">`Bearer ${validToken}`</span> },
+  });
+
+  <span class="tc-kw">const</span> headers = response.<span class="tc-fn">headers</span>();
+  <span class="tc-kw">expect</span>(headers[<span class="tc-str">'x-content-type-options'</span>]).<span class="tc-fn">toBe</span>(<span class="tc-str">'nosniff'</span>);
+  <span class="tc-kw">expect</span>(headers[<span class="tc-str">'x-frame-options'</span>]).<span class="tc-fn">toBeDefined</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.12</span>
+      <h2 class="sn-q-text">How do you test logout?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Logout tests verify two things: the UI reflects the logged-out state, and the session is actually invalidated server-side:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'logout clears session and redirects'</span>, <span class="tc-kw">async</span> ({ page, request }) =&gt; {
+
+  <span class="tc-cm">// Start authenticated</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'user-menu'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Get session token before logout (for API check)</span>
+  <span class="tc-kw">const</span> cookies = <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">cookies</span>();
+  <span class="tc-kw">const</span> sessionCookie = cookies.<span class="tc-fn">find</span>(c =&gt; c.name === <span class="tc-str">'session_id'</span>);
+
+  <span class="tc-cm">// Logout</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'user-menu'</span>).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'menuitem'</span>, { name: <span class="tc-str">'Sign Out'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// UI should redirect to login</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/login/);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'user-menu'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Session cookie should be cleared in browser</span>
+  <span class="tc-kw">const</span> postLogoutCookies = <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">cookies</span>();
+  <span class="tc-kw">expect</span>(postLogoutCookies.<span class="tc-fn">find</span>(c =&gt; c.name === <span class="tc-str">'session_id'</span>)).<span class="tc-fn">toBeUndefined</span>();
+
+  <span class="tc-cm">// API should reject the old session token</span>
+  <span class="tc-kw">const</span> apiResponse = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/user/me'</span>, {
+    headers: { <span class="tc-str">'Cookie'</span>: <span class="tc-str">`session_id=${sessionCookie?.value}`</span> },
+  });
+  <span class="tc-kw">expect</span>(apiResponse.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">401</span>);
+});</div>
+      </div>
+<p class="sn-para">The API-level check is critical — a logout that only clears the browser cookie but keeps the server-side session alive is a security vulnerability.</p>
+    </div>
+  </div>
+
+  <!-- Q705.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.13</span>
+      <h2 class="sn-q-text">How do you handle "Remember Me" functionality in tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Remember Me'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'without remember me — session cookie has no Max-Age'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+      data: { email: <span class="tc-str">'user@test.com'</span>, password: <span class="tc-str">'pass'</span>, rememberMe: <span class="tc-kw">false</span> },
+    });
+    <span class="tc-kw">const</span> setCookie = response.<span class="tc-fn">headers</span>()[<span class="tc-str">'set-cookie'</span>];
+    <span class="tc-cm">// Session cookie — no Max-Age or Expires means browser-session scope</span>
+    <span class="tc-kw">expect</span>(setCookie).not.<span class="tc-fn">toMatch</span>(/Max-Age|Expires/);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'with remember me — cookie has long Max-Age'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+      data: { email: <span class="tc-str">'user@test.com'</span>, password: <span class="tc-str">'pass'</span>, rememberMe: <span class="tc-kw">true</span> },
+    });
+    <span class="tc-kw">const</span> setCookie = response.<span class="tc-fn">headers</span>()[<span class="tc-str">'set-cookie'</span>];
+    <span class="tc-cm">// Persistent cookie — should last days or weeks</span>
+    <span class="tc-kw">expect</span>(setCookie).<span class="tc-fn">toMatch</span>(/Max-Age=\d+/);
+    <span class="tc-kw">const</span> maxAge = <span class="tc-fn">parseInt</span>(setCookie.<span class="tc-fn">match</span>(/Max-Age=(\d+)/)![<span class="tc-num">1</span>]);
+    <span class="tc-kw">expect</span>(maxAge).<span class="tc-fn">toBeGreaterThan</span>(<span class="tc-num">86400</span>); <span class="tc-cm">// At least 1 day</span>
+  });
+
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.14</span>
+      <h2 class="sn-q-text">How do you test CSRF protection on state-changing endpoints?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">CSRF (Cross-Site Request Forgery) protection requires state-changing requests to include a valid CSRF token. Tests verify the protection is active:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'state change without CSRF token is rejected'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-cm">// First, authenticate</span>
+  <span class="tc-kw">const</span> loginRes = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+    data: { email: <span class="tc-str">'user@test.com'</span>, password: <span class="tc-str">'pass123'</span> },
+  });
+  <span class="tc-kw">expect</span>(loginRes.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+
+  <span class="tc-cm">// Attempt a state-changing request WITHOUT the CSRF token</span>
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users/profile'</span>, {
+    data: { name: <span class="tc-str">'Hacker'</span> },
+    <span class="tc-cm">// Deliberately omitting the X-CSRF-Token header</span>
+  });
+
+  <span class="tc-cm">// Should be rejected</span>
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">403</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'state change with valid CSRF token succeeds'</span>, <span class="tc-kw">async</span> ({ page, request }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/profile'</span>);
+
+  <span class="tc-cm">// Get the CSRF token from the page (meta tag or cookie)</span>
+  <span class="tc-kw">const</span> csrfToken = <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(
+    () =&gt; document.<span class="tc-fn">querySelector</span>(<span class="tc-str">'meta[name=&amp;quot;csrf-token&amp;quot;]'</span>)?.<span class="tc-fn">getAttribute</span>(<span class="tc-str">'content'</span>)
+  );
+
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users/profile'</span>, {
+    data:    { name: <span class="tc-str">'Valid Update'</span> },
+    headers: { <span class="tc-str">'X-CSRF-Token'</span>: csrfToken! },
+  });
+
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.15</span>
+      <h2 class="sn-q-text">How do you test auth state when tests run in parallel?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Parallel tests share a worker but each gets an independent browser context. Auth files are read-only during the test run — they are written once by the setup project and then only read.</p>
+      </div>
+<p class="sn-para">Problems arise when tests modify the auth state:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Problem — test modifies the shared auth state</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'change password'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/settings'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'New password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'newpass456'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-cm">// This invalidates the storageState for all parallel workers!</span>
+});</div>
+      </div>
+<p class="sn-para">Solutions:</p>
+<p class="sn-para"><strong class="k-red">Use separate test accounts for destructive tests.</strong> Any test that changes passwords, revokes tokens, or alters auth state should use a dedicated account that is not shared with the suite.</p>
+<p class="sn-para"><strong class="k-red">Run destructive auth tests serially.</strong> Add <code class="sn-ic">test.describe.configure({ mode: 'serial' })</code> to tests that modify auth state.</p>
+<p class="sn-para"><strong class="k-red">Reset via API in <code class="sn-ic">afterEach</code>.</strong> If a test must modify auth state, restore it via API before the test ends.</p>
+    </div>
+  </div>
+
+  <!-- Q705.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.16</span>
+      <h2 class="sn-q-text">Write a complete setup for an application with OAuth2 bypass using a test endpoint.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/auth.setup.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as setup, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">const</span> roles = [<span class="tc-str">'admin'</span>, <span class="tc-str">'manager'</span>, <span class="tc-str">'viewer'</span>] as <span class="tc-kw">const</span>;
+<span class="tc-kw">type</span> Role = <span class="tc-kw">typeof</span> roles[<span class="tc-kw">number</span>];
+
+<span class="tc-kw">const</span> authFile = (role: Role) =&gt;
+  path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">`../playwright/.auth/${role}.json`</span>);
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> role <span class="tc-kw">of</span> roles) {
+  <span class="tc-fn">setup</span>(<span class="tc-str">`authenticate ${role}`</span>, <span class="tc-kw">async</span> ({ request, context }) =&gt; {
+    <span class="tc-cm">// Use backend test endpoint to bypass OAuth</span>
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/test/auth/create-session'</span>, {
+      data: {
+        role,
+        email: process.env[<span class="tc-str">`${role.toUpperCase()}_EMAIL`</span>],
+      },
+      headers: {
+        <span class="tc-str">'X-Test-Secret'</span>: process.env.TEST_AUTH_SECRET!,
+      },
+    });
+
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+    <span class="tc-kw">const</span> { cookies } = <span class="tc-kw">await</span> res.<span class="tc-fn">json</span>();
+
+    <span class="tc-cm">// Set session cookies on the browser context</span>
+    <span class="tc-kw">await</span> context.<span class="tc-fn">addCookies</span>(cookies.<span class="tc-fn">map</span>((c: <span class="tc-kw">any</span>) =&gt; ({
+      name:   c.name,
+      value:  c.value,
+      domain: <span class="tc-kw">new</span> URL(process.env.BASE_URL!).hostname,
+      path:   <span class="tc-str">'/'</span>,
+    })));
+
+    <span class="tc-cm">// Verify the session is valid before saving</span>
+    <span class="tc-kw">const</span> verifyPage = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+    <span class="tc-kw">await</span> verifyPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(verifyPage.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'user-menu'</span>)).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> verifyPage.<span class="tc-fn">close</span>();
+
+    <span class="tc-cm">// Save the auth state</span>
+    <span class="tc-kw">await</span> context.<span class="tc-fn">storageState</span>({ path: <span class="tc-fn">authFile</span>(role) });
+  });
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q705.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.17</span>
+      <h2 class="sn-q-text">How do you detect and handle session expiry mid-suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a long-running suite outlasts the session lifetime, tests start failing with redirects to the login page rather than actual feature failures. Detect this pattern and handle it:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/index.ts — add a session guard to the page fixture</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ page: Page }&gt;({
+  page: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-cm">// Before each test, verify the session is still valid</span>
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> page.request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/auth/verify'</span>);
+    <span class="tc-kw">if</span> (res.<span class="tc-fn">status</span>() === <span class="tc-num">401</span>) {
+      <span class="tc-cm">// Re-run auth setup for this worker</span>
+      <span class="tc-kw">await</span> <span class="tc-fn">refreshAuth</span>(page);
+    }
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+  },
+});
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">refreshAuth</span>(page: Page) {
+  <span class="tc-cm">// Re-authenticate via the fastest available method</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(process.env.USER_EMAIL!);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(process.env.USER_PASS!);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+}</div>
+      </div>
+<p class="sn-para">The better solution is to ensure test-environment sessions last longer than any CI run. A 24-hour session TTL handles even overnight test runs.</p>
+    </div>
+  </div>
+
+  <!-- Q705.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q705.18</span>
+      <h2 class="sn-q-text">In your project, how did you handle authentication for a multi-role OrangeHRM suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, authentication was implemented as part of Level 3 (Fixtures and Shared State) and extended through Levels 4–8.</p>
+      </div>
+<p class="sn-para">We have two roles: Admin and ESS (Employee Self-Service). The setup project (<code class="sn-ic">tests/auth.setup.ts</code>) runs two <code class="sn-ic">setup()</code> calls — one per role. Each call performs a full UI login, waits for the dashboard navigation to confirm the session is fully established, and writes to <code class="sn-ic">playwright/.auth/admin.json</code> and <code class="sn-ic">playwright/.auth/ess.json</code>.</p>
+<p class="sn-para">The Admin role is used for all PIM, Admin, and configuration tests. The ESS role is used for Leave module tests where an employee must apply for leave themselves — admin cannot submit leave on behalf of an employee in OrangeHRM.</p>
+<p class="sn-para">For the multi-role isolation challenge: the Leave module tests need to verify that a leave request submitted by an ESS user is visible in the Admin view. We handle this with a dual-context fixture: the ESS context submits the request, then the Admin context navigates to the leave management page and verifies it appears. Both contexts run within the same test without logging in or out.</p>
+<p class="sn-para">The main lesson from implementing this: the order of operations in the setup test matters. We initially saved <code class="sn-ic">storageState</code> immediately after <code class="sn-ic">waitForURL</code>. On slow CI machines, this saved incomplete state. Moving the save call to after asserting a navigation element (<code class="sn-ic">await expect(nav).toBeVisible()</code>) made the auth setup reliable across all CI environments.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>OAuth2 and SSO flows should be bypassed in most tests using a backend test endpoint, mocked OAuth callback, or fake OAuth server — not automated against real identity providers.</span></li>
+            <li><span class="icon">⭐</span><span>MFA can be handled by disabling it for test accounts in the identity provider config, automating TOTP using a seed, or mocking the MFA verification endpoint.</span></li>
+            <li><span class="icon">⭐</span><span>Token refresh tests use <code class="sn-ic">page.route()</code> to simulate a 401 on the first API call, then verify the app silently retries after refreshing the token.</span></li>
+            <li><span class="icon">⭐</span><span>Multi-tenant tests use one auth file per tenant; tenant isolation tests use two separate browser contexts (one per tenant) in a single test.</span></li>
+            <li><span class="icon">⭐</span><span>RBAC tests must cover both UI access (does the page load?) and API access (does the endpoint return 403?) — UI-only RBAC testing misses backend security gaps.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Security header tests run against the API using the <code class="sn-ic">request</code> fixture: verify <code class="sn-ic">HttpOnly</code>, <code class="sn-ic">Secure</code>, <code class="sn-ic">SameSite</code> on session cookies.</span></li>
+            <li><span class="icon">⭐</span><span>Logout tests must verify both browser-side cookie clearing and server-side session invalidation.</span></li>
+            <li><span class="icon">⭐</span><span>Destructive auth tests (password changes, token revocation) must use dedicated accounts or be isolated from the shared auth state used by the suite.</span></li>
+            <li><span class="icon">⭐</span><span>Session expiry mid-suite is prevented by configuring test-environment session TTL to exceed the longest CI run (typically 24 hours).</span></li>
+            <li><span class="icon">⭐</span><span>The most common advanced auth pattern: two browser contexts in one test, each loaded with a different role's <code class="sn-ic">storageState</code>, verifying cross-role interactions.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

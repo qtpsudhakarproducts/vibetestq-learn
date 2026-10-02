@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Fixtures & Hooks Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive Playwright fixtures and hooks MCQ challenges. Master test.extend, yield teardown, scope, auto-fixtures and storageState with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #d97706;
+            --primary-dark: #92400e;
+            --primary-light: #fffbeb;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #fcd34d; transition: all 0.3s; }
+        .score-pill.bump { background: #fef3c7; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #d97706, #f59e0b); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #fffbeb; color: #92400e; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #b45309; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #fcd34d; background: #fef3c7; color: #92400e; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #fcd34d; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">Fixtures &amp; Hooks Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Fixture scope</span>             <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. yield teardown</span>            <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. beforeAll vs beforeEach</span>   <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. request fixture</span>           <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. storageState fixture</span>      <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. test.use() vs extend()</span>    <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. globalSetup config</span>        <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Fixture dependency chain</span>  <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. Worker-scoped fixture</span>     <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. Multiple built-in fixtures</span><div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. Overriding built-ins</span>     <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. Auto-fixtures</span>            <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-plug"></i> Playwright Fixtures &amp; Hooks</h1>
+        <p>12 challenges covering fixture scope, teardown, auto-fixtures, storageState and extending Playwright's test model.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Scope</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the difference between test and worker fixture scope?</div>
+            <div class="ch-desc">You create a custom fixture. What is the key difference between <code>scope: 'test'</code> and <code>scope: 'worker'</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">const test = base.extend({
+  myDB: [async ({}, use) => {
+    const db = await createDB();
+    await use(db);
+    await db.close();
+  }, { scope: 'worker' }]  // or scope: 'test'
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> 'test' scope is faster; 'worker' scope is more isolated</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> 'test' scope creates a new instance per test; 'worker' scope shares one instance across all tests in a worker</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> 'worker' scope creates a new instance per test file; 'test' scope shares across files</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> There is no difference — scope is just a label</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — test = new per test; worker = shared per worker</strong><br><code>scope: 'test'</code> (the default): setup runs before each test, teardown runs after — completely isolated. <code>scope: 'worker'</code>: setup runs once when the worker starts, shared across all tests in that worker, teardown runs when the worker exits. Use worker scope for expensive resources (DB connections, auth sessions) that are safe to share. Use test scope for anything that must be fresh per test (page state, data).</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint">Test scope = fresh isolation every time. Worker scope = shared resource, initialized once per parallel worker process.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">yield</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does yield separate in a fixture function?</div>
+            <div class="ch-desc">In this fixture, what does the <code>yield</code> keyword separate, and when does the code after yield run?</div>
+            <div class="code-block"><pre><code class="language-typescript">const test = base.extend({
+  loginPage: async ({ page }, use) => {
+    const lp = new LoginPage(page);
+    await lp.goto();            // SETUP
+
+    await use(lp);              // TEST RUNS HERE
+
+    await page.close();         // TEARDOWN — when does this run?
+  }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> Teardown runs only if the test passes</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> Teardown always runs after the test, regardless of pass or fail</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> Teardown runs before the next test starts</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> yield is not valid in fixture functions</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: B — teardown always runs (pass or fail)</strong><br>In a fixture function, code before <code>await use()</code> is the setup phase. The test executes during <code>await use(value)</code>. Code after <code>await use()</code> is the teardown phase — it <strong>always runs</strong>, even if the test throws an error or assertion fails. This is guaranteed cleanup, similar to a <code>try/finally</code> pattern. This makes fixtures much safer than <code>beforeEach/afterEach</code> pairs where <code>afterEach</code> might not run if setup fails mid-way.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint"><code>await use()</code> is the dividing line: before = setup, after = teardown. The teardown is guaranteed to run regardless of test outcome — like a <code>finally</code> block.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge beginner">Beginner</span><span class="topic-badge">Hooks</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the scope of test.beforeAll()?</div>
+            <div class="ch-desc">You place <code>test.beforeAll()</code> inside a <code>test.describe()</code> block. How many times does it run?</div>
+            <div class="code-block"><pre><code class="language-typescript">test.describe('Employee Tests', () => {
+  test.beforeAll(async () => {
+    console.log('beforeAll runs');
+  });
+
+  test('test one', async ({ page }) => { /* ... */ });
+  test('test two', async ({ page }) => { /* ... */ });
+  test('test three', async ({ page }) => { /* ... */ });
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> 3 times — once before each test</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> Once — before the first test in the describe block</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> Once per test file, regardless of describe blocks</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> Never — beforeAll is not valid inside describe</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — once before the describe block's tests</strong><br><code>test.beforeAll</code> runs once before the first test in its containing describe block (or file if at the top level). <code>test.beforeEach</code> runs before every individual test. Nesting a <code>beforeAll</code> inside a <code>describe</code> scopes it to that describe block — it does not affect tests in sibling or parent describe blocks.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint"><code>beforeAll</code> = "All" = runs once for the whole group. <code>beforeEach</code> = "Each" = runs for every test individually.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge beginner">Beginner</span><span class="topic-badge">request fixture</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the request built-in fixture?</div>
+            <div class="ch-desc">What type does the built-in <code>request</code> fixture provide, and what is it used for?</div>
+            <div class="code-block"><pre><code class="language-typescript">test('create user via API', async ({ request }) => {
+  const response = await request.post('/api/users', {
+    data: { name: 'Alice', role: 'tester' }
+  });
+  expect(response.status()).toBe(201);
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> A Playwright Page object for making browser requests</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> An APIRequestContext for making HTTP requests without a browser</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> A Node.js http module instance</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> A WebSocket connection object</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — APIRequestContext without a browser</strong><br>The built-in <code>request</code> fixture is an <code>APIRequestContext</code> instance — it makes HTTP requests directly without launching a browser. It supports all HTTP methods: <code>request.get()</code>, <code>request.post()</code>, <code>request.put()</code>, <code>request.delete()</code>, etc. It handles JSON serialization, cookies, and headers. Ideal for setting up test data via API before UI tests, or for pure API testing scenarios.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint">The <code>request</code> fixture makes HTTP calls <em>without a browser</em> — it's an API client, not a browser page. Think of it as Playwright's built-in axios/fetch wrapper for tests.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge advanced">Advanced</span><span class="topic-badge">storageState</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does storageState save and restore?</div>
+            <div class="ch-desc">You use storageState to speed up authenticated tests. What does it capture?</div>
+            <div class="code-block"><pre><code class="language-typescript">// In globalSetup: login once and save
+await page.context().storageState({ path: 'auth.json' });
+
+// In tests: restore session
+test.use({ storageState: 'auth.json' });</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> Only cookies from the current domain</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> Cookies and localStorage (origin storage) for all origins</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> The full browser session including tab history</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> User preferences stored in IndexedDB</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: B — cookies + localStorage for all origins</strong><br><code>storageState</code> saves cookies and <code>localStorage</code> entries from all origins into a JSON file. When restored via <code>test.use({ storageState })</code>, the browser context is pre-loaded with those values — so tests start already "logged in" without needing to go through the login UI every time. This is the standard Playwright pattern for authentication. Tab history, IndexedDB, and sessionStorage are not included.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint"><code>storageState</code> = cookies + localStorage = what keeps you "logged in" in most web apps. It's saved to a JSON file and loaded for each test context.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">test.use()</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the difference between test.use() and test.extend()?</div>
+            <div class="ch-desc">When should you use <code>test.use()</code> vs <code>test.extend()</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> test.use() creates new fixtures; test.extend() overrides config values</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> test.use() overrides existing fixture values locally; test.extend() creates new fixtures or override built-ins with custom implementation</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> They are identical — test.use() is an alias for test.extend()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> test.extend() is deprecated; always use test.use()</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — use() overrides locally; extend() adds/replaces fixture implementations</strong><br><code>test.use({ storageState: 'auth.json' })</code> — overrides a built-in fixture option <em>for the current test or describe scope</em>. It's a scoped configuration override. <code>test.extend({...})</code> — creates a new fixture function or replaces a built-in with a full custom implementation. <code>extend</code> returns a new test object; <code>use</code> mutates the scope's configuration inline.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint"><code>test.use()</code> is like a scoped config override. <code>test.extend()</code> is like adding or replacing a fixture function and returns a new test object.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge advanced">Advanced</span><span class="topic-badge">globalSetup</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When does globalSetup run?</div>
+            <div class="ch-desc">You configure <code>globalSetup: './global-setup.ts'</code> in <code>playwright.config.ts</code>. When does it execute?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> Before each test file</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">B</span> Before each worker process starts</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">C</span> Once before all tests in the entire run</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> In parallel with the first test file</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: C — once before all tests</strong><br><code>globalSetup</code> runs exactly <strong>once</strong> before the entire test suite starts. Use it for one-time operations: seeding a database, starting external services, generating auth tokens. The corresponding <code>globalTeardown</code> runs once after all tests finish. Values cannot be passed directly to tests — use environment variables or files (like <code>auth.json</code>) to share data from globalSetup to individual tests or fixtures.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint">"Global" = the entire test run. <code>globalSetup</code> runs once before everything. Use it for suite-wide initialization like seeding test data or creating auth sessions.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge advanced">Advanced</span><span class="topic-badge">Dependency Chain</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Can a fixture depend on another custom fixture?</div>
+            <div class="ch-desc">Fixture B depends on fixture A. Does Playwright resolve this automatically?</div>
+            <div class="code-block"><pre><code class="language-typescript">const test = base.extend({
+  authToken: async ({}, use) => {
+    const token = await getAuthToken();
+    await use(token);
+  },
+  apiClient: async ({ authToken }, use) => {
+    const client = new APIClient(authToken);  // depends on authToken
+    await use(client);
+  }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> No — you must manually initialize authToken before apiClient</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> Yes — Playwright automatically resolves the dependency chain</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> Only built-in fixtures can depend on other built-in fixtures</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> This causes a circular dependency error</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: B — Playwright resolves dependency chains automatically</strong><br>Playwright's fixture engine performs dependency injection automatically. When <code>apiClient</code> declares <code>authToken</code> in its parameter list, Playwright ensures <code>authToken</code> is set up first, then passes it to <code>apiClient</code>. Chains can be multiple levels deep. This composability is a core strength of Playwright fixtures over manual <code>beforeEach</code> ordering.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint">Playwright uses dependency injection. If fixture B lists fixture A in its parameters, Playwright sets up A first, then B. Chains resolve automatically.</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Worker Scope</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How many instances does a worker-scoped fixture create per parallel run?</div>
+            <div class="ch-desc">You run Playwright with <code>workers: 3</code> and have a worker-scoped fixture. How many instances are created?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> One — shared across all 3 workers</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> Three — one per worker process</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> One per test across all workers</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> Zero — worker-scoped fixtures don't create instances</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — one per worker process</strong><br>Worker-scoped fixtures create exactly <strong>one instance per Playwright worker process</strong>. With 3 workers, you get 3 separate instances — each worker has its own copy. Tests within the same worker share that worker's instance. This makes worker-scoped fixtures good for expensive resources that can be safely shared within a worker but need isolation between parallel workers (e.g., separate DB connections).</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">Worker scope = one instance per worker process. Multiple workers = multiple instances. Each worker is isolated from others.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge beginner">Beginner</span><span class="topic-badge">Built-in Fixtures</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Can you use multiple built-in fixtures in one test?</div>
+            <div class="ch-desc">Which of these is valid and correct in a single Playwright test?</div>
+            <div class="code-block"><pre><code class="language-typescript">test('multi-fixture test', async ({ page, request, browserName }) => {
+  // Using page, request AND browserName together
+  if (browserName === 'firefox') {
+    await request.get('/api/health');
+  }
+  await page.goto('/dashboard');
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> Invalid — you can only use one fixture per test</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> Valid — you can inject multiple fixtures in one destructured parameter</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> Valid, but page and request cannot be used in the same test</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> Invalid — browserName is not a built-in fixture</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — multiple fixtures in one destructured object</strong><br>Playwright injects fixtures via object destructuring. You can request any combination of built-in fixtures: <code>page</code> (browser page), <code>request</code> (API request context), <code>browserName</code> (current browser name), <code>context</code> (browser context), <code>browser</code> (browser instance), <code>baseURL</code> (config base URL), and more. All built-in fixtures are available simultaneously in any test.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">Fixtures are injected through destructuring — list as many as you need: <code>{ page, request, browserName }</code>. Playwright resolves each independently.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge advanced">Advanced</span><span class="topic-badge">Override Built-ins</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Can you override the built-in page fixture?</div>
+            <div class="ch-desc">You want every test page to automatically start logged in. Is it possible to override the built-in <code>page</code> fixture?</div>
+            <div class="code-block"><pre><code class="language-typescript">const test = base.extend({
+  page: async ({ page }, use) => {
+    await page.goto('/login');
+    await page.fill('#username', 'admin');
+    await page.fill('#password', 'secret');
+    await page.click('[type="submit"]');
+    await use(page);  // tests receive pre-logged-in page
+  }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> No — built-in fixtures are sealed and cannot be overridden</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> Yes — test.extend() can wrap or replace any built-in fixture</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> Yes, but only the context fixture can be overridden, not page</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> No — you must use beforeEach to customize the page</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — test.extend() can override any built-in</strong><br><code>test.extend()</code> lets you override any built-in Playwright fixture including <code>page</code>, <code>context</code>, and <code>browser</code>. In the override, you receive the original fixture as a parameter (the base <code>page</code>) and can customize it before calling <code>await use(page)</code>. This is more maintainable than <code>beforeEach</code> because the override is composable, reusable across test files, and guaranteed to clean up.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint">You can override any built-in by using the same name in <code>test.extend()</code>. The original fixture is injected as a parameter for you to wrap.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge advanced">Advanced</span><span class="topic-badge">Auto-fixtures</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does auto: true do for a fixture?</div>
+            <div class="ch-desc">A fixture is defined with <code>{ auto: true }</code>. How does this change its behaviour?</div>
+            <div class="code-block"><pre><code class="language-typescript">const test = base.extend({
+  auditLogger: [async ({ page }, use) => {
+    await page.on('console', msg => log(msg));
+    await use();
+  }, { auto: true }]  // ← auto
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> The fixture automatically cleans up without a yield</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> The fixture runs for every test even if the test doesn't declare it as a parameter</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> The fixture is automatically added to playwright.config.ts</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> The fixture resolves its dependencies automatically</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — runs for every test without needing to be declared</strong><br>Auto-fixtures (<code>auto: true</code>) are activated for every test in scope without the test function needing to request them as parameters. This is useful for cross-cutting concerns: logging, performance monitoring, screenshot on failure, accessibility auditing. The test code stays clean (no extra parameters), but the fixture runs automatically. Without <code>auto: true</code>, a fixture only runs when a test declares it.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint">Auto-fixture = "opt-out" instead of "opt-in." It runs for every test automatically — no need to list it in the test's parameters.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const STORAGE_KEY = 'vtq-pw-fixtures';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

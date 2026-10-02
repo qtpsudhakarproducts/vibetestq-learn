@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: Async JavaScript & Node.js - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --secondary: #22c55e;
+    --accent: #f97316;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.logo img {
+    height: 50px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.assessment-title {
+    text-align: right;
+}
+
+.assessment-title h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.assessment-title p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.question-number {
+    color: var(--primary);
+    min-width: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background-color: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.option input {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.option.correct {
+    border-color: var(--secondary);
+    background-color: #ecfdf5;
+}
+
+.option.incorrect {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.question.unanswered {
+    border: 2px solid var(--danger) !important;
+    background-color: #fef2f2 !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.result-section {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.name-input-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.name-input-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.name-input-section input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: none;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary);
+}
+
+@media print {
+
+    .btn,
+    .name-input-section {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .explanation,
+    .result-section {
+        display: block !important;
+    }
+
+    #printed-name {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+}
+
+#printed-name {
+    display: none;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #e11d48;
+    font-family: monospace;
+}
+
+pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo"></div>
+            <a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i> Back to Assessments Home</a>
+            <div class="assessment-title">
+                <h1>Assessment</h1>
+                <p>Loading topics...</p>
+            </div>
+        </header>
+
+        <div id="result-container" class="card result-section">
+            <div id="printed-name"></div>
+            <h2>Assessment Completed!</h2>
+            <div id="score-display" class="score-display">0 / 0</div>
+            <p id="feedback-text" class="feedback-text"></p>
+            <div class="name-input-section">
+                <label for="student-name">Enter your name for the report:</label>
+                <input type="text" id="student-name" placeholder="Your Full Name"><br>
+                <button class="btn btn-success" onclick="preparePrint()"><i class="fas fa-print"></i> Print
+                    Result</button>
+            </div>
+        </div>
+
+        <div id="quiz-container">
+            <div class="card">
+                <form id="quiz-form"></form>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-light); font-size: 0.8rem;">
+            &copy; 2026 VibeTestQ. All rights reserved.
+        </footer>
+    </div>
+
+    <script type="text/plain" id="assessment-markdown">
+# Assessment: Async JavaScript & Node.js MCQ
+
+**Total Questions:** 30  
+**Time:** 30 minutes  
+**Pass Mark:** 60%  
+**Topics:** Async/Await, Promises, Event Loop, Node.js Modules
+
+---
+
+## Questions
+
+### Question 1
+Which statement best describes the JavaScript event loop?
+
+A) It processes the call stack, then drains microtasks before macrotasks.
+B) It runs setTimeout callbacks before resolved promises.
+C) It blocks the thread until all async work finishes.
+D) It only schedules timers, not IO callbacks.
+
+**Answer: A) It processes the call stack, then drains microtasks before macrotasks.**
+
+**Explanation:** Microtasks (like resolved promises) run before macrotasks (like timers).
+
+---
+
+### Question 2
+What is a best practice related to the event loop?
+
+A) Use tight while loops for polling.
+B) Block the main thread during CPU-heavy work.
+C) Offload CPU-heavy tasks to worker threads or separate processes.
+D) Assume timers are precise for ordering logic.
+
+**Answer: C) Offload CPU-heavy tasks to worker threads or separate processes.**
+
+**Explanation:** Long CPU tasks block the event loop and delay all async callbacks.
+
+---
+
+### Question 3
+Which pitfall should you avoid with the event loop?
+
+A) Assuming setTimeout(0) runs before promise microtasks.
+B) Using async IO operations.
+C) Using microtasks to schedule small work.
+D) Batching independent async tasks.
+
+**Answer: A) Assuming setTimeout(0) runs before promise microtasks.**
+
+**Explanation:** Microtasks run before macrotasks in the same tick.
+
+---
+
+### Question 4
+Which statement best describes Promises?
+
+A) A Promise is always synchronous.
+B) A Promise represents a value that may be available now, later, or never.
+C) Promises only handle errors with try/catch.
+D) Promises can be fulfilled and rejected multiple times.
+
+**Answer: B) A Promise represents a value that may be available now, later, or never.**
+
+**Explanation:** A promise is a single-assignment abstraction for async results.
+
+---
+
+### Question 5
+What is a best practice for Promises?
+
+A) Always nest then() handlers deeply.
+B) Return promises from functions to keep chains consistent.
+C) Avoid catch() so failures are visible.
+D) Resolve a promise multiple times to update state.
+
+**Answer: B) Return promises from functions to keep chains consistent.**
+
+**Explanation:** Returning promises preserves chaining and error propagation.
+
+---
+
+### Question 6
+Which pitfall should you avoid with Promises?
+
+A) Handling errors in a single catch block.
+B) Forgetting to return a promise in a chain.
+C) Using Promise.all for independent requests.
+D) Naming promise variables clearly.
+
+**Answer: B) Forgetting to return a promise in a chain.**
+
+**Explanation:** Missing returns break the chain and hide errors.
+
+---
+
+### Question 7
+Which statement best describes async/await?
+
+A) await blocks the entire JavaScript runtime.
+B) async functions always return a Promise.
+C) await can be used at the top level in any script.
+D) async/await replaces the event loop.
+
+**Answer: B) async functions always return a Promise.**
+
+**Explanation:** An async function wraps return values in a Promise.
+
+---
+
+### Question 8
+What is a best practice for async/await?
+
+A) Use await inside a tight loop for parallel work.
+B) Use try/catch around awaited calls that can reject.
+C) Ignore rejected promises because await handles them.
+D) Use await on non-Promise values to force async behavior.
+
+**Answer: B) Use try/catch around awaited calls that can reject.**
+
+**Explanation:** try/catch is the primary way to handle async errors with await.
+
+---
+
+### Question 9
+Which pitfall should you avoid with async/await?
+
+A) Awaiting independent tasks sequentially without need.
+B) Using Promise.all for parallel work.
+C) Wrapping awaited calls in try/catch.
+D) Returning values from async functions.
+
+**Answer: A) Awaiting independent tasks sequentially without need.**
+
+**Explanation:** Sequential awaits slow execution when tasks can run in parallel.
+
+---
+
+### Question 10
+Which statement best describes error handling in async code?
+
+A) Unhandled promise rejections are ignored by Node.
+B) Errors can be handled with try/catch in async functions or .catch on promises.
+C) Errors only occur in callbacks, not promises.
+D) Throwing inside async functions crashes the process immediately.
+
+**Answer: B) Errors can be handled with try/catch in async functions or .catch on promises.**
+
+**Explanation:** Async errors propagate through promise rejection and can be caught.
+
+---
+
+### Question 11
+What is a best practice for error handling?
+
+A) Swallow errors to keep the process running.
+B) Handle errors near the source and add context before rethrowing.
+C) Use empty catch blocks to reduce noise.
+D) Log errors without rejecting promises.
+
+**Answer: B) Handle errors near the source and add context before rethrowing.**
+
+**Explanation:** Contextual errors are easier to debug and handle upstream.
+
+---
+
+### Question 12
+Which pitfall should you avoid with error handling?
+
+A) Logging errors with context.
+B) Re-throwing after cleanup.
+C) Swallowing errors without logging or rethrowing.
+D) Mapping errors to user-friendly messages.
+
+**Answer: C) Swallowing errors without logging or rethrowing.**
+
+**Explanation:** Silent failures make debugging and monitoring difficult.
+
+---
+
+### Question 13
+Which statement best describes Promise.all?
+
+A) It resolves when all promises resolve and rejects on the first rejection.
+B) It waits for all promises to settle and always resolves.
+C) It runs promises sequentially in order.
+D) It ignores rejected promises and returns partial results.
+
+**Answer: A) It resolves when all promises resolve and rejects on the first rejection.**
+
+**Explanation:** Promise.all short-circuits on the first rejection.
+
+---
+
+### Question 14
+What is a best practice for Promise.all?
+
+A) Use Promise.allSettled when you need results even if some fail.
+B) Use Promise.all for tasks that must continue after failures.
+C) Catch errors inside each promise and suppress them.
+D) Assume Promise.all preserves completion order, not input order.
+
+**Answer: A) Use Promise.allSettled when you need results even if some fail.**
+
+**Explanation:** allSettled gives success/failure info for each promise.
+
+---
+
+### Question 15
+Which pitfall should you avoid with Promise.all?
+
+A) Assuming it returns results in input order.
+B) Using it without considering failure recovery.
+C) Using it to run independent requests in parallel.
+D) Wrapping it in try/catch.
+
+**Answer: B) Using it without considering failure recovery.**
+
+**Explanation:** A single rejection can fail the entire batch.
+
+---
+
+### Question 16
+Which statement best describes timers?
+
+A) setTimeout guarantees exact delay timing.
+B) Timers schedule macrotask callbacks using setTimeout or setInterval.
+C) Timers run before microtasks in the same tick.
+D) setInterval waits for async callbacks to finish.
+
+**Answer: B) Timers schedule macrotask callbacks using setTimeout or setInterval.**
+
+**Explanation:** Timers enqueue macrotasks; exact timing is not guaranteed.
+
+---
+
+### Question 17
+What is a best practice for timers?
+
+A) Clear intervals and avoid tight loops that block.
+B) Use setInterval for async polling without clearing it.
+C) Assume timers are precise to the millisecond.
+D) Use timers instead of proper async APIs.
+
+**Answer: A) Clear intervals and avoid tight loops that block.**
+
+**Explanation:** Long-running loops block the event loop and timer execution.
+
+---
+
+### Question 18
+Which pitfall should you avoid with timers?
+
+A) Using setTimeout for backoff retries.
+B) Relying on timers for precise ordering.
+C) Clearing an interval on shutdown.
+D) Scheduling short delays for debounce.
+
+**Answer: B) Relying on timers for precise ordering.**
+
+**Explanation:** Timer callbacks can be delayed by other work.
+
+---
+
+### Question 19
+Which statement best describes Node `fs/promises`?
+
+A) It provides synchronous file APIs only.
+B) It exposes promise-based async file operations.
+C) It blocks the event loop by default.
+D) It is only available in browsers.
+
+**Answer: B) It exposes promise-based async file operations.**
+
+**Explanation:** `fs/promises` enables awaitable, non-blocking file IO.
+
+---
+
+### Question 20
+What is a best practice for `fs/promises`?
+
+A) Use `await` with try/catch and handle missing files gracefully.
+B) Use sync APIs in server request handlers.
+C) Ignore errors for read/write operations.
+D) Use `fs.promises` without awaiting results.
+
+**Answer: A) Use `await` with try/catch and handle missing files gracefully.**
+
+**Explanation:** IO failures are common; handle them explicitly.
+
+---
+
+### Question 21
+Which pitfall should you avoid with `fs/promises`?
+
+A) Blocking the event loop with sync file APIs.
+B) Handling ENOENT for missing files.
+C) Using `await` for file reads.
+D) Closing file handles after use.
+
+**Answer: A) Blocking the event loop with sync file APIs.**
+
+**Explanation:** Sync file IO stalls all concurrent requests.
+
+---
+
+### Question 22
+Which statement best describes CLI arguments in Node?
+
+A) `process.argv` includes the node path and script path before flags.
+B) CLI arguments are only available in browsers.
+C) Arguments are parsed automatically into an object by Node.
+D) Flags must be provided in a fixed order.
+
+**Answer: A) `process.argv` includes the node path and script path before flags.**
+
+**Explanation:** `process.argv` contains the runtime and script as the first two entries.
+
+---
+
+### Question 23
+What is a best practice for CLI arguments?
+
+A) Provide defaults, validation, and a helpful `--help` output.
+B) Assume arguments are always present.
+C) Ignore invalid flags.
+D) Use positional arguments only.
+
+**Answer: A) Provide defaults, validation, and a helpful `--help` output.**
+
+**Explanation:** Good CLI UX reduces usage errors and support time.
+
+---
+
+### Question 24
+Which pitfall should you avoid with CLI arguments?
+
+A) Assuming flags are always present.
+B) Validating required inputs.
+C) Supporting both flags and positional args.
+D) Showing usage examples.
+
+**Answer: A) Assuming flags are always present.**
+
+**Explanation:** Missing or malformed args should be handled gracefully.
+
+---
+
+### Question 25
+Which statement best describes Node modules?
+
+A) ES modules use `import/export`, CommonJS uses `require/module.exports`.
+B) ES modules can only be used in browsers.
+C) CommonJS supports top-level await by default.
+D) Node supports only one module system.
+
+**Answer: A) ES modules use `import/export`, CommonJS uses `require/module.exports`.**
+
+**Explanation:** Node supports both systems with different syntax and rules.
+
+---
+
+### Question 26
+What is a best practice for modules and imports?
+
+A) Keep imports explicit and avoid circular dependencies.
+B) Mix `require` and `import` in the same file.
+C) Rely on implicit globals for shared code.
+D) Export everything as default.
+
+**Answer: A) Keep imports explicit and avoid circular dependencies.**
+
+**Explanation:** Explicit imports make dependencies clear and reduce runtime surprises.
+
+---
+
+### Question 27
+Which pitfall should you avoid with modules and imports?
+
+A) Using named exports for clarity.
+B) Mixing module systems in one file.
+C) Organizing code by feature.
+D) Using explicit file extensions where required.
+
+**Answer: B) Mixing module systems in one file.**
+
+**Explanation:** Mixed systems cause runtime errors and tooling issues.
+
+---
+
+### Question 28
+Which statement best describes async testing?
+
+A) Async tests require proper awaits and teardown of resources.
+B) Async tests should never use timeouts.
+C) Async tests run synchronously by default.
+D) Async tests should avoid promises.
+
+**Answer: A) Async tests require proper awaits and teardown of resources.**
+
+**Explanation:** Unawaited work and open handles cause flaky or hanging tests.
+
+---
+
+### Question 29
+What is a best practice for async testing?
+
+A) Await async helpers and close resources after tests.
+B) Leave open DB connections for reuse.
+C) Use setTimeout instead of awaiting helpers.
+D) Ignore rejected promises in tests.
+
+**Answer: A) Await async helpers and close resources after tests.**
+
+**Explanation:** Clean teardown prevents open handles and timeouts.
+
+---
+
+### Question 30
+Which pitfall should you avoid with async testing?
+
+A) Leaving dangling promises and open handles.
+B) Using beforeAll/afterAll hooks.
+C) Awaiting API helpers.
+D) Cleaning up timers in teardown.
+
+**Answer: A) Leaving dangling promises and open handles.**
+
+**Explanation:** Dangling work keeps the process alive and causes flakes.
+
+---
+
+</script>
+    <script>
+(() => {
+    const markdownNode = document.getElementById('assessment-markdown');
+    if (!markdownNode) {
+        return;
+    }
+
+    const markdown = markdownNode.textContent.trim();
+    const form = document.getElementById('quiz-form');
+    const titleElement = document.querySelector('.assessment-title h1');
+    const subtitleElement = document.querySelector('.assessment-title p');
+    const scoreDisplay = document.getElementById('score-display');
+
+    const assessmentData = parseAssessmentMarkdown(markdown);
+    renderAssessment(assessmentData);
+
+    function parseAssessmentMarkdown(raw) {
+        const lines = raw.replace(/\r\n/g, '\n').split('\n');
+        const titleLine = lines.find((line) => line.trim().startsWith('# ')) || '';
+        const rawTitle = titleLine.replace(/^#\s*/, '').trim();
+        const cleanedTitle = rawTitle
+            .replace(/^Assessment\s*\d*\s*:?\s*/i, '')
+            .replace(/\bMCQ\b/i, '')
+            .trim();
+
+        let topics = '';
+        const topicsLine =
+            lines.find((line) => /^\*\*Topics/i.test(line)) ||
+            lines.find((line) => /^\*\*Topics Covered/i.test(line));
+        if (topicsLine) {
+            const parts = topicsLine.split(':');
+            topics = parts.length > 1 ? parts.slice(1).join(':').replace(/\*\*/g, '').trim() : '';
+        }
+
+        if (!topics) {
+            const subtitleLine = lines.find((line) => line.trim().startsWith('## '));
+            if (subtitleLine) {
+                topics = subtitleLine.replace(/^##\s*/, '').trim();
+            }
+        }
+
+        const questionBlocks = [];
+        const hasQuestionsHeading = lines.some((line) => /^##\s*Questions/i.test(line.trim()));
+        let inQuestions = !hasQuestionsHeading;
+        let stopQuestions = false;
+        let current = null;
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (/^##\s*Questions/i.test(trimmed)) {
+                inQuestions = true;
+                continue;
+            }
+
+            if (inQuestions && /^##\s+/i.test(trimmed) && !/^##\s*Questions/i.test(trimmed)) {
+                stopQuestions = true;
+                if (current) {
+                    questionBlocks.push(current);
+                    current = null;
+                }
+                continue;
+            }
+
+            if (!inQuestions || stopQuestions) {
+                continue;
+            }
+
+            if (/^###\s*Question\s*\d+/i.test(trimmed)) {
+                if (current) {
+                    questionBlocks.push(current);
+                }
+                current = [];
+                continue;
+            }
+
+            if (current) {
+                current.push(line);
+            }
+        }
+
+        if (current) {
+            questionBlocks.push(current);
+        }
+
+        const questions = questionBlocks
+            .map((block) => parseQuestionBlock(block))
+            .filter((question) => question.options.length > 0);
+
+        return {
+            title: cleanedTitle || rawTitle || 'Assessment',
+            topics,
+            questions
+        };
+    }
+
+    function parseQuestionBlock(lines) {
+        const questionLines = [];
+        const options = [];
+        let answer = '';
+        const explanationLines = [];
+        let capturingExplanation = false;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (/^\*\*Answer:/i.test(trimmed)) {
+                const match = trimmed.match(/Answer:\s*([A-D])/i);
+                if (match) {
+                    answer = match[1].toLowerCase();
+                }
+                capturingExplanation = false;
+                return;
+            }
+
+            if (/^\*\*Explanation:/i.test(trimmed)) {
+                capturingExplanation = true;
+                const explanationText = trimmed
+                    .replace(/^\*\*Explanation:\*\*\s*/i, '')
+                    .replace(/^\*\*Explanation:\s*/i, '')
+                    .trim();
+                if (explanationText) {
+                    explanationLines.push(explanationText);
+                }
+                return;
+            }
+
+            if (capturingExplanation) {
+                if (trimmed === '---') {
+                    capturingExplanation = false;
+                } else {
+                    explanationLines.push(line);
+                }
+                return;
+            }
+
+            const optionMatch = trimmed.match(/^[-*]?\s*([A-D])\)\s*(.*)$/);
+            if (optionMatch) {
+                options.push({
+                    letter: optionMatch[1].toLowerCase(),
+                    text: optionMatch[2].trim()
+                });
+                return;
+            }
+
+            if (trimmed === '---' || /^##/.test(trimmed)) {
+                return;
+            }
+
+            questionLines.push(line);
+        });
+
+        if (!answer && options.length > 0) {
+            answer = options[0].letter;
+        }
+
+        const { promptLine, bodyLines } = splitPromptAndBody(questionLines);
+
+        return {
+            promptHtml: formatInlineCode(promptLine || 'Select the correct option.'),
+            bodyHtml: formatLinesToHtml(bodyLines),
+            options: options.map((opt) => ({
+                letter: opt.letter,
+                html: formatInlineCode(opt.text)
+            })),
+            answer,
+            explanationHtml: formatLinesToHtml(explanationLines)
+        };
+    }
+
+    function splitPromptAndBody(lines) {
+        let promptLine = '';
+        const bodyLines = [];
+        let foundPrompt = false;
+
+        lines.forEach((line) => {
+            if (!foundPrompt && line.trim() && !line.trim().startsWith('```')) {
+                promptLine = line.trim();
+                foundPrompt = true;
+            } else {
+                bodyLines.push(line);
+            }
+        });
+
+        return { promptLine, bodyLines };
+    }
+
+    function formatLinesToHtml(lines) {
+        if (!lines.length) {
+            return '';
+        }
+
+        const parts = [];
+        let inCodeBlock = false;
+        let codeLines = [];
+        let textLines = [];
+
+        const flushText = () => {
+            if (!textLines.length) {
+                return;
+            }
+            parts.push(textLines.map(formatInlineCode).join('<br>'));
+            textLines = [];
+        };
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('```')) {
+                if (inCodeBlock) {
+                    parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                    codeLines = [];
+                    inCodeBlock = false;
+                } else {
+                    flushText();
+                    inCodeBlock = true;
+                }
+                return;
+            }
+
+            if (inCodeBlock) {
+                codeLines.push(line);
+            } else if (trimmed !== '') {
+                textLines.push(line);
+            }
+        });
+
+        if (codeLines.length) {
+            parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+        }
+
+        flushText();
+        return parts.join('');
+    }
+
+    function formatInlineCode(text) {
+        if (!text) {
+            return '';
+        }
+
+        const segments = text.split('`');
+        return segments
+            .map((segment, index) => {
+                if (index % 2 === 1) {
+                    return `<code>${escapeHtml(segment)}</code>`;
+                }
+                return escapeHtml(segment);
+            })
+            .join('');
+    }
+
+    function escapeHtml(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderAssessment(data) {
+        const heading = data.title ? `Assessment: ${data.title}` : 'Assessment';
+        titleElement.textContent = heading;
+        subtitleElement.textContent = data.topics || data.title || 'Multiple Choice Questions';
+        document.title = `${heading} - VibeTestQ`;
+
+        form.innerHTML = '';
+
+        data.questions.forEach((question, index) => {
+            form.appendChild(buildQuestionElement(question, index));
+        });
+
+        const submitWrap = document.createElement('div');
+        submitWrap.style.textAlign = 'center';
+        submitWrap.style.marginTop = '30px';
+        submitWrap.innerHTML = `
+            <button type="button" class="btn btn-primary" onclick="submitQuiz()">
+                <i class="fas fa-paper-plane"></i> Submit Assessment
+            </button>
+        `;
+        form.appendChild(submitWrap);
+
+        scoreDisplay.textContent = `0 / ${data.questions.length}`;
+    }
+
+    function buildQuestionElement(question, index) {
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.dataset.answer = question.answer;
+
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'question-number';
+        numberSpan.textContent = `${index + 1}.`;
+
+        const textSpan = document.createElement('span');
+        textSpan.innerHTML = question.promptHtml;
+
+        questionText.appendChild(numberSpan);
+        questionText.appendChild(textSpan);
+        questionElement.appendChild(questionText);
+
+        if (question.bodyHtml) {
+            const body = document.createElement('div');
+            body.className = 'question-body';
+            body.innerHTML = question.bodyHtml;
+            questionElement.appendChild(body);
+        }
+
+        const options = document.createElement('div');
+        options.className = 'options';
+
+        question.options.forEach((option) => {
+            const label = document.createElement('label');
+            label.className = 'option';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `q${index + 1}`;
+            input.value = option.letter;
+
+            const optionText = document.createElement('span');
+            optionText.innerHTML = option.html;
+
+            label.appendChild(input);
+            label.appendChild(optionText);
+            options.appendChild(label);
+        });
+
+        questionElement.appendChild(options);
+
+        const explanation = document.createElement('p');
+        explanation.className = 'explanation';
+        explanation.innerHTML = question.explanationHtml || '';
+        questionElement.appendChild(explanation);
+
+        return questionElement;
+    }
+
+    window.submitQuiz = function submitQuiz() {
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        const unAnsweredSet = [];
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            if (!selected) {
+                unAnsweredSet.push(q);
+                q.classList.add('unanswered');
+            } else {
+                q.classList.remove('unanswered');
+            }
+        });
+
+        if (unAnsweredSet.length > 0) {
+            showToast("Please answer all questions before submitting.");
+            unAnsweredSet[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            const correctAnswer = q.getAttribute('data-answer');
+            const options = q.querySelectorAll('.option');
+            const explanation = q.querySelector('.explanation');
+
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+
+            options.forEach(opt => {
+                const radio = opt.querySelector('input');
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (selected && radio === selected && radio.value !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected && selected.value === correctAnswer) {
+                score += 1;
+            }
+        });
+
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('score-display').innerText = `${score} / ${questions.length}`;
+
+        let feedback = "";
+        const percentage = (score / questions.length) * 100;
+        if (percentage === 100) feedback = "Perfect Score! You are a JS Wizard!";
+        else if (percentage >= 80) feedback = "Excellent! You have a strong grasp of fundamentals.";
+        else if (percentage >= 60) feedback = "Good job! Keep practicing to master the concepts.";
+        else feedback = "Keep learning! Review the Docs to strengthen your basics.";
+
+        document.getElementById('feedback-text').innerText = feedback;
+
+        form.querySelectorAll('input').forEach(input => input.disabled = true);
+        const submitButton = form.querySelector('button');
+        if (submitButton) {
+            submitButton.style.display = 'none';
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.preparePrint = function preparePrint() {
+        const name = document.getElementById('student-name').value;
+        if (name) {
+            document.getElementById('printed-name').innerText = "Student: " + name;
+        } else {
+            document.getElementById('printed-name').innerText = "";
+        }
+        window.print();
+    };
+
+    function showToast(message) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+})();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Configuration Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive Playwright configuration MCQ challenges. Master playwright.config.ts, projects, reporters, sharding and more with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #3730a3;
+            --primary-light: #eef2ff;
+            --accent: #818cf8;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #a5b4fc; transition: all 0.3s; }
+        .score-pill.bump { background: #e0e7ff; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #818cf8); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #eef2ff; color: #3730a3; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #4338ca; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #a5b4fc; background: #e0e7ff; color: #3730a3; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #a5b4fc; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #eef2ff; border: 1px solid #a5b4fc; color: #3730a3; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">Configuration Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. testDir option</span>           <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. projects array</span>           <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. fullyParallel</span>            <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. retries option</span>           <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. --headed CLI flag</span>        <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. --project filter</span>         <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. HTML reporter</span>            <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. --shard CI splitting</span>     <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. testMatch glob</span>           <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. screenshot on failure</span>   <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. webServer option</span>        <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. video recording</span>         <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-cogs"></i> Playwright Configuration</h1>
+        <p>12 challenges covering playwright.config.ts options, CLI flags, reporters, sharding and project setup.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">Config Options</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does testDir control?</div>
+            <div class="ch-desc">What is the purpose of the <code>testDir</code> option in <code>playwright.config.ts</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">export default defineConfig({
+  testDir: './tests',
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> Where Playwright stores test results and reports</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> The root directory Playwright scans to discover test files</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> The directory where fixtures are stored</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> Where screenshots and videos are saved</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — root directory for test file discovery</strong><br><code>testDir</code> tells Playwright which directory to search for test files. Combined with <code>testMatch</code> (default: <code>**/*.{spec,test}.{ts,js}</code>), it controls exactly which files Playwright considers to be tests. It defaults to the directory of the config file. Test output (reports, screenshots) goes to <code>outputDir</code> (default: <code>test-results/</code>).</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint"><code>testDir</code> = where to <em>find</em> tests. Think of it as "where are my .spec.ts files?"</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Projects</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does the projects array enable?</div>
+            <div class="ch-desc">What is the main purpose of defining multiple entries in the <code>projects</code> array?</div>
+            <div class="code-block"><pre><code class="language-typescript">export default defineConfig({
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
+    { name: 'mobile',   use: { ...devices['iPhone 12'] } },
+  ],
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> Runs different test files for each project</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> Runs the same tests under different browser/device/configuration combinations</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> Sets up parallel workers, one per project</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> Creates separate test reports for each team</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: B — same tests, different browser/device/config combinations</strong><br>Each project entry defines a named configuration with a <code>use</code> object — typically different browsers, device viewports, or locale settings. Playwright runs all tests under <em>each</em> project, producing cross-browser coverage from a single test suite. Projects can also set different <code>testDir</code>, <code>testMatch</code>, or fixture overrides for specialized subsets of tests.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint">Projects = "run these tests N times, each with a different config." Cross-browser testing made easy.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Parallelism</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does fullyParallel: true change?</div>
+            <div class="ch-desc">By default, tests within a file run sequentially. What does <code>fullyParallel: true</code> do?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> Runs all projects simultaneously instead of sequentially</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> Allows individual tests within a file to run in parallel across workers</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> Doubles the number of workers automatically</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> Runs beforeAll hooks in parallel with test execution</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — individual tests within a file run across workers</strong><br>By default, Playwright parallelizes at the file level — files run in parallel but tests within a file run sequentially in one worker. <code>fullyParallel: true</code> enables test-level parallelism: each individual test can run in any worker, regardless of which file it's in. This maximizes throughput but may break tests that share state within a <code>describe</code> block (e.g., tests that depend on <code>beforeAll</code> setup).</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint">Default = file-level parallelism. <code>fullyParallel</code> = test-level parallelism. Great for speed, but be careful with shared state.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge beginner">Beginner</span><span class="topic-badge">Retries</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does retries: 2 mean in config?</div>
+            <div class="ch-desc">You set <code>retries: 2</code>. A test fails on its first run. What happens next?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> The test runs 2 more times; the suite passes if any retry passes</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> The test retries up to 2 additional times; it fails if all 3 runs fail</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> The test runs exactly 2 times total</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> Retries only work on flaky tests marked with test.flaky()</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — up to 2 retries after the first failure</strong><br><code>retries: 2</code> means each test gets up to 2 <em>additional</em> attempts after a failure — 3 total runs (1 original + 2 retries). A test is marked as <strong>flaky</strong> if it passes on a retry after failing. It's only marked as fully failed if all attempts fail. Retries are useful in CI for handling transient network issues but shouldn't mask real bugs — keep <code>retries: 0</code> locally during development.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint"><code>retries: 2</code> = 2 extra attempts. Total runs = 1 + retries. A test needs to fail all attempts to be reported as failed.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge beginner">Beginner</span><span class="topic-badge">CLI Flags</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does the --headed CLI flag do?</div>
+            <div class="ch-desc">What is the effect of running <code>npx playwright test --headed</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> Shows a progress header in the terminal output</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> Runs the browser with a visible UI window instead of headless</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> Enables the HTML reporter with a large header</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> Prints a detailed headed summary at the end of the run</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: B — browser runs with a visible window</strong><br>By default, Playwright runs browsers in <strong>headless</strong> mode (no visible window) for speed and CI compatibility. The <code>--headed</code> flag opens a real, visible browser window during test execution. This is useful for debugging tests visually. You can also set <code>use: { headless: false }</code> in config. The equivalent of <code>--headed</code> in config is <code>use: { headless: false }</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint">"Headed" = the browser has a visible head (window). "Headless" = no window, runs invisibly. Use <code>--headed</code> to see what's happening during debugging.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge beginner">Beginner</span><span class="topic-badge">CLI Flags</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does --project=chromium filter?</div>
+            <div class="ch-desc">You have 3 projects: chromium, firefox, webkit. You run <code>npx playwright test --project=chromium</code>. What runs?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> All projects but only tests with "chromium" in their name</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> Only tests in the chromium project; firefox and webkit are skipped</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> All projects, installing Chromium first</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> Tests against the Chromium source code repository</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — only the named project runs</strong><br><code>--project=chromium</code> filters test execution to only the project named "chromium". Firefox and webkit are skipped. You can pass multiple project names: <code>--project=chromium --project=firefox</code>. Project names are case-sensitive and must match the <code>name</code> field in the <code>projects</code> array of your config. Very useful for fast local development targeting a single browser.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint"><code>--project</code> filters by the project's <code>name</code> field in config. Only that project runs; all others are skipped.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Reporters</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Where does the HTML reporter save its output?</div>
+            <div class="ch-desc">You configure <code>reporter: [['html']]</code>. Where is the report created and how do you open it?</div>
+            <div class="code-block"><pre><code class="language-typescript">export default defineConfig({
+  reporter: [['html'], ['list']],
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> In test-results/ alongside screenshots and videos</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> In playwright-report/ folder; opened with npx playwright show-report</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> In the system temp directory</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> Uploaded to a cloud URL automatically</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: B — playwright-report/ folder, open with show-report</strong><br>The HTML reporter creates a self-contained report at <code>playwright-report/index.html</code> by default. Run <code>npx playwright show-report</code> to serve it locally and open it in a browser. The report includes test results, traces, screenshots, and video recordings attached to each test. You can customize the output directory: <code>[['html', { outputFolder: 'my-report' }]]</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint">HTML report → <code>playwright-report/</code>. Open it with <code>npx playwright show-report</code>. Different from <code>test-results/</code> which stores artifacts.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge advanced">Advanced</span><span class="topic-badge">CI / Sharding</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does --shard 1/3 do?</div>
+            <div class="ch-desc">You run <code>npx playwright test --shard 1/3</code> on the first CI machine, <code>--shard 2/3</code> on the second, <code>--shard 3/3</code> on the third. What is the effect?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> Runs only the first third of test files alphabetically</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> Splits the test suite into 3 equal parts and runs one part per machine</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> Runs tests 3 times each for reliability checking</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> Limits each machine to 1 worker with 3 retries</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: B — splits the suite across parallel CI machines</strong><br>Sharding distributes tests evenly across N CI machines. <code>--shard 1/3</code> runs the first ~1/3 of tests, <code>2/3</code> runs the next third, and <code>3/3</code> runs the final third. All 3 machines run in parallel, reducing total CI time by ~3x. You collect and merge the HTML reports afterwards using <code>npx playwright merge-reports</code>. This is the standard pattern for large test suites in CI pipelines.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint"><code>--shard X/N</code> = "run the X-th of N equal slices." Use across N parallel CI machines to parallelize your suite.</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge beginner">Beginner</span><span class="topic-badge">Config Options</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does testMatch control?</div>
+            <div class="ch-desc">You set <code>testMatch: ['**/*.spec.ts']</code>. What is the effect?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> Only files named exactly "spec.ts" are run</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> Only .spec.ts files are discovered as tests; .test.ts and others are ignored</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> Matches test names (describe/test titles) containing "spec"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> Watches .spec.ts files for changes during test runs</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — glob pattern for test file names</strong><br><code>testMatch</code> is a glob (or array of globs) that controls <em>which files</em> Playwright treats as test files. The default is <code>['**/*.{spec,test}.{ts,js,mjs,cjs}']</code>. Setting <code>['**/*.spec.ts']</code> means only TypeScript files ending in <code>.spec.ts</code> are treated as tests — JavaScript test files would be ignored. Useful for monorepos or mixed codebases.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint"><code>testMatch</code> = file name pattern. It's a glob that decides which <em>files</em> are tests, not which test cases inside them.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Artifacts</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does use.screenshot: 'only-on-failure' do?</div>
+            <div class="ch-desc">You configure <code>use: { screenshot: 'only-on-failure' }</code>. What is the behaviour?</div>
+            <div class="code-block"><pre><code class="language-typescript">export default defineConfig({
+  use: {
+    screenshot: 'only-on-failure',
+    // also: 'off' | 'on'
+  },
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> Screenshots are taken before every test step, deleted if the test passes</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> A screenshot is captured automatically when a test fails, not on pass</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> Screenshots are only taken when page.screenshot() is called explicitly</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> Tests fail immediately when a screenshot assertion fails</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — automatic screenshot on test failure only</strong><br><code>screenshot: 'only-on-failure'</code> tells Playwright to automatically capture a full-page screenshot when a test fails, and attach it to the HTML report. Options: <code>'off'</code> (no automatic screenshots), <code>'on'</code> (screenshot after every test regardless), <code>'only-on-failure'</code> (only on fail). Screenshots appear in the HTML report under the failed test. The file is saved in <code>test-results/</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">Think of it as "take a crime scene photo." Playwright only captures automatically when something goes wrong — very useful for CI debugging.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge advanced">Advanced</span><span class="topic-badge">webServer</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does the webServer option do?</div>
+            <div class="ch-desc">You configure <code>webServer</code> in your config. What does Playwright do with it before running tests?</div>
+            <div class="code-block"><pre><code class="language-typescript">export default defineConfig({
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+  },
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> Configures Playwright to proxy all requests through a web server</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> Starts the specified dev server before tests and waits until the URL is reachable</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> Downloads a web server binary for local testing</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> Validates that the baseURL is accessible before each test</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — starts the dev server and waits until ready</strong><br><code>webServer</code> automatically runs your dev server (<code>command</code>) before tests start and waits until the <code>url</code> responds with a successful HTTP response. Tests won't start until the server is up. After all tests finish, Playwright shuts down the server. <code>reuseExistingServer</code> skips starting a new server if one is already listening — handy locally but should be <code>false</code> in CI for reproducibility.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint"><code>webServer</code> = "start my app first, then run tests." Playwright waits for the URL to be reachable before the first test starts.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Artifacts</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When is video recorded with 'on-first-retry'?</div>
+            <div class="ch-desc">You configure <code>use: { video: 'on-first-retry' }</code>. When is a video recording made?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> On the first test run only; never on retries</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> When a test is being retried for the first time (i.e., the second run of a failing test)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> Every time a test runs for the first time in a session</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> Only when video recording is called manually in the test</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — recorded on the first retry of a failing test</strong><br><code>video: 'on-first-retry'</code> records video <em>only when a test is retried for the first time</em> — meaning the original run failed. This balances performance (no video overhead for passing tests) with debuggability (you get a recording of the failure reproduction). Options: <code>'off'</code>, <code>'on'</code> (always), <code>'retain-on-failure'</code> (records always, deletes on pass), <code>'on-first-retry'</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint">"on-first-retry" = the test already failed once and is being retried. Record <em>that</em> run. You skip the overhead for passing tests.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const STORAGE_KEY = 'vtq-pw-config';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

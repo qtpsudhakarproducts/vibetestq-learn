@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright: The AI-Native Automation OS - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/simple.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vibe-blue: #1e40af;
+            --vibe-dark-blue: #1e3a8a;
+            --vibe-green: #22c55e;
+            --vibe-yellow: #fbbf24;
+            --vibe-orange: #f97316;
+            --vibe-light-bg: #f8fafc;
+        }
+
+        .reveal {
+            background: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3 {
+            text-transform: none;
+            font-weight: 700;
+            color: var(--vibe-dark-blue);
+        }
+
+        .reveal h1 {
+            font-size: 1.8em;
+            margin-bottom: 0.2em;
+        }
+
+        .reveal h2 {
+            font-size: 1.4em;
+            margin-bottom: 0.3em;
+            color: var(--vibe-blue);
+        }
+
+        .reveal h3 {
+            font-size: 1.1em;
+            color: var(--vibe-green);
+            margin-bottom: 0.2em;
+        }
+
+        .reveal p,
+        .reveal li {
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        .logo-corner {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            z-index: 100;
+        }
+
+        .logo-corner img {
+            width: 80px;
+            height: auto;
+        }
+
+        .content-box {
+            background: var(--vibe-light-bg);
+            border-left: 4px solid var(--vibe-blue);
+            padding: 8px 15px;
+            margin: 5px 0;
+            border-radius: 6px;
+            text-align: left;
+        }
+
+        .highlight-box {
+            background: #fef3c7;
+            border: 2px solid var(--vibe-yellow);
+            padding: 8px 12px;
+            margin: 5px auto;
+            border-radius: 8px;
+            max-width: 95%;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 10px 0;
+        }
+
+        .reveal ul {
+            list-style: none;
+            margin: 5px 0;
+        }
+
+        .reveal ul li {
+            margin: 4px 0;
+            padding-left: 30px;
+            position: relative;
+            text-align: left;
+            font-size: 0.75em;
+        }
+
+        .reveal ul li:before {
+            content: "\f058";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: var(--vibe-green);
+            position: absolute;
+            left: 0;
+        }
+
+        .reveal ul li.cross:before {
+            content: "\f057";
+            color: var(--vibe-orange);
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--vibe-orange);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.7em;
+            margin: 2px;
+        }
+
+        .title-slide {
+            background: #ffffff !important;
+        }
+
+        .title-slide .company-header {
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+
+        .compact {
+            font-size: 0.8em;
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Hero -->
+            <section class="title-slide">
+                <img src="https://vibetestq.com/assets/Title with logo and box.png" alt="VibeTestQ" class="company-header">
+                <h1>The Playwright Era</h1>
+                <p style="font-size: 1.2em; color: var(--vibe-orange); font-weight: 700;">Why Playwright wins in the AI
+                    Era</p>
+                <div style="margin-top: 20px;">
+                    <span class="badge">Session 1 Deep-Dive</span>
+                    <span class="badge">Selenium vs. Playwright</span>
+                </div>
+            </section>
+
+            <!-- Slide 2: Enterprise Power -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>The Power of Microsoft</h2>
+                <div class="content-box">
+                    <h3 class="text-blue">Developed & Maintained by Microsoft</h3>
+                    <p class="compact">Playwright is not a side-project. It is a core part of the Microsoft developer
+                        ecosystem.</p>
+                </div>
+                <div class="two-col">
+                    <div class="content-box" style="border-left-color: var(--vibe-orange);">
+                        <h4 style="font-size: 0.85em; margin: 0; color: var(--vibe-orange);">Dedicated Core Team</h4>
+                        <p class="compact" style="font-size: 0.65em;">Full-time engineers at Microsoft work exclusively
+                            on Playwright innovation and support.</p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-green);">
+                        <h4 style="font-size: 0.85em; margin: 0; color: var(--vibe-green);">Rapid Innovation</h4>
+                        <p class="compact" style="font-size: 0.65em;">Monthly releases with features like UI Mode, Trace
+                            Viewer, and MCP support.</p>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p class="compact text-blue">Used internally at Microsoft to test products like VS Code, Bing, and
+                        Azure.</p>
+                </div>
+            </section>
+
+            <!-- Slide 3: Full Platform vs Library -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>1. Complete E2E Test Framework</h2>
+                <div class="two-col">
+                    <div class="content-box" style="border-left-color: #64748b;">
+                        <h3 style="color: #64748b;">Selenium Reality</h3>
+                        <p class="compact">Needs external: TestNG, Assertion libs, Reporters, Retry logic, Grid infra.
+                        </p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-green);">
+                        <h3>Playwright Built-in</h3>
+                        <p class="compact">Runner, Assertions, Fixtures, Parallelism, Reporting, Mocking, Tracing.</p>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p class="compact text-blue"><strong>Verdict:</strong> Playwright reduces ecosystem complexity by
+                        80%.</p>
+                </div>
+            </section>
+
+            <!-- Slide 3: DX & UI Mode -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>2. DX: UI Mode & Codegen</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3 style="font-size: 0.9em;">UI Mode: Interactive</h3>
+                        <p class="compact" style="font-size: 0.7em;">Visual interface to watch tests run, inspect
+                            step-by-step, and explore DOM snapshots instantly.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3 style="font-size: 0.9em;">Codegen: Auto-Generate</h3>
+                        <p class="compact" style="font-size: 0.7em;">Record while you interact. Generates clean,
+                            resilient test code in real-time as you click around the app.</p>
+                    </div>
+                </div>
+                <p class="compact text-blue"><strong>VS Code Plugin:</strong> Deep integration for one-click debug &
+                    locator picking.</p>
+            </section>
+
+            <!-- Slide 4: Architecture: The BiDi Era -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>3. Architecture: The BiDi Revolution</h2>
+                <div class="two-col">
+                    <div class="content-box" style="border-left-color: #64748b;">
+                        <h3 style="color: #64748b; font-size: 0.9em;">Selenium: Transitioning</h3>
+                        <p class="compact" style="font-size: 0.7em;">Adding BiDi support (W3C standard) to its legacy
+                            "Classic" HTTP model. Retrofitting observability onto a 20-year-old core.</p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-green);">
+                        <h3 class="text-green" style="font-size: 0.9em;">Playwright: BiDi-First</h3>
+                        <p class="compact" style="font-size: 0.7em;">Architected for bidirectional events (CDP/BiDi)
+                            from day one. Features like auto-waiting are <strong>native</strong>, not added layers.</p>
+                    </div>
+                </div>
+                <div class="highlight-box" style="background: #eff6ff; border-color: var(--vibe-blue);">
+                    <p class="compact text-blue"><strong>The Difference:</strong> While both now support BiDi,
+                        Playwright’s core logic is built around it, leading to higher execution stability.</p>
+                </div>
+            </section>
+
+            <!-- Slide 5: Zero-Flake -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>4. Zero-Flake Design</h2>
+                <div class="content-box">
+                    <h3>Smart Auto-Waiting</h3>
+                    <p class="compact">Automatically waits for elements to be <strong>Visible, Stable, and
+                            Actionable</strong>.</p>
+                </div>
+                <div class="highlight-box">
+                    <p class="compact">No more <code>Thread.sleep()</code>. Clean data = better AI learning.</p>
+                </div>
+            </section>
+
+            <!-- Slide 6: Context Isolation -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>5. Browser Context Isolation</h2>
+                <div class="content-box">
+                    <p class="compact"><strong>1 Browser = Many Isolated Contexts</strong></p>
+                    <ul style="font-size: 0.7em;">
+                        <li>Separate cookies, storage, and cache per test.</li>
+                        <li>Ultra-fast parallelism (milliseconds to spawn).</li>
+                        <li>Low memory usage compared to Selenium's browser-per-test.</li>
+                    </ul>
+                </div>
+                <p class="compact text-green">Ideal for AI agents running in massive parallel.</p>
+            </section>
+
+            <!-- Slide 7: API + UI Hybrid -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>6. API + UI Hybrid Testing</h2>
+                <div class="content-box">
+                    <p class="compact">Skip UI bottlenecks for non-target scenarios.</p>
+                    <ul style="font-size: 0.7em;">
+                        <li>Authenticate via API tokens once.</li>
+                        <li>Inject storage state directly into browser.</li>
+                        <li>Seed test data via direct requests.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 8: Observability -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>7. Built-in Observability</h2>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div class="content-box">
+                        <h3>Video</h3>
+                        <p class="compact">Record every run.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>Trace</h3>
+                        <p class="compact">Time-travel debug.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>Logs</h3>
+                        <p class="compact">Console + Network.</p>
+                    </div>
+                </div>
+                <p class="compact text-blue" style="margin-top: 10px;">Enables AI systems to perform root cause
+                    analysis.</p>
+            </section>
+
+            <!-- Slide 9: Trace Viewer: Time Travel -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>8. Trace Viewer: Time Travel</h2>
+                <div class="content-box">
+                    <p class="compact">A <strong>Trace</strong> is a full recording of a test run—clicks, network, and
+                        DOM snapshots.</p>
+                </div>
+                <div class="two-col">
+                    <div class="content-box" style="border-left-color: var(--vibe-blue);">
+                        <h3 style="font-size: 0.85em;">CI Observability</h3>
+                        <p class="compact" style="font-size: 0.65em;">Failed tests on CI generate a <code>.zip</code>
+                            trace. Replay the failure locally exactly as it happened.</p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-orange);">
+                        <h3 style="font-size: 0.85em;">Copy as Prompt</h3>
+                        <p class="compact" style="font-size: 0.65em;">Generate an "AI Prompt" directly from the failure
+                            to get instant debugging help from LLMs.</p>
+                    </div>
+                </div>
+                <p class="compact text-blue"><strong>"Every test explains itself, locally or in CI."</strong></p>
+            </section>
+
+            <!-- Slide 10: Semantic Selectors -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>9. AI-Native Selectors</h2>
+                <div class="highlight-box">
+                    <p class="bold text-orange">Matches how LLMs reason</p>
+                </div>
+                <div class="content-box">
+                    <p class="compact"><code>getByRole</code>, <code>getByLabel</code>, <code>getByText</code></p>
+                    <ul style="font-size: 0.75em;">
+                        <li>Stable across UI changes.</li>
+                        <li>Encourages accessibility.</li>
+                        <li>Transparent to AI agents (Semantic mapping).</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 10: Modern App Support -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>9. Built for Modern Web</h2>
+                <ul style="font-size: 0.85em;">
+                    <li>Shadow DOM (Auto-handled)</li>
+                    <li>iFrames (No context switching)</li>
+                    <li>Web Components & WebSockets</li>
+                    <li>Perfect for SPA Frameworks (React/Vue/Angular)</li>
+                </ul>
+            </section>
+
+            <!-- Slide 11: The Three Pillars of AI Testing -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>The Three Pillars of AI Testing</h2>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                    <div class="content-box" style="border-left-color: var(--vibe-orange);">
+                        <h4 style="font-size: 0.85em; margin: 0; color: var(--vibe-orange);">1. Planner Agent</h4>
+                        <p class="compact" style="font-size: 0.65em; margin: 5px 0;">Analyzes requirements or user
+                            stories to decide <strong>WHAT</strong> to test and plots the navigational path.</p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-green);">
+                        <h4 style="font-size: 0.85em; margin: 0; color: var(--vibe-green);">2. Generator Agent</h4>
+                        <p class="compact" style="font-size: 0.65em; margin: 5px 0;">Utilizes <strong>Codegen</strong>
+                            and <strong>MCP</strong> to write the actual test code using semantic, resilient locators.
+                        </p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-blue);">
+                        <h4 style="font-size: 0.85em; margin: 0; color: var(--vibe-blue);">3. Healer Agent</h4>
+                        <p class="compact" style="font-size: 0.65em; margin: 5px 0;">Uses <strong>Trace Data</strong>
+                            and <strong>DOM snapshots</strong> to automatically fix broken tests when the UI changes.
+                        </p>
+                    </div>
+                </div>
+                <div class="highlight-box" style="margin-top: 15px;">
+                    <p class="compact text-blue">Playwright provides the <strong>Observability</strong> (Traces) and
+                        <strong>Control</strong> (MCP) that these agents need to function.</p>
+                </div>
+            </section>
+
+            <!-- Slide 12: Playwright MCP (AI Native) -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2 style="font-size: 1.25em;">10. AI-Native: Playwright MCP</h2>
+                <div class="content-box">
+                    <p class="compact"><strong>Model Context Protocol (MCP)</strong> bridges AI agents to live browsers.
+                    </p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="content-box" style="border-left-color: var(--vibe-orange);">
+                        <h4 style="font-size: 0.8em; margin: 0;">Autonomous Agents</h4>
+                        <p class="compact" style="font-size: 0.65em;">AI can now click, type, and explore your app via
+                            Playwright MCP tools.</p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-blue);">
+                        <h4 style="font-size: 0.8em; margin: 0;">Copilot Integration</h4>
+                        <p class="compact" style="font-size: 0.65em;">GitHub Copilot Agent uses Playwright to verify bug
+                            fixes & features in real-time.</p>
+                    </div>
+                </div>
+                <div class="highlight-box" style="background: #fff7ed; padding: 5px;">
+                    <p class="compact" style="font-size: 0.65em;"><strong>Capabilities:</strong> Auto-verification, AI
+                        Exploratory Testing, Self-Healing Scripts.</p>
+                </div>
+            </section>
+
+            <!-- Slide 13: Final Verdict -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>Final Verdict</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3 style="color: #64748b;">Selenium</h3>
+                        <p class="compact">Script executor for humans. High maintenance legacy.</p>
+                    </div>
+                    <div class="content-box" style="border-left-color: var(--vibe-green);">
+                        <h3 class="text-green">Playwright</h3>
+                        <p class="compact">The OS for intelligent testing systems.</p>
+                    </div>
+                </div>
+                <div class="highlight-box" style="margin-top: 15px; background: #f0fdf4;">
+                    <p class="bold text-blue" style="margin: 0; font-size: 0.8em;">The Strategic Choice:</p>
+                    <p class="compact" style="margin: 0; font-size: 0.7em;">Microsoft Backing + Dedicated Support +
+                        All-in-One Framework = The Industry Standard.</p>
+                </div>
+                <div style="margin-top: 15px;">
+                    <p class="bold text-blue" style="font-size: 1.1em;">"Selenium automates steps. Playwright enables
+                        systems."</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            width: 1280,
+            height: 720,
+            center: true,
+            margin: 0.05
+        });
+    </script>
+</body>
+
+</html>

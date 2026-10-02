@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 01: Core Playwright Skills | 42-Day Mastery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #eff6ff;
+            --secondary: #0ea5e9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --header-height: 80px;
+            --sidebar-width: 320px;
+            --glass: rgba(255, 255, 255, 0.9);
+            --gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-light: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(15, 23, 42, 0.9);
+            --primary-light: rgba(99, 102, 241, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 35px;
+            border-radius: 4px;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: var(--header-height);
+            overflow-y: auto;
+            z-index: 900;
+        }
+
+        .day-nav {
+            padding: 2rem 1.5rem;
+        }
+
+        .day-nav h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .nav-item .day-num {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Main Content */
+        main {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+        }
+
+        .content-area {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 3rem;
+        }
+
+        .day-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .day-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .day-header {
+            margin-bottom: 3rem;
+        }
+
+        .day-header .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary-light);
+            color: #818cf8;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .focus-box {
+            padding: 1.5rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            margin: 2rem 0;
+            font-size: 1.1rem;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem;
+            color: #fff;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem;
+            color: var(--secondary);
+        }
+
+        ul,
+        ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+        }
+
+        .task-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step-up {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 4rem;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            color: #86efac;
+        }
+
+        .code-snippet {
+            margin: 1.5rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .btn-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-prev {
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 1024px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 2rem 1rem;
+            }
+
+            header {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .day-header {
+                margin-bottom: 2rem;
+            }
+
+            .task-card {
+                padding: 1.5rem;
+            }
+
+            .btn-nav {
+                flex-direction: column;
+                gap: 1rem;
+                margin-top: 3rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 850;
+            backdrop-filter: blur(4px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body data-theme="dark">
+    <header>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <img src="../../assets/ulogo.jpg" alt="VibeTestQ Logo">
+                <span style="color: var(--text);">Core Skills</span>
+            </a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="index.html" class="btn" style="color: var(--text-light);">All Weeks</a>
+        </div>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar">
+        <div class="day-nav">
+            <h4>Week 1: Foundations</h4>
+            <a href="javascript:void(0)" class="nav-item active" onclick="showDay(1)">
+                <span class="day-num">DAY 01</span> <span>Architecture & Setup</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(2)">
+                <span class="day-num">DAY 02</span> <span>Git & Node Foundation</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(3)">
+                <span class="day-num">DAY 03</span> <span>Locators Mastery</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(4)">
+                <span class="day-num">DAY 04</span> <span>Actions Mastery</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(5)">
+                <span class="day-num">DAY 05</span> <span>Special Contexts</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(6)">
+                <span class="day-num">DAY 06</span> <span>Assertions & Waiting</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(7)">
+                <span class="day-num">DAY 07</span> <span>TypeScript for Testers</span>
+            </a>
+        </div>
+    </aside>
+
+    <main>
+        <div class="content-area">
+            <!-- Day 1 -->
+            <div id="day1" class="day-content active">
+                <div class="day-header">
+                    <span class="tag">DAY 01</span>
+                    <h1>Architecture & Project Setup</h1>
+                    <div class="focus-box">Understand how Playwright works before writing a single test.</div>
+                </div>
+
+                <h2>What to Study</h2>
+                <ul>
+                    <li>Browser → BrowserContext → Page hierarchy and why it matters</li>
+                    <li>How Playwright communicates with browsers (CDP — Chrome DevTools Protocol)</li>
+                    <li>Why Playwright is faster and more reliable than Selenium</li>
+                    <li>Context-based vs Browser-based execution</li>
+                    <li>What test isolation means — why each test gets a fresh context</li>
+                    <li>The generated project structure — every file and what it does</li>
+                </ul>
+
+                <h3>Warm-up (15 min)</h3>
+                <p>Run <code>npm init playwright@latest</code>. Open <code>playwright.config.ts</code> and read every
+                    line. Look up any option you do not understand.</p>
+
+                <h3>Core Practice (45 min)</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Run <code>npx playwright test --headed</code> — watch the generated example tests run</li>
+                        <li>Run <code>npx playwright test --ui</code> — explore UI mode, understand every panel</li>
+                        <li>Run <code>npx playwright show-report</code> — understand what the HTML report shows</li>
+                        <li>Delete <code>example.spec.ts</code> and create your own <code>tests/first.spec.ts</code>
+                        </li>
+                        <li>Navigate to <code>https://opensource-demo.orangehrmlive.com/web/index.php/auth/login</code>
+                            and write one test that asserts the page title</li>
+                        <li>Run it headed, run it headless — observe the difference</li>
+                    </ol>
+                </div>
+
+                <h3>Open Challenge (30 min)</h3>
+                <p>Run the same test against Firefox and WebKit using <code>--project</code>. Understand what changes in
+                    the config to make this work.</p>
+
+                <div class="step-up">
+                    <i class="fas fa-check-double"></i>
+                    <div><strong>Step-Up:</strong> Nothing existed. Now you have a running project you understand from
+                        the inside.</div>
+                </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div id="day2" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 02</span>
+                    <h1>Git & Node.js Project Foundation</h1>
+                    <div class="focus-box">Every day ends with a commit. Learn Git properly before Day 3.</div>
+                </div>
+
+                <h2>What to Study</h2>
+                <ul>
+                    <li>Git essentials: <code>init</code>, <code>add</code>, <code>commit</code>, <code>push</code>,
+                        <code>pull</code>
+                    </li>
+                    <li>Branching: <code>checkout -b</code>, <code>merge</code>, <code>branch -d</code></li>
+                    <li><code>.gitignore</code> — what never goes into version control</li>
+                    <li>Node.js runtime and npm ecosystem (package.json, scripts)</li>
+                    <li><code>.env</code> and <code>dotenv</code> — environment management</li>
+                </ul>
+
+                <h3>Warm-up</h3>
+                <p>Check your Day 1 repo — is <code>.gitignore</code> correct? Is <code>node_modules</code> tracked? Fix
+                    anything wrong.</p>
+
+                <h3>Core Practice</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Create <code>.gitignore</code> properly for Playwright</li>
+                        <li>Create <code>.env</code> and <code>.env.example</code> for credentials</li>
+                        <li>Install <code>dotenv</code> and load it in your config</li>
+                        <li>Add scripts: <code>test</code>, <code>test:headed</code>, <code>test:ui</code>,
+                            <code>test:report</code>
+                        </li>
+                        <li>Work through a <code>feature/day2-setup</code> branch and merge it</li>
+                    </ol>
+                </div>
+
+                <div class="step-up">
+                    <i class="fas fa-code-branch"></i>
+                    <div><strong>Step-Up:</strong> Yesterday you had a project. Today it is version-controlled and
+                        environment-aware.</div>
+                </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div id="day3" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 03</span>
+                    <h1>Locators: Finding Any Element</h1>
+                    <div class="focus-box">The most important day. Find any element confidently using the right
+                        strategy.</div>
+                </div>
+
+                <h2>What to Study</h2>
+                <div class="code-snippet">
+                    <pre><code class="language-typescript">// Hierarchy of stability
+await page.getByRole('button', { name: 'Log in' }); // 1st Choice
+await page.getByLabel('User Name');
+await page.getByPlaceholder('Enter password');
+await page.getByText('Success');
+await page.getByTestId('submit-btn');
+await page.locator('.css-selector'); // Last Resort</code></pre>
+                </div>
+
+                <h3>Core Practice</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Find OrangeHRM username input 5 different ways</li>
+                        <li>Identify the most stable locator for the login button</li>
+                        <li>Navigate Employee List — find search field, table rows, Add button</li>
+                        <li>Practice <code>filter()</code>, <code>nth()</code>, <code>first()</code>, and
+                            <code>last()</code>
+                        </li>
+                        <li>Use Playwright Codegen and manually improve the results</li>
+                    </ol>
+                </div>
+
+                <div class="step-up">
+                    <i class="fas fa-bullseye"></i>
+                    <div><strong>Step-Up:</strong> Yesterday you had a project structure. Today you can find any element
+                        on any page.</div>
+                </div>
+            </div>
+
+            <!-- Day 4 -->
+            <div id="day4" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 04</span>
+                    <h1>Actions: Every Method on Every Element</h1>
+                    <div class="focus-box">Find it, then call the right method. Simple and powerful.</div>
+                </div>
+
+                <h2>What to Study</h2>
+                <ul>
+                    <li>Click Actions: <code>click</code>, <code>dblclick</code>, <code>rightClick</code></li>
+                    <li>Input: <code>fill</code>, <code>type</code>, <code>clear</code>, <code>press</code></li>
+                    <li>Selection: <code>selectOption</code>, <code>check</code>, <code>uncheck</code></li>
+                    <li>Pointer: <code>hover</code>, <code>dragAndDrop</code>, <code>focus</code></li>
+                    <li>Files: <code>setInputFiles</code> — the only way to handle uploads</li>
+                </ul>
+
+                <h3>Core Practice</h3>
+                <div class="task-card">
+                    <ol>
+                        <li>Full login flow using only <code>fill()</code> and <code>click()</code></li>
+                        <li>Add Employee form completion (dropdowns, toggles)</li>
+                        <li>Upload a resume using <code>setInputFiles()</code></li>
+                        <li>Manual keyboard navigation login (no mouse clicks)</li>
+                        <li>Drag and drop practice on DemoQA</li>
+                    </ol>
+                </div>
+
+                <div class="step-up">
+                    <i class="fas fa-mouse-pointer"></i>
+                    <div><strong>Step-Up:</strong> Yesterday you found elements. Today you can perform any action on any
+                        element.</div>
+                </div>
+            </div>
+
+            <!-- Day 5 -->
+            <div id="day5" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 05</span>
+                    <h1>Special Contexts: Dialogs, Frames & Windows</h1>
+                    <div class="focus-box">These are not element types. They are special contexts.</div>
+                </div>
+
+                <h3>Key Concepts</h3>
+                <ul>
+                    <li><strong>Dialogs:</strong> Set listener <code>page.on('dialog')</code> BEFORE trigger.</li>
+                    <li><strong>iFrames:</strong> Use <code>frameLocator()</code> to scope your actions.</li>
+                    <li><strong>Windows:</strong> <code>context.waitForEvent('page')</code> to capture new tabs.</li>
+                    <li><strong>Downloads:</strong> Intercept with <code>page.waitForDownload()</code>.</li>
+                </ul>
+
+                <div class="step-up">
+                    <i class="fas fa-window-restore"></i>
+                    <div><strong>Step-Up:</strong> Yesterday was normal elements. Today you handle every context they
+                        can live inside.</div>
+                </div>
+            </div>
+
+            <!-- Day 6 -->
+            <div id="day6" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 06</span>
+                    <h1>Assertions & Wait Strategies</h1>
+                    <div class="focus-box">Verify outcomes with precision using Web-First assertions.</div>
+                </div>
+
+                <h2>Wait Strategies</h2>
+                <ul>
+                    <li><code>waitForLoadState</code>, <code>waitForURL</code></li>
+                    <li><code>waitForResponse</code> — wait for the API, not the UI.</li>
+                    <li><code>expect.soft()</code> — keep going even on failure.</li>
+                </ul>
+
+                <div class="step-up">
+                    <i class="fas fa-hourglass-half"></i>
+                    <div><strong>Step-Up:</strong> Yesterday was special contexts. Today you verify outcomes and
+                        understand Playwright's auto-waiting.</div>
+                </div>
+            </div>
+
+            <!-- Day 7 -->
+            <div id="day7" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 07</span>
+                    <h1>TypeScript for Testers</h1>
+                    <div class="focus-box">Make your code type-safe and self-documenting. Zero 'any'.</div>
+                </div>
+
+                <div class="code-snippet">
+                    <pre><code class="language-typescript">interface Employee {
+    id: string;
+    name: string;
+    role: 'Admin' | 'Employee';
+}
+
+function process(emp: Employee) { ... }</code></pre>
+                </div>
+
+                <div class="step-up">
+                    <i class="fas fa-shield-halved"></i>
+                    <div><strong>Step-Up:</strong> Today your code is type-safe — every method, data object, and return
+                        value has a declared type.</div>
+                </div>
+            </div>
+
+            <div class="btn-nav">
+                <a href="javascript:void(0)" class="btn btn-prev" id="prevBtn" onclick="prevDay()"><i
+                        class="fas fa-chevron-left"></i> Previous Day</a>
+                <a href="javascript:void(0)" class="btn btn-next" id="nextBtn" onclick="nextDay()">Next Day <i
+                        class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script>
+        let currentDay = 1;
+        const totalDays = 7;
+
+        function showDay(day) {
+            currentDay = day;
+            document.querySelectorAll('.day-content').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById('day' + day).classList.add('active');
+            document.querySelectorAll('.nav-item')[day - 1].classList.add('active');
+
+            document.getElementById('prevBtn').style.visibility = day === 1 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').innerText = day === totalDays ? 'Finish Week' : 'Next Day';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close sidebar on mobile after selection
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function nextDay() {
+            if (currentDay < totalDays) showDay(currentDay + 1);
+            else window.location.href = 'playwright-program-week2.html';
+        }
+
+        function prevDay() {
+            if (currentDay > 1) showDay(currentDay - 1);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', theme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('lab-theme', theme);
+        }
+
+        // Initialize theme from storage
+        const savedTheme = localStorage.getItem('lab-theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        const toggleIcon = document.querySelector('.theme-toggle i');
+        if (toggleIcon) toggleIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    </script>
+</body>
+
+</html>

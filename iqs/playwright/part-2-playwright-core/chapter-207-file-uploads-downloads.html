@@ -1,0 +1,637 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 207 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">File</span> <span class="w2">Uploads</span> <span class="w3">&amp;</span> <span class="w4">Downloads</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers how Playwright handles file uploads and downloads. Interviewers test this topic because file operations involve browser security boundaries and require patterns (waitForEvent + Promise.all) that trip up less experienced engineers.</span>
+  </div>
+
+
+  <!-- Q207.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.1</span>
+      <h2 class="sn-q-text">How does Playwright handle file downloads?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright intercepts downloads at the browser level before they reach the file system. When a download is triggered, Playwright emits a <code class="sn-ic">download</code> event. You listen for this event, then interact with the <code class="sn-ic">Download</code> object it provides.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Pattern: start listening BEFORE clicking the download trigger</span>
+<span class="tc-kw">const</span> downloadPromise = page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export CSV'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">const</span> download = <span class="tc-kw">await</span> downloadPromise;
+
+<span class="tc-cm">// Now interact with the download</span>
+<span class="tc-kw">const</span> filename = download.<span class="tc-fn">suggestedFilename</span>(); <span class="tc-cm">// 'report-2024.csv'</span>
+<span class="tc-kw">const</span> path     = <span class="tc-kw">await</span> download.<span class="tc-fn">path</span>();        <span class="tc-cm">// temp file path</span>
+<span class="tc-kw">const</span> failure  = <span class="tc-kw">await</span> download.<span class="tc-fn">failure</span>();     <span class="tc-cm">// null if successful</span>
+
+<span class="tc-cm">// Save to a permanent location</span>
+<span class="tc-kw">await</span> download.<span class="tc-fn">saveAs</span>(<span class="tc-str">'./downloads/report.csv'</span>);</div>
+      </div>
+<p class="sn-para">Downloads are stored in a temporary directory and deleted when the browser context closes. Always <code class="sn-ic">saveAs()</code> if you need to inspect the file later.</p>
+    </div>
+  </div>
+
+  <!-- Q207.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.2</span>
+      <h2 class="sn-q-text">What is the Download event in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <code class="sn-ic">download</code> event fires on the <code class="sn-ic">page</code> object when any download starts. A <code class="sn-ic">Download</code> object is passed to the handler.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">Download</code> object properties:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">suggestedFilename()</code> — the filename the server suggested</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">url()</code> — the URL that triggered the download</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">path()</code> — async, returns the local temp file path when download completes</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">saveAs(path)</code> — async, copies the downloaded file to a permanent location</span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">failure()</code> — async, returns null if successful or an error string if failed</span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">cancel()</code> — cancels the in-progress download</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Event listener approach (for multiple downloads)</span>
+page.<span class="tc-fn">on</span>(<span class="tc-str">'download'</span>, <span class="tc-kw">async</span> (download) =&gt; {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'Download started:'</span>, download.<span class="tc-fn">suggestedFilename</span>());
+  <span class="tc-kw">await</span> download.<span class="tc-fn">saveAs</span>(<span class="tc-str">`./downloads/${download.suggestedFilename()}`</span>);
+});
+
+<span class="tc-cm">// waitForEvent approach (for one specific download)</span>
+<span class="tc-kw">const</span> [download] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Download'</span> }).<span class="tc-fn">click</span>(),
+]);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q207.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.3</span>
+      <h2 class="sn-q-text">When do you need to test file downloads and uploads in automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">File download tests are needed for:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Data export features (CSV, Excel, PDF reports)</span></li>
+<li><span class="icon">💡</span><span>Invoice and receipt generation</span></li>
+<li><span class="icon">⚡</span><span>Bulk operations that produce a downloadable result</span></li>
+</ul>
+<p class="sn-para">File upload tests are needed for:</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Profile picture and document uploads</span></li>
+<li><span class="icon">📌</span><span>Bulk data import (CSV import of products, users, records)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>File attachment features (support tickets, notes)</span></li>
+</ul>
+<p class="sn-para">Both are critical business flows. Skipping them in automation means manual testing for every release — which is exactly the kind of high-risk repetitive work that automation should cover.</p>
+    </div>
+  </div>
+
+  <!-- Q207.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.4</span>
+      <h2 class="sn-q-text">How does your project handle file uploads and downloads?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, file operations follow standard patterns defined in a helper module.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Downloads</strong> use the <code class="sn-ic">Promise.all</code> + <code class="sn-ic">waitForEvent('download')</code> pattern. The helper validates both the filename format (using a regex) and the file contents:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">downloadAndVerify</span>(page: Page, buttonName: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">const</span> [download] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+    page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>),
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: buttonName }).<span class="tc-fn">click</span>(),
+  ]);
+  <span class="tc-kw">expect</span>(download.<span class="tc-fn">failure</span>()).resolves.<span class="tc-fn">toBeNull</span>();
+  <span class="tc-kw">return</span> download;
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Uploads</strong> use <code class="sn-ic">setInputFiles()</code> with buffer-based test files for small uploads and file paths for binary files (PDF, images) stored in <code class="sn-ic">tests/data/</code>. We never use absolute paths — always <code class="sn-ic">path.join(__dirname, '../data/file.pdf')</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q207.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.5</span>
+      <h2 class="sn-q-text">What is waitForEvent and how do you use it with downloads?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.waitForEvent(event)</code> returns a Promise that resolves when the specified event fires. It is essential for downloads because the download event fires asynchronously — you must register the listener before triggering the download.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ WRONG — listener registered after click; download may have already started</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Download'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">const</span> download = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>); <span class="tc-cm">// might miss the event</span>
+
+<span class="tc-cm">// ✅ CORRECT — both start at the same time via Promise.all</span>
+<span class="tc-kw">const</span> [download] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>),       <span class="tc-cm">// register listener first</span>
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Download'</span> }).<span class="tc-fn">click</span>(), <span class="tc-cm">// then trigger</span>
+]);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">waitForEvent</code> is also used for:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">popup</code> — new window/tab opened</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">dialog</code> — alert/confirm/prompt appears</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">filechooser</code> — file picker dialog opened</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">console</code> — browser console message</span></li>
+</ul>
+<p class="sn-para">The <code class="sn-ic">Promise.all</code> pattern is mandatory for all these events. The listener must be registered before the action that triggers the event.</p>
+    </div>
+  </div>
+
+  <!-- Q207.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.6</span>
+      <h2 class="sn-q-text">How do you set the download path in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">By default, downloads go to a temporary directory. To redirect downloads:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Option 1 — in playwright.config.ts</span>
+use: {
+  acceptDownloads: <span class="tc-kw">true</span>,          <span class="tc-cm">// allow downloads (default in @playwright/test)</span>
+}
+
+<span class="tc-cm">// Option 2 — custom context (test level)</span>
+<span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+  acceptDownloads: <span class="tc-kw">true</span>,
+});
+
+<span class="tc-cm">// Option 3 — saveAs after download (most common)</span>
+<span class="tc-kw">const</span> [download] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export'</span> }).<span class="tc-fn">click</span>(),
+]);
+<span class="tc-kw">await</span> download.<span class="tc-fn">saveAs</span>(path.<span class="tc-fn">join</span>(testInfo.outputDir, <span class="tc-str">'export.csv'</span>));
+<span class="tc-cm">// testInfo.outputDir is unique per test — no file name collisions in parallel runs</span></div>
+      </div>
+<p class="sn-para">Using <code class="sn-ic">testInfo.outputDir</code> is the best practice for CI. It creates a unique directory per test, so parallel test runs never collide on filenames.</p>
+    </div>
+  </div>
+
+  <!-- Q207.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.7</span>
+      <h2 class="sn-q-text">What is the difference between page.setInputFiles and dragging a file to an upload area?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.setInputFiles()</code> (or <code class="sn-ic">locator.setInputFiles()</code>) sets the files on an <code class="sn-ic">&lt;input type=&quot;file&quot;&gt;</code> element directly. It bypasses the native OS file picker dialog and works in headless mode.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Upload Document'</span>).<span class="tc-fn">setInputFiles</span>(<span class="tc-str">'./tests/data/sample.pdf'</span>);</div>
+      </div>
+<p class="sn-para">Dragging a file simulates the HTML5 drag-and-drop upload event, which is needed when the upload area is a drop zone (no <code class="sn-ic">&lt;input type=&quot;file&quot;&gt;</code>).</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// For a pure drop zone without a file input</span>
+<span class="tc-kw">const</span> dataTransfer = <span class="tc-kw">await</span> page.<span class="tc-fn">evaluateHandle</span>(() =&gt; {
+  <span class="tc-kw">const</span> dt = <span class="tc-kw">new</span> DataTransfer();
+  <span class="tc-kw">const</span> file = <span class="tc-kw">new</span> File([<span class="tc-str">'content'</span>], <span class="tc-str">'test.txt'</span>, { <span class="tc-kw">type</span>: <span class="tc-str">'text/plain'</span> });
+  dt.items.<span class="tc-fn">add</span>(file);
+  <span class="tc-kw">return</span> dt;
+});
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'drop-zone'</span>).<span class="tc-fn">dispatchEvent</span>(<span class="tc-str">'drop'</span>, { dataTransfer });</div>
+      </div>
+<p class="sn-para"><strong class="k-red">In practice:</strong> most upload areas — even those with a custom drop zone UI — have a hidden <code class="sn-ic">&lt;input type=&quot;file&quot;&gt;</code> underneath. <code class="sn-ic">setInputFiles()</code> works on that hidden input. Try <code class="sn-ic">setInputFiles</code> first; only use the DataTransfer approach if the upload area has no input element.</p>
+    </div>
+  </div>
+
+  <!-- Q207.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.8</span>
+      <h2 class="sn-q-text">What is the difference between download.path() and download.saveAs()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">download.path()</code> — returns the path of the temporary file in Playwright's temp directory. The file exists only until the browser context closes. The path is available after the download completes.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">download.saveAs(destination)</code> — copies the downloaded file from the temp directory to a permanent location you specify. After <code class="sn-ic">saveAs</code>, the file persists after the context closes.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> download = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>);
+
+<span class="tc-cm">// Just get the temp path (for reading during the test)</span>
+<span class="tc-kw">const</span> tempPath = <span class="tc-kw">await</span> download.<span class="tc-fn">path</span>();
+<span class="tc-kw">const</span> content = fs.<span class="tc-fn">readFileSync</span>(tempPath!, <span class="tc-str">'utf8'</span>);
+<span class="tc-kw">expect</span>(content).<span class="tc-fn">toContain</span>(<span class="tc-str">'Order,Customer,Total'</span>);
+
+<span class="tc-cm">// Save permanently (for CI artifacts, post-test inspection)</span>
+<span class="tc-kw">await</span> download.<span class="tc-fn">saveAs</span>(<span class="tc-str">'./test-artifacts/report.csv'</span>);</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">path()</code> when you just need to read the file during the test. Use <code class="sn-ic">saveAs()</code> when you need the file to persist after the test for CI artifact collection or manual review.</p>
+    </div>
+  </div>
+
+  <!-- Q207.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.9</span>
+      <h2 class="sn-q-text">What is the difference between waitForEvent('download') and waitForDownload?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">There is no <code class="sn-ic">waitForDownload</code> method in Playwright's core API. The correct method is <code class="sn-ic">page.waitForEvent('download')</code>.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.waitForEvent('download')</code> returns a Promise that resolves with the <code class="sn-ic">Download</code> object when the download event fires.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Correct — the only download waiting API</span>
+<span class="tc-kw">const</span> downloadPromise = page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Download'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">const</span> download = <span class="tc-kw">await</span> downloadPromise;</div>
+      </div>
+<p class="sn-para">Some older Playwright documentation or community examples may reference <code class="sn-ic">page.waitForDownload()</code> — this was briefly available in early alpha versions but was removed. <code class="sn-ic">waitForEvent('download')</code> is the stable API.</p>
+    </div>
+  </div>
+
+  <!-- Q207.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.10</span>
+      <h2 class="sn-q-text">When should you verify the download content vs just the filename?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Verify only the filename when:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The download is generated dynamically and the filename format confirms the</span></li>
+</ul>
+<p class="sn-para">  correct operation (e.g., <code class="sn-ic">export_2024-01-15_14-30.csv</code>)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>The content is too large or complex to parse in a test</span></li>
+<li><span class="icon">⚡</span><span>A downstream test will validate the imported data</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Verify the content when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>The feature being tested is "does this export contain the correct data?"</span></li>
+<li><span class="icon">📌</span><span>The file is a structured format (CSV, JSON) that is easy to parse</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Incorrect content would not be detectable by filename alone</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Filename validation only</span>
+<span class="tc-kw">const</span> filename = download.<span class="tc-fn">suggestedFilename</span>();
+<span class="tc-kw">expect</span>(filename).<span class="tc-fn">toMatch</span>(/^orders_\d{<span class="tc-num">4</span>}-\d{<span class="tc-num">2</span>}-\d{<span class="tc-num">2</span>}\.csv$/);
+
+<span class="tc-cm">// Content validation</span>
+<span class="tc-kw">const</span> tempPath = <span class="tc-kw">await</span> download.<span class="tc-fn">path</span>();
+<span class="tc-kw">const</span> content  = fs.<span class="tc-fn">readFileSync</span>(tempPath!, <span class="tc-str">'utf8'</span>);
+<span class="tc-kw">const</span> rows     = content.<span class="tc-fn">split</span>(<span class="tc-str">'\n'</span>);
+<span class="tc-kw">expect</span>(rows[<span class="tc-num">0</span>]).<span class="tc-fn">toBe</span>(<span class="tc-str">'Order ID,Customer,Total,Status'</span>);  <span class="tc-cm">// header row</span>
+<span class="tc-kw">expect</span>(rows.length).<span class="tc-fn">toBeGreaterThan</span>(<span class="tc-num">1</span>); <span class="tc-cm">// at least one data row</span></div>
+      </div>
+<p class="sn-para">Content verification adds real value for exports. A test that only checks the filename does not verify that the correct data was exported.</p>
+    </div>
+  </div>
+
+  <!-- Q207.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.11</span>
+      <h2 class="sn-q-text">What is wrong with not using Promise.all when triggering a download?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Race condition — download may fire before the listener is registered</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">const</span> download = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>); <span class="tc-cm">// may miss the event</span></div>
+      </div>
+<p class="sn-para">If the click triggers a fast download (immediate response from the server), the <code class="sn-ic">download</code> event fires before <code class="sn-ic">waitForEvent</code> registers the listener. The listener never fires. The <code class="sn-ic">await waitForEvent</code> hangs until it times out.</p>
+<p class="sn-para">This is a race condition: the event happens before the handler is ready.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Correct — listener registered before click, both start simultaneously</span>
+<span class="tc-kw">const</span> [download] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export'</span> }).<span class="tc-fn">click</span>(),
+]);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">Promise.all</code> starts both Promises simultaneously. <code class="sn-ic">waitForEvent</code> registers the listener first (before the Promise resolves). The click triggers the download. The listener catches it.</p>
+<p class="sn-para">This pattern is mandatory for downloads, popups, dialogs, and file choosers — any event that fires as a result of an action.</p>
+    </div>
+  </div>
+
+  <!-- Q207.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.12</span>
+      <h2 class="sn-q-text">How does Playwright file handling compare to Selenium's approach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright</th><th class="sn-th-green">Selenium</th></tr></thead>
+          <tbody>
+          <tr><td>File upload</td><td><code class="sn-ic">setInputFiles(path or buffer)</code></td><td><code class="sn-ic">sendKeys(absolutePath)</code> on input element</td></tr>
+          <tr><td>Generated files</td><td><code class="sn-ic">{ name, mimeType, buffer }</code> object — no disk file needed</td><td>Must create physical file on disk</td></tr>
+          <tr><td>Downloads</td><td><code class="sn-ic">waitForEvent('download')</code> + <code class="sn-ic">saveAs()</code></td><td>No built-in download API — use browser preferences or proxy</td></tr>
+          <tr><td>Headless support</td><td>Full support</td><td>Download path config required</td></tr>
+          <tr><td>Download path</td><td>Temp dir, use <code class="sn-ic">saveAs()</code></td><td>Must configure browser download directory upfront</td></tr>
+          <tr><td>File chooser dialogs</td><td><code class="sn-ic">waitForEvent('filechooser')</code></td><td>No native support — requires OS automation (AutoIT, Robot Framework)</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Playwright's file handling is significantly cleaner. Selenium's download testing requires configuring browser download preferences before launch and waiting with <code class="sn-ic">Thread.sleep()</code> for files to appear on disk. Playwright's event-driven model is deterministic — you know exactly when the download is complete because you awaited the Promise.</p>
+    </div>
+  </div>
+
+  <!-- Q207.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.13</span>
+      <h2 class="sn-q-text">Write code to click a download button and verify the downloaded file</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> * as fs <span class="tc-kw">from</span> <span class="tc-str">'fs'</span>;
+<span class="tc-kw">import</span> * as path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'orders CSV export contains correct data'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/orders'</span>);
+
+  <span class="tc-cm">// Filter to show only completed orders before exporting</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'combobox'</span>, { name: <span class="tc-str">'Status'</span> }).<span class="tc-fn">selectOption</span>(<span class="tc-str">'completed'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Apply Filters'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/orders'</span>) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>);
+
+  <span class="tc-cm">// Trigger the download — listener MUST be registered before click</span>
+  <span class="tc-kw">const</span> [download] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+    page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>),
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export CSV'</span> }).<span class="tc-fn">click</span>(),
+  ]);
+
+  <span class="tc-cm">// Verify the download did not fail</span>
+  <span class="tc-kw">expect</span>(<span class="tc-kw">await</span> download.<span class="tc-fn">failure</span>()).<span class="tc-fn">toBeNull</span>();
+
+  <span class="tc-cm">// Verify filename format — contains today's date</span>
+  <span class="tc-kw">const</span> filename = download.<span class="tc-fn">suggestedFilename</span>();
+  <span class="tc-kw">expect</span>(filename).<span class="tc-fn">toMatch</span>(/^orders-completed-\d{<span class="tc-num">4</span>}-\d{<span class="tc-num">2</span>}-\d{<span class="tc-num">2</span>}\.csv$/);
+
+  <span class="tc-cm">// Save and verify content</span>
+  <span class="tc-kw">const</span> savePath = path.<span class="tc-fn">join</span>(testInfo.outputDir, <span class="tc-str">'orders.csv'</span>);
+  <span class="tc-kw">await</span> download.<span class="tc-fn">saveAs</span>(savePath);
+
+  <span class="tc-kw">const</span> content = fs.<span class="tc-fn">readFileSync</span>(savePath, <span class="tc-str">'utf8'</span>);
+  <span class="tc-kw">const</span> lines = content.<span class="tc-fn">split</span>(<span class="tc-str">'\n'</span>).<span class="tc-fn">filter</span>(l =&gt; l.<span class="tc-fn">trim</span>().length &gt; <span class="tc-num">0</span>);
+
+  <span class="tc-cm">// Verify header</span>
+  <span class="tc-kw">expect</span>(lines[<span class="tc-num">0</span>]).<span class="tc-fn">toBe</span>(<span class="tc-str">'Order ID,Customer,Total,Status,Date'</span>);
+
+  <span class="tc-cm">// Verify all rows are completed orders</span>
+  <span class="tc-kw">const</span> dataRows = lines.<span class="tc-fn">slice</span>(<span class="tc-num">1</span>);
+  <span class="tc-kw">for</span> (<span class="tc-kw">const</span> row <span class="tc-kw">of</span> dataRows) {
+    <span class="tc-kw">expect</span>(row).<span class="tc-fn">toContain</span>(<span class="tc-str">'completed'</span>);
+  }
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q207.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.14</span>
+      <h2 class="sn-q-text">Write code to upload a file to a file input and verify the upload succeeded</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> * as path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can upload a profile document'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/profile/documents'</span>);
+
+  <span class="tc-cm">// Upload from a file path</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Upload Document'</span>).<span class="tc-fn">setInputFiles</span>(
+    path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'../data/sample-document.pdf'</span>)
+  );
+
+  <span class="tc-cm">// Click the submit button after selecting the file</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Upload'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Wait for the upload to complete (API response)</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(r =&gt;
+    r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/documents/upload'</span>) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>
+  );
+
+  <span class="tc-cm">// Verify the uploaded file appears in the documents list</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>).<span class="tc-fn">filter</span>({ hasText: <span class="tc-str">'sample-document.pdf'</span> })
+  ).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Alternative: upload a generated buffer (no physical file needed)</span>
+  <span class="tc-kw">const</span> csvContent = <span class="tc-str">'Name,Value\nTest,123\n'</span>;
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Import CSV'</span>).<span class="tc-fn">setInputFiles</span>({
+    name:     <span class="tc-str">'import-data.csv'</span>,
+    mimeType: <span class="tc-str">'text/csv'</span>,
+    buffer:   Buffer.<span class="tc-kw">from</span>(csvContent),
+  });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q207.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q207.15</span>
+      <h2 class="sn-q-text">Describe a file download or upload test you implemented and a challenge you faced</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we tested a bulk import feature where users upload a CSV of products. The upload had three outcomes: success with a count, partial success with a list of failed rows, and complete failure.</p>
+      </div>
+<p class="sn-para">The initial test just uploaded and checked for the success message. It passed most of the time but occasionally failed with a timeout on <code class="sn-ic">waitForResponse</code>.</p>
+<p class="sn-para">The root cause: the upload triggered a server-side processing job. The HTTP response came back immediately with <code class="sn-ic">{ status: &quot;processing&quot;, jobId: &quot;123&quot; }</code>, but the actual processing happened asynchronously. A polling endpoint at <code class="sn-ic">/api/import-jobs/123</code> updated every second.</p>
+<p class="sn-para">The original test was waiting for the upload response — which came back in under a second. But the success message on the page depended on the job completing, which took 2–8 seconds. We were asserting the success message before it appeared.</p>
+<p class="sn-para">The fix:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Wait for the upload response</span>
+<span class="tc-kw">const</span> [uploadResponse] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/import'</span>) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">202</span>),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Import Products'</span> }).<span class="tc-fn">click</span>(),
+]);
+<span class="tc-kw">const</span> { jobId } = <span class="tc-kw">await</span> uploadResponse.<span class="tc-fn">json</span>();
+
+<span class="tc-cm">// Poll for job completion</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">poll</span>(
+  <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">const</span> status = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/import-jobs/${jobId}`</span>).<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>());
+    <span class="tc-kw">return</span> status.state;
+  },
+  { timeout: 15_000, intervals: [<span class="tc-num">1000</span>, <span class="tc-num">2000</span>, <span class="tc-num">3000</span>] }
+).<span class="tc-fn">toBe</span>(<span class="tc-str">'completed'</span>);
+
+<span class="tc-cm">// Now assert the success message</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(/Import completed: <span class="tc-num">42</span> products added/);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">expect.poll</code> retried the job status check with backoff until it read <code class="sn-ic">'completed'</code>. The test became reliable across all environments.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Always use <code class="sn-ic">Promise.all</code> with <code class="sn-ic">waitForEvent('download')</code> before clicking. Registering the listener after the click is a race condition.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">setInputFiles()</code> bypasses the OS file picker. It accepts a file path, a buffer object, or an array of files.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">download.path()</code> is the temp file path. <code class="sn-ic">download.saveAs()</code> copies it permanently. Use <code class="sn-ic">testInfo.outputDir</code> for CI artifacts.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Verify download content (not just filename) when the feature being tested is the correctness of exported data.</span></li>
+            <li><span class="icon">⭐</span><span>For async processing after upload, use <code class="sn-ic">expect.poll()</code> rather than a fixed <code class="sn-ic">waitForTimeout</code> — it retries until the condition is met.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

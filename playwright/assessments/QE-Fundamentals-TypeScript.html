@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: QE Fundamentals & TypeScript - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --secondary: #22c55e;
+    --accent: #f97316;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.logo img {
+    height: 50px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.assessment-title {
+    text-align: right;
+}
+
+.assessment-title h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.assessment-title p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.question-number {
+    color: var(--primary);
+    min-width: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background-color: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.option input {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.option.correct {
+    border-color: var(--secondary);
+    background-color: #ecfdf5;
+}
+
+.option.incorrect {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.question.unanswered {
+    border: 2px solid var(--danger) !important;
+    background-color: #fef2f2 !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.result-section {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.name-input-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.name-input-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.name-input-section input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: none;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary);
+}
+
+@media print {
+
+    .btn,
+    .name-input-section {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .explanation,
+    .result-section {
+        display: block !important;
+    }
+
+    #printed-name {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+}
+
+#printed-name {
+    display: none;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #e11d48;
+    font-family: monospace;
+}
+
+pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo"></div>
+            <a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i> Back to Assessments Home</a>
+            <div class="assessment-title">
+                <h1>Assessment</h1>
+                <p>Loading topics...</p>
+            </div>
+        </header>
+
+        <div id="result-container" class="card result-section">
+            <div id="printed-name"></div>
+            <h2>Assessment Completed!</h2>
+            <div id="score-display" class="score-display">0 / 0</div>
+            <p id="feedback-text" class="feedback-text"></p>
+            <div class="name-input-section">
+                <label for="student-name">Enter your name for the report:</label>
+                <input type="text" id="student-name" placeholder="Your Full Name"><br>
+                <button class="btn btn-success" onclick="preparePrint()"><i class="fas fa-print"></i> Print
+                    Result</button>
+            </div>
+        </div>
+
+        <div id="quiz-container">
+            <div class="card">
+                <form id="quiz-form"></form>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-light); font-size: 0.8rem;">
+            &copy; 2026 VibeTestQ. All rights reserved.
+        </footer>
+    </div>
+
+    <script type="text/plain" id="assessment-markdown">
+# Assessment: QE Fundamentals & TypeScript MCQ
+
+**Total Questions:** 30  
+**Time:** 30 minutes  
+**Pass Mark:** 60%  
+**Topics:** Quality Engineering, Test Pyramid, TypeScript, Functions, Debugging
+
+---
+
+## Questions
+
+### Question 1
+Which statement best describes Quality Engineering?
+
+A) Focused only on finding defects after release.
+B) Focused on preventing defects through early and continuous testing.
+C) Focused only on manual testing.
+D) Focused only on UI testing.
+
+**Answer: B) Focused on preventing defects through early and continuous testing.**
+
+**Explanation:** QE emphasizes defect prevention and continuous quality practices.
+
+---
+
+### Question 2
+What is a best practice for Quality Engineering?
+
+A) Test only at the end of the sprint.
+B) Shift testing left into early development stages.
+C) Avoid automation to save time.
+D) Ignore CI/CD pipelines.
+
+**Answer: B) Shift testing left into early development stages.**
+
+**Explanation:** Shift-left reduces late-stage defects and cost.
+
+---
+
+### Question 3
+Which pitfall should you avoid with Quality Engineering?
+
+A) Collaborative testing.
+B) Treating QE as only an end-phase activity.
+C) Using automation in CI/CD.
+D) Tracking quality metrics.
+
+**Answer: B) Treating QE as only an end-phase activity.**
+
+**Explanation:** QE is continuous, not just a final testing phase.
+
+---
+
+### Question 4
+Manual testing is best suited for:
+
+A) Regression tests executed daily.
+B) Exploratory and usability testing.
+C) High-volume API checks.
+D) Performance load testing.
+
+**Answer: B) Exploratory and usability testing.**
+
+**Explanation:** Manual testing excels at judgment-based scenarios.
+
+---
+
+### Question 5
+Automation testing is best suited for:
+
+A) One-time visual checks.
+B) Repetitive regression and smoke tests.
+C) Unscripted exploratory testing.
+D) UI/UX feedback sessions.
+
+**Answer: B) Repetitive regression and smoke tests.**
+
+**Explanation:** Automation is most valuable for repeatable tests.
+
+---
+
+### Question 6
+Which pitfall should you avoid when choosing automation?
+
+A) Automating stable, repeatable flows.
+B) Automating unstable UI flows too early.
+C) Automating API regression.
+D) Automating data-driven checks.
+
+**Answer: B) Automating unstable UI flows too early.**
+
+**Explanation:** Unstable flows cause flaky automation and high maintenance.
+
+---
+
+### Question 7
+The test pyramid recommends:
+
+A) Most coverage in UI tests.
+B) Most coverage in unit tests.
+C) No API tests.
+D) Only E2E tests.
+
+**Answer: B) Most coverage in unit tests.**
+
+**Explanation:** Unit tests are fast and provide broad coverage.
+
+---
+
+### Question 8
+A best practice for pyramid balance is:
+
+A) Fewer unit tests, more UI tests.
+B) Many unit tests, some API tests, few UI tests.
+C) Only API tests.
+D) Only UI tests.
+
+**Answer: B) Many unit tests, some API tests, few UI tests.**
+
+**Explanation:** This balance maximizes speed and reliability.
+
+---
+
+### Question 9
+Which is a pyramid anti-pattern?
+
+A) Keeping UI tests minimal.
+B) Over-reliance on UI tests.
+C) Adding unit tests for business logic.
+D) Using API tests for service contracts.
+
+**Answer: B) Over-reliance on UI tests.**
+
+**Explanation:** UI-heavy suites are slow and flaky.
+
+---
+
+### Question 10
+Environment setup is important because it:
+
+A) Reduces the need for tests.
+B) Ensures consistent tooling and dependencies.
+C) Replaces version control.
+D) Eliminates CI/CD.
+
+**Answer: B) Ensures consistent tooling and dependencies.**
+
+**Explanation:** Consistency prevents “works on my machine” issues.
+
+---
+
+### Question 11
+What is a best practice for Interfaces and contracts?
+
+A) Use interfaces for shared DTOs and API response shapes.
+B) Use classes for every data shape, even if no behavior exists.
+C) Avoid typing shared models to stay flexible.
+D) Prefer any for public interfaces.
+
+**Answer: A) Use interfaces for shared DTOs and API response shapes.**
+
+**Explanation:** Shared contracts reduce duplication and improve consistency.
+
+---
+
+### Question 12
+Which pitfall should you avoid with Interfaces and contracts?
+
+A) Documenting shared interfaces.
+B) Reusing interfaces across modules.
+C) Duplicating object shapes instead of reusing interfaces.
+D) Using type aliases for unions.
+
+**Answer: C) Duplicating object shapes instead of reusing interfaces.**
+
+**Explanation:** Duplication increases drift and maintenance cost.
+
+---
+
+### Question 13
+Which statement best describes Union and literal types?
+
+A) They restrict values to a known set (e.g., "draft" | "published").
+B) They allow any string at runtime.
+C) They only apply to numeric types.
+D) They replace the need for enums and interfaces entirely.
+
+**Answer: A) They restrict values to a known set (e.g., "draft" | "published").**
+
+**Explanation:** Literal unions encode allowed values at compile time.
+
+---
+
+### Question 14
+What is a best practice for Union and literal types?
+
+A) Use literal unions for status/type fields to prevent invalid values.
+B) Use any so payloads are flexible.
+C) Avoid unions and use strings everywhere.
+D) Use unions only in tests, not production code.
+
+**Answer: A) Use literal unions for status/type fields to prevent invalid values.**
+
+**Explanation:** Literal unions enforce valid states at compile time.
+
+---
+
+### Question 15
+Which pitfall should you avoid with Union and literal types?
+
+A) Using unions for status fields.
+B) Allowing uncontrolled string values for critical fields.
+C) Using literal unions for feature flags.
+D) Combining unions with enums.
+
+**Answer: B) Allowing uncontrolled string values for critical fields.**
+
+**Explanation:** Unrestricted strings lead to invalid states and bugs.
+
+---
+
+### Question 16
+Which statement best describes Generics?
+
+A) Generics remove type checking.
+B) Generics enable reusable, type-safe functions and structures.
+C) Generics are only for classes.
+D) Generics replace interfaces.
+
+**Answer: B) Generics enable reusable, type-safe functions and structures.**
+
+**Explanation:** Generics let you parameterize types safely.
+
+---
+
+### Question 17
+What is a best practice for Generics?
+
+A) Use generics for reusable algorithms and constrain with extends when needed.
+B) Use generics for every function regardless of complexity.
+C) Avoid constraints to keep types vague.
+D) Use any instead of generics.
+
+**Answer: A) Use generics for reusable algorithms and constrain with extends when needed.**
+
+**Explanation:** Constraints keep generics flexible but safe.
+
+---
+
+### Question 18
+Which pitfall should you avoid with Generics?
+
+A) Using generics for reusable utilities.
+B) Overcomplicating types when a simple interface would do.
+C) Adding constraints to avoid misuse.
+D) Using a single generic to avoid duplication.
+
+**Answer: B) Overcomplicating types when a simple interface would do.**
+
+**Explanation:** Overuse of generics hurts readability and maintainability.
+
+---
+
+### Question 19
+Which statement best describes Type narrowing?
+
+A) It turns all variables into any.
+B) It safely reduces union types with guards or conditionals.
+C) It removes the need for runtime checks.
+D) It only applies to string unions.
+
+**Answer: B) It safely reduces union types with guards or conditionals.**
+
+**Explanation:** Guards like typeof, in, or custom checks narrow unions.
+
+---
+
+### Question 20
+What is a best practice for Type narrowing?
+
+A) Assume types without checks.
+B) Use typeof, in, instanceof, or custom type guards.
+C) Use any to avoid narrowing.
+D) Cast types without validation.
+
+**Answer: B) Use typeof, in, instanceof, or custom type guards.**
+
+**Explanation:** Guards prevent invalid property access at runtime.
+
+---
+
+### Question 21
+Which pitfall should you avoid with Type narrowing?
+
+A) Accessing properties on a union without a guard.
+B) Using typeof checks.
+C) Using a custom type predicate.
+D) Narrowing with instanceof.
+
+**Answer: A) Accessing properties on a union without a guard.**
+
+**Explanation:** Without a guard, property access can throw at runtime.
+
+---
+
+### Question 22
+Which statement best describes Automation readiness?
+
+A) Automating before a feature is stable.
+B) Ensuring environments, data, and access are stable for automation.
+C) Avoiding CI integration for tests.
+D) Writing only UI automation.
+
+**Answer: B) Ensuring environments, data, and access are stable for automation.**
+
+**Explanation:** Stable environments and data reduce flakiness.
+
+---
+
+### Question 23
+What is a best practice for Automation readiness?
+
+A) Create a checklist for tooling, data, and access.
+B) Start automating without a test data plan.
+C) Skip environment documentation.
+D) Use production data in tests.
+
+**Answer: A) Create a checklist for tooling, data, and access.**
+
+**Explanation:** A readiness checklist prevents setup gaps.
+
+---
+
+### Question 24
+Which pitfall should you avoid with Automation readiness?
+
+A) Having stable test data.
+B) Documenting environment access.
+C) Starting automation without stable test data.
+D) Defining test accounts.
+
+**Answer: C) Starting automation without stable test data.**
+
+**Explanation:** Unstable data is a common source of flaky tests.
+
+---
+
+### Question 25
+Which statement best describes Debugging workflow?
+
+A) Debugging uses logs, breakpoints, and trace analysis.
+B) Debugging only uses console.log.
+C) Debugging is optional for automation.
+D) Debugging replaces root cause analysis.
+
+**Answer: A) Debugging uses logs, breakpoints, and trace analysis.**
+
+**Explanation:** Debugging uses logs, breakpoints, and trace analysis.
+
+---
+
+### Question 26
+What is a best practice for Debugging workflow?
+
+A) Capture logs and reproduce issues with minimal steps.
+B) Apply quick fixes without validation.
+C) Skip collecting traces.
+D) Ignore flaky failures.
+
+**Answer: A) Capture logs and reproduce issues with minimal steps.**
+
+**Explanation:** Capture logs and reproduce issues with minimal steps.
+
+---
+
+### Question 27
+Which pitfall should you avoid with Debugging workflow?
+
+A) Using trace viewer to inspect failures.
+B) Capturing screenshots on failures.
+C) Skipping root cause analysis and patching symptoms.
+D) Reducing reproduction steps.
+
+**Answer: C) Skipping root cause analysis and patching symptoms.**
+
+**Explanation:** Skipping root cause analysis and patching symptoms.
+
+---
+
+### Question 28
+Which statement best describes Quality metrics?
+
+A) Quality metrics quantify stability, coverage, and risk.
+B) Quality metrics are only test counts.
+C) Quality metrics replace testing.
+D) Quality metrics are for UI tests only.
+
+**Answer: A) Quality metrics quantify stability, coverage, and risk.**
+
+**Explanation:** Quality metrics quantify stability, coverage, and risk.
+
+---
+
+### Question 29
+What is a best practice for Quality metrics?
+
+A) Track flaky tests and defect escape rate.
+B) Track only total test count.
+C) Avoid trend dashboards.
+D) Ignore failure rate.
+
+**Answer: A) Track flaky tests and defect escape rate.**
+
+**Explanation:** Track flaky tests and defect escape rate.
+
+---
+
+### Question 30
+Which pitfall should you avoid with Quality metrics?
+
+A) Using vanity metrics without action.
+B) Defining action thresholds.
+C) Sharing metrics with teams.
+D) Tracking trends over time.
+
+**Answer: A) Using vanity metrics without action.**
+
+**Explanation:** Using vanity metrics without action.
+
+---
+
+</script>
+    <script>
+(() => {
+    const markdownNode = document.getElementById('assessment-markdown');
+    if (!markdownNode) {
+        return;
+    }
+
+    const markdown = markdownNode.textContent.trim();
+    const form = document.getElementById('quiz-form');
+    const titleElement = document.querySelector('.assessment-title h1');
+    const subtitleElement = document.querySelector('.assessment-title p');
+    const scoreDisplay = document.getElementById('score-display');
+
+    const assessmentData = parseAssessmentMarkdown(markdown);
+    renderAssessment(assessmentData);
+
+    function parseAssessmentMarkdown(raw) {
+        const lines = raw.replace(/\r\n/g, '\n').split('\n');
+        const titleLine = lines.find((line) => line.trim().startsWith('# ')) || '';
+        const rawTitle = titleLine.replace(/^#\s*/, '').trim();
+        const cleanedTitle = rawTitle
+            .replace(/^Assessment\s*\d*\s*:?\s*/i, '')
+            .replace(/\bMCQ\b/i, '')
+            .trim();
+
+        let topics = '';
+        const topicsLine =
+            lines.find((line) => /^\*\*Topics/i.test(line)) ||
+            lines.find((line) => /^\*\*Topics Covered/i.test(line));
+        if (topicsLine) {
+            const parts = topicsLine.split(':');
+            topics = parts.length > 1 ? parts.slice(1).join(':').replace(/\*\*/g, '').trim() : '';
+        }
+
+        if (!topics) {
+            const subtitleLine = lines.find((line) => line.trim().startsWith('## '));
+            if (subtitleLine) {
+                topics = subtitleLine.replace(/^##\s*/, '').trim();
+            }
+        }
+
+        const questionBlocks = [];
+        const hasQuestionsHeading = lines.some((line) => /^##\s*Questions/i.test(line.trim()));
+        let inQuestions = !hasQuestionsHeading;
+        let stopQuestions = false;
+        let current = null;
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (/^##\s*Questions/i.test(trimmed)) {
+                inQuestions = true;
+                continue;
+            }
+
+            if (inQuestions && /^##\s+/i.test(trimmed) && !/^##\s*Questions/i.test(trimmed)) {
+                stopQuestions = true;
+                if (current) {
+                    questionBlocks.push(current);
+                    current = null;
+                }
+                continue;
+            }
+
+            if (!inQuestions || stopQuestions) {
+                continue;
+            }
+
+            if (/^###\s*Question\s*\d+/i.test(trimmed)) {
+                if (current) {
+                    questionBlocks.push(current);
+                }
+                current = [];
+                continue;
+            }
+
+            if (current) {
+                current.push(line);
+            }
+        }
+
+        if (current) {
+            questionBlocks.push(current);
+        }
+
+        const questions = questionBlocks
+            .map((block) => parseQuestionBlock(block))
+            .filter((question) => question.options.length > 0);
+
+        return {
+            title: cleanedTitle || rawTitle || 'Assessment',
+            topics,
+            questions
+        };
+    }
+
+    function parseQuestionBlock(lines) {
+        const questionLines = [];
+        const options = [];
+        let answer = '';
+        const explanationLines = [];
+        let capturingExplanation = false;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (/^\*\*Answer:/i.test(trimmed)) {
+                const match = trimmed.match(/Answer:\s*([A-D])/i);
+                if (match) {
+                    answer = match[1].toLowerCase();
+                }
+                capturingExplanation = false;
+                return;
+            }
+
+            if (/^\*\*Explanation:/i.test(trimmed)) {
+                capturingExplanation = true;
+                const explanationText = trimmed
+                    .replace(/^\*\*Explanation:\*\*\s*/i, '')
+                    .replace(/^\*\*Explanation:\s*/i, '')
+                    .trim();
+                if (explanationText) {
+                    explanationLines.push(explanationText);
+                }
+                return;
+            }
+
+            if (capturingExplanation) {
+                if (trimmed === '---') {
+                    capturingExplanation = false;
+                } else {
+                    explanationLines.push(line);
+                }
+                return;
+            }
+
+            const optionMatch = trimmed.match(/^[-*]?\s*([A-D])\)\s*(.*)$/);
+            if (optionMatch) {
+                options.push({
+                    letter: optionMatch[1].toLowerCase(),
+                    text: optionMatch[2].trim()
+                });
+                return;
+            }
+
+            if (trimmed === '---' || /^##/.test(trimmed)) {
+                return;
+            }
+
+            questionLines.push(line);
+        });
+
+        if (!answer && options.length > 0) {
+            answer = options[0].letter;
+        }
+
+        const { promptLine, bodyLines } = splitPromptAndBody(questionLines);
+
+        return {
+            promptHtml: formatInlineCode(promptLine || 'Select the correct option.'),
+            bodyHtml: formatLinesToHtml(bodyLines),
+            options: options.map((opt) => ({
+                letter: opt.letter,
+                html: formatInlineCode(opt.text)
+            })),
+            answer,
+            explanationHtml: formatLinesToHtml(explanationLines)
+        };
+    }
+
+    function splitPromptAndBody(lines) {
+        let promptLine = '';
+        const bodyLines = [];
+        let foundPrompt = false;
+
+        lines.forEach((line) => {
+            if (!foundPrompt && line.trim() && !line.trim().startsWith('```')) {
+                promptLine = line.trim();
+                foundPrompt = true;
+            } else {
+                bodyLines.push(line);
+            }
+        });
+
+        return { promptLine, bodyLines };
+    }
+
+    function formatLinesToHtml(lines) {
+        if (!lines.length) {
+            return '';
+        }
+
+        const parts = [];
+        let inCodeBlock = false;
+        let codeLines = [];
+        let textLines = [];
+
+        const flushText = () => {
+            if (!textLines.length) {
+                return;
+            }
+            parts.push(textLines.map(formatInlineCode).join('<br>'));
+            textLines = [];
+        };
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('```')) {
+                if (inCodeBlock) {
+                    parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                    codeLines = [];
+                    inCodeBlock = false;
+                } else {
+                    flushText();
+                    inCodeBlock = true;
+                }
+                return;
+            }
+
+            if (inCodeBlock) {
+                codeLines.push(line);
+            } else if (trimmed !== '') {
+                textLines.push(line);
+            }
+        });
+
+        if (codeLines.length) {
+            parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+        }
+
+        flushText();
+        return parts.join('');
+    }
+
+    function formatInlineCode(text) {
+        if (!text) {
+            return '';
+        }
+
+        const segments = text.split('`');
+        return segments
+            .map((segment, index) => {
+                if (index % 2 === 1) {
+                    return `<code>${escapeHtml(segment)}</code>`;
+                }
+                return escapeHtml(segment);
+            })
+            .join('');
+    }
+
+    function escapeHtml(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderAssessment(data) {
+        const heading = data.title ? `Assessment: ${data.title}` : 'Assessment';
+        titleElement.textContent = heading;
+        subtitleElement.textContent = data.topics || data.title || 'Multiple Choice Questions';
+        document.title = `${heading} - VibeTestQ`;
+
+        form.innerHTML = '';
+
+        data.questions.forEach((question, index) => {
+            form.appendChild(buildQuestionElement(question, index));
+        });
+
+        const submitWrap = document.createElement('div');
+        submitWrap.style.textAlign = 'center';
+        submitWrap.style.marginTop = '30px';
+        submitWrap.innerHTML = `
+            <button type="button" class="btn btn-primary" onclick="submitQuiz()">
+                <i class="fas fa-paper-plane"></i> Submit Assessment
+            </button>
+        `;
+        form.appendChild(submitWrap);
+
+        scoreDisplay.textContent = `0 / ${data.questions.length}`;
+    }
+
+    function buildQuestionElement(question, index) {
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.dataset.answer = question.answer;
+
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'question-number';
+        numberSpan.textContent = `${index + 1}.`;
+
+        const textSpan = document.createElement('span');
+        textSpan.innerHTML = question.promptHtml;
+
+        questionText.appendChild(numberSpan);
+        questionText.appendChild(textSpan);
+        questionElement.appendChild(questionText);
+
+        if (question.bodyHtml) {
+            const body = document.createElement('div');
+            body.className = 'question-body';
+            body.innerHTML = question.bodyHtml;
+            questionElement.appendChild(body);
+        }
+
+        const options = document.createElement('div');
+        options.className = 'options';
+
+        question.options.forEach((option) => {
+            const label = document.createElement('label');
+            label.className = 'option';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `q${index + 1}`;
+            input.value = option.letter;
+
+            const optionText = document.createElement('span');
+            optionText.innerHTML = option.html;
+
+            label.appendChild(input);
+            label.appendChild(optionText);
+            options.appendChild(label);
+        });
+
+        questionElement.appendChild(options);
+
+        const explanation = document.createElement('p');
+        explanation.className = 'explanation';
+        explanation.innerHTML = question.explanationHtml || '';
+        questionElement.appendChild(explanation);
+
+        return questionElement;
+    }
+
+    window.submitQuiz = function submitQuiz() {
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        const unAnsweredSet = [];
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            if (!selected) {
+                unAnsweredSet.push(q);
+                q.classList.add('unanswered');
+            } else {
+                q.classList.remove('unanswered');
+            }
+        });
+
+        if (unAnsweredSet.length > 0) {
+            showToast("Please answer all questions before submitting.");
+            unAnsweredSet[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            const correctAnswer = q.getAttribute('data-answer');
+            const options = q.querySelectorAll('.option');
+            const explanation = q.querySelector('.explanation');
+
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+
+            options.forEach(opt => {
+                const radio = opt.querySelector('input');
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (selected && radio === selected && radio.value !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected && selected.value === correctAnswer) {
+                score += 1;
+            }
+        });
+
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('score-display').innerText = `${score} / ${questions.length}`;
+
+        let feedback = "";
+        const percentage = (score / questions.length) * 100;
+        if (percentage === 100) feedback = "Perfect Score! You are a JS Wizard!";
+        else if (percentage >= 80) feedback = "Excellent! You have a strong grasp of fundamentals.";
+        else if (percentage >= 60) feedback = "Good job! Keep practicing to master the concepts.";
+        else feedback = "Keep learning! Review the Docs to strengthen your basics.";
+
+        document.getElementById('feedback-text').innerText = feedback;
+
+        form.querySelectorAll('input').forEach(input => input.disabled = true);
+        const submitButton = form.querySelector('button');
+        if (submitButton) {
+            submitButton.style.display = 'none';
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.preparePrint = function preparePrint() {
+        const name = document.getElementById('student-name').value;
+        if (name) {
+            document.getElementById('printed-name').innerText = "Student: " + name;
+        } else {
+            document.getElementById('printed-name').innerText = "";
+        }
+        window.print();
+    };
+
+    function showToast(message) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+})();
+    </script>
+</body>
+
+</html>

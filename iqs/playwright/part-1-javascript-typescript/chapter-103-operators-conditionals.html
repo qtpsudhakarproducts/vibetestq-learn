@@ -1,0 +1,548 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 103 &nbsp;·&nbsp; 16 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Operators</span> <span class="w2">&amp;</span> <span class="w3">Conditionals</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers how JavaScript makes decisions. Interviewers test operators and conditionals because <code class="sn-ic">==</code> vs <code class="sn-ic">===</code>, <code class="sn-ic">??</code> vs <code class="sn-ic">||</code>, and truthy/falsy behaviour cause real bugs in test code. Questions move from operator basics through edge cases to small, focused code tasks.</span>
+  </div>
+
+
+  <!-- Q103.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.1</span>
+      <h2 class="sn-q-text">What are the categories of operators in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Arithmetic</strong> — <code class="sn-ic">+</code>, <code class="sn-ic">-</code>, <code class="sn-ic">*</code>, <code class="sn-ic">/</code>, <code class="sn-ic">%</code>, <code class="sn-ic">**</code></p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Comparison</strong> — <code class="sn-ic">==</code>, <code class="sn-ic">===</code>, <code class="sn-ic">!=</code>, <code class="sn-ic">!==</code>, <code class="sn-ic">&lt;</code>, <code class="sn-ic">&gt;</code>, <code class="sn-ic">&lt;=</code>, <code class="sn-ic">&gt;=</code></p>
+<p class="sn-para"><strong class="k-blue">Logical</strong> — <code class="sn-ic">&amp;&amp;</code>, <code class="sn-ic">||</code>, <code class="sn-ic">!</code>, <code class="sn-ic">??</code></p>
+<p class="sn-para"><strong class="k-blue">Assignment</strong> — <code class="sn-ic">=</code>, <code class="sn-ic">+=</code>, <code class="sn-ic">-=</code>, <code class="sn-ic">*=</code></p>
+<p class="sn-para"><strong class="k-blue">Ternary</strong> — <code class="sn-ic">condition ? valueIfTrue : valueIfFalse</code></p>
+<p class="sn-para"><strong class="k-blue">Optional chaining</strong> — <code class="sn-ic">?.</code></p>
+    </div>
+  </div>
+
+  <!-- Q103.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.2</span>
+      <h2 class="sn-q-text">What is the difference between == and ===?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">==</code> (loose equality) converts types before comparing. <code class="sn-ic">===</code> (strict equality) never converts — types must match.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">&quot;<span class="tc-num">5</span>&quot; == <span class="tc-num">5</span>    <span class="tc-cm">// true  — string coerced to number</span>
+&quot;<span class="tc-num">5</span>&quot; === <span class="tc-num">5</span>   <span class="tc-cm">// false — different types</span>
+
+<span class="tc-num">0</span> == <span class="tc-kw">false</span>  <span class="tc-cm">// true  — both coerced to 0</span>
+<span class="tc-num">0</span> === <span class="tc-kw">false</span> <span class="tc-cm">// false — number vs boolean</span>
+
+<span class="tc-kw">null</span> == <span class="tc-kw">undefined</span>  <span class="tc-cm">// true</span>
+<span class="tc-kw">null</span> === <span class="tc-kw">undefined</span> <span class="tc-cm">// false</span></div>
+      </div>
+<p class="sn-para"><strong class="k-green">Always use <code class="sn-ic">===</code> in JavaScript code.</strong> Coercion hides bugs.</p>
+    </div>
+  </div>
+
+  <!-- Q103.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.3</span>
+      <h2 class="sn-q-text">When do you use comparison operators in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Wherever a decision depends on a value — validating input, checking a status, deciding which path to take.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> age = <span class="tc-num">20</span>;
+
+<span class="tc-kw">if</span> (age &gt;= <span class="tc-num">18</span>) {
+  console.<span class="tc-fn">log</span>(&quot;Adult&quot;);
+} <span class="tc-kw">else</span> {
+  console.<span class="tc-fn">log</span>(&quot;Minor&quot;);
+}
+
+<span class="tc-kw">const</span> fee = age &gt;= <span class="tc-num">65</span> ? <span class="tc-num">0</span> : <span class="tc-num">5.99</span>; <span class="tc-cm">// ternary</span></div>
+      </div>
+<p class="sn-para">In test automation, <code class="sn-ic">===</code> comparisons appear in assertions and in conditional setup logic (e.g., running extra steps only on certain environments).</p>
+    </div>
+  </div>
+
+  <!-- Q103.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.4</span>
+      <h2 class="sn-q-text">How does your team enforce === usage across the project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">We use ESLint's <code class="sn-ic">eqeqeq</code> rule, which bans <code class="sn-ic">==</code> and <code class="sn-ic">!=</code> everywhere. It runs on every pull request. The only exception we allow is <code class="sn-ic">== null</code> because it matches both <code class="sn-ic">null</code> and <code class="sn-ic">undefined</code> in one check, which is occasionally useful.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// == null catches both null and undefined in one check</span>
+<span class="tc-kw">if</span> (value == <span class="tc-kw">null</span>) { <span class="tc-cm">/* value is null or undefined */</span> }
+
+<span class="tc-cm">// Equivalent explicit form</span>
+<span class="tc-kw">if</span> (value === <span class="tc-kw">null</span> || value === <span class="tc-kw">undefined</span>) { <span class="tc-cm">/* same result, more verbose */</span> }</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q103.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.5</span>
+      <h2 class="sn-q-text">What is the ternary operator and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The ternary is a one-line if-else for simple value decisions.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> label = isLoggedIn ? &quot;Log out&quot; : &quot;Log <span class="tc-kw">in</span>&quot;;
+<span class="tc-kw">const</span> price = isMember  ? <span class="tc-num">9.99</span>     : <span class="tc-num">14.99</span>;</div>
+      </div>
+<p class="sn-para">Use it when each branch returns a single value and both branches are short. If either branch needs more than one step, use <code class="sn-ic">if-else</code> instead.</p>
+    </div>
+  </div>
+
+  <!-- Q103.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.6</span>
+      <h2 class="sn-q-text">What is the nullish coalescing operator (??) and how does it work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">??</code> returns the right side only when the left side is <code class="sn-ic">null</code> or <code class="sn-ic">undefined</code>. It does not trigger on <code class="sn-ic">0</code>, <code class="sn-ic">false</code>, or <code class="sn-ic">&quot;&quot;</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> timeout = userTimeout ?? <span class="tc-num">30000</span>;
+<span class="tc-cm">// If userTimeout is null or undefined → 30000</span>
+<span class="tc-cm">// If userTimeout is 0 → 0  (kept — it is a valid value)</span>
+
+<span class="tc-kw">null</span>      ?? &quot;<span class="tc-kw">default</span>&quot;  <span class="tc-cm">// &amp;quot;default&amp;quot;</span>
+<span class="tc-kw">undefined</span> ?? &quot;<span class="tc-kw">default</span>&quot;  <span class="tc-cm">// &amp;quot;default&amp;quot;</span>
+<span class="tc-num">0</span>         ?? &quot;<span class="tc-kw">default</span>&quot;  <span class="tc-cm">// 0</span>
+&quot;&quot;        ?? &quot;<span class="tc-kw">default</span>&quot;  <span class="tc-cm">// &amp;quot;&amp;quot;</span>
+<span class="tc-kw">false</span>     ?? &quot;<span class="tc-kw">default</span>&quot;  <span class="tc-cm">// false</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q103.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.7</span>
+      <h2 class="sn-q-text">What is optional chaining (?.) and what problem does it solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">?.</code> stops evaluation and returns <code class="sn-ic">undefined</code> if the value before it is <code class="sn-ic">null</code> or <code class="sn-ic">undefined</code>, instead of throwing a <code class="sn-ic">TypeError</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> user = <span class="tc-kw">null</span>;
+
+<span class="tc-cm">// ❌ Without ?.</span>
+console.<span class="tc-fn">log</span>(user.address.city); <span class="tc-cm">// TypeError: Cannot read properties of null</span>
+
+<span class="tc-cm">// ✅ With ?.</span>
+console.<span class="tc-fn">log</span>(user?.address?.city); <span class="tc-cm">// undefined — no error</span></div>
+      </div>
+<p class="sn-para">Useful when reading deeply nested data that may not exist.</p>
+    </div>
+  </div>
+
+  <!-- Q103.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.8</span>
+      <h2 class="sn-q-text">What are truthy and falsy values? Name the falsy values.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">JavaScript has six falsy values:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">false</span>, <span class="tc-num">0</span>, &quot;&quot;, <span class="tc-kw">null</span>, <span class="tc-kw">undefined</span>, NaN</div>
+      </div>
+<p class="sn-para">Everything else is truthy — including <code class="sn-ic">[]</code>, <code class="sn-ic">{}</code>, and <code class="sn-ic">&quot;0&quot;</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">if</span> (&quot;&quot;) { }         <span class="tc-cm">// does not run — empty string is falsy</span>
+<span class="tc-kw">if</span> (&quot;hello&quot;) { }    <span class="tc-cm">// runs — non-empty string is truthy</span>
+<span class="tc-kw">if</span> (<span class="tc-num">0</span>) { }          <span class="tc-cm">// does not run</span>
+<span class="tc-kw">if</span> ([]) { }         <span class="tc-cm">// runs — empty array is truthy</span></div>
+      </div>
+<p class="sn-para">This matters in conditionals that check whether a variable has a usable value.</p>
+    </div>
+  </div>
+
+  <!-- Q103.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.9</span>
+      <h2 class="sn-q-text">What is the difference between ?? and ||?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">||</code> falls back when the left side is <strong class="k-blue">falsy</strong> (includes <code class="sn-ic">0</code>, <code class="sn-ic">&quot;&quot;</code>, <code class="sn-ic">false</code>). <code class="sn-ic">??</code> falls back only when the left side is <strong class="k-blue">null or undefined</strong>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> retries = <span class="tc-num">0</span>;
+
+retries || <span class="tc-num">3</span>   <span class="tc-cm">// 3 — 0 is falsy, fallback triggered (wrong!)</span>
+retries ?? <span class="tc-num">3</span>   <span class="tc-cm">// 0 — 0 is not null/undefined, kept (correct)</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">??</code> when <code class="sn-ic">0</code>, <code class="sn-ic">false</code>, or <code class="sn-ic">&quot;&quot;</code> are valid values you want to keep. Use <code class="sn-ic">||</code> when any falsy value should trigger the fallback.</p>
+    </div>
+  </div>
+
+  <!-- Q103.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.10</span>
+      <h2 class="sn-q-text">What is the difference between if-else and switch?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both choose a branch based on a condition. The difference is readability when comparing one variable against many values.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// if-else — good for ranges and complex conditions</span>
+<span class="tc-kw">if</span> (score &gt;= <span class="tc-num">90</span>)      grade = &quot;A&quot;;
+<span class="tc-kw">else</span> <span class="tc-kw">if</span> (score &gt;= <span class="tc-num">70</span>) grade = &quot;B&quot;;
+<span class="tc-kw">else</span>                  grade = &quot;C&quot;;
+
+<span class="tc-cm">// switch — good for one variable vs many exact values</span>
+<span class="tc-kw">switch</span> (status) {
+  <span class="tc-kw">case</span> &quot;active&quot;:   label = &quot;Active&quot;;   <span class="tc-kw">break</span>;
+  <span class="tc-kw">case</span> &quot;pending&quot;:  label = &quot;Pending&quot;;  <span class="tc-kw">break</span>;
+  <span class="tc-kw">case</span> &quot;archived&quot;: label = &quot;Archived&quot;; <span class="tc-kw">break</span>;
+  <span class="tc-kw">default</span>:         label = &quot;Unknown&quot;;
+}</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">if-else</code> for conditions involving ranges or multiple variables. Use <code class="sn-ic">switch</code> when a single variable is compared against a list of values.</p>
+    </div>
+  </div>
+
+  <!-- Q103.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.11</span>
+      <h2 class="sn-q-text">What is wrong with this code — show the bug and fix it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Bug — == with 0 behaves unexpectedly</span>
+<span class="tc-kw">const</span> retries = <span class="tc-num">0</span>;
+<span class="tc-kw">if</span> (retries == <span class="tc-kw">false</span>) {
+  console.<span class="tc-fn">log</span>(&quot;No retries&quot;); <span class="tc-cm">// prints — 0 == false is true</span>
+}
+
+<span class="tc-cm">// ❌ Bug — || swallows valid 0</span>
+<span class="tc-kw">const</span> timeout = userSetting || <span class="tc-num">5000</span>;
+<span class="tc-cm">// If userSetting is 0, timeout becomes 5000 — wrong</span></div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Fix</span>
+<span class="tc-kw">if</span> (retries === <span class="tc-num">0</span>) {
+  console.<span class="tc-fn">log</span>(&quot;No retries&quot;); <span class="tc-cm">// explicit, no coercion</span>
+}
+
+<span class="tc-kw">const</span> timeout = userSetting ?? <span class="tc-num">5000</span>; <span class="tc-cm">// 0 is preserved</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q103.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.12</span>
+      <h2 class="sn-q-text">When should you NOT use the ternary operator?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When either branch has side effects, is multi-step, or the condition is complex. In these cases <code class="sn-ic">if-else</code> is clearer.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Hard to read</span>
+<span class="tc-kw">const</span> result = isReady ? (<span class="tc-fn">start</span>(), <span class="tc-fn">processData</span>()) : (<span class="tc-fn">log</span>(&quot;not ready&quot;), <span class="tc-kw">null</span>);
+
+<span class="tc-cm">// ✅ Clearer as if-else</span>
+<span class="tc-kw">if</span> (isReady) {
+  <span class="tc-fn">start</span>();
+  <span class="tc-fn">processData</span>();
+} <span class="tc-kw">else</span> {
+  <span class="tc-fn">log</span>(&quot;not ready&quot;);
+}</div>
+      </div>
+<p class="sn-para">The rule: ternary for selecting a value, <code class="sn-ic">if-else</code> for executing steps.</p>
+    </div>
+  </div>
+
+  <!-- Q103.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.13</span>
+      <h2 class="sn-q-text">Write a function that builds a config using ??, ||, and ternary</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">buildConfig</span>(options = {}) {
+  <span class="tc-kw">return</span> {
+    host:    options.host    || &quot;localhost&quot;,       <span class="tc-cm">// || — empty string falls back</span>
+    port:    options.port    ?? <span class="tc-num">3000</span>,              <span class="tc-cm">// ?? — 0 is a valid port</span>
+    debug:   options.debug   ?? <span class="tc-kw">false</span>,             <span class="tc-cm">// ?? — false is valid</span>
+    label:   options.debug   ? &quot;debug&quot; : &quot;prod&quot;,  <span class="tc-cm">// ternary — picks label</span>
+  };
+}
+
+console.<span class="tc-fn">log</span>(<span class="tc-fn">buildConfig</span>({ port: <span class="tc-num">0</span>, debug: <span class="tc-kw">false</span> }));
+<span class="tc-cm">// { host: &amp;quot;localhost&amp;quot;, port: 0, debug: false, label: &amp;quot;prod&amp;quot; }</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q103.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.14</span>
+      <h2 class="sn-q-text">Write a URL router using a switch statement</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">getApiUrl</span>(env) {
+  <span class="tc-kw">switch</span> (env) {
+    <span class="tc-kw">case</span> &quot;dev&quot;:        <span class="tc-kw">return</span> &quot;http:<span class="tc-cm">//localhost:4000&amp;quot;;</span>
+    <span class="tc-kw">case</span> &quot;staging&quot;:    <span class="tc-kw">return</span> &quot;https:<span class="tc-cm">//api.staging.example.com&amp;quot;;</span>
+    <span class="tc-kw">case</span> &quot;production&quot;: <span class="tc-kw">return</span> &quot;https:<span class="tc-cm">//api.example.com&amp;quot;;</span>
+    <span class="tc-kw">default</span>:           <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Unknown env: ${env}`</span>);
+  }
+}
+
+console.<span class="tc-fn">log</span>(<span class="tc-fn">getApiUrl</span>(&quot;staging&quot;)); <span class="tc-cm">// &amp;quot;https://api.staging.example.com&amp;quot;</span></div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">default</code> clause throws — a clear error is better than silently returning the wrong URL.</p>
+    </div>
+  </div>
+
+  <!-- Q103.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.15</span>
+      <h2 class="sn-q-text">Describe a bug caused by == vs === or || vs ?? in your project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project a timeout value of <code class="sn-ic">0</code> was valid (meaning "no timeout"). A helper was using <code class="sn-ic">||</code> as a fallback:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> timeout = options.timeout || <span class="tc-num">30000</span>;
+<span class="tc-cm">// When options.timeout was 0, this fell back to 30000 — wrong</span></div>
+      </div>
+<p class="sn-para">Tests that were supposed to run without a timeout were silently getting a 30-second limit. We fixed it to <code class="sn-ic">??</code> and added a lint rule to flag <code class="sn-ic">||</code> in default-value patterns where zero is a valid input.</p>
+    </div>
+  </div>
+
+  <!-- Q103.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q103.16</span>
+      <h2 class="sn-q-text">What are logical assignment operators and when would you use them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Added in ES2021, logical assignment operators combine a logical check with assignment. They only assign when the condition is met.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ||= assigns only if the left side is falsy</span>
+options.timeout ||= <span class="tc-num">5000</span>;
+<span class="tc-cm">// equivalent to: options.timeout = options.timeout || 5000;</span>
+
+<span class="tc-cm">// ??= assigns only if the left side is null or undefined</span>
+options.retries ??= <span class="tc-num">3</span>;
+<span class="tc-cm">// equivalent to: options.retries = options.retries ?? 3;</span>
+
+<span class="tc-cm">// &amp;amp;&amp;amp;= assigns only if the left side is truthy</span>
+user.name &amp;&amp;= user.name.<span class="tc-fn">trim</span>();
+<span class="tc-cm">// equivalent to: user.name = user.name &amp;amp;&amp;amp; user.name.trim();</span></div>
+      </div>
+<p class="sn-para">The same <code class="sn-ic">??</code> vs <code class="sn-ic">||</code> rule applies here. Use <code class="sn-ic">??=</code> when <code class="sn-ic">0</code>, <code class="sn-ic">false</code>, or <code class="sn-ic">&quot;&quot;</code> are valid values you want to preserve. Use <code class="sn-ic">||=</code> only when any falsy value should be replaced.</p>
+<p class="sn-para">Not yet common in test code, but increasingly seen in config builders and helper utilities. Knowing the pattern signals awareness of the modern language.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">===</code> never coerces. <code class="sn-ic">==</code> does. Always use <code class="sn-ic">===</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">??</code> falls back on <code class="sn-ic">null</code>/<code class="sn-ic">undefined</code> only. <code class="sn-ic">||</code> falls back on any falsy. Use <code class="sn-ic">??</code> when <code class="sn-ic">0</code>, <code class="sn-ic">false</code>, or <code class="sn-ic">&quot;&quot;</code> are valid values.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">?.</code> stops on <code class="sn-ic">null</code>/<code class="sn-ic">undefined</code> instead of throwing.</span></li>
+            <li><span class="icon">⭐</span><span>Six falsy values: <code class="sn-ic">false</code>, <code class="sn-ic">0</code>, <code class="sn-ic">&quot;&quot;</code>, <code class="sn-ic">null</code>, <code class="sn-ic">undefined</code>, <code class="sn-ic">NaN</code>. Everything else is truthy — including <code class="sn-ic">[]</code> and <code class="sn-ic">{}</code>.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Ternary for selecting a value. <code class="sn-ic">if-else</code> for executing steps.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">switch</code> for one variable vs many values. <code class="sn-ic">if-else</code> for ranges.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">??=</code> assigns only when <code class="sn-ic">null</code>/<code class="sn-ic">undefined</code>. <code class="sn-ic">||=</code> assigns on any falsy. Same rule as <code class="sn-ic">??</code> vs <code class="sn-ic">||</code> — use <code class="sn-ic">??=</code> when <code class="sn-ic">0</code> or <code class="sn-ic">false</code> are valid.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

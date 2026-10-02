@@ -1,0 +1,696 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 111 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Exception</span> <span class="w2">Handling</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers how JavaScript handles errors and how to apply that to test automation. Interviewers test exception handling because poor error handling produces cryptic test failures that are hard to diagnose and tests that silently pass when they should fail. Questions build from what an exception is through try/catch mechanics to custom error classes used in real frameworks.</span>
+  </div>
+
+
+  <!-- Q111.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.1</span>
+      <h2 class="sn-q-text">What is an exception in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An exception is an error that occurs during execution. When JavaScript encounters a problem it cannot handle — accessing a null property, calling a non-existent function, dividing by zero in certain contexts — it throws an exception. If nothing catches it, the script stops.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> obj = <span class="tc-kw">null</span>;
+obj.name; <span class="tc-cm">// TypeError: Cannot read properties of null (reading 'name')</span>
+
+<span class="tc-kw">let</span> x = undeclaredVariable; <span class="tc-cm">// ReferenceError: undeclaredVariable is not defined</span>
+
+JSON.<span class="tc-fn">parse</span>(&quot;not valid json&quot;); <span class="tc-cm">// SyntaxError: Unexpected token</span></div>
+      </div>
+<p class="sn-para">In test automation, exceptions come from: Playwright actions on elements that don't exist, network timeouts, assertion failures (Playwright throws when <code class="sn-ic">expect</code> fails), TypeErrors from null API responses, and custom errors thrown by your own helpers.</p>
+    </div>
+  </div>
+
+  <!-- Q111.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.2</span>
+      <h2 class="sn-q-text">What is try/catch/finally and how does each block work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">try/catch/finally</code> is JavaScript's structured way to handle errors.</p>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">try</code></strong> — wraps code that might throw. If an exception is thrown anywhere in the <code class="sn-ic">try</code> block, execution jumps immediately to <code class="sn-ic">catch</code>.</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">catch(error)</code></strong> — receives the thrown value. Code here handles the error. After <code class="sn-ic">catch</code> completes, execution continues after the whole <code class="sn-ic">try/catch</code> block (unless you re-throw).</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">finally</code></strong> — runs regardless of whether an exception occurred. Even if <code class="sn-ic">catch</code> re-throws or the function returns early, <code class="sn-ic">finally</code> runs.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">setupTest</span>(request: APIRequestContext) {
+  <span class="tc-kw">let</span> userId: <span class="tc-kw">string</span> | <span class="tc-kw">null</span> = <span class="tc-kw">null</span>;
+
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">const</span> user = <span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(request, { email: &quot;<span class="tc-kw">test</span>@example.com&quot; });
+    userId = user.id;
+    <span class="tc-kw">return</span> userId;
+  } <span class="tc-kw">catch</span> (error) {
+    console.<span class="tc-fn">error</span>(&quot;Setup failed:&quot;, (error as Error).message);
+    <span class="tc-kw">throw</span> error; <span class="tc-cm">// re-throw so the test framework knows setup failed</span>
+  } <span class="tc-kw">finally</span> {
+    <span class="tc-cm">// Always runs — log the outcome for debugging</span>
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Setup completed. User ID: ${userId ?? &amp;quot;not created&amp;quot;}`</span>);
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q111.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.3</span>
+      <h2 class="sn-q-text">When do you use try/catch in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Try/catch appears in three situations in a Playwright project:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Retry logic</strong> — wrap a flaky operation, catch the failure, wait, and retry. Chapter 6 showed the <code class="sn-ic">withBackoff</code> pattern. <code class="sn-ic">try/catch</code> is the mechanism.</p>
+<p class="sn-para"><strong class="k-purple">API setup with cleanup</strong> — when test setup creates resources, any failure should still attempt cleanup. <code class="sn-ic">try/catch/finally</code> lets setup fail loudly while ensuring cleanup runs.</p>
+<p class="sn-para"><strong class="k-purple">Soft assertions or conditional paths</strong> — when you want to check something that might not be present but should not fail the whole test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Check for optional promotional banner — present only on some builds</span>
+<span class="tc-kw">try</span> {
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(&quot;promo-banner&quot;)).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">2000</span> });
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(&quot;promo-banner&quot;).<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Dismiss&quot; }).<span class="tc-fn">click</span>();
+} <span class="tc-kw">catch</span> {
+  <span class="tc-cm">// Banner not present — that is fine, continue the test</span>
+}</div>
+      </div>
+<p class="sn-para">Do NOT use <code class="sn-ic">try/catch</code> to swallow all errors silently. If you catch an error, either handle it meaningfully or re-throw it.</p>
+    </div>
+  </div>
+
+  <!-- Q111.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.4</span>
+      <h2 class="sn-q-text">How does your project handle errors in test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, error handling follows three rules.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Rule 1 — Let test failures propagate.</strong> We do not wrap entire test bodies in <code class="sn-ic">try/catch</code>. If a Playwright action or assertion fails, the test should fail. Playwright's error message tells the engineer exactly what went wrong.</p>
+<p class="sn-para"><strong class="k-orange">Rule 2 — Wrap setup and teardown.</strong> API calls in <code class="sn-ic">beforeEach</code> and <code class="sn-ic">afterEach</code> use <code class="sn-ic">try/catch</code> so that a setup failure produces a clear message ("failed to create test user") rather than a cryptic Playwright error from the middle of the test.</p>
+<p class="sn-para"><strong class="k-orange">Rule 3 — Custom error classes for framework errors.</strong> When our framework detects a condition that is not a Playwright error (missing config, invalid test data, environment mismatch), it throws a typed custom error. The message and properties make the root cause immediately visible in the report.</p>
+    </div>
+  </div>
+
+  <!-- Q111.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.5</span>
+      <h2 class="sn-q-text">What is the Error object? What properties does it have?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every exception thrown in JavaScript is (or should be) an instance of <code class="sn-ic">Error</code> or a subclass of it. The <code class="sn-ic">Error</code> object has three standard properties:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">message</code></strong> — the human-readable error description.</p>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">name</code></strong> — the error type. For the base class it is <code class="sn-ic">&quot;Error&quot;</code>. For <code class="sn-ic">TypeError</code> it is <code class="sn-ic">&quot;TypeError&quot;</code>. For custom subclasses it is whatever you set.</p>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">stack</code></strong> — the stack trace as a string. Shows the call chain from the throw point back to the entry point. This is what you read when debugging.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">try</span> {
+  <span class="tc-kw">null</span>.property; <span class="tc-cm">// TypeError</span>
+} <span class="tc-kw">catch</span> (error) {
+  console.<span class="tc-fn">log</span>(error.name);    <span class="tc-cm">// &amp;quot;TypeError&amp;quot;</span>
+  console.<span class="tc-fn">log</span>(error.message); <span class="tc-cm">// &amp;quot;Cannot read properties of null...&amp;quot;</span>
+  console.<span class="tc-fn">log</span>(error.stack);   <span class="tc-cm">// full stack trace</span>
+}</div>
+      </div>
+<p class="sn-para">In TypeScript, thrown values are typed as <code class="sn-ic">unknown</code> in <code class="sn-ic">catch</code> blocks. Always cast: <code class="sn-ic">(error as Error).message</code> — or use a type guard:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">catch</span> (error) {
+  <span class="tc-kw">const</span> message = error <span class="tc-kw">instanceof</span> Error ? error.message : String(error);
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q111.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.6</span>
+      <h2 class="sn-q-text">What happens to a test if an unhandled exception is thrown?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The test fails immediately. Playwright's test runner catches all unhandled exceptions inside a test function and marks the test as failed with the error message and stack trace.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(&quot;product page loads&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/products&quot;);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(&quot;nonexistent&quot;).<span class="tc-fn">click</span>(); <span class="tc-cm">// throws TimeoutError</span>
+  <span class="tc-cm">// Everything after here does NOT run</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(&quot;heading&quot;)).<span class="tc-fn">toBeVisible</span>();
+});
+<span class="tc-cm">// Test result: FAILED — TimeoutError: locator.click: Timeout...</span></div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">beforeEach</code> and <code class="sn-ic">afterEach</code>, an unhandled exception also fails the test and prevents the rest of the hook from running. If <code class="sn-ic">afterEach</code> throws, subsequent <code class="sn-ic">afterEach</code> blocks in the same test still run.</p>
+<p class="sn-para">For Playwright assertions specifically, <code class="sn-ic">expect()</code> throws a specific <code class="sn-ic">AssertionError</code> when the condition is not met. This is also caught by the test runner and reported as a failure.</p>
+    </div>
+  </div>
+
+  <!-- Q111.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.7</span>
+      <h2 class="sn-q-text">What is the difference between throwing an error and returning an error?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Throwing</strong> an error interrupts execution. Control jumps to the nearest <code class="sn-ic">catch</code> block. The caller is forced to handle it or the exception propagates up.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Returning</strong> an error passes it as a value. The caller receives it and decides what to do. This is common in functional patterns but rare in test code.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Throwing — forces the caller to handle or propagate</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">getUser</span>(id: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/users/${id}`</span>);
+  <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`User ${id} not found: ${response.status()}`</span>);
+  }
+  <span class="tc-kw">return</span> response.<span class="tc-fn">json</span>();
+}
+
+<span class="tc-cm">// Returning an error as a value — caller must check explicitly</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">tryGetUser</span>(id: <span class="tc-kw">string</span>): Promise&lt;{ data?: User; error?: <span class="tc-kw">string</span> }&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/users/${id}`</span>);
+  <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) <span class="tc-kw">return</span> { error: <span class="tc-str">`User ${id} not found`</span> };
+  <span class="tc-kw">return</span> { data: <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>() };
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-red">In test automation, throw errors.</strong> Tests should fail loudly when something goes wrong. Returning errors as values makes it easy to accidentally ignore failures — which defeats the purpose of the test.</p>
+    </div>
+  </div>
+
+  <!-- Q111.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.8</span>
+      <h2 class="sn-q-text">What is the finally block and when does it run?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">finally</code> runs after <code class="sn-ic">try</code> (and <code class="sn-ic">catch</code> if it was entered) — always, regardless of outcome. Even if the function returns inside <code class="sn-ic">try</code>, or <code class="sn-ic">catch</code> re-throws, <code class="sn-ic">finally</code> executes.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> browser: Browser | <span class="tc-kw">null</span> = <span class="tc-kw">null</span>;
+
+<span class="tc-kw">try</span> {
+  browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>();
+  <span class="tc-cm">// ... do work</span>
+  <span class="tc-kw">return</span> &quot;success&quot;;
+} <span class="tc-kw">catch</span> (error) {
+  console.<span class="tc-fn">error</span>(&quot;Error:&quot;, error.message);
+  <span class="tc-kw">return</span> &quot;failed&quot;; <span class="tc-cm">// finally still runs even though we're returning here</span>
+} <span class="tc-kw">finally</span> {
+  <span class="tc-cm">// Cleanup — always runs</span>
+  <span class="tc-kw">await</span> browser?.<span class="tc-fn">close</span>(); <span class="tc-cm">// ?. handles the case where launch failed</span>
+  console.<span class="tc-fn">log</span>(&quot;Browser closed&quot;);
+}</div>
+      </div>
+<p class="sn-para">In test automation, <code class="sn-ic">finally</code> is used for cleanup that must happen regardless of test outcome — closing connections, deleting temporary files, releasing locks. Playwright fixtures handle most cleanup via the <code class="sn-ic">use</code> pattern, which is cleaner than explicit <code class="sn-ic">finally</code> blocks in tests.</p>
+    </div>
+  </div>
+
+  <!-- Q111.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.9</span>
+      <h2 class="sn-q-text">What is the difference between a custom error class and the base Error class?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The base <code class="sn-ic">Error</code> class gives you <code class="sn-ic">message</code>, <code class="sn-ic">name</code>, and <code class="sn-ic">stack</code>. A custom error class extends <code class="sn-ic">Error</code> to add more context — typed properties that describe exactly what went wrong.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Base Error — generic, no typed context</span>
+<span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(&quot;Navigation failed after <span class="tc-num">3</span> attempts&quot;);
+<span class="tc-cm">// Caller only has a message string — no structured data</span>
+
+<span class="tc-cm">// Custom error class — structured, typed context</span>
+<span class="tc-kw">class</span> NavigationError <span class="tc-kw">extends</span> Error {
+  <span class="tc-fn">constructor</span>(
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> url: <span class="tc-kw">string</span>,
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> attempts: <span class="tc-kw">number</span>,
+    message: <span class="tc-kw">string</span>
+  ) {
+    <span class="tc-fn">super</span>(message);
+    <span class="tc-kw">this</span>.name = &quot;NavigationError&quot;;
+  }
+}
+
+<span class="tc-kw">throw</span> <span class="tc-kw">new</span> NavigationError(&quot;/checkout&quot;, <span class="tc-num">3</span>, &quot;Navigation failed after <span class="tc-num">3</span> attempts&quot;);
+<span class="tc-cm">// Caller can catch and inspect error.url and error.attempts specifically</span></div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Usage — specific handling for NavigationError</span>
+<span class="tc-kw">try</span> {
+  <span class="tc-kw">await</span> <span class="tc-fn">navigateWithRetry</span>(page, &quot;/checkout&quot;);
+} <span class="tc-kw">catch</span> (error) {
+  <span class="tc-kw">if</span> (error <span class="tc-kw">instanceof</span> NavigationError) {
+    console.<span class="tc-fn">error</span>(<span class="tc-str">`Failed to reach ${error.url} after ${error.attempts} attempts`</span>);
+  } <span class="tc-kw">else</span> {
+    <span class="tc-kw">throw</span> error; <span class="tc-cm">// unexpected error — propagate</span>
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q111.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.10</span>
+      <h2 class="sn-q-text">When should you catch an error vs let it propagate?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Let it propagate when:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The calling code is a test body — tests should fail, not silently recover</span></li>
+<li><span class="icon">💡</span><span>You have no meaningful action to take at the current level</span></li>
+<li><span class="icon">⚡</span><span>The error is unexpected and indicates a bug</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Catch it when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>You are writing retry logic and want to retry on certain errors</span></li>
+<li><span class="icon">📌</span><span>Cleanup must happen regardless of success (use <code class="sn-ic">finally</code> for this)</span></li>
+<li><span class="icon">🔑</span><span>The error is expected for a specific code path and you have a recovery</span></li>
+<li><span class="icon">🚀</span><span>You want to add context to the error before re-throwing</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Add context and re-throw — caller gets better information</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">loginAs</span>(role: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/login&quot;);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(credentials[role]);
+  } <span class="tc-kw">catch</span> (error) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Failed to log in as ${role}: ${(error as Error).message}`</span>);
+  }
+}
+
+<span class="tc-cm">// ✅ Retry on specific errors, propagate others</span>
+<span class="tc-kw">try</span> {
+  <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-fn">operation</span>();
+} <span class="tc-kw">catch</span> (error) {
+  <span class="tc-kw">if</span> (error <span class="tc-kw">instanceof</span> TimeoutError) {
+    <span class="tc-kw">return</span> <span class="tc-fn">retry</span>(); <span class="tc-cm">// handle timeout specifically</span>
+  }
+  <span class="tc-kw">throw</span> error; <span class="tc-cm">// anything else propagates</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q111.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.11</span>
+      <h2 class="sn-q-text">What is wrong with catching all errors silently — show the anti-pattern?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Silent catch — swallows all errors</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">clickSubmit</span>() {
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Submit&quot; }).<span class="tc-fn">click</span>();
+  } <span class="tc-kw">catch</span> {
+    <span class="tc-cm">// do nothing</span>
+  }
+}
+
+<span class="tc-cm">// The test now continues even if Submit button doesn't exist</span>
+<span class="tc-cm">// or the click fails — assertions may pass for the wrong reasons</span></div>
+      </div>
+<p class="sn-para">Problems with swallowing errors:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The test may "pass" while the action it was testing never happened</span></li>
+<li><span class="icon">💡</span><span>Debugging is impossible — no error, no stack trace, no clue</span></li>
+<li><span class="icon">⚡</span><span>Tests lose their value as a safety net — they pass whether the feature</span></li>
+</ul>
+<p class="sn-para">  works or not</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Always at minimum log and re-throw</span>
+<span class="tc-kw">try</span> {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Submit&quot; }).<span class="tc-fn">click</span>();
+} <span class="tc-kw">catch</span> (error) {
+  <span class="tc-cm">// Add context to the error before propagating</span>
+  <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(
+    <span class="tc-str">`Submit button click failed: ${(error as Error).message}`</span>
+  );
+}</div>
+      </div>
+<p class="sn-para">Or more simply — if there is no recovery logic, just do not use <code class="sn-ic">try/catch</code> at all. Let Playwright's own error handling report the failure.</p>
+    </div>
+  </div>
+
+  <!-- Q111.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.12</span>
+      <h2 class="sn-q-text">What is error propagation in async code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Error propagation in async code works through the Promise chain. When an <code class="sn-ic">async</code> function throws (or awaits a rejected Promise), the function returns a rejected Promise. The caller's <code class="sn-ic">await</code> re-throws that rejection.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">level3</span>() {
+  <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(&quot;Something broke at level <span class="tc-num">3</span>&quot;);
+}
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">level2</span>() {
+  <span class="tc-kw">await</span> <span class="tc-fn">level3</span>(); <span class="tc-cm">// level3 rejects → level2 rejects</span>
+}
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">level1</span>() {
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">await</span> <span class="tc-fn">level2</span>(); <span class="tc-cm">// level2 rejects → caught here</span>
+  } <span class="tc-kw">catch</span> (error) {
+    console.<span class="tc-fn">error</span>(&quot;Caught:&quot;, error.message); <span class="tc-cm">// &amp;quot;Something broke at level 3&amp;quot;</span>
+  }
+}</div>
+      </div>
+<p class="sn-para">Errors propagate up the async call chain automatically. You do not need to manually pass errors up — <code class="sn-ic">await</code> handles that. You only need to <code class="sn-ic">catch</code> at the level where you have a meaningful recovery action.</p>
+<p class="sn-para">The risk: if no level catches a rejected Promise and it is not <code class="sn-ic">await</code>ed, you get an unhandled promise rejection. Always await async calls or attach <code class="sn-ic">.catch()</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q111.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.13</span>
+      <h2 class="sn-q-text">Write a custom error class for an automation framework</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/errors/index.ts</span>
+
+<span class="tc-cm">// Base class for all framework errors</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AutomationError <span class="tc-kw">extends</span> Error {
+  <span class="tc-fn">constructor</span>(
+    message: <span class="tc-kw">string</span>,
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> context?: Record&lt;<span class="tc-kw">string</span>, <span class="tc-kw">unknown</span>&gt;
+  ) {
+    <span class="tc-fn">super</span>(message);
+    <span class="tc-kw">this</span>.name = &quot;AutomationError&quot;;
+  }
+}
+
+<span class="tc-cm">// Thrown when test setup (API calls) fails</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> TestSetupError <span class="tc-kw">extends</span> AutomationError {
+  <span class="tc-fn">constructor</span>(
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> step: <span class="tc-kw">string</span>,
+    message: <span class="tc-kw">string</span>,
+    context?: Record&lt;<span class="tc-kw">string</span>, <span class="tc-kw">unknown</span>&gt;
+  ) {
+    <span class="tc-fn">super</span>(<span class="tc-str">`[Setup/${step}] ${message}`</span>, context);
+    <span class="tc-kw">this</span>.name = &quot;TestSetupError&quot;;
+  }
+}
+
+<span class="tc-cm">// Thrown when a required environment variable is missing</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> ConfigurationError <span class="tc-kw">extends</span> AutomationError {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">public</span> <span class="tc-kw">readonly</span> variable: <span class="tc-kw">string</span>) {
+    <span class="tc-fn">super</span>(<span class="tc-str">`Required environment variable &amp;quot;${variable}&amp;quot; is not set`</span>);
+    <span class="tc-kw">this</span>.name = &quot;ConfigurationError&quot;;
+  }
+}
+
+<span class="tc-cm">// Thrown when element state does not match expectation after retries</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> ElementStateError <span class="tc-kw">extends</span> AutomationError {
+  <span class="tc-fn">constructor</span>(
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> locatorDescription: <span class="tc-kw">string</span>,
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> expectedState: <span class="tc-kw">string</span>,
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> actualState: <span class="tc-kw">string</span>
+  ) {
+    <span class="tc-fn">super</span>(
+      <span class="tc-str">`Element &amp;quot;${locatorDescription}&amp;quot; expected to be ${expectedState} but was ${actualState}`</span>
+    );
+    <span class="tc-kw">this</span>.name = &quot;ElementStateError&quot;;
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q111.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.14</span>
+      <h2 class="sn-q-text">Write a safe wrapper that catches errors and attaches them to a Playwright test report</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/helpers/safe-action.ts</span>
+<span class="tc-kw">import</span> { TestInfo } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-cm">/**
+ * Wraps an async action, attaches failure details to the test report,
+ * and re-throws so the test still fails.
+ */</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> safeAction&lt;T&gt;(
+  testInfo: TestInfo,
+  actionName: <span class="tc-kw">string</span>,
+  action: () =&gt; Promise&lt;T&gt;
+): Promise&lt;T&gt; {
+  <span class="tc-kw">const</span> start = Date.<span class="tc-fn">now</span>();
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">const</span> result = <span class="tc-kw">await</span> <span class="tc-fn">action</span>();
+    testInfo.annotations.<span class="tc-fn">push</span>({
+      <span class="tc-kw">type</span>: &quot;action&quot;,
+      description: <span class="tc-str">`✅ ${actionName} (${Date.now() - start}ms)`</span>,
+    });
+    <span class="tc-kw">return</span> result;
+  } <span class="tc-kw">catch</span> (error) {
+    <span class="tc-kw">const</span> message = error <span class="tc-kw">instanceof</span> Error ? error.message : String(error);
+    testInfo.annotations.<span class="tc-fn">push</span>({
+      <span class="tc-kw">type</span>: &quot;error&quot;,
+      description: <span class="tc-str">`❌ ${actionName} failed: ${message}`</span>,
+    });
+    <span class="tc-cm">// Re-throw — test must still fail</span>
+    <span class="tc-kw">throw</span> error;
+  }
+}
+
+<span class="tc-cm">// Usage</span>
+<span class="tc-kw">test</span>(&quot;checkout flow&quot;, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">safeAction</span>(testInfo, &quot;Navigate to cart&quot;, () =&gt; page.<span class="tc-fn">goto</span>(&quot;/cart&quot;));
+  <span class="tc-kw">await</span> <span class="tc-fn">safeAction</span>(testInfo, &quot;Click checkout&quot;, () =&gt;
+    page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Checkout&quot; }).<span class="tc-fn">click</span>()
+  );
+  <span class="tc-cm">// Failures appear in the report with the action name — easy to diagnose</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q111.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q111.15</span>
+      <h2 class="sn-q-text">Describe how error handling in your project helped diagnose a hard-to-find failure</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had intermittent failures in our checkout tests. The error message was always <code class="sn-ic">&quot;locator.click: Timeout 30000ms&quot;</code> on the payment form submit button — not helpful for diagnosing root cause.</p>
+      </div>
+<p class="sn-para">We added a <code class="sn-ic">safeAction</code> wrapper (similar to Q11.14) around every major test step. The wrapper attached step names and durations to the report. When the next failure occurred, the report showed:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">✅ Navigate to checkout (1,243ms)
+✅ Fill shipping address (2,108ms)
+✅ Select payment method (891ms)
+❌ Load Stripe iframe (timeout after 30,000ms)</div>
+      </div>
+<p class="sn-para">The Stripe payment iframe was timing out during load — a network issue that had nothing to do with the submit button. The submit button timeout was a symptom. The root cause was the iframe not appearing.</p>
+<p class="sn-para">Once we had that context, we added a specific wait for the Stripe iframe to load before attempting to fill the card fields:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">waitForSelector</span>(&quot;iframe[name^=<span class="tc-str">'__privateStripeFrame'</span>]&quot;);</div>
+      </div>
+<p class="sn-para">The error handling did not fix the bug — but it made the root cause immediately visible, cutting diagnosis time from hours to minutes.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">try</code> wraps risky code. <code class="sn-ic">catch</code> handles the error. <code class="sn-ic">finally</code> always runs — use it for cleanup.</span></li>
+            <li><span class="icon">⭐</span><span>In test code, let errors propagate by default. Only catch when you have a specific recovery action or need to add context before re-throwing.</span></li>
+            <li><span class="icon">⭐</span><span>Never swallow errors silently. An empty <code class="sn-ic">catch</code> block turns a failing test into a passing lie.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Custom error classes add typed context. A <code class="sn-ic">TestSetupError</code> with a <code class="sn-ic">step</code> property tells you exactly where setup broke — a plain <code class="sn-ic">Error</code> just gives you a string.</span></li>
+            <li><span class="icon">⭐</span><span>In async code, errors propagate through the <code class="sn-ic">await</code> chain automatically. No need to manually pass errors up — just let them bubble until caught.</span></li>
+            <li><span class="icon">⭐</span><span>The Playwright test runner catches all unhandled exceptions inside a test and marks the test as failed. You do not need to wrap test bodies in <code class="sn-ic">try/catch</code>.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

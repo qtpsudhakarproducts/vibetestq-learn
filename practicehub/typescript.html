@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript Practice Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="10 interactive TypeScript multiple-choice challenges. Test types, interfaces, generics, type narrowing and more — with instant feedback and explanations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #eff6ff;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1.5rem; gap: 1rem;
+        }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark);
+            text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo {
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem;
+            color: #1e40af; text-decoration: none;
+        }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill {
+            background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+            border: 1px solid #bfdbfe; transition: all 0.3s;
+        }
+        .score-pill.bump { background: #dbeafe; transform: scale(1.1); }
+
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+
+        aside {
+            width: var(--sidebar-width); background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - var(--header-height));
+            position: fixed; top: var(--header-height); left: 0;
+            overflow-y: auto; padding: 1.25rem 0.9rem;
+        }
+        .sidebar-title {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+            color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem;
+            font-weight: 700;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.6rem; border-radius: 8px;
+            text-decoration: none; color: var(--text); font-size: 0.82rem;
+            transition: all 0.2s; margin-bottom: 0.15rem;
+        }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot {
+            width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+            background: var(--border); margin-left: auto; transition: background 0.3s;
+        }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #7c3aed); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark);
+            display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;
+        }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+
+        .challenge-card {
+            background: var(--card-bg); border-radius: 16px;
+            border: 2px solid var(--border); margin-bottom: 2rem;
+            overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05);
+            scroll-margin-top: calc(var(--header-height) + 1rem);
+            transition: border-color 0.4s;
+        }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header {
+            padding: 0.9rem 1.4rem;
+            background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;
+        }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner     { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced     { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #f0f9ff; color: #0369a1; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code {
+            background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em; color: #7c3aed;
+        }
+
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn {
+            padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px;
+            background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif;
+            text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem;
+            line-height: 1.5;
+        }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter {
+            width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9;
+            color: #475569; font-size: 0.72rem; font-weight: 700; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+        }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+
+        .explanation {
+            display: none; padding: 1rem 1.1rem; border-radius: 10px;
+            background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d;
+            font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem;
+        }
+        .explanation code {
+            background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em;
+        }
+        .explanation strong { color: #065f46; }
+
+        .ch-footer {
+            padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap;
+        }
+        .hint-btn {
+            padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; border: 1px solid #bfdbfe; background: #dbeafe; color: #1e40af;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .hint-btn:hover { background: #93c5fd; }
+        .hint-box {
+            display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem;
+            width: 100%; background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
+            line-height: 1.65; margin-top: 0.25rem;
+        }
+        .hint-box code {
+            background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em;
+        }
+
+        @media (max-width: 860px) {
+            aside { display: none; }
+            main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 10</span></div>
+</header>
+
+<div class="app-container">
+
+<aside>
+    <div class="sidebar-title">TypeScript Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Type Annotation</span>      <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. Union Types</span>           <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. Generic Function</span>      <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. Optional Param</span>        <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. Type Narrowing</span>        <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. Interface vs Type</span>     <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. Readonly Array</span>        <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Enum Values</span>           <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. Intersection Type</span>     <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. as const</span>             <div class="nav-dot" id="dot-c10"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-code"></i> TypeScript Challenges</h1>
+        <p>Pick the correct answer for each TypeScript question. Instant feedback — green = correct, red = wrong. Hint available any time.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 1</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Type Annotations</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What happens at compile time?</div>
+            <div class="ch-desc">TypeScript enforces types at compile time. What does the compiler report for this code?</div>
+            <div class="code-block"><pre><code class="language-typescript">let score: number = 42;
+score = "high";</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> Runs fine — TypeScript allows coercion</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">B</span> Runtime TypeError</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">C</span> Compile-time type error</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> score becomes NaN</button>
+            </div>
+            <div class="explanation" id="c1-exp">
+                <strong>Answer: C — Compile-time type error</strong><br>
+                TypeScript's type system catches this at <em>compile time</em>, not at runtime. The compiler reports: <code>Type 'string' is not assignable to type 'number'</code>. This prevents a whole class of bugs before the code ever runs. Note: TypeScript compiles to JavaScript, so there are no TypeScript-specific runtime errors — all type enforcement happens before compilation.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c1-hint">TypeScript checks types <em>before</em> your code runs. It does not change JavaScript's runtime behavior.</div>
+        </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 2</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Union Types</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Which assignment is NOT valid?</div>
+            <div class="ch-desc">A union type allows a variable to hold one of several types. Which value would cause a TypeScript error?</div>
+            <div class="code-block"><pre><code class="language-typescript">type ID = string | number;
+let userId: ID;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> userId = 101;</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">B</span> userId = "abc-123";</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">C</span> userId = true;</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> userId = String(99);</button>
+            </div>
+            <div class="explanation" id="c2-exp">
+                <strong>Answer: C — userId = true</strong><br>
+                The union type <code>string | number</code> accepts only strings and numbers. <code>true</code> is a <code>boolean</code>, which is not part of the union, so TypeScript reports: <code>Type 'boolean' is not assignable to type 'ID'</code>. Option D is valid because <code>String(99)</code> returns the string <code>"99"</code>.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c2-hint">A union <code>A | B</code> allows only values that are of type A or type B. Any other type is rejected.</div>
+        </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 3</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Generics</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the inferred return type?</div>
+            <div class="ch-desc">TypeScript infers the return type of generic functions from the argument. What type does <code>wrap("hello")</code> return?</div>
+            <div class="code-block"><pre><code class="language-typescript">function wrap&lt;T&gt;(value: T): T[] {
+  return [value];
+}
+
+const result = wrap("hello");</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> any[]</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">B</span> unknown[]</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">C</span> string[]</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> T[]</button>
+            </div>
+            <div class="explanation" id="c3-exp">
+                <strong>Answer: C — string[]</strong><br>
+                TypeScript performs <em>type argument inference</em>: when you call <code>wrap("hello")</code>, the compiler infers that <code>T = string</code> from the argument type. Therefore the return type is <code>string[]</code> — a concrete type, not the generic <code>T[]</code>. This is the power of generics: type-safe reuse without losing specificity.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c3-hint">TypeScript infers <code>T</code> from the value passed in. What is the type of the string literal <code>"hello"</code>?</div>
+        </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 4</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Optional Params</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does this function log when called with no argument?</div>
+            <div class="ch-desc">TypeScript's optional parameter <code>?</code> syntax. What happens when you call <code>greet()</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">function greet(name?: string): string {
+  return `Hello, ${name ?? 'World'}!`;
+}
+
+console.log(greet());</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> "Hello, undefined!"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> "Hello, World!"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> Compile error — argument required</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> "Hello, !"</button>
+            </div>
+            <div class="explanation" id="c4-exp">
+                <strong>Answer: B — "Hello, World!"</strong><br>
+                The <code>?</code> makes <code>name</code> optional — its type is <code>string | undefined</code>. When omitted, it is <code>undefined</code>. Inside the function, <code>name ?? 'World'</code> uses nullish coalescing: <code>undefined ?? 'World'</code> evaluates to <code>'World'</code>. So the output is <code>"Hello, World!"</code>. No compile error — optional parameters are designed to be called with or without the argument.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c4-hint">An optional param <code>name?</code> means <code>name: string | undefined</code>. When not passed, it is <code>undefined</code>. Then <code>??</code> provides the fallback.</div>
+        </div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 5</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Type Narrowing</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the type of value inside the if-block?</div>
+            <div class="ch-desc">TypeScript narrows the type based on conditions. Inside the <code>if</code>, what does TypeScript know about <code>value</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">function process(value: string | number) {
+  if (typeof value === 'string') {
+    // What is the type of value here?
+    console.log(value.toUpperCase());
+  }
+}</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> string | number</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> string</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> any</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> unknown</button>
+            </div>
+            <div class="explanation" id="c5-exp">
+                <strong>Answer: B — string</strong><br>
+                This is <em>type narrowing</em>. TypeScript uses control flow analysis to understand that inside the <code>if (typeof value === 'string')</code> block, the <code>value</code> can only be a <code>string</code>. The type is narrowed from <code>string | number</code> to just <code>string</code>. That's why calling <code>.toUpperCase()</code> (a string method) is valid — the compiler knows it's safe.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c5-hint">TypeScript analyses control flow. Inside a <code>typeof === 'string'</code> check, what is the only possible type?</div>
+        </div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 6</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Interface vs Type</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is a key difference between interface and type?</div>
+            <div class="ch-desc">Both <code>interface</code> and <code>type</code> can describe object shapes, but they differ in one important way.</div>
+            <div class="code-block"><pre><code class="language-typescript">interface Animal { name: string; }
+interface Animal { legs: number; } // declaration merging
+
+type Vehicle = { brand: string; };
+type Vehicle = { speed: number; }; // ???</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> Both support declaration merging</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> Only interface supports declaration merging; duplicate type alias is an error</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> Both cause an error when declared twice</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> Only type supports declaration merging</button>
+            </div>
+            <div class="explanation" id="c6-exp">
+                <strong>Answer: B — Only interface supports declaration merging; duplicate type alias is an error</strong><br>
+                <em>Declaration merging</em>: multiple <code>interface</code> declarations with the same name are automatically merged into one. The <code>Animal</code> interface ends up with both <code>name</code> and <code>legs</code>. This is useful for augmenting third-party types. <code>type</code> aliases cannot be merged — declaring <code>type Vehicle</code> twice is a compile error: <code>Duplicate identifier 'Vehicle'</code>.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c6-hint">Try to remember: which keyword lets you reopen and extend a type after it's been defined? This is especially useful for module augmentation.</div>
+        </div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 7</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Readonly</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What happens when you push to a readonly array?</div>
+            <div class="ch-desc">TypeScript's <code>ReadonlyArray&lt;T&gt;</code> (or <code>readonly T[]</code>) prevents mutation. What is the result of the <code>push</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">const scores: readonly number[] = [10, 20, 30];
+scores.push(40);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> Array becomes [10, 20, 30, 40]</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">B</span> Runtime TypeError</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">C</span> Compile-time error — push does not exist on readonly array</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> Silently ignored at runtime</button>
+            </div>
+            <div class="explanation" id="c7-exp">
+                <strong>Answer: C — Compile-time error</strong><br>
+                <code>readonly number[]</code> (equivalent to <code>ReadonlyArray&lt;number&gt;</code>) removes all mutating methods like <code>push</code>, <code>pop</code>, <code>splice</code>, and direct index assignment. The TypeScript compiler reports: <code>Property 'push' does not exist on type 'readonly number[]'</code>. This is purely a compile-time check — the underlying JavaScript array is not frozen at runtime.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c7-hint"><code>readonly</code> removes mutation methods from the type. Does a compile-time restriction also create a runtime restriction?</div>
+        </div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 8</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Enums</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the value of Direction.Down?</div>
+            <div class="ch-desc">Numeric enums auto-increment from their starting value. What value does <code>Direction.Down</code> have?</div>
+            <div class="code-block"><pre><code class="language-typescript">enum Direction {
+  Up = 10,
+  Down,
+  Left,
+  Right
+}
+
+console.log(Direction.Down);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> 0</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">B</span> 1</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> 10</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">D</span> 11</button>
+            </div>
+            <div class="explanation" id="c8-exp">
+                <strong>Answer: D — 11</strong><br>
+                When a numeric enum member has an explicit value, subsequent members auto-increment from it. <code>Up = 10</code>, so <code>Down = 11</code>, <code>Left = 12</code>, <code>Right = 13</code>. If no starting value is given (e.g., <code>enum Foo { A, B, C }</code>), the first member defaults to 0 and each successive member increments by 1.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c8-hint">When an enum member gets an explicit value, the next member is that value + 1. What is 10 + 1?</div>
+        </div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 9</span>
+            <span class="badge advanced">Advanced</span>
+            <span class="topic-badge">Intersection Types</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What properties does Employee have?</div>
+            <div class="ch-desc">An intersection type combines multiple types. What properties are required for a valid <code>Employee</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">type Person = { name: string; age: number };
+type Worker = { company: string; role: string };
+
+type Employee = Person & Worker;
+
+const emp: Employee = {
+  // what goes here?
+};</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> Only name and age</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">B</span> Only company and role</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> Either Person or Worker properties</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">D</span> All four: name, age, company, role</button>
+            </div>
+            <div class="explanation" id="c9-exp">
+                <strong>Answer: D — All four properties</strong><br>
+                An intersection type <code>A &amp; B</code> means the value must satisfy <em>both</em> types simultaneously. <code>Employee</code> requires all properties from <code>Person</code> (name, age) <em>and</em> all from <code>Worker</code> (company, role). Omitting any one property causes a compile error. This differs from a union <code>A | B</code>, which requires the value to satisfy just one of the types.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c9-hint"><code>&amp;</code> means "and" — the result must have the properties of the left type <em>and</em> the right type. Think of it as merging both shapes.</div>
+        </div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 10</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">as const</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the inferred type of colors.primary?</div>
+            <div class="ch-desc">The <code>as const</code> assertion changes how TypeScript infers types. What is the type of <code>colors.primary</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">const colors = {
+  primary: 'blue',
+  secondary: 'green'
+} as const;
+
+// What is the type of colors.primary?</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> string</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> "blue"  (literal type)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> string | "blue"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> any</button>
+            </div>
+            <div class="explanation" id="c10-exp">
+                <strong>Answer: B — "blue" (literal type)</strong><br>
+                Without <code>as const</code>, TypeScript widens the type of <code>primary</code> to <code>string</code>. With <code>as const</code>, the whole object is treated as <em>deeply readonly</em> and all values are narrowed to their literal types. So <code>colors.primary</code> has type <code>"blue"</code> (the specific string literal), not the general <code>string</code> type. This is essential for building type-safe lookup tables and discriminated unions.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c10-hint"><code>as const</code> prevents TypeScript from "widening" a literal value to its base type. Without it, <code>'blue'</code> becomes <code>string</code>. With it, <code>'blue'</code> stays as <code>"blue"</code>.</div>
+        </div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 10;
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem('vtq-ts-practice') || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) card.classList.add('solved');
+                const exp = document.getElementById(id + '-exp');
+                if (exp) exp.style.display = 'block';
+                const btns = card ? card.querySelectorAll('.option-btn') : [];
+                btns.forEach(b => {
+                    b.disabled = true;
+                    if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                    else b.classList.add('opt-wrong');
+                });
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+
+        document.getElementById(cardId + '-exp').style.display = 'block';
+
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem('vtq-ts-practice', JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

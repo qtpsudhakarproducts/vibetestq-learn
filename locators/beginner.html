@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beginner Locators Practice - VibeTestQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb; --primary-dark: #1e40af; --primary-light: #eff6ff;
+            --secondary: #6366f1; --success: #10b981; --danger: #ef4444;
+            --warning: #f59e0b; --bg: #f8fafc; --card-bg: #ffffff;
+            --text: #0f172a; --text-light: #64748b; --border: #e2e8f0;
+            --sidebar-width: 260px; --header-height: 70px;
+            --glass: rgba(255,255,255,0.9);
+            --shadow: 0 4px 6px -1px rgb(0 0 0/0.1),0 2px 4px -2px rgb(0 0 0/0.1);
+            --level-color: #16a34a; --level-light: #f0fdf4;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: var(--glass); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; gap: 1rem;
+        }
+        .logo { font-family: 'Outfit',sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--primary-dark); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .back-btn { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--primary-light); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .level-badge { padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: var(--level-light); color: var(--level-color); letter-spacing: 0.04em; }
+
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+
+        aside {
+            width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border);
+            height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0;
+            overflow-y: auto; padding: 1.5rem 1rem;
+        }
+        .sidebar-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.2rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-item i { font-size: 0.8rem; color: var(--text-light); width: 14px; }
+
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.5rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit',sans-serif; font-size: 1.9rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+        .page-header p { color: var(--text-light); font-size: 0.95rem; }
+
+        /* Section intro */
+        .section-intro {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 1.5px solid #86efac;
+            border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;
+            scroll-margin-top: calc(var(--header-height) + 1rem);
+        }
+        .section-intro h3 { font-family: 'Outfit',sans-serif; font-size: 1.1rem; color: #15803d; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .section-intro p { font-size: 0.88rem; color: #166534; line-height: 1.7; margin-bottom: 0.35rem; }
+        .section-intro .note { font-size: 0.82rem; color: #15803d; background: rgba(255,255,255,0.6); border-radius: 6px; padding: 5px 10px; margin-top: 0.5rem; display: flex; align-items: flex-start; gap: 6px; }
+        .section-intro .note i { margin-top: 2px; flex-shrink: 0; }
+
+        /* Challenge Card */
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: var(--shadow); scroll-margin-top: calc(var(--header-height) + 1rem); }
+        .ch-header { padding: 1rem 1.5rem; background: linear-gradient(135deg,#f8fafc,#f1f5f9); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit',sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.95rem; }
+        .badge { padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .ch-body { padding: 1.5rem; }
+        .ch-title { font-family: 'Outfit',sans-serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.9rem; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-family: 'Fira Code',monospace; font-size: 0.85em; color: #7c3aed; }
+        .target-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary); padding: 5px 13px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; margin-bottom: 1.1rem; }
+
+        /* Sandbox */
+        .sandbox-wrapper { border: 2px dashed var(--border); border-radius: 12px; padding: 1.5rem; background: #fafbff; margin-bottom: 1.25rem; position: relative; }
+        .sandbox-label { position: absolute; top: -10px; left: 14px; background: #fafbff; padding: 0 6px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); font-weight: 700; }
+        .sandbox label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 3px; }
+        .sandbox .sb-form { display: flex; flex-direction: column; gap: 0.7rem; max-width: 340px; }
+        .sandbox .sb-row { display: flex; flex-direction: column; }
+        .sandbox input, .sandbox select { padding: 7px 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem; font-family: 'Inter',sans-serif; background: white; outline: none; pointer-events: none; }
+        .sandbox .sb-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .sandbox .sb-btn { padding: 7px 15px; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: default; font-family: 'Inter',sans-serif; pointer-events: none; }
+        .sandbox .btn-primary   { background: #2563eb; color: white; }
+        .sandbox .btn-danger    { background: #ef4444; color: white; }
+        .sandbox .btn-success   { background: #10b981; color: white; }
+        .sandbox .btn-warning   { background: #f59e0b; color: white; }
+        .sandbox .btn-secondary { background: #64748b; color: white; }
+        .sandbox ul { padding-left: 1.2rem; }
+        .sandbox ul li { font-size: 0.875rem; padding: 3px 0; }
+        .sandbox .product-card { border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; background: white; max-width: 220px; }
+        .sandbox .product-card h4 { font-size: 0.9rem; font-weight: 700; color: #1e293b; margin-bottom: 4px; font-family: 'Inter',sans-serif; }
+        .sandbox .product-card .price { font-size: 1rem; color: #2563eb; font-weight: 700; margin-bottom: 0.75rem; }
+        .sandbox section.login-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; max-width: 300px; }
+        .sandbox section.login-section h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.75rem; color: #1e293b; font-family: 'Inter',sans-serif; }
+        .locator-match { outline: 3px solid #10b981 !important; outline-offset: 2px !important; background-color: rgba(16,185,129,0.12) !important; border-radius: 3px; }
+
+        /* Practice area */
+        .practice-area { border-top: 1px solid var(--border); padding-top: 1.25rem; }
+        .loc-group { margin-bottom: 0.9rem; }
+        .loc-label { display: flex; align-items: center; gap: 7px; font-size: 0.73rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.45rem; }
+        .type-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .type-css   { background: #dbeafe; color: #1e40af; }
+        .type-xpath { background: #f3e8ff; color: #6b21a8; }
+        .input-row { display: flex; gap: 0.5rem; align-items: center; }
+        .loc-input { flex: 1; padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Fira Code',monospace; font-size: 0.875rem; transition: border-color 0.2s,box-shadow 0.2s; background: white; color: var(--text); }
+        .loc-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .loc-input.pass { border-color: var(--success); background: #f0fdf4; }
+        .loc-input.fail { border-color: var(--danger); background: #fff5f5; }
+        .check-btn { padding: 9px 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: 'Inter',sans-serif; }
+        .check-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .result-msg { margin-top: 0.5rem; padding: 7px 13px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; display: none; align-items: center; gap: 7px; }
+        .result-msg.pass { display: flex; background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .result-msg.fail { display: flex; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .result-msg.err  { display: flex; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+
+        /* N/A block */
+        .na-block { background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 8px 13px; font-size: 0.82rem; color: var(--text-light); display: flex; align-items: flex-start; gap: 8px; margin-bottom: 0.9rem; }
+        .na-block i { color: #94a3b8; margin-top: 2px; flex-shrink: 0; }
+
+        /* Footer */
+        .ch-footer { padding: 0.9rem 1.5rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+        .hint-btn, .answer-btn { padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; font-family: 'Inter',sans-serif; }
+        .hint-btn   { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+        .hint-btn:hover { background: #fde68a; }
+        .answer-btn { background: #f1f5f9; color: var(--text-light); }
+        .answer-btn:hover { background: var(--border); color: var(--text); }
+        .hint-box, .answer-box { display: none; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; width: 100%; margin-top: 0.25rem; line-height: 1.7; }
+        .hint-box   { background: #fffbeb; border: 1px solid #fcd34d; color: #78350f; }
+        .answer-box { background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; }
+        .hint-box code, .answer-box code { background: rgba(0,0,0,0.08); padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code',monospace; font-size: 0.85em; }
+
+        /* Level nav */
+        .level-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 3rem; padding: 1.5rem; background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); }
+        .level-nav a { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; }
+        .nav-prev { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
+        .nav-prev:hover { background: var(--border); }
+        .nav-next { background: var(--primary); color: white; }
+        .nav-next:hover { background: var(--primary-dark); }
+        .nav-placeholder { width: 120px; }
+
+        @media (max-width: 900px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="learn.html" class="back-btn"><i class="fas fa-arrow-left"></i> Learning Path</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <span class="level-badge"><i class="fas fa-seedling"></i> Beginner</span>
+</header>
+
+<div class="app-container">
+
+<aside>
+    <div class="sidebar-section-title">Sections</div>
+    <a href="#s1" class="nav-item"><i class="fas fa-fingerprint"></i> Self Details</a>
+    <a href="#s2" class="nav-item"><i class="fas fa-sitemap"></i> Relations</a>
+    <a href="#s3" class="nav-item"><i class="fas fa-list-ol"></i> Index / Position</a>
+    <a href="#s4" class="nav-item"><i class="fas fa-eye"></i> Visual Relations</a>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);">
+        <div class="sidebar-section-title">Level</div>
+        <div style="font-size:0.82rem;color:var(--text-light);line-height:1.8;">
+            <div>13 exercises</div>
+            <div>4 sections</div>
+            <div style="margin-top:.5rem"><a href="intermediate.html" style="color:var(--primary);text-decoration:none;font-weight:600">Next: Intermediate →</a></div>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-seedling" style="color:#16a34a"></i> Beginner — Locator Practice</h1>
+        <p>Write a <strong>CSS selector</strong> and an <strong>XPath</strong> that match the highlighted target. Click <strong>Check</strong> — matched elements glow green for 3 seconds.</p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 1 — SELF DETAILS
+    ════════════════════════════════════════════════════════════ -->
+    <div class="section-intro" id="s1">
+        <h3><i class="fas fa-fingerprint"></i> Section 1 — Self Details</h3>
+        <p>Self Details selectors target an element using its <strong>own attributes</strong> — id, class, type, name — without involving any other element in the DOM.</p>
+        <p>Use these when the element has a stable, unique identifier. They are the fastest and most reliable locators in Playwright and Selenium.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> Both CSS and XPath support all self-detail attributes equally. Prefer <code>id</code> or <code>data-testid</code> over class when possible — classes change with styling refactors.</div>
+    </div>
+
+    <!-- Ex 1 — ID -->
+    <div class="challenge-card" id="ex1">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 1</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select by ID</div>
+            <div class="ch-desc">A login form has three inputs. Target <strong>only the password field</strong> using its <code>id</code>.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex1">
+                    <form class="sb-form">
+                        <div class="sb-row"><label>Username</label><input id="b1-user" type="text" placeholder="Username"></div>
+                        <div class="sb-row"><label>Password</label><input id="b1-pass" type="password" placeholder="Password"></div>
+                        <div class="sb-row"><label>Email</label><input id="b1-email" type="email" placeholder="Email"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex1-css" type="text" placeholder='e.g. #b1-pass' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex1','css')">
+                        <button class="check-btn" onclick="checkLocator('ex1','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex1-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex1-xpath" type="text" placeholder='e.g. //input[@id="b1-pass"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex1','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex1','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex1-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex1-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex1-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex1-hint">The password field has <code>id="b1-pass"</code>. CSS uses <code>#</code> for IDs. XPath uses <code>[@id="..."]</code>.</div>
+            <div class="answer-box" id="ex1-answer">CSS:&nbsp;&nbsp;<code>#b1-pass</code>&nbsp; or &nbsp;<code>input[id="b1-pass"]</code><br>XPath: <code>//input[@id="b1-pass"]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 2 — Class -->
+    <div class="challenge-card" id="ex2">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 2</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select by Class</div>
+            <div class="ch-desc">Five buttons have different colour classes. Select <strong>all danger (red) buttons</strong> — there are 2.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 2 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex2">
+                    <div class="sb-btns">
+                        <button class="sb-btn btn-primary">Save</button>
+                        <button class="sb-btn btn-danger">Delete</button>
+                        <button class="sb-btn btn-success">Confirm</button>
+                        <button class="sb-btn btn-danger">Remove</button>
+                        <button class="sb-btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex2-css" type="text" placeholder='e.g. button.btn-danger' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex2','css')">
+                        <button class="check-btn" onclick="checkLocator('ex2','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex2-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex2-xpath" type="text" placeholder='e.g. //button[contains(@class,"btn-danger")]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex2','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex2','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex2-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex2-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex2-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex2-hint">Both red buttons share the class <code>btn-danger</code>. CSS: <code>.btn-danger</code>. XPath: use <code>contains(@class, ...)</code> when elements can have multiple classes.</div>
+            <div class="answer-box" id="ex2-answer">CSS:&nbsp;&nbsp;<code>.btn-danger</code>&nbsp; or &nbsp;<code>button.btn-danger</code><br>XPath: <code>//button[contains(@class,"btn-danger")]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 3 — Type attribute -->
+    <div class="challenge-card" id="ex3">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 3</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select by Type Attribute</div>
+            <div class="ch-desc">A registration form has five inputs of different types. Select <strong>only the email input</strong> by its <code>type</code> attribute.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex3">
+                    <form class="sb-form">
+                        <div class="sb-row"><label>Full Name</label><input type="text" name="fullname" placeholder="Full Name"></div>
+                        <div class="sb-row"><label>Email</label><input type="email" name="email" placeholder="Email Address"></div>
+                        <div class="sb-row"><label>Phone</label><input type="tel" name="phone" placeholder="Phone"></div>
+                        <div class="sb-row"><label>Password</label><input type="password" name="pwd" placeholder="Password"></div>
+                        <div class="sb-row"><label>Age</label><input type="number" name="age" placeholder="Age"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex3-css" type="text" placeholder='e.g. input[type="email"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex3','css')">
+                        <button class="check-btn" onclick="checkLocator('ex3','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex3-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex3-xpath" type="text" placeholder='e.g. //input[@type="email"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex3','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex3','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex3-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex3-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex3-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex3-hint">Target the attribute <code>type</code> with value <code>email</code>. CSS: square-bracket notation. XPath: <code>[@type="email"]</code>.</div>
+            <div class="answer-box" id="ex3-answer">CSS:&nbsp;&nbsp;<code>input[type="email"]</code><br>XPath: <code>//input[@type="email"]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 4 — Name attribute -->
+    <div class="challenge-card" id="ex4">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 4</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select by Name Attribute</div>
+            <div class="ch-desc">A form has four inputs. Select <strong>only the username input</strong> using its <code>name</code> attribute.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex4">
+                    <form class="sb-form">
+                        <div class="sb-row"><label>Username</label><input type="text" name="username" placeholder="Username"></div>
+                        <div class="sb-row"><label>Email</label><input type="email" name="email" placeholder="Email"></div>
+                        <div class="sb-row"><label>Password</label><input type="password" name="password" placeholder="Password"></div>
+                        <div class="sb-row"><label>Confirm Password</label><input type="password" name="confirm" placeholder="Confirm Password"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex4-css" type="text" placeholder='e.g. input[name="username"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex4','css')">
+                        <button class="check-btn" onclick="checkLocator('ex4','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex4-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex4-xpath" type="text" placeholder='e.g. //input[@name="username"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex4','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex4','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex4-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex4-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex4-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex4-hint">The <code>name</code> attribute is used in form submission. Target it exactly like any attribute: <code>[name="username"]</code>.</div>
+            <div class="answer-box" id="ex4-answer">CSS:&nbsp;&nbsp;<code>input[name="username"]</code><br>XPath: <code>//input[@name="username"]</code></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 2 — RELATIONS
+    ════════════════════════════════════════════════════════════ -->
+    <div class="section-intro" id="s2">
+        <h3><i class="fas fa-sitemap"></i> Section 2 — Relations</h3>
+        <p>Relation selectors navigate the DOM by describing how an element <strong>relates to others</strong> — parent, child, sibling, or ancestor.</p>
+        <p>Use these when an element has no unique own attributes but has a consistent structural position relative to a known element.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> CSS can select descendants, children, and following siblings. XPath can also go <em>upward</em> (parent, ancestor) and <em>backward</em> (preceding-sibling) — see the Index and Advanced sections. See also → <a href="#s3" style="color:#15803d;font-weight:600">Index section</a> for positional navigation.</div>
+    </div>
+
+    <!-- Ex 5 — Descendant -->
+    <div class="challenge-card" id="ex5">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 5</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Descendant — All Inputs Inside a Form</div>
+            <div class="ch-desc">A page has inputs both inside and outside a form. Select <strong>all inputs that are inside the form</strong> — not the standalone search input below it.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 3 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex5">
+                    <form class="sb-form" id="b5-form">
+                        <div class="sb-row"><label>Name</label><input type="text" placeholder="Name"></div>
+                        <div class="sb-row"><label>Email</label><input type="email" placeholder="Email"></div>
+                        <div class="sb-row"><label>Phone</label><input type="tel" placeholder="Phone"></div>
+                    </form>
+                    <div style="margin-top:.75rem">
+                        <input type="text" placeholder="Search..." style="padding:7px 11px;border:1px solid #cbd5e1;border-radius:6px;font-size:.875rem;pointer-events:none">
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex5-css" type="text" placeholder='e.g. form input' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex5','css')">
+                        <button class="check-btn" onclick="checkLocator('ex5','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex5-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex5-xpath" type="text" placeholder='e.g. //form//input' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex5','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex5','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex5-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex5-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex5-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex5-hint">A <strong>descendant selector</strong> matches any element nested anywhere inside an ancestor — not just direct children. CSS: space between selectors. XPath: <code>//</code> inside a path.</div>
+            <div class="answer-box" id="ex5-answer">CSS:&nbsp;&nbsp;<code>form input</code>&nbsp; or &nbsp;<code>#b5-form input</code><br>XPath: <code>//form//input</code>&nbsp; or &nbsp;<code>//*[@id="b5-form"]//input</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 6 — Direct child -->
+    <div class="challenge-card" id="ex6">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 6</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Direct Child — Top-Level List Items</div>
+            <div class="ch-desc">A list has nested sub-items. Select <strong>only the 3 direct children</strong> of the main <code>&lt;ul&gt;</code> — not the nested <code>&lt;li&gt;</code> inside.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 3 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex6">
+                    <ul id="b6-menu" style="font-size:.875rem;line-height:2">
+                        <li>Home</li>
+                        <li>Services
+                            <ul style="margin-left:1.2rem">
+                                <li>Web Testing</li>
+                                <li>Mobile Testing</li>
+                            </ul>
+                        </li>
+                        <li>Contact</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex6-css" type="text" placeholder='e.g. ul > li' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex6','css')">
+                        <button class="check-btn" onclick="checkLocator('ex6','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex6-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex6-xpath" type="text" placeholder='e.g. //ul[@id="b6-menu"]/li' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex6','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex6','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex6-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex6-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex6-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex6-hint">CSS <code>&gt;</code> is the <strong>child combinator</strong> — only immediate children, not grandchildren. XPath: a single <code>/</code> (not <code>//</code>) between elements means direct child.</div>
+            <div class="answer-box" id="ex6-answer">CSS:&nbsp;&nbsp;<code>#b6-menu > li</code><br>XPath: <code>//ul[@id="b6-menu"]/li</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 7 — Adjacent sibling -->
+    <div class="challenge-card" id="ex7">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 7</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Adjacent Sibling — Input After a Label</div>
+            <div class="ch-desc">A form has three label–input pairs. Select <strong>the input that immediately follows the "Email" label</strong> — not by its own id.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex7">
+                    <form class="sb-form">
+                        <label for="b7-name">Name</label>
+                        <input id="b7-name" type="text" placeholder="Name">
+                        <label for="b7-email">Email</label>
+                        <input id="b7-email" type="email" placeholder="Email">
+                        <label for="b7-phone">Phone</label>
+                        <input id="b7-phone" type="tel" placeholder="Phone">
+                    </form>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex7-css" type="text" placeholder='e.g. label[for="b7-email"] + input' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex7','css')">
+                        <button class="check-btn" onclick="checkLocator('ex7','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex7-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex7-xpath" type="text" placeholder='e.g. //label[@for="b7-email"]/following-sibling::input[1]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex7','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex7','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex7-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex7-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex7-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex7-hint">CSS <code>+</code> selects the element <em>immediately</em> after the matched element (same parent). XPath: use <code>following-sibling::input[1]</code> from the label node.</div>
+            <div class="answer-box" id="ex7-answer">CSS:&nbsp;&nbsp;<code>label[for="b7-email"] + input</code><br>XPath: <code>//label[@for="b7-email"]/following-sibling::input[1]</code></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 3 — INDEX / POSITION
+    ════════════════════════════════════════════════════════════ -->
+    <div class="section-intro" id="s3">
+        <h3><i class="fas fa-list-ol"></i> Section 3 — Index / Position</h3>
+        <p>Positional selectors target elements by their <strong>order</strong> among siblings — first, last, or a specific nth occurrence.</p>
+        <p>Use when you need to pick a specific card, row, or item by its position when no unique attribute exists.</p>
+        <div class="note"><i class="fas fa-exclamation-triangle"></i> <strong>Testing caution:</strong> Positional selectors break when new elements are inserted. Prefer stable attributes whenever possible. Use index selectors only when order is guaranteed by the application design. Note: Index differs from Relations — Relations navigates the tree; Index picks by count within a matched set.</div>
+    </div>
+
+    <!-- Ex 8 — First child -->
+    <div class="challenge-card" id="ex8">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 8</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">First Child</div>
+            <div class="ch-desc">Four list items are shown. Select <strong>only the first item</strong> using a positional selector.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex8">
+                    <ul id="b8-list" style="font-size:.875rem;line-height:2.2;padding-left:1.2rem">
+                        <li>Introduction</li>
+                        <li>Getting Started</li>
+                        <li>Advanced Topics</li>
+                        <li>Summary</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex8-css" type="text" placeholder='e.g. li:first-child' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex8','css')">
+                        <button class="check-btn" onclick="checkLocator('ex8','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex8-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex8-xpath" type="text" placeholder='e.g. //ul[@id="b8-list"]/li[1]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex8','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex8','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex8-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex8-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex8-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex8-hint">CSS: <code>:first-child</code> pseudo-class. XPath: bracket notation <code>[1]</code> — XPath indexes start at 1, not 0.</div>
+            <div class="answer-box" id="ex8-answer">CSS:&nbsp;&nbsp;<code>#b8-list li:first-child</code>&nbsp; or &nbsp;<code>#b8-list > li:first-child</code><br>XPath: <code>//ul[@id="b8-list"]/li[1]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 9 — Last child -->
+    <div class="challenge-card" id="ex9">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 9</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Last Child</div>
+            <div class="ch-desc">Same list of four items. Now select <strong>only the last item</strong> — "Summary".</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex9">
+                    <ul id="b9-list" style="font-size:.875rem;line-height:2.2;padding-left:1.2rem">
+                        <li>Introduction</li>
+                        <li>Getting Started</li>
+                        <li>Advanced Topics</li>
+                        <li>Summary</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex9-css" type="text" placeholder='e.g. li:last-child' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex9','css')">
+                        <button class="check-btn" onclick="checkLocator('ex9','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex9-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex9-xpath" type="text" placeholder='e.g. //ul[@id="b9-list"]/li[last()]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex9','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex9','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex9-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex9-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex9-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex9-hint">CSS: <code>:last-child</code>. XPath: <code>last()</code> is a function that returns the count of the node-set — <code>[last()]</code> picks the final element.</div>
+            <div class="answer-box" id="ex9-answer">CSS:&nbsp;&nbsp;<code>#b9-list li:last-child</code><br>XPath: <code>//ul[@id="b9-list"]/li[last()]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 10 — nth-child -->
+    <div class="challenge-card" id="ex10">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 10</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">nth-child — Second Product Card</div>
+            <div class="ch-desc">Three product cards are in a grid. Select <strong>only the second card</strong> using a positional selector — not by product name.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex10">
+                    <div id="b10-grid" style="display:flex;gap:.75rem;flex-wrap:wrap">
+                        <div class="product-card"><h4>iPhone 15</h4><div class="price">$999</div></div>
+                        <div class="product-card"><h4>Samsung Galaxy S24</h4><div class="price">$899</div></div>
+                        <div class="product-card"><h4>Pixel 8 Pro</h4><div class="price">$699</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex10-css" type="text" placeholder='e.g. .product-card:nth-child(2)' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex10','css')">
+                        <button class="check-btn" onclick="checkLocator('ex10','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex10-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex10-xpath" type="text" placeholder='e.g. (//div[contains(@class,"product-card")])[2]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex10','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex10','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex10-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex10-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex10-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex10-hint">CSS <code>:nth-child(2)</code> picks the 2nd child of its parent. XPath: wrap the node-set in <code>()</code> then index it — <code>(//div[...])[2]</code>.</div>
+            <div class="answer-box" id="ex10-answer">CSS:&nbsp;&nbsp;<code>.product-card:nth-child(2)</code><br>XPath: <code>(//div[contains(@class,"product-card")])[2]</code></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SECTION 4 — VISUAL RELATIONS
+    ════════════════════════════════════════════════════════════ -->
+    <div class="section-intro" id="s4">
+        <h3><i class="fas fa-eye"></i> Section 4 — Visual Relations</h3>
+        <p>Visual relation selectors find an element by its <strong>visible context</strong> — nearby label text, containing section name, or link text — rather than invisible technical attributes.</p>
+        <p>Use these when an element has no unique id/class but has a consistent visible label or heading near it on screen.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> CSS can target by structural adjacency (label+input). XPath adds <code>text()</code> and <code>normalize-space()</code> to match by actual visible words. XPath text matching is particularly powerful for button and link text.</div>
+    </div>
+
+    <!-- Ex 11 — Input by label text -->
+    <div class="challenge-card" id="ex11">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 11</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Input by Label Text</div>
+            <div class="ch-desc">A form has three labelled inputs. Select <strong>the input associated with the "Email" label</strong> using the label's text — not the input's own id.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex11">
+                    <form class="sb-form">
+                        <label for="b11-name">Name</label>
+                        <input id="b11-name" type="text" placeholder="Name">
+                        <label for="b11-email">Email</label>
+                        <input id="b11-email" type="email" placeholder="Email">
+                        <label for="b11-city">City</label>
+                        <input id="b11-city" type="text" placeholder="City">
+                    </form>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex11-css" type="text" placeholder='e.g. label[for="b11-email"] + input' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex11','css')">
+                        <button class="check-btn" onclick="checkLocator('ex11','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex11-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex11-xpath" type="text" placeholder='e.g. //label[text()="Email"]/following-sibling::input[1]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex11','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex11','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex11-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex11-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex11-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex11-hint">CSS: the label's <code>for</code> attribute links to the input's <code>id</code> — use <code>label[for="b11-email"] + input</code>. XPath: <code>text()="Email"</code> matches by visible label words then <code>following-sibling::input[1]</code> finds the next input.</div>
+            <div class="answer-box" id="ex11-answer">CSS:&nbsp;&nbsp;<code>label[for="b11-email"] + input</code><br>XPath: <code>//label[text()="Email"]/following-sibling::input[1]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 12 — Button inside named section -->
+    <div class="challenge-card" id="ex12">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 12</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Button Inside a Named Section</div>
+            <div class="ch-desc">Two sections are shown — Login and Register. Select <strong>the button inside the Login section</strong> only.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex12">
+                    <section class="login-section" style="margin-bottom:.75rem">
+                        <h3>Login</h3>
+                        <form class="sb-form">
+                            <input type="text" placeholder="Username">
+                            <button class="sb-btn btn-primary" style="width:fit-content">Sign In</button>
+                        </form>
+                    </section>
+                    <section class="register-section">
+                        <h3>Register</h3>
+                        <form class="sb-form">
+                            <input type="email" placeholder="Email">
+                            <button class="sb-btn btn-success" style="width:fit-content">Create Account</button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex12-css" type="text" placeholder='e.g. section.login-section button' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex12','css')">
+                        <button class="check-btn" onclick="checkLocator('ex12','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex12-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex12-xpath" type="text" placeholder='e.g. //section[contains(@class,"login-section")]//button' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex12','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex12','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex12-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex12-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex12-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex12-hint">Use the section's class to scope the search: <code>section.login-section button</code> in CSS finds any button descended from that section. Same concept in XPath with <code>//section[...]//button</code>.</div>
+            <div class="answer-box" id="ex12-answer">CSS:&nbsp;&nbsp;<code>section.login-section button</code><br>XPath: <code>//section[contains(@class,"login-section")]//button</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 13 — Link by visible text -->
+    <div class="challenge-card" id="ex13">
+        <div class="ch-header">
+            <span class="ch-num">Exercise 13</span>
+            <span class="badge beginner">Beginner</span>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Link by Visible Text (XPath text() intro)</div>
+            <div class="ch-desc">Three links are shown. Select <strong>only the "Contact Us" link</strong>. Use CSS to target by href and XPath to target by visible text — the XPath approach works even if the href changes.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex13">
+                    <nav style="display:flex;gap:1rem;font-size:.9rem">
+                        <a href="/home" style="color:#2563eb;text-decoration:none">Home</a>
+                        <a href="/about" style="color:#2563eb;text-decoration:none">About Us</a>
+                        <a href="/contact" style="color:#2563eb;text-decoration:none">Contact Us</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex13-css" type="text" placeholder='e.g. a[href="/contact"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex13','css')">
+                        <button class="check-btn" onclick="checkLocator('ex13','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex13-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex13-xpath" type="text" placeholder='e.g. //a[normalize-space(text())="Contact Us"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex13','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex13','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex13-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex13-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex13-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex13-hint">CSS cannot match by visible text — use the <code>href</code> attribute instead. XPath <code>text()="Contact Us"</code> matches the literal node text. Wrap in <code>normalize-space()</code> to trim hidden whitespace.</div>
+            <div class="answer-box" id="ex13-answer">CSS:&nbsp;&nbsp;<code>a[href="/contact"]</code><br>XPath: <code>//a[normalize-space(text())="Contact Us"]</code>&nbsp; or &nbsp;<code>//a[text()="Contact Us"]</code></div>
+        </div>
+    </div>
+
+    <!-- Level Navigation -->
+    <div class="level-nav">
+        <div class="nav-placeholder"></div>
+        <a href="intermediate.html" class="nav-next">Intermediate <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const CHALLENGES = {
+        ex1:  { sandboxId: 'sb-ex1',  refCSS: '#b1-pass' },
+        ex2:  { sandboxId: 'sb-ex2',  refCSS: 'button.btn-danger' },
+        ex3:  { sandboxId: 'sb-ex3',  refCSS: 'input[type="email"]' },
+        ex4:  { sandboxId: 'sb-ex4',  refCSS: 'input[name="username"]' },
+        ex5:  { sandboxId: 'sb-ex5',  refCSS: '#b5-form input' },
+        ex6:  { sandboxId: 'sb-ex6',  refCSS: '#b6-menu > li' },
+        ex7:  { sandboxId: 'sb-ex7',  refCSS: 'label[for="b7-email"] + input' },
+        ex8:  { sandboxId: 'sb-ex8',  refCSS: '#b8-list > li:first-child' },
+        ex9:  { sandboxId: 'sb-ex9',  refCSS: '#b9-list > li:last-child' },
+        ex10: { sandboxId: 'sb-ex10', refCSS: '.product-card:nth-child(2)' },
+        ex11: { sandboxId: 'sb-ex11', refCSS: 'label[for="b11-email"] + input' },
+        ex12: { sandboxId: 'sb-ex12', refCSS: 'section.login-section button' },
+        ex13: { sandboxId: 'sb-ex13', refCSS: 'a[href="/contact"]' },
+    };
+
+    function checkLocator(id, type) {
+        const cfg     = CHALLENGES[id];
+        const sandbox = document.getElementById(cfg.sandboxId);
+        const input   = document.getElementById(`${id}-${type}`);
+        const result  = document.getElementById(`${id}-${type}-result`);
+        const value   = input.value.trim();
+        if (!value) { showResult(result,'err','<i class="fas fa-exclamation-circle"></i> Enter a selector first.'); return; }
+        const expected = [...sandbox.querySelectorAll(cfg.refCSS)];
+        let matched = [], error = null;
+        if (type === 'css') {
+            try { matched = [...sandbox.querySelectorAll(value)]; } catch(e) { error = e.message; }
+        } else {
+            try {
+                const xr = document.evaluate(value, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                for (let i = 0; i < xr.snapshotLength; i++) { const n = xr.snapshotItem(i); if (sandbox.contains(n)) matched.push(n); }
+            } catch(e) { error = e.message; }
+        }
+        if (error) { clearHighlights(sandbox); showResult(result,'err',`<i class="fas fa-exclamation-triangle"></i> Syntax error: ${sanitize(error)}`); input.className='loc-input'; return; }
+        clearHighlights(sandbox);
+        matched.forEach(el => el.classList.add('locator-match'));
+        setTimeout(() => clearHighlights(sandbox), 3000);
+        const pass = matched.length === expected.length && matched.every(el => expected.includes(el));
+        if (pass) {
+            const n = matched.length;
+            showResult(result,'pass',`<i class="fas fa-check-circle"></i> Correct! Matched ${n} element${n!==1?'s':''}.`);
+            input.classList.add('pass'); input.classList.remove('fail');
+        } else {
+            const n = matched.length, e = expected.length;
+            const msg = n===0 ? 'No elements matched.' : n!==e ? `Found ${n}, expected ${e}. Adjust your selector.` : 'Right count but wrong elements.';
+            showResult(result,'fail',`<i class="fas fa-times-circle"></i> ${msg}`);
+            input.classList.add('fail'); input.classList.remove('pass');
+        }
+    }
+
+    function clearHighlights(s) { s.querySelectorAll('.locator-match').forEach(el => el.classList.remove('locator-match')); }
+    function showResult(el, type, html) { el.className = `result-msg ${type}`; el.innerHTML = html; }
+    function toggle(id) { const el = document.getElementById(id); el.style.display = el.style.display === 'block' ? 'none' : 'block'; }
+    function sanitize(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
+</body>
+</html>

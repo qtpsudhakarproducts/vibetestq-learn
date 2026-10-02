@@ -1,0 +1,890 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🔄 Part 4 &nbsp;·&nbsp; Chapter 407 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">CI/CD</span> <span class="w2">&amp;</span> <span class="w3">Docker</span> <span class="w4">Integration</span></h1>
+    <p class="sn-title-sub">Execution &amp; CI/CD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers running Playwright suites in CI pipelines and Docker containers — the two topics that separate a test suite that runs on one developer's machine from a suite that runs reliably for the whole team, on every push, in any environment. Interviewers ask about CI/Docker to test production readiness: a candidate who can write a complete GitHub Actions workflow, explain why <code class="sn-ic">forbidOnly</code> matters, and describe Docker's role in environment consistency is ready for a professional automation role.</span>
+  </div>
+
+
+  <!-- Q407.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.1</span>
+      <h2 class="sn-q-text">Why do Playwright tests need CI integration?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Running tests only on a developer's machine creates three problems that CI integration solves:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Problem 1 — Nobody remembers to run tests.</strong> Code merges without being tested. Regressions reach the main branch. CI solves this by running tests automatically on every push and pull request — no human decision required.</p>
+<p class="sn-para"><strong class="k-blue">Problem 2 — "Works on my machine."</strong> Tests pass on macOS locally and fail on the Linux CI server. Different Node versions, different font rendering, different OS libraries. CI solves this by running every test in a consistent, reproducible environment.</p>
+<p class="sn-para"><strong class="k-blue">Problem 3 — No report when it matters most.</strong> A CI run fails and the logs scroll off. No screenshots, no traces, no report. CI solves this by always uploading artefacts — even when tests fail.</p>
+<p class="sn-para">A properly integrated Playwright suite runs automatically on every push and PR, uses the same environment every time, blocks merges when tests fail, and makes the HTML report available within minutes of any failure.</p>
+    </div>
+  </div>
+
+  <!-- Q407.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.2</span>
+      <h2 class="sn-q-text">What is the minimum viable GitHub Actions workflow for Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Playwright Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  <span class="tc-kw">test</span>:
+    runs-on: ubuntu-latest
+    timeout-minutes: <span class="tc-num">60</span>
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: <span class="tc-str">'20'</span>
+          cache: <span class="tc-str">'npm'</span>
+
+      - name: Install dependencies
+        run: npm ci                          <span class="tc-cm"># reproducible install from lock file</span>
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps  <span class="tc-cm"># browsers + OS libraries</span>
+
+      - name: Run tests
+        run: npx playwright <span class="tc-kw">test</span>
+        env:
+          CI: <span class="tc-kw">true</span>
+          BASE_URL: ${{ secrets.BASE_URL }}
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()                         <span class="tc-cm"># upload even when tests fail</span>
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: <span class="tc-num">30</span></div>
+      </div>
+<p class="sn-para">Six steps. Every one matters:</p>
+<ol class="sn-olist">
+<li>Checkout — gets the code</li>
+<li>Node setup with <code class="sn-ic">cache: 'npm'</code> — faster <code class="sn-ic">npm ci</code> by caching <code class="sn-ic">node_modules</code></li>
+<li><code class="sn-ic">npm ci</code> — reproducible install from <code class="sn-ic">package-lock.json</code>, not <code class="sn-ic">npm install</code></li>
+<li><code class="sn-ic">npx playwright install --with-deps</code> — browsers AND OS-level libraries</li>
+<li>Run tests with <code class="sn-ic">CI: true</code> and secrets</li>
+<li>Upload report with <code class="sn-ic">if: always()</code> — critical</li>
+</ol>
+    </div>
+  </div>
+
+  <!-- Q407.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.3</span>
+      <h2 class="sn-q-text">Why use npm ci instead of npm install in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">npm ci</code> and <code class="sn-ic">npm install</code> behave differently in ways that matter for CI:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Behaviour</th><th class="sn-th-blue"><code class="sn-ic">npm install</code></th><th class="sn-th-green"><code class="sn-ic">npm ci</code></th></tr></thead>
+          <tbody>
+          <tr><td>Source of truth</td><td><code class="sn-ic">package.json</code> (ranges)</td><td><code class="sn-ic">package-lock.json</code> (exact)</td></tr>
+          <tr><td>Upgrades packages</td><td>Yes — installs latest within range</td><td>No — installs exact locked versions</td></tr>
+          <tr><td>Speed</td><td>Slower</td><td>Faster (skips resolution step)</td></tr>
+          <tr><td><code class="sn-ic">node_modules</code></td><td>Merges into existing</td><td>Deletes and reinstalls clean</td></tr>
+          <tr><td>Lock file</td><td>Can modify it</td><td>Fails if lock file is out of sync</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-purple">The CI consequence:</strong> <code class="sn-ic">npm install</code> might silently install a newer patch version of a dependency between two runs. Tests pass on Monday, fail on Wednesday — same code, different library version. <code class="sn-ic">npm ci</code> prevents this by installing exactly the versions recorded in <code class="sn-ic">package-lock.json</code>.</p>
+<p class="sn-para">Always use <code class="sn-ic">npm ci</code> in CI. Commit and keep <code class="sn-ic">package-lock.json</code> in version control.</p>
+    </div>
+  </div>
+
+  <!-- Q407.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.4</span>
+      <h2 class="sn-q-text">What does --with-deps do in npx playwright install --with-deps?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright install --with-deps</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">--with-deps</code> installs two things:</p>
+<ol class="sn-olist">
+<li>The browser binaries (Chromium, Firefox, WebKit)</li>
+<li>The OS-level libraries those browsers depend on</li>
+</ol>
+<p class="sn-para">On a fresh Ubuntu runner, browsers need dozens of system libraries that are not pre-installed: <code class="sn-ic">libglib2.0-0</code>, <code class="sn-ic">libnss3</code>, <code class="sn-ic">libatk1.0-0</code>, fonts, and many others. Without <code class="sn-ic">--with-deps</code>, you get:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Error: browserType.launch: Executable doesn't exist at
+/root/.cache/ms-playwright/chromium-1xxx/chrome-linux/chrome</div>
+      </div>
+<p class="sn-para">or browser crashes with missing library errors.</p>
+<p class="sn-para"><strong class="k-orange">Install only specific browsers to save time:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright install chromium --with-deps     # only Chromium
+npx playwright install chromium firefox --with-deps  # Chromium + Firefox</div>
+      </div>
+<p class="sn-para">On local development machines, <code class="sn-ic">--with-deps</code> is usually not needed because macOS and Windows provide the system libraries. On Linux CI runners it is always required.</p>
+    </div>
+  </div>
+
+  <!-- Q407.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.5</span>
+      <h2 class="sn-q-text">What is CI-aware playwright.config.ts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The config should behave differently in CI versus local development. The <code class="sn-ic">CI</code> environment variable (set automatically by GitHub Actions, GitLab CI, Azure DevOps, CircleCI, and most other platforms) is the standard detection:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  <span class="tc-cm">// Retries absorb environment flakiness on CI</span>
+  retries: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,
+
+  <span class="tc-cm">// Fewer workers on CI — shared runner CPUs</span>
+  workers: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">4</span>,
+
+  <span class="tc-cm">// Accidental test.only commits become CI errors</span>
+  forbidOnly: !!process.env.CI,
+
+  <span class="tc-cm">// Stop after 10 failures — something is clearly broken</span>
+  maxFailures: process.env.CI ? <span class="tc-num">10</span> : <span class="tc-kw">undefined</span>,
+
+  use: {
+    baseURL: process.env.BASE_URL ?? <span class="tc-str">'https: S5 
+    screenshot: '</span>only-on-failure<span class="tc-str">',
+    video:      '</span>retain-on-failure<span class="tc-str">',
+    trace:      '</span>on-first-retry<span class="tc-str">',
+  },
+
+  reporter: process.env.CI
+    ? [
+        ['</span>html<span class="tc-str">',  { open: '</span><span class="tc-kw">never</span><span class="tc-str">' }],
+        ['</span>junit<span class="tc-str">', { outputFile: '</span>results/junit.xml<span class="tc-str">' }],
+        process.env.GITHUB_ACTIONS ? ['</span>github<span class="tc-str">'] : ['</span>dot<span class="tc-str">'],
+      ]
+    : [
+        ['</span>html<span class="tc-str">',  { open: '</span>on-failure<span class="tc-str">' }],
+        ['</span>list'],
+      ],
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q407.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.6</span>
+      <h2 class="sn-q-text">What is forbidOnly and why does it matter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">forbidOnly: !!process.env.CI</code> causes the test run to fail immediately if any test or describe block is marked with <code class="sn-ic">.only</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// A developer commits this accidentally:</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">only</span>(<span class="tc-str">'login works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+
+<span class="tc-cm">// Without forbidOnly: CI runs only this one test and reports &amp;quot;1 passed&amp;quot;</span>
+<span class="tc-cm">// With forbidOnly: CI fails immediately with:</span>
+<span class="tc-cm">// &amp;quot;Error: focused items are not allowed when running with --forbid-only&amp;quot;</span></div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">forbidOnly</code>, an accidental <code class="sn-ic">test.only</code> commit causes CI to pass on a single test while all other tests are silently skipped. The team sees green CI and merges code with 599 tests not running. This has caused real production incidents.</p>
+<p class="sn-para"><code class="sn-ic">forbidOnly: true</code> turns the accident into a visible CI error. The developer gets immediate feedback and removes the <code class="sn-ic">.only</code> before merging.</p>
+    </div>
+  </div>
+
+  <!-- Q407.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.7</span>
+      <h2 class="sn-q-text">How do you handle secrets and environment variables in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Never hardcode credentials or URLs in test files or config. Pass them through the CI platform's secret store:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts — reads from environment variables</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  use: {
+    baseURL: process.env.BASE_URL ?? <span class="tc-str">'https: S1 
+  },
+});
+
+ S2 
+const username = process.env.TEST_USERNAME ?? '</span>Admin<span class="tc-str">';
+const password = process.env.TEST_PASSWORD ?? '</span>admin123';</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Run tests
+  run: npx playwright <span class="tc-kw">test</span>
+  env:
+    CI: <span class="tc-kw">true</span>
+    BASE_URL: ${{ secrets.STAGING_URL }}
+    TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+    TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}</div>
+      </div>
+<p class="sn-para">GitHub secrets are encrypted and never appear in logs — even if a step accidentally prints <code class="sn-ic">process.env</code>, GitHub redacts the secret values.</p>
+<p class="sn-para">Configure secrets at: Settings → Secrets and variables → Actions → New repository secret.</p>
+<p class="sn-para"><strong class="k-red">For different environments:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">environment: staging
+env:
+  BASE_URL: ${{ secrets.STAGING_URL }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q407.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.8</span>
+      <h2 class="sn-q-text">How do you cache Playwright browsers in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without caching, <code class="sn-ic">npx playwright install --with-deps</code> downloads 100–300 MB of browsers on every CI run. Cache the <code class="sn-ic">~/.cache/ms-playwright</code> directory keyed to <code class="sn-ic">package-lock.json</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Cache Playwright browsers
+  uses: actions/cache@v4
+  id: playwright-cache
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ runner.os }}-${{ <span class="tc-fn">hashFiles</span>(<span class="tc-str">'package-lock.json'</span>) }}
+
+- name: Install Playwright browsers
+  <span class="tc-kw">if</span>: steps.playwright-cache.outputs.cache-hit != <span class="tc-str">'true'</span>
+  run: npx playwright install --with-deps
+
+- name: Install OS deps <span class="tc-fn">only</span> (cache hit)
+  <span class="tc-kw">if</span>: steps.playwright-cache.outputs.cache-hit == <span class="tc-str">'true'</span>
+  run: npx playwright install-deps</div>
+      </div>
+<p class="sn-para">When <code class="sn-ic">package-lock.json</code> changes (Playwright version bump), the cache key changes and browsers are reinstalled. When it has not changed, the cached browsers are used in seconds.</p>
+<p class="sn-para"><strong class="k-yellow">Why reinstall OS deps even on cache hit?</strong> OS-level libraries (<code class="sn-ic">--with-deps</code>) come from <code class="sn-ic">apt</code> — they are not in <code class="sn-ic">~/.cache/ms-playwright</code>. A fresh runner does not have them regardless of browser cache. <code class="sn-ic">playwright install-deps</code> reinstalls only the OS libraries, not the browser binaries.</p>
+    </div>
+  </div>
+
+  <!-- Q407.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.9</span>
+      <h2 class="sn-q-text">How do you publish test results to Azure DevOps and GitLab CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Azure DevOps:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- script: npx playwright <span class="tc-kw">test</span>
+  displayName: <span class="tc-str">'Run Playwright tests'</span>
+  env:
+    CI: <span class="tc-str">'true'</span>
+
+- task: PublishTestResults@<span class="tc-num">2</span>
+  condition: <span class="tc-fn">always</span>()
+  inputs:
+    testResultsFormat: <span class="tc-str">'JUnit'</span>
+    testResultsFiles: <span class="tc-str">'results/junit.xml'</span>
+    testRunTitle: <span class="tc-str">'Playwright Tests — $(Build.SourceBranchName)'</span>
+    failTaskOnFailedTests: <span class="tc-kw">true</span>
+
+- task: PublishPipelineArtifact@<span class="tc-num">1</span>
+  condition: <span class="tc-fn">always</span>()
+  inputs:
+    targetPath: <span class="tc-str">'playwright-report'</span>
+    artifact: <span class="tc-str">'playwright-report'</span></div>
+      </div>
+<p class="sn-para">Azure DevOps displays test results in the Tests tab of the pipeline run — with pass/fail trends, individual test details, and the ability to link failures to work items.</p>
+<p class="sn-para"><strong class="k-blue">GitLab CI:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">playwright:
+  image: mcr.microsoft.com/playwright:v1.<span class="tc-num">52.0</span>-jammy
+  script:
+    - npm ci
+    - npx playwright <span class="tc-kw">test</span>
+  variables:
+    CI: <span class="tc-str">'true'</span>
+  artifacts:
+    when: always
+    paths:
+      - playwright-report/
+      - results/junit.xml
+    reports:
+      junit: results/junit.xml
+    expire_in: <span class="tc-num">30</span> days</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">reports: junit:</code> tells GitLab to parse the XML and show results in the pipeline's Tests tab. <code class="sn-ic">when: always</code> uploads artefacts even on failure.</p>
+    </div>
+  </div>
+
+  <!-- Q407.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.10</span>
+      <h2 class="sn-q-text">What is Docker and what problem does it solve for Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Docker packages the entire runtime environment — Node.js version, browser binaries, OS libraries, fonts, timezone — into a container image. Everyone who runs that image gets an identical environment.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">The problem it solves:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Developer A (macOS): tests pass
+Developer B (Windows): tests fail — different font rendering
+CI server (Ubuntu 20): tests fail — missing libglib version
+New team member: 2-hour environment setup before first test run</div>
+      </div>
+<p class="sn-para">With Docker:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Everyone runs: docker run mcr.microsoft.com/playwright:v1.52.0-jammy
+Result: identical environment, identical results</div>
+      </div>
+<p class="sn-para">Microsoft maintains the official Playwright image <code class="sn-ic">mcr.microsoft.com/playwright:v1.52.0-jammy</code> — it contains Ubuntu 22.04, Node.js 20, all three browser binaries, and all required OS libraries.</p>
+    </div>
+  </div>
+
+  <!-- Q407.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.11</span>
+      <h2 class="sn-q-text">How do you run Playwright tests in Docker locally?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docker run --rm \
+  -v $(pwd):/app \
+  -w /app \
+  mcr.microsoft.com/playwright:v1.52.0-jammy \
+  bash -c &quot;npm ci &amp;&amp; npx playwright test&quot;</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">--rm</code> — removes the container when it finishes. No cleanup needed. <code class="sn-ic">-v $(pwd):/app</code> — mounts your project directory into the container. <code class="sn-ic">-w /app</code> — sets the working directory inside the container.</p>
+<p class="sn-para"><strong class="k-purple">With environment variables:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docker run --rm \
+  -v $(pwd):/app \
+  -w /app \
+  -e CI=true \
+  -e BASE_URL=https://demo.orangehrmlive.com \
+  mcr.microsoft.com/playwright:v1.52.0-jammy \
+  bash -c &quot;npm ci &amp;&amp; npx playwright test&quot;</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Getting the report out — mount the output directory:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docker run --rm \
+  -v $(pwd):/app \
+  -v $(pwd)/playwright-report:/app/playwright-report \
+  -w /app \
+  mcr.microsoft.com/playwright:v1.52.0-jammy \
+  bash -c &quot;npm ci &amp;&amp; npx playwright test&quot;</div>
+      </div>
+<p class="sn-para">Without the volume mount, files written inside the container disappear when the container stops.</p>
+    </div>
+  </div>
+
+  <!-- Q407.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.12</span>
+      <h2 class="sn-q-text">How do you write a Dockerfile for a Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">dockerfile</span>
+        </div>
+        <div class="sn-terminal-code">FROM mcr.microsoft.com/playwright:v1.<span class="tc-num">52.0</span>-jammy
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+CMD [&quot;npx&quot;, &quot;playwright&quot;, &quot;<span class="tc-kw">test</span>&quot;]</div>
+      </div>
+<p class="sn-para">Build and run:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docker build -t orangehrm-playwright .
+
+docker run --rm orangehrm-playwright
+
+docker run --rm \
+  -e BASE_URL=https://staging.example.com \
+  -e CI=true \
+  -v $(pwd)/playwright-report:/app/playwright-report \
+  orangehrm-playwright \
+  npx playwright test --grep @smoke</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Layer caching principle:</strong> <code class="sn-ic">COPY package*.json</code> + <code class="sn-ic">RUN npm ci</code> before <code class="sn-ic">COPY . .</code> means Docker reuses the cached <code class="sn-ic">npm ci</code> layer on rebuilds when only test files change. A change to <code class="sn-ic">login.spec.ts</code> does not trigger <code class="sn-ic">npm ci</code> again — only a change to <code class="sn-ic">package.json</code> or <code class="sn-ic">package-lock.json</code> does.</p>
+    </div>
+  </div>
+
+  <!-- Q407.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.13</span>
+      <h2 class="sn-q-text">How do you use the Playwright Docker image in GitHub Actions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use the <code class="sn-ic">container:</code> key to run the entire job inside the Playwright image. This skips browser installation — browsers are already in the image:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">jobs:
+  <span class="tc-kw">test</span>:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.<span class="tc-num">52.0</span>-jammy
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci        <span class="tc-cm"># browsers already in image — no playwright install step</span>
+
+      - name: Run tests
+        run: npx playwright <span class="tc-kw">test</span>
+        env:
+          CI: <span class="tc-kw">true</span>
+          HOME: /root      <span class="tc-cm"># required — GitHub Actions container jobs run as root</span>
+          BASE_URL: ${{ secrets.BASE_URL }}
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: <span class="tc-num">30</span></div>
+      </div>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">HOME: /root</code></strong> — when the job runs as root inside the container, the <code class="sn-ic">HOME</code> environment variable may not be set correctly. Playwright uses <code class="sn-ic">$HOME/.cache</code> for browser profiles. Without this, you get "Failed to create a profile directory" errors.</p>
+<p class="sn-para"><strong class="k-teal">Tradeoff:</strong> Pulling the image takes time on first use but the image is cached by the GitHub Actions runner. The benefit is zero browser installation logic — the image is the environment.</p>
+    </div>
+  </div>
+
+  <!-- Q407.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.14</span>
+      <h2 class="sn-q-text">What is Docker Compose and when do you use it for testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Docker Compose coordinates multiple containers. Use it when your tests run against a locally hosted application rather than a remote URL:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">version: <span class="tc-str">'3.8'</span>
+
+services:
+  app:
+    image: orangehrm/orangehrm:latest
+    ports:
+      - <span class="tc-str">'80:80'</span>
+    healthcheck:
+      <span class="tc-kw">test</span>: [<span class="tc-str">'CMD'</span>, <span class="tc-str">'curl'</span>, <span class="tc-str">'-f'</span>, 'http:<span class="tc-cm">//localhost/web/index.php/auth/login']</span>
+      interval: 10s
+      timeout:  5s
+      retries:  <span class="tc-num">10</span>
+
+  playwright:
+    build: .
+    depends_on:
+      app:
+        condition: service_healthy  <span class="tc-cm"># wait until app healthcheck passes</span>
+    environment:
+      - BASE_URL=http:<span class="tc-cm">//app         # use Docker Compose service name, not localhost</span>
+      - CI=<span class="tc-kw">true</span>
+    volumes:
+      - ./playwright-report:/app/playwright-report</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docker compose up --abort-on-container-exit --exit-code-from playwright
+
+docker compose down</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">--abort-on-container-exit</code> — when the playwright container exits (tests finish), all other containers stop.</p>
+<p class="sn-para"><code class="sn-ic">--exit-code-from playwright</code> — <code class="sn-ic">docker compose up</code> exits with the same code as the playwright container. Test failures (exit code 1) propagate to CI correctly and mark the build as failed.</p>
+    </div>
+  </div>
+
+  <!-- Q407.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.15</span>
+      <h2 class="sn-q-text">What are common CI failures and how do you diagnose them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">"browserType.launch: Executable doesn't exist"</strong> Cause: <code class="sn-ic">--with-deps</code> not used, or browser cache restored without OS deps. Fix: use <code class="sn-ic">npx playwright install --with-deps</code>; on cache hit run <code class="sn-ic">npx playwright install-deps</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">"Test timeout" on all tests</strong> Cause: <code class="sn-ic">BASE_URL</code> not set or pointing to unreachable server. Fix: verify the secret value in GitHub; check whether the URL is reachable from the CI runner.</p>
+<p class="sn-para"><strong class="k-red">Tests pass locally, fail in CI</strong> Common causes: timezone difference, different screen resolution/viewport, <code class="sn-ic">localhost</code> unreachable from Docker container (use service name), missing environment variable. Fix: run locally in Docker using the same image as CI — <code class="sn-ic">docker run</code> with <code class="sn-ic">mcr.microsoft.com/playwright:v1.52.0-jammy</code>. If it fails there too, the environment is the issue, not the tests.</p>
+<p class="sn-para"><strong class="k-red">"Error: focused items are not allowed"</strong> Cause: <code class="sn-ic">test.only</code> or <code class="sn-ic">describe.only</code> committed to the branch. Fix: remove <code class="sn-ic">.only</code>; this is <code class="sn-ic">forbidOnly</code> doing its job correctly.</p>
+<p class="sn-para"><strong class="k-red">Report artefact not available</strong> Cause: <code class="sn-ic">if: always()</code> missing on upload step. Fix: add <code class="sn-ic">if: always()</code> to the upload step — it must be there unconditionally.</p>
+    </div>
+  </div>
+
+  <!-- Q407.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.16</span>
+      <h2 class="sn-q-text">Write a complete CI workflow with caching, secrets, and nightly schedule.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Playwright Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: <span class="tc-str">'0 2 * * *'</span>   <span class="tc-cm"># nightly regression at 2am UTC</span>
+
+jobs:
+  <span class="tc-kw">test</span>:
+    name: Playwright Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: <span class="tc-num">60</span>
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: <span class="tc-str">'20'</span>
+          cache: <span class="tc-str">'npm'</span>
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ <span class="tc-fn">hashFiles</span>(<span class="tc-str">'package-lock.json'</span>) }}
+
+      - name: Install browsers
+        <span class="tc-kw">if</span>: steps.playwright-cache.outputs.cache-hit != <span class="tc-str">'true'</span>
+        run: npx playwright install --with-deps
+
+      - name: Install OS <span class="tc-fn">deps</span> (cache hit)
+        <span class="tc-kw">if</span>: steps.playwright-cache.outputs.cache-hit == <span class="tc-str">'true'</span>
+        run: npx playwright install-deps
+
+      - name: Run tests
+        run: npx playwright <span class="tc-kw">test</span>
+        env:
+          CI: <span class="tc-kw">true</span>
+          BASE_URL:       ${{ secrets.STAGING_URL }}
+          TEST_USERNAME:  ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD:  ${{ secrets.TEST_PASSWORD }}
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: <span class="tc-num">30</span>
+
+      - name: Upload <span class="tc-kw">test</span> results
+        uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        with:
+          name: <span class="tc-kw">test</span>-results
+          path: <span class="tc-kw">test</span>-results/
+          retention-days: <span class="tc-num">7</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q407.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.17</span>
+      <h2 class="sn-q-text">What belongs in .gitignore for a Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gitignore</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>-results/
+playwright-report/
+blob-report/
+results/
+
+.auth/
+
+.DS_Store
+node_modules/</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">What to commit (do NOT gitignore):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">playwright.config.ts</code> — the project configuration</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">package-lock.json</code> — required for <code class="sn-ic">npm ci</code> reproducibility</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">snapshots/</code> — visual test baselines (these are intentional committed artefacts)</span></li>
+</ul>
+<p class="sn-para">The <code class="sn-ic">.auth/</code> directory is worth particular attention. It contains saved session state including cookies and localStorage. Committing it means session tokens are in version control — a security issue. Always gitignore <code class="sn-ic">.auth/</code> and regenerate it in CI via <code class="sn-ic">globalSetup</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q407.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q407.18</span>
+      <h2 class="sn-q-text">How did you set up CI for the OrangeHRM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">We started with tests running only on individual machines. Three things pushed the team to set up CI: a regression was merged that broke the leave module; tests passed locally on one engineer's macOS but failed on another's Linux; and a CI run earlier in another project produced no report because the upload step was missing <code class="sn-ic">if: always()</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">The setup we landed on:</strong></p>
+<p class="sn-para">The workflow triggers on PR and push to main. We use browser caching keyed to <code class="sn-ic">package-lock.json</code> — saved roughly 2 minutes per run on an active day with 15+ CI runs. <code class="sn-ic">forbidOnly: true</code> caught its first accidental <code class="sn-ic">test.only</code> commit within the first week.</p>
+<p class="sn-para">The CI-aware config uses <code class="sn-ic">retries: 2</code> and <code class="sn-ic">workers: 2</code> (the shared runner has 2 CPUs). <code class="sn-ic">maxFailures: 10</code> stops early when something is clearly broken — we had a deployment go out with a wrong database config that caused every test to fail; without <code class="sn-ic">maxFailures</code> we waited 22 minutes to find out.</p>
+<p class="sn-para">We use the <code class="sn-ic">github</code> reporter for inline PR annotations and the HTML report uploaded as an artefact. Reviewers see which tests failed directly in the PR without opening the workflow run. The HTML report download has the traces for the deeper investigation.</p>
+<p class="sn-para">The most impactful single decision: using Docker locally to reproduce CI failures. Before Docker, "works on my machine" bugs took hours to track down. Now when a test fails in CI, the first diagnostic step is <code class="sn-ic">docker run</code> with the same image. It reproduces ~80% of CI-only failures in under 5 minutes.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>CI runs tests automatically on every push and PR — consistent environment, no human trigger needed.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npm ci</code> not <code class="sn-ic">npm install</code> — installs exact locked versions; never upgrades between runs.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npx playwright install --with-deps</code> — installs browsers AND OS libraries; required on fresh Linux runners.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">if: always()</code> on upload steps — uploads the report even when tests fail; non-negotiable.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">CI=true</code> — triggers retries, workers reduction, forbidOnly, correct reporters in config.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">forbidOnly: !!process.env.CI</code> — accidental <code class="sn-ic">test.only</code> commits become CI errors, not silent suite reducers.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">maxFailures</code> — stops the run early when clearly broken; saves CI time on broken deployments.</span></li>
+            <li><span class="icon">⭐</span><span>Browser caching on <code class="sn-ic">~/.cache/ms-playwright</code> keyed to <code class="sn-ic">package-lock.json</code> — saves 1–3 minutes per run.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Secrets via CI secret store — never hardcode credentials or URLs in code or config.</span></li>
+            <li><span class="icon">⭐</span><span>Docker packages Node, browsers, OS libraries into one image — identical environment everywhere.</span></li>
+            <li><span class="icon">⭐</span><span>Official image: <code class="sn-ic">mcr.microsoft.com/playwright:v1.52.0-jammy</code> — pin to your project's Playwright version.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">HOME: /root</code> in GitHub Actions container jobs — prevents browser profile errors.</span></li>
+            <li><span class="icon">⭐</span><span>Docker Compose — coordinates app + tests containers; <code class="sn-ic">service_healthy</code> waits for the app; <code class="sn-ic">--exit-code-from</code> propagates test failures to CI.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">localhost</code> inside a container is the container, not the host — use <code class="sn-ic">host.docker.internal</code> or service names.</span></li>
+            <li><span class="icon">⭐</span><span>Always mount the report directory as a volume — files inside a container vanish when it stops.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

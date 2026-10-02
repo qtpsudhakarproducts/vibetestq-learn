@@ -1,0 +1,820 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎨 Part 8 &nbsp;·&nbsp; Chapter 804 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Accessibility</span> <span class="w2">Testing</span> <span class="w3">Fundamentals</span></h1>
+    <p class="sn-title-sub">Visual &amp; Accessibility — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers what accessibility testing is, WCAG standards, the ARIA model, and the concepts that underpin automated accessibility checks. Interviewers ask these questions increasingly often as accessibility compliance becomes a legal requirement in many jurisdictions. Questions at junior level focus on WCAG basics; at senior level they focus on how to integrate accessibility gates into a CI pipeline and what automated tools can and cannot catch.</span>
+  </div>
+
+
+  <!-- Q804.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.1</span>
+      <h2 class="sn-q-text">What is web accessibility and why does it matter for testers?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Web accessibility means building websites that people with disabilities can use effectively. Disabilities include visual (blindness, low vision, colour blindness), motor (limited hand/arm mobility, tremors), auditory (deafness, hearing loss), and cognitive (dyslexia, attention disorders).</p>
+      </div>
+<p class="sn-para">Accessibility matters to testers for three reasons:</p>
+<p class="sn-para"><strong class="k-blue">Legal compliance.</strong> In the USA, the ADA (Americans with Disabilities Act) requires accessible digital services. In Europe, EN 301 549 and the European Accessibility Act apply. In the UK, the Equality Act 2010. Non-compliance has resulted in significant lawsuits and regulatory fines — including against Domino's, Netflix, and Target.</p>
+<p class="sn-para"><strong class="k-blue">User reach.</strong> Approximately 15% of the global population lives with some form of disability. An inaccessible application excludes a significant user base.</p>
+<p class="sn-para"><strong class="k-blue">Quality signal.</strong> Inaccessible code is often poorly structured HTML. Accessibility violations frequently correlate with other quality problems: missing labels that also affect form usability, missing alt text that also breaks SEO, missing focus management that also affects keyboard power users.</p>
+    </div>
+  </div>
+
+  <!-- Q804.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.2</span>
+      <h2 class="sn-q-text">What is WCAG and what do its levels mean?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">WCAG (Web Content Accessibility Guidelines) is the international standard for web accessibility, published by the W3C. Current version is WCAG 2.2.</p>
+      </div>
+<p class="sn-para">WCAG is organised around four principles — content must be:</p>
+<p class="sn-para"><strong class="k-green">Perceivable</strong> — information must be presentable to users in ways they can perceive (alt text for images, captions for video).</p>
+<p class="sn-para"><strong class="k-green">Operable</strong> — all functionality must be accessible via keyboard, no content that could cause seizures, sufficient navigation aids.</p>
+<p class="sn-para"><strong class="k-green">Understandable</strong> — text must be readable, pages must behave predictably, error messages must be helpful.</p>
+<p class="sn-para"><strong class="k-green">Robust</strong> — content must be parseable by assistive technologies, including screen readers and braille displays.</p>
+<p class="sn-para">Three conformance levels:</p>
+<p class="sn-para"><strong class="k-green">Level A</strong> — minimum requirements. If not met, the site is practically inaccessible for some users.</p>
+<p class="sn-para"><strong class="k-green">Level AA</strong> — the standard target for most legal compliance requirements. WCAG 2.1 AA is required by most accessibility laws.</p>
+<p class="sn-para"><strong class="k-green">Level AAA</strong> — enhanced accessibility. Aspirational for most sites — not required and difficult to achieve on all content types.</p>
+    </div>
+  </div>
+
+  <!-- Q804.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.3</span>
+      <h2 class="sn-q-text">What is the accessibility tree?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The accessibility tree is a parallel representation of the DOM that the browser exposes to assistive technologies (screen readers, braille displays, switch devices). It contains semantic information that the visual DOM does not always make explicit.</p>
+      </div>
+<p class="sn-para">A <code class="sn-ic">&lt;button&gt;</code> element in the DOM becomes a node in the accessibility tree with:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-purple">Role:</strong> <code class="sn-ic">button</code></span></li>
+<li><span class="icon">💡</span><span><strong class="k-purple">Accessible name:</strong> the text inside the button (or <code class="sn-ic">aria-label</code>)</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-purple">State:</strong> enabled, disabled, pressed</span></li>
+<li><span class="icon">🎯</span><span><strong class="k-purple">Description:</strong> <code class="sn-ic">aria-describedby</code> content</span></li>
+</ul>
+<p class="sn-para">A visually styled <code class="sn-ic">&lt;div&gt;</code> that acts as a button but has no role, name, or keyboard handler does NOT appear as a button in the accessibility tree. A screen reader user cannot interact with it.</p>
+<p class="sn-para">Playwright's <code class="sn-ic">getByRole()</code> locator queries the accessibility tree — this is why it is the preferred locator strategy. If <code class="sn-ic">getByRole('button', { name: 'Submit' })</code> cannot find the element, the element is not accessible as a button to screen readers either. The test failure reveals an accessibility problem.</p>
+    </div>
+  </div>
+
+  <!-- Q804.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.4</span>
+      <h2 class="sn-q-text">What are ARIA roles and why do they matter in testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">ARIA (Accessible Rich Internet Applications) is a set of HTML attributes that add semantic meaning to elements that lack it natively.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">html</span>
+        </div>
+        <div class="sn-terminal-code">&lt;!-- Div acting as a button — no accessibility without ARIA --&gt;
+&lt;div <span class="tc-kw">class</span>=&quot;btn&quot; onclick=&quot;<span class="tc-fn">submit</span>()&quot;&gt;Submit&lt;/div&gt;
+
+&lt;!-- With ARIA — now exposed as a button <span class="tc-kw">in</span> the accessibility tree --&gt;
+&lt;div <span class="tc-kw">class</span>=&quot;btn&quot; role=&quot;button&quot; tabindex=&quot;<span class="tc-num">0</span>&quot; onclick=&quot;<span class="tc-fn">submit</span>()&quot;
+     onkeypress=&quot;<span class="tc-fn">submit</span>()&quot;&gt;Submit&lt;/div&gt;</div>
+      </div>
+<p class="sn-para">Common ARIA roles relevant to testing:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">role=&quot;button&quot;</code> — interactive button</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">role=&quot;alert&quot;</code> — important message that should be announced immediately</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">role=&quot;dialog&quot;</code> — modal dialog</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">role=&quot;navigation&quot;</code> — navigation landmark</span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">role=&quot;tab&quot;</code> / <code class="sn-ic">role=&quot;tabpanel&quot;</code> — tab interface</span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">role=&quot;combobox&quot;</code> — dropdown or autocomplete</span></li>
+</ul>
+<p class="sn-para">ARIA states convey dynamic information:</p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span><code class="sn-ic">aria-expanded=&quot;true/false&quot;</code> — dropdown or accordion state</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">aria-selected=&quot;true/false&quot;</code> — selection state in listboxes and tabs</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">aria-disabled=&quot;true&quot;</code> — disabled state for custom elements</span></li>
+<li><span class="icon">🔶</span><span><code class="sn-ic">aria-invalid=&quot;true&quot;</code> — invalid form field</span></li>
+<li><span class="icon">🎪</span><span><code class="sn-ic">aria-live=&quot;polite&quot;</code> — region that announces dynamic updates</span></li>
+</ul>
+<p class="sn-para">Testing with <code class="sn-ic">getByRole('tab', { name: 'Settings', selected: true })</code> implicitly validates that the tab's ARIA state is correct.</p>
+    </div>
+  </div>
+
+  <!-- Q804.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.5</span>
+      <h2 class="sn-q-text">What is axe-core and how does it relate to Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">axe-core is an open-source accessibility testing engine developed by Deque Systems. It analyses a rendered page and reports WCAG violations — elements that are missing labels, colour contrast failures, missing landmarks, keyboard traps, and hundreds of other issues.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">@axe-core/playwright</code> is the official integration that runs axe-core analysis within a Playwright test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @axe-core/playwright</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> AxeBuilder <span class="tc-kw">from</span> <span class="tc-str">'@axe-core/playwright'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'homepage has no accessibility violations'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page }).<span class="tc-fn">analyze</span>();
+
+  <span class="tc-cm">// Fail the test if any violations are found</span>
+  <span class="tc-kw">expect</span>(results.violations).<span class="tc-fn">toEqual</span>([]);
+});</div>
+      </div>
+<p class="sn-para">When <code class="sn-ic">results.violations</code> is non-empty, each entry contains:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">id</code> — the rule that fired (e.g., <code class="sn-ic">&quot;color-contrast&quot;</code>)</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">description</code> — what the rule checks</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">impact</code> — <code class="sn-ic">&quot;critical&quot;</code>, <code class="sn-ic">&quot;serious&quot;</code>, <code class="sn-ic">&quot;moderate&quot;</code>, or <code class="sn-ic">&quot;minor&quot;</code></span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">nodes</code> — the specific elements that violated the rule, with HTML context</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q804.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.6</span>
+      <h2 class="sn-q-text">What violation impact levels exist and what do they mean?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">axe-core classifies every violation by impact:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Critical</strong> — prevents users with disabilities from accessing content. Must be fixed immediately. Examples: images with no alt attribute on an informational image, form inputs with no associated label.</p>
+<p class="sn-para"><strong class="k-pink">Serious</strong> — significantly impairs access but does not completely block it. Examples: buttons with no accessible name, links with no discernible text.</p>
+<p class="sn-para"><strong class="k-pink">Moderate</strong> — creates difficulty but the user can work around it with effort. Examples: incorrect heading hierarchy, missing landmark regions.</p>
+<p class="sn-para"><strong class="k-pink">Minor</strong> — small issues that have a limited impact on accessibility. Examples: redundant ARIA roles on elements that already have native semantics.</p>
+<p class="sn-para">For CI gates, start by failing only on <code class="sn-ic">critical</code> violations — this prevents blocking builds for minor issues that need design input:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page }).<span class="tc-fn">analyze</span>();
+<span class="tc-kw">const</span> criticalViolations = results.violations.<span class="tc-fn">filter</span>(v =&gt; v.impact === <span class="tc-str">'critical'</span>);
+<span class="tc-kw">expect</span>(criticalViolations).<span class="tc-fn">toEqual</span>([]);</div>
+      </div>
+<p class="sn-para">Introduce <code class="sn-ic">serious</code> violations after the team has a process for reviewing and addressing accessibility issues.</p>
+    </div>
+  </div>
+
+  <!-- Q804.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.7</span>
+      <h2 class="sn-q-text">What can automated accessibility testing NOT catch?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Automated tools like axe-core catch approximately 30–40% of WCAG issues. The rest require human review or user testing.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Cannot be caught automatically:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Whether alt text is meaningful (axe knows if it is missing, not if it is</span></li>
+</ul>
+<p class="sn-para">  appropriate — "image.png" passes automation but fails human review)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Whether reading order makes logical sense</span></li>
+<li><span class="icon">⚡</span><span>Whether error messages are helpful and clear</span></li>
+<li><span class="icon">🎯</span><span>Whether complex workflows are understandable for cognitive disabilities</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Whether videos have accurate captions (only presence can be verified)</span></li>
+<li><span class="icon">🔑</span><span>Whether colour choices are aesthetically distinguishable (contrast ratio</span></li>
+</ul>
+<p class="sn-para">  can be calculated but visual clarity cannot)</p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Keyboard navigation flow — whether tab order is logical requires manual</span></li>
+</ul>
+<p class="sn-para">  traversal</p>
+<p class="sn-para"><strong class="k-red">Can be caught automatically:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🌟</span><span>Missing alt text on images</span></li>
+<li><span class="icon">📦</span><span>Form inputs without labels</span></li>
+<li><span class="icon">🔶</span><span>Colour contrast ratios below WCAG thresholds</span></li>
+<li><span class="icon">🎪</span><span>Missing page language declaration (<code class="sn-ic">&lt;html lang=&quot;en&quot;&gt;</code>)</span></li>
+<li><span class="icon">🔹</span><span>Duplicate IDs</span></li>
+<li><span class="icon">🔷</span><span>Missing skip-navigation links</span></li>
+<li><span class="icon">💡</span><span>Invalid ARIA attribute usage</span></li>
+</ul>
+<p class="sn-para">Automated accessibility testing is a floor, not a ceiling. It catches the most common technical violations but cannot replace manual review and user testing with disabled users.</p>
+    </div>
+  </div>
+
+  <!-- Q804.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.8</span>
+      <h2 class="sn-q-text">How do you target a specific page component for an accessibility scan?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Run axe-core on a specific region of the page rather than the whole page:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'navigation accessibility'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+    .<span class="tc-fn">include</span>(<span class="tc-str">'nav'</span>)           <span class="tc-cm">// CSS selector for the component to scan</span>
+    .<span class="tc-fn">analyze</span>();
+
+  <span class="tc-kw">expect</span>(results.violations).<span class="tc-fn">toEqual</span>([]);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'login form accessibility'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+    .<span class="tc-fn">include</span>(<span class="tc-str">'[data-testid=&amp;quot;login-form&amp;quot;]'</span>)
+    .<span class="tc-fn">analyze</span>();
+
+  <span class="tc-kw">expect</span>(results.violations).<span class="tc-fn">toEqual</span>([]);
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">include()</code> focuses the scan on a subtree. <code class="sn-ic">exclude()</code> omits elements:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Exclude third-party widget that you cannot control</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  .<span class="tc-fn">exclude</span>(<span class="tc-str">' S1 
+  .exclude('</span><span class="tc-cm">#google-recaptcha')</span>
+  .<span class="tc-fn">analyze</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q804.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.9</span>
+      <h2 class="sn-q-text">How do you filter by WCAG tags to run only specific rule sets?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">axe-core tags let you run only rules relevant to a specific WCAG level:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Only WCAG 2.1 Level AA rules</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  .<span class="tc-fn">withTags</span>([<span class="tc-str">'wcag2a'</span>, <span class="tc-str">'wcag2aa'</span>, <span class="tc-str">'wcag21aa'</span>])
+  .<span class="tc-fn">analyze</span>();
+
+<span class="tc-cm">// Only Level A rules (minimum compliance)</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  .<span class="tc-fn">withTags</span>([<span class="tc-str">'wcag2a'</span>])
+  .<span class="tc-fn">analyze</span>();
+
+<span class="tc-cm">// Best practices (not formal WCAG — extra recommendations)</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  .<span class="tc-fn">withTags</span>([<span class="tc-str">'best-practice'</span>])
+  .<span class="tc-fn">analyze</span>();</div>
+      </div>
+<p class="sn-para">Common tag values: <code class="sn-ic">wcag2a</code>, <code class="sn-ic">wcag2aa</code>, <code class="sn-ic">wcag2aaa</code>, <code class="sn-ic">wcag21a</code>, <code class="sn-ic">wcag21aa</code>, <code class="sn-ic">wcag22aa</code>, <code class="sn-ic">best-practice</code>, <code class="sn-ic">section508</code>.</p>
+<p class="sn-para">For a legal compliance gate, use <code class="sn-ic">['wcag2a', 'wcag2aa', 'wcag21aa']</code> — this covers the rules required by most accessibility laws.</p>
+    </div>
+  </div>
+
+  <!-- Q804.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.10</span>
+      <h2 class="sn-q-text">How do you disable specific axe rules that produce known false positives?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Disable specific rules</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  .<span class="tc-fn">disableRules</span>([<span class="tc-str">'color-contrast'</span>])  <span class="tc-cm">// Disabled while design team reviews</span>
+  .<span class="tc-fn">analyze</span>();
+
+<span class="tc-cm">// Disable rules for a known third-party element</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  .<span class="tc-fn">exclude</span>('<span class="tc-cm">#legacy-widget')          // Excludes from all rules</span>
+  .<span class="tc-fn">analyze</span>();</div>
+      </div>
+<p class="sn-para">Document every disabled rule in a comment explaining why it is disabled and when it will be re-enabled:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+  <span class="tc-cm">// color-contrast: design team is updating the theme in Sprint 24 (ticket A11Y-42)</span>
+  .<span class="tc-fn">disableRules</span>([<span class="tc-str">'color-contrast'</span>])
+  .<span class="tc-fn">analyze</span>();</div>
+      </div>
+<p class="sn-para">Never use <code class="sn-ic">disableRules</code> as a permanent solution. Treat it like <code class="sn-ic">test.fixme</code> — a tracked technical debt item with an owner and a deadline.</p>
+    </div>
+  </div>
+
+  <!-- Q804.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.11</span>
+      <h2 class="sn-q-text">How do you log violations for debugging?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'check for accessibility violations'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page }).<span class="tc-fn">analyze</span>();
+
+  <span class="tc-kw">if</span> (results.violations.length &gt; <span class="tc-num">0</span>) {
+    <span class="tc-cm">// Log a readable summary for the failing test output</span>
+    <span class="tc-kw">const</span> violationSummary = results.violations.<span class="tc-fn">map</span>(v =&gt; ({
+      rule:    v.id,
+      impact:  v.impact,
+      summary: v.description,
+      nodes:   v.nodes.<span class="tc-fn">map</span>(n =&gt; n.html).<span class="tc-fn">slice</span>(<span class="tc-num">0</span>, <span class="tc-num">2</span>), <span class="tc-cm">// first 2 affected elements</span>
+    }));
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'Accessibility violations:'</span>, JSON.<span class="tc-fn">stringify</span>(violationSummary, <span class="tc-kw">null</span>, <span class="tc-num">2</span>));
+  }
+
+  <span class="tc-kw">expect</span>(results.violations).<span class="tc-fn">toEqual</span>([]);
+});</div>
+      </div>
+<p class="sn-para">Attach violations to the Playwright test report:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'accessibility scan'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page }).<span class="tc-fn">analyze</span>();
+
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'accessibility-results'</span>, {
+    body:        JSON.<span class="tc-fn">stringify</span>(results.violations, <span class="tc-kw">null</span>, <span class="tc-num">2</span>),
+    contentType: <span class="tc-str">'application/json'</span>,
+  });
+
+  <span class="tc-kw">expect</span>(results.violations).<span class="tc-fn">toEqual</span>([]);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q804.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.12</span>
+      <h2 class="sn-q-text">What is keyboard accessibility and how do you test it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Keyboard accessibility means all functionality is operable using only the keyboard — no mouse required. Users with motor disabilities, power users, and screen reader users all depend on keyboard navigation.</p>
+      </div>
+<p class="sn-para">Key requirements:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>All interactive elements must be focusable (reachable with Tab)</span></li>
+<li><span class="icon">💡</span><span>Focus order must be logical (follows visual/reading order)</span></li>
+<li><span class="icon">⚡</span><span>Focused element must be visually indicated (focus ring)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>No keyboard traps (Tab cannot reach an element and then be unable to leave)</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'modal can be closed with keyboard'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Open Modal'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Close with Escape key</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Escape'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'form is fully navigable by Tab'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/contact'</span>);
+
+  <span class="tc-cm">// Start at the first field</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>)).<span class="tc-fn">toBeFocused</span>();
+
+  <span class="tc-cm">// Tab to the next field</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Last Name'</span>)).<span class="tc-fn">toBeFocused</span>();
+
+  <span class="tc-cm">// Tab to submit</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> })).<span class="tc-fn">toBeFocused</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q804.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.13</span>
+      <h2 class="sn-q-text">How do you test colour contrast?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Colour contrast testing is best done with automated tools — axe-core's <code class="sn-ic">color-contrast</code> rule checks WCAG 2.1 SC 1.4.3 (minimum contrast ratio of 4.5:1 for normal text, 3:1 for large text):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'page passes colour contrast requirements'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+    .<span class="tc-fn">withTags</span>([<span class="tc-str">'wcag2aa'</span>])
+    .<span class="tc-fn">analyze</span>();
+
+  <span class="tc-kw">const</span> contrastViolations = results.violations.<span class="tc-fn">filter</span>(
+    v =&gt; v.id === <span class="tc-str">'color-contrast'</span>
+  );
+
+  <span class="tc-kw">if</span> (contrastViolations.length &gt; <span class="tc-num">0</span>) {
+    contrastViolations.<span class="tc-fn">forEach</span>(v =&gt; {
+      v.nodes.<span class="tc-fn">forEach</span>(n =&gt; {
+        console.<span class="tc-fn">log</span>(<span class="tc-str">`Low contrast: ${n.html}`</span>);
+        console.<span class="tc-fn">log</span>(<span class="tc-str">`Fix: ${n.any[0]?.message}`</span>);
+      });
+    });
+  }
+
+  <span class="tc-kw">expect</span>(contrastViolations).<span class="tc-fn">toHaveLength</span>(<span class="tc-num">0</span>);
+});</div>
+      </div>
+<p class="sn-para">Note: <code class="sn-ic">color-contrast</code> is one of the few axe rules that may produce false positives or false negatives on dynamically themed pages. Verify flagged elements manually with a contrast checker tool.</p>
+    </div>
+  </div>
+
+  <!-- Q804.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.14</span>
+      <h2 class="sn-q-text">How do you test that images have appropriate alt text?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'informational images have alt text'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-cm">// axe-core catches missing alt text automatically</span>
+  <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+    .<span class="tc-fn">withTags</span>([<span class="tc-str">'wcag2a'</span>])
+    .<span class="tc-fn">analyze</span>();
+
+  <span class="tc-kw">const</span> altViolations = results.violations.<span class="tc-fn">filter</span>(
+    v =&gt; v.id === <span class="tc-str">'image-alt'</span>
+  );
+  <span class="tc-kw">expect</span>(altViolations).<span class="tc-fn">toHaveLength</span>(<span class="tc-num">0</span>);
+});
+
+<span class="tc-cm">// Manual check — verify alt text content is meaningful (axe cannot do this)</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'product images have descriptive alt text'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/products'</span>);
+
+  <span class="tc-kw">const</span> images = page.<span class="tc-fn">locator</span>(<span class="tc-str">'img[alt]'</span>);
+  <span class="tc-kw">const</span> count  = <span class="tc-kw">await</span> images.<span class="tc-fn">count</span>();
+
+  <span class="tc-kw">for</span> (<span class="tc-kw">let</span> i = <span class="tc-num">0</span>; i &lt; count; i++) {
+    <span class="tc-kw">const</span> alt = <span class="tc-kw">await</span> images.<span class="tc-fn">nth</span>(i).<span class="tc-fn">getAttribute</span>(<span class="tc-str">'alt'</span>);
+
+    <span class="tc-cm">// Reject empty alt, file names, and generic placeholders</span>
+    <span class="tc-kw">expect</span>(alt).not.<span class="tc-fn">toBe</span>(<span class="tc-str">''</span>);
+    <span class="tc-kw">expect</span>(alt).not.<span class="tc-fn">toMatch</span>(/^(image|img|photo|picture)\d*$/i);
+    <span class="tc-kw">expect</span>(alt).not.<span class="tc-fn">toMatch</span>(/\.(jpg|png|gif|webp)$/i);
+  }
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q804.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.15</span>
+      <h2 class="sn-q-text">How do you write an accessibility fixture for reuse across tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/accessibility.ts</span>
+<span class="tc-kw">import</span> AxeBuilder <span class="tc-kw">from</span> <span class="tc-str">'@axe-core/playwright'</span>;
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, Page } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">type</span> A11yFixture = {
+  checkA11y: (options?: {
+    tags?:  <span class="tc-kw">string</span>[];
+    rules?: <span class="tc-kw">string</span>[];
+    scope?: <span class="tc-kw">string</span>;
+  }) =&gt; Promise&lt;<span class="tc-kw">void</span>&gt;;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;A11yFixture&gt;({
+  checkA11y: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> check = <span class="tc-kw">async</span> (options: {
+      tags?:  <span class="tc-kw">string</span>[];
+      rules?: <span class="tc-kw">string</span>[];
+      scope?: <span class="tc-kw">string</span>;
+    } = {}) =&gt; {
+      <span class="tc-kw">let</span> builder = <span class="tc-kw">new</span> AxeBuilder({ page })
+        .<span class="tc-fn">withTags</span>(options.tags ?? [<span class="tc-str">'wcag2a'</span>, <span class="tc-str">'wcag2aa'</span>, <span class="tc-str">'wcag21aa'</span>]);
+
+      <span class="tc-kw">if</span> (options.scope) builder = builder.<span class="tc-fn">include</span>(options.scope);
+      <span class="tc-kw">if</span> (options.rules) builder = builder.<span class="tc-fn">disableRules</span>(options.rules);
+
+      <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> builder.<span class="tc-fn">analyze</span>();
+      <span class="tc-kw">const</span> critical = results.violations.<span class="tc-fn">filter</span>(
+        v =&gt; v.impact === <span class="tc-str">'critical'</span> || v.impact === <span class="tc-str">'serious'</span>
+      );
+      <span class="tc-kw">expect</span>(critical).<span class="tc-fn">toEqual</span>([]);
+    };
+
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(check);
+  },
+});
+
+<span class="tc-cm">// In tests</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'login page accessibility'</span>, <span class="tc-kw">async</span> ({ page, checkA11y }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> <span class="tc-fn">checkA11y</span>({ scope: '<span class="tc-cm">#login-form' });</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q804.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.16</span>
+      <h2 class="sn-q-text">What are ARIA live regions and how do you test them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">ARIA live regions announce dynamic content changes to screen readers without the user having to navigate to the updated element. They are essential for: toast notifications, form validation errors, loading state changes, and real-time data updates.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">html</span>
+        </div>
+        <div class="sn-terminal-code">&lt;div role=&quot;alert&quot; aria-live=&quot;assertive&quot;&gt;Error: Email is required&lt;/div&gt;
+&lt;div aria-live=&quot;polite&quot;&gt;Loading complete — <span class="tc-num">42</span> results found&lt;/div&gt;</div>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">aria-live=&quot;polite&quot;</code> — announces when the user is idle (non-intrusive)</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">aria-live=&quot;assertive&quot;</code> — announces immediately (for critical errors)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">role=&quot;alert&quot;</code> — implies <code class="sn-ic">aria-live=&quot;assertive&quot;</code></span></li>
+</ul>
+<p class="sn-para">Testing live regions:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'form validation error is announced'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/contact'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// The alert role should appear with the error message</span>
+  <span class="tc-kw">const</span> alert = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(alert).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(alert).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Email is required'</span>);
+
+  <span class="tc-cm">// Verify it has the correct ARIA attributes</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(alert).<span class="tc-fn">toHaveAttribute</span>(<span class="tc-str">'aria-live'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q804.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.17</span>
+      <h2 class="sn-q-text">How do you add accessibility checks to CI as a quality gate?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Accessibility Gate
+
+on: [push, pull_request]
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: <span class="tc-str">'20'</span> }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      - name: Run accessibility tests
+        run: npx playwright <span class="tc-kw">test</span> --grep @a11y
+
+      - name: Upload violations report
+        <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-violations
+          path: playwright-report/</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">playwright.config.ts</code>, create a dedicated accessibility project:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">{
+  name:      <span class="tc-str">'accessibility'</span>,
+  testMatch: /.*\.a11y\.spec\.ts/,
+  use:       { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+  <span class="tc-cm">// Run after main tests pass</span>
+}</div>
+      </div>
+<p class="sn-para">Tag tests with <code class="sn-ic">@a11y</code> and run them as a blocking gate on PR. Start with critical violations only — do not block the build on moderate/minor until the team has a remediation process established.</p>
+    </div>
+  </div>
+
+  <!-- Q804.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q804.18</span>
+      <h2 class="sn-q-text">In your project, how did you integrate accessibility testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we added accessibility tests as a separate <code class="sn-ic">*.a11y.spec.ts</code> suite at Level 7 (Reporting & Test Organisation), tagged <code class="sn-ic">@a11y</code> and run as a separate CI job.</p>
+      </div>
+<p class="sn-para">We made three deliberate decisions about scope. First, we only scan the pages our team maintains — we excluded known third-party widgets (a live chat component and a date picker library) using <code class="sn-ic">.exclude()</code>. Third-party violations that we cannot fix should not block our builds.</p>
+<p class="sn-para">Second, we gate on critical and serious violations only, using impact filtering. OrangeHRM has a number of moderate contrast issues in its existing design that predate our project — failing the build on those would have blocked all work for weeks. The moderate violations are tracked in a separate backlog ticket tagged for the design team.</p>
+<p class="sn-para">Third, we use the accessibility fixture pattern — a <code class="sn-ic">checkA11y()</code> helper that all a11y tests share. This means changing the default WCAG tag set (from <code class="sn-ic">wcag2aa</code> to <code class="sn-ic">wcag21aa</code> when WCAG 2.1 support became relevant) was a one-line change in the fixture, not a change in every test file.</p>
+<p class="sn-para">The most valuable violation we caught: the Employee Search form's date range inputs had no associated labels — only placeholder text. axe-core flagged them as <code class="sn-ic">label</code> rule violations. This was a real accessibility failure that functional tests had been passing through for months.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>WCAG (Web Content Accessibility Guidelines) defines three conformance levels: A (minimum), AA (legal compliance target), AAA (enhanced).</span></li>
+            <li><span class="icon">⭐</span><span>The accessibility tree is a semantic representation of the DOM exposed to assistive technologies — Playwright's <code class="sn-ic">getByRole()</code> queries it.</span></li>
+            <li><span class="icon">⭐</span><span>axe-core (<code class="sn-ic">@axe-core/playwright</code>) is the primary automated accessibility testing tool — it catches ~30–40% of WCAG issues.</span></li>
+            <li><span class="icon">⭐</span><span>Four impact levels: critical (blocks access), serious (significantly impairs), moderate (creates difficulty), minor (limited impact).</span></li>
+            <li><span class="icon">⭐</span><span>Gate CI on critical violations first; add serious violations once a remediation process is established.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">AxeBuilder.include(selector)</code> scans a specific component; <code class="sn-ic">.exclude(selector)</code> skips elements you cannot control; <code class="sn-ic">.withTags(['wcag2aa'])</code> runs only specific WCAG rules.</span></li>
+            <li><span class="icon">⭐</span><span>Automated tools cannot check: alt text meaningfulness, reading order logic, caption accuracy, or cognitive clarity — these require human review.</span></li>
+            <li><span class="icon">⭐</span><span>ARIA roles provide semantic meaning to custom elements; ARIA states (<code class="sn-ic">aria-expanded</code>, <code class="sn-ic">aria-invalid</code>) convey dynamic state; ARIA live regions announce dynamic content to screen readers.</span></li>
+            <li><span class="icon">⭐</span><span>Use a shared <code class="sn-ic">checkA11y()</code> fixture to centralise accessibility scan logic and make rule changes a single-point update.</span></li>
+            <li><span class="icon">⭐</span><span>Colour contrast (<code class="sn-ic">color-contrast</code> rule) and missing labels (<code class="sn-ic">label</code>, <code class="sn-ic">image-alt</code> rules) are the most common critical violations caught by automated scanning.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

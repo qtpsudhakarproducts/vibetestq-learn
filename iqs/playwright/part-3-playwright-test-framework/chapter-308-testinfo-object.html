@@ -1,0 +1,965 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 308 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">TestInfo</span> <span class="w2">Object</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers <code class="sn-ic">TestInfo</code> — the runtime metadata object Playwright creates for every test. Interviewers ask about TestInfo when they want to know if a candidate can build production-quality test infrastructure: screenshots on failure, flakiness detection, worker-safe parallel resources, and CI diagnostics. Candidates who know TestInfo write <code class="sn-ic">afterEach</code> hooks that tell you exactly what broke, when, on which browser, and after how many retries.</span>
+  </div>
+
+
+  <!-- Q308.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.1</span>
+      <h2 class="sn-q-text">What is TestInfo and how do you access it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">TestInfo</code> is an object Playwright creates for every running test. It holds all runtime metadata about that test — its title, file, project, retry count, status, output directory, annotations, and attached files.</p>
+      </div>
+<p class="sn-para">You access it by calling <code class="sn-ic">test.info()</code> from anywhere inside a test body, hook, or step:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'reads runtime metadata'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  console.<span class="tc-fn">log</span>(info.title);        <span class="tc-cm">// 'reads runtime metadata'</span>
+  console.<span class="tc-fn">log</span>(info.project.name); <span class="tc-cm">// 'chromium'</span>
+  console.<span class="tc-fn">log</span>(info.retry);        <span class="tc-cm">// 0 (first run), 1 (first retry)</span>
+  console.<span class="tc-fn">log</span>(info.status);       <span class="tc-cm">// 'passed', 'failed', 'timedOut', 'skipped'</span>
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.info()</code> is a function call, not a fixture — you do not declare it as a parameter. It returns the live <code class="sn-ic">TestInfo</code> for the currently running test.</p>
+    </div>
+  </div>
+
+  <!-- Q308.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.2</span>
+      <h2 class="sn-q-text">What is the difference between status and expectedStatus?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">status</code> is what actually happened. <code class="sn-ic">expectedStatus</code> is what Playwright expected to happen. Both are string values.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> TestStatus   = <span class="tc-str">'passed'</span> | <span class="tc-str">'failed'</span> | <span class="tc-str">'timedOut'</span> | <span class="tc-str">'skipped'</span> | <span class="tc-str">'interrupted'</span>
+<span class="tc-kw">type</span> ExpectedStatus = <span class="tc-str">'passed'</span> | <span class="tc-str">'failed'</span> | <span class="tc-str">'skipped'</span></div>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Scenario</th><th class="sn-th-blue"><code class="sn-ic">expectedStatus</code></th><th class="sn-th-green"><code class="sn-ic">status</code></th><th class="sn-th-purple">Healthy?</th></tr></thead>
+          <tbody>
+          <tr><td>Normal test passes</td><td><code class="sn-ic">'passed'</code></td><td><code class="sn-ic">'passed'</code></td><td class="yes">✅ Yes</td></tr>
+          <tr><td>Normal test fails</td><td><code class="sn-ic">'passed'</code></td><td><code class="sn-ic">'failed'</code></td><td class="no">❌ No</td></tr>
+          <tr><td><code class="sn-ic">test.fail()</code> test fails</td><td><code class="sn-ic">'failed'</code></td><td><code class="sn-ic">'failed'</code></td><td class="yes">✅ Yes</td></tr>
+          <tr><td><code class="sn-ic">test.fail()</code> test passes</td><td><code class="sn-ic">'failed'</code></td><td><code class="sn-ic">'passed'</code></td><td>⚠️ Unexpected pass</td></tr>
+          <tr><td><code class="sn-ic">test.skip()</code> test</td><td><code class="sn-ic">'skipped'</code></td><td><code class="sn-ic">'skipped'</code></td><td class="yes">✅ Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">A test is genuinely unhealthy when these two values differ. This distinction is the foundation of how <code class="sn-ic">test.fail()</code> works and the correct way to write <code class="sn-ic">afterEach</code> failure detection:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-cm">// Genuinely unexpected — capture evidence</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">Using <code class="sn-ic">=== 'failed'</code> instead would trigger on <code class="sn-ic">test.fail()</code> tests that fail as expected — producing false-positive screenshots.</p>
+    </div>
+  </div>
+
+  <!-- Q308.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.3</span>
+      <h2 class="sn-q-text">What does the retry property tell you and when is it useful?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">retry</code> is the retry attempt count. It is <code class="sn-ic">0</code> on the first run, <code class="sn-ic">1</code> on the first retry, <code class="sn-ic">2</code> on the second retry, and so on.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee search returns results @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().retry &gt; <span class="tc-num">0</span>) {
+    <span class="tc-cm">// On a retry — clear state before attempting again</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">clearCookies</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">reload</span>();
+  }
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Search'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Linda'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Linda Anderson'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">afterEach</code>, <code class="sn-ic">retry</code> lets you distinguish flaky from broken:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">const</span> { retry, status, title } = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-kw">if</span> (retry &gt; <span class="tc-num">0</span> &amp;&amp; status === <span class="tc-str">'passed'</span>) {
+    console.<span class="tc-fn">warn</span>(<span class="tc-str">`⚠️ FLAKY: &amp;quot;${title}&amp;quot; passed on retry ${retry}`</span>);
+    <span class="tc-cm">// Log to flakiness dashboard — not a hard failure but worth investigating</span>
+  }
+
+  <span class="tc-kw">if</span> (retry &gt; <span class="tc-num">0</span> &amp;&amp; status === <span class="tc-str">'failed'</span>) {
+    console.<span class="tc-fn">error</span>(<span class="tc-str">`❌ PERSISTENT: &amp;quot;${title}&amp;quot; still failing on retry ${retry}`</span>);
+    <span class="tc-cm">// This is a real problem — not flakiness</span>
+  }
+});</div>
+      </div>
+<p class="sn-para">A test that passes on <code class="sn-ic">retry 1</code> is flaky. A test that fails on <code class="sn-ic">retry 2</code> is genuinely broken. <code class="sn-ic">retry</code> lets your tooling tell the difference.</p>
+    </div>
+  </div>
+
+  <!-- Q308.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.4</span>
+      <h2 class="sn-q-text">What is workerIndex and why does it matter for parallel execution?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">workerIndex</code> identifies which parallel worker process is running the current test. Workers are numbered from 0. When Playwright runs tests in parallel, each test runs in exactly one worker.</p>
+      </div>
+<p class="sn-para">The critical use case: when tests write to files or databases, each worker needs its own isolated resources. Without <code class="sn-ic">workerIndex</code>, parallel workers write to the same location and overwrite each other's data — causing intermittent failures that are very hard to diagnose.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">const</span> idx = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().workerIndex;
+
+  <span class="tc-cm">// Worker-isolated temp directory — no collision between workers</span>
+  <span class="tc-kw">const</span> dir = <span class="tc-str">`./temp/worker-${idx}`</span>;
+  <span class="tc-kw">await</span> fs.<span class="tc-fn">mkdir</span>(dir, { recursive: <span class="tc-kw">true</span> });
+
+  <span class="tc-cm">// Worker-isolated database user</span>
+  <span class="tc-kw">const</span> dbUser = <span class="tc-str">`test_user_${idx}`</span>;
+  <span class="tc-kw">await</span> <span class="tc-fn">setupDatabaseUser</span>(dbUser);
+
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`Worker ${idx} initialised`</span>);
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'writes download file'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> idx = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().workerIndex;
+  <span class="tc-kw">const</span> downloadPath = <span class="tc-str">`./downloads/worker-${idx}/export.csv`</span>;
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export CSV'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-cm">// Each worker saves to its own file — no overlap</span>
+});</div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">workerIndex</code>, three workers writing <code class="sn-ic">export.csv</code> to the same path produce non-deterministic results — one worker's file overwrites another's.</p>
+    </div>
+  </div>
+
+  <!-- Q308.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.5</span>
+      <h2 class="sn-q-text">How do you use project.name from TestInfo?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().project.name</code> returns the name of the Playwright project running the current test — typically the browser name (<code class="sn-ic">'chromium'</code>, <code class="sn-ic">'firefox'</code>, <code class="sn-ic">'webkit'</code>) or a custom name like <code class="sn-ic">'staging'</code> or <code class="sn-ic">'mobile'</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Conditional skip — skip only on a specific browser</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'PDF export generates file @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">skip</span>(
+    <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().project.name === <span class="tc-str">'webkit'</span>,
+    <span class="tc-str">'PDF export uses Chrome print API — not supported on Safari'</span>
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export PDF'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'PDF Generated'</span>)).<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-cm">// Conditional assertion — different expected URLs per environment</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'redirects to correct environment'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'link'</span>, { name: <span class="tc-str">'Home'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">const</span> projectName = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().project.name;
+  <span class="tc-kw">if</span> (projectName === <span class="tc-str">'staging'</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/staging\.example\.com/);
+  } <span class="tc-kw">else</span> {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/demo\.example\.com/);
+  }
+});</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">beforeEach</code>, <code class="sn-ic">project.name</code> lets you apply browser-specific setup without duplicating tests:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().project.name === <span class="tc-str">'webkit'</span>) {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">300</span>); <span class="tc-cm">// Safari needs extra render time</span>
+  }
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q308.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.6</span>
+      <h2 class="sn-q-text">What is outputPath() and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().outputPath(filename)</code> builds a file path inside the test's dedicated output directory. Playwright creates this directory automatically and names it based on the test title and project — guaranteeing uniqueness across parallel runs.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'generate and verify CSV export'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-cm">// Safe, unique path — no collision with other tests running in parallel</span>
+  <span class="tc-kw">const</span> logPath = info.<span class="tc-fn">outputPath</span>(<span class="tc-str">'export-debug.log'</span>);
+  <span class="tc-cm">// → 'test-results/employees-csv-export-chromium/export-debug.log'</span>
+
+  <span class="tc-kw">await</span> fs.<span class="tc-fn">writeFile</span>(logPath, <span class="tc-str">`Export started: ${new Date().toISOString()}\n`</span>);
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Export CSV'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">const</span> download = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForEvent</span>(<span class="tc-str">'download'</span>);
+  <span class="tc-kw">await</span> download.<span class="tc-fn">saveAs</span>(info.<span class="tc-fn">outputPath</span>(<span class="tc-str">'employees.csv'</span>));
+
+  <span class="tc-kw">await</span> fs.<span class="tc-fn">appendFile</span>(logPath, <span class="tc-str">`Export complete: ${download.suggestedFilename()}\n`</span>);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Why use <code class="sn-ic">outputPath()</code> instead of a hardcoded path:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The directory already exists — Playwright creates it before the test runs</span></li>
+<li><span class="icon">💡</span><span>The path is unique per test and per project — no collision in parallel runs</span></li>
+<li><span class="icon">⚡</span><span>The directory is cleaned between runs — no stale files from previous runs</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q308.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.7</span>
+      <h2 class="sn-q-text">How does attach() work and what content types does it support?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().attach(name, options)</code> adds files or data directly to the test's entry in the HTML report. Attachments are visible when you click on a test result in the report.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-kw">if</span> (info.status !== info.expectedStatus) {
+    <span class="tc-cm">// Attach a screenshot — renders as inline image in the report</span>
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'page-screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+
+    <span class="tc-cm">// Attach the current URL as plain text</span>
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'page-url'</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+
+    <span class="tc-cm">// Attach an API response body</span>
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'api-response'</span>, {
+      body: JSON.<span class="tc-fn">stringify</span>({ status: <span class="tc-str">'error'</span>, code: <span class="tc-num">500</span> }),
+      contentType: <span class="tc-str">'application/json'</span>,
+    });
+
+    <span class="tc-cm">// Attach a file already saved to disk</span>
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'test-log'</span>, {
+      path: info.<span class="tc-fn">outputPath</span>(<span class="tc-str">'test.log'</span>),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">Content types that render specially in the HTML report:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">'image/png'</code> / <code class="sn-ic">'image/jpeg'</code> — inline image preview</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">'video/webm'</code> — embedded video player (for recorded videos)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">'text/plain'</code> / <code class="sn-ic">'application/json'</code> — displayed as text</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q308.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.8</span>
+      <h2 class="sn-q-text">How do you read and write annotations at runtime via TestInfo?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().annotations</code> is a mutable array. You can read existing annotations declared in the test details object, and push new ones at runtime:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(
+  <span class="tc-str">'verify payroll calculation'</span>,
+  {
+    annotation: [
+      { <span class="tc-kw">type</span>: <span class="tc-str">'issue'</span>, description: <span class="tc-str">'https: S0 
+      { type: '</span>owner<span class="tc-str">', description: '</span>payroll-team<span class="tc-str">' },
+    ],
+  },
+  async ({ page }) =&amp;gt; {
+    const info = test.info();
+
+     S1 
+    console.log(info.annotations);
+     S2 
+
+     S3 
+    const jobId = await page.getByTestId('</span>job-id<span class="tc-str">').textContent();
+    info.annotations.push({
+      type: '</span>processed-job',
+      description: <span class="tc-str">`Job ID: ${jobId}`</span>,
+    });
+    <span class="tc-cm">// Now appears in HTML report, JSON output, and JUnit XML</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">Runtime annotations are useful for recording dynamic context — which record was processed, which environment variable was active, which feature flag was set — making the report self-explanatory without opening the test file.</p>
+    </div>
+  </div>
+
+  <!-- Q308.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.9</span>
+      <h2 class="sn-q-text">How do you change the test timeout at runtime using TestInfo?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().setTimeout(ms)</code> or the shorthand <code class="sn-ic">test.setTimeout(ms)</code> overrides the timeout from inside the running test:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'slow batch report generation @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Extend timeout mid-test based on runtime conditions</span>
+  <span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(120_000); <span class="tc-cm">// 2 minutes for this test only</span>
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate Annual Report'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'download-ready'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: 90_000 });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">When to use runtime <code class="sn-ic">setTimeout</code>:</strong> when you cannot know how long a test will take at declaration time — for example, when a feature flag changes the processing path, or when the test environment is under unexpected load.</p>
+<p class="sn-para"><strong class="k-blue">Prefer the details object when you know upfront:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'bulk import'</span>, { timeout: 120_000 }, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.setTimeout(0)</code> removes the timeout entirely — useful for debugging a specific test interactively, never for production test runs.</p>
+    </div>
+  </div>
+
+  <!-- Q308.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.10</span>
+      <h2 class="sn-q-text">What is the titlePath property and when is it useful?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">titlePath</code> is an array of strings containing the full describe hierarchy plus the test title. It is the array form of the full test title.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Checkout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Payment'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'credit card completes purchase @smoke'</span>, <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+      console.<span class="tc-fn">log</span>(info.title);
+      <span class="tc-cm">// 'credit card completes purchase @smoke'</span>
+
+      console.<span class="tc-fn">log</span>(info.titlePath);
+      <span class="tc-cm">// ['Checkout', 'Payment', 'credit card completes purchase @smoke']</span>
+
+      console.<span class="tc-fn">log</span>(info.titlePath.<span class="tc-fn">join</span>(<span class="tc-str">' &amp;gt; '</span>));
+      <span class="tc-cm">// 'Checkout &amp;gt; Payment &amp;gt; credit card completes purchase @smoke'</span>
+    });
+  });
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">titlePath</code> is useful when building file names for screenshots or logs that reflect the full test hierarchy — making it easy to find which spec file and describe group a file belongs to:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-cm">// Slug the titlePath into a safe file name</span>
+    <span class="tc-kw">const</span> safeTitle = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().titlePath
+      .<span class="tc-fn">join</span>(<span class="tc-str">'__'</span>)
+      .<span class="tc-fn">replace</span>(/[^a-zA-Z0-9_-]/g, <span class="tc-str">'-'</span>)
+      .<span class="tc-fn">toLowerCase</span>();
+
+    <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({
+      path: <span class="tc-str">`screenshots/${safeTitle}.png`</span>
+    });
+  }
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q308.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.11</span>
+      <h2 class="sn-q-text">How do you use TestInfo to build a custom console logger in beforeEach and afterEach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">const</span> { title, project, retry } = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+  <span class="tc-kw">const</span> retryLabel = retry &gt; <span class="tc-num">0</span> ? <span class="tc-str">` [retry ${retry}]`</span> : <span class="tc-str">''</span>;
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`\n▶  [${project.name}] ${title}${retryLabel}`</span>);
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> { title, project, status, expectedStatus, duration, retry } = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-kw">const</span> healthy = status === expectedStatus;
+  <span class="tc-kw">const</span> flaky   = retry &gt; <span class="tc-num">0</span> &amp;&amp; status === <span class="tc-str">'passed'</span>;
+
+  <span class="tc-kw">const</span> icon = healthy ? (flaky ? <span class="tc-str">'⚠️'</span> : <span class="tc-str">'✅'</span>) : <span class="tc-str">'❌'</span>;
+  <span class="tc-kw">const</span> label = flaky ? <span class="tc-str">' (FLAKY)'</span> : <span class="tc-str">''</span>;
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`${icon}  [${project.name}] ${title} — ${duration}ms${label}`</span>);
+
+  <span class="tc-kw">if</span> (!healthy) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">Terminal output:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">▶  [chromium] valid credentials redirect to dashboard
+✅  [chromium] valid credentials redirect to dashboard — 1340ms
+
+▶  [firefox] employee search returns results
+❌  [firefox] employee search returns results — 30002ms
+
+▶  [firefox] employee search returns results [retry 1]
+✅  [firefox] employee search returns results — 2100ms (FLAKY)</div>
+      </div>
+<p class="sn-para">This log tells you at a glance: the search test timed out on Firefox on the first run but passed on retry — a flaky test worth investigating.</p>
+    </div>
+  </div>
+
+  <!-- Q308.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.12</span>
+      <h2 class="sn-q-text">What is the difference between test.info() and the testInfo parameter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both give access to the same <code class="sn-ic">TestInfo</code> object. The difference is how you access it:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">test.info()</code> function call</strong> — available from anywhere inside a test body, hook, or step. No declaration needed. Works inside page objects and helper functions too.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">testInfo</code> parameter</strong> — the second argument to the test function. Only accessible in the test body itself. Must be declared explicitly.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Via parameter — only works directly in test()</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'uses testInfo param'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  console.<span class="tc-fn">log</span>(testInfo.title);        <span class="tc-cm">// same object</span>
+  console.<span class="tc-fn">log</span>(testInfo.project.name); <span class="tc-cm">// same object</span>
+});
+
+<span class="tc-cm">// Via test.info() — works anywhere, including page objects and helpers</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'uses test.info()'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+  console.<span class="tc-fn">log</span>(info.title); <span class="tc-cm">// same object</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">someHelperFunction</span>(); <span class="tc-cm">// helper can call test.info() internally</span>
+});
+
+<span class="tc-cm">// Page object can call test.info() — parameter form cannot reach here</span>
+<span class="tc-kw">class</span> LoginPage {
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">const</span> retry = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().retry;
+    <span class="tc-kw">if</span> (retry &gt; <span class="tc-num">0</span>) {
+      <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">reload</span>(); <span class="tc-cm">// clear state on retry</span>
+    }
+    <span class="tc-cm">// ...</span>
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">In practice:</strong> use <code class="sn-ic">test.info()</code> — it is more flexible and works in any context. The <code class="sn-ic">testInfo</code> parameter is an older pattern that predates the function form.</p>
+    </div>
+  </div>
+
+  <!-- Q308.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.13</span>
+      <h2 class="sn-q-text">What properties of TestInfo are most commonly asked about in interviews?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The five properties that appear most in interview questions are:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">1. <code class="sn-ic">status</code> vs <code class="sn-ic">expectedStatus</code></strong> — understanding this pair correctly is the mark of a candidate who has used <code class="sn-ic">test.fail()</code> in a real project.</p>
+<p class="sn-para"><strong class="k-teal">2. <code class="sn-ic">retry</code></strong> — distinguishing flaky from broken tests, and adapting behaviour on retries.</p>
+<p class="sn-para"><strong class="k-teal">3. <code class="sn-ic">project.name</code></strong> — conditional skips and assertions per browser or environment.</p>
+<p class="sn-para"><strong class="k-teal">4. <code class="sn-ic">attach()</code></strong> — the mechanism for putting screenshots and logs into the HTML report for CI debugging.</p>
+<p class="sn-para"><strong class="k-teal">5. <code class="sn-ic">workerIndex</code></strong> — worker-safe resource isolation for parallel execution.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// A single afterEach that demonstrates all five:</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-cm">// 1. status vs expectedStatus</span>
+  <span class="tc-kw">const</span> failed = info.status !== info.expectedStatus;
+
+  <span class="tc-cm">// 2. retry — detect flakiness</span>
+  <span class="tc-kw">const</span> flaky = info.retry &gt; <span class="tc-num">0</span> &amp;&amp; info.status === <span class="tc-str">'passed'</span>;
+
+  <span class="tc-cm">// 3. project.name — log which browser</span>
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`[${info.project.name}] ${info.title}: ${info.status}`</span>);
+
+  <span class="tc-cm">// 4. attach() — screenshot on failure</span>
+  <span class="tc-kw">if</span> (failed) {
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+
+  <span class="tc-cm">// 5. workerIndex — visible in logs for parallel debugging</span>
+  <span class="tc-kw">if</span> (failed || flaky) {
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Worker ${info.workerIndex}, retry ${info.retry}`</span>);
+  }
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q308.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.14</span>
+      <h2 class="sn-q-text">How do you use TestInfo to make tests adaptive on retry?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Reading <code class="sn-ic">test.info().retry</code> inside a test lets you change strategy on repeated attempts — clearing cached state, using a slower approach, or logging diagnostic information:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'checkout completes successfully @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> retry = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().retry;
+
+  <span class="tc-kw">if</span> (retry &gt; <span class="tc-num">0</span>) {
+    <span class="tc-cm">// On retry — add a fresh session to avoid any stale state from first run</span>
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Retry ${retry}: clearing cookies before attempt`</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">clearCookies</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">clearPermissions</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">reload</span>();
+  }
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/cart'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Checkout'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Card Number'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'4242424242424242'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Expiry'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'12/28'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'CVC'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Pay'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-confirmation'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">This pattern is useful for tests that occasionally fail due to session timeout, network blips, or third-party widget load failures — conditions where a clean retry has a good chance of success.</p>
+    </div>
+  </div>
+
+  <!-- Q308.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.15</span>
+      <h2 class="sn-q-text">How do you use the duration property for performance monitoring?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().duration</code> (in milliseconds) is available after a test completes. Read it in <code class="sn-ic">afterEach</code> to detect tests that are approaching their timeout or degrading over time:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">const</span> { title, duration, project } = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-cm">// Log every test duration for baseline tracking</span>
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`PERF [${project.name}] ${title}: ${duration}ms`</span>);
+
+  <span class="tc-cm">// Alert on tests that are approaching the default 30s timeout</span>
+  <span class="tc-kw">if</span> (duration &gt; 25_000) {
+    console.<span class="tc-fn">warn</span>(<span class="tc-str">`⚠️ SLOW TEST (${duration}ms): &amp;quot;${title}&amp;quot; — consider test.slow()`</span>);
+    <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().annotations.<span class="tc-fn">push</span>({
+      <span class="tc-kw">type</span>: <span class="tc-str">'performance-warning'</span>,
+      description: <span class="tc-str">`Test took ${duration}ms — review for timeout risk`</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">In CI pipelines, this log output can be parsed to build a performance dashboard — tracking test duration trends over time and catching regressions before they become timeouts.</p>
+    </div>
+  </div>
+
+  <!-- Q308.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.16</span>
+      <h2 class="sn-q-text">Describe a real debugging scenario where TestInfo directly helped you.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we had a test — "employee search returns results" — that failed intermittently in CI, always on Firefox, and only on the second daily run. The error was "Timeout exceeded" with no additional context.</p>
+      </div>
+<p class="sn-para">Without TestInfo, our diagnostic information was: a timeout on Firefox. That was it.</p>
+<p class="sn-para">After adding a comprehensive <code class="sn-ic">afterEach</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+  <span class="tc-kw">const</span> failed = info.status !== info.expectedStatus;
+
+  console.<span class="tc-fn">log</span>([
+    <span class="tc-str">`[${info.project.name}]`</span>,
+    <span class="tc-str">`retry=${info.retry}`</span>,
+    <span class="tc-str">`worker=${info.workerIndex}`</span>,
+    <span class="tc-str">`duration=${info.duration}ms`</span>,
+    info.title,
+  ].<span class="tc-fn">join</span>(<span class="tc-str">' | '</span>));
+
+  <span class="tc-kw">if</span> (failed) {
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'url'</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+    info.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'failure-url'</span>, description: page.<span class="tc-fn">url</span>() });
+  }
+});</div>
+      </div>
+<p class="sn-para">The next failure showed: <code class="sn-ic">worker=2 | retry=0 | duration=30002ms | url=/employees</code>. The screenshot showed the search results loading spinner still visible. The URL showed the test was on the right page. Duration was exactly the timeout limit — a true timeout, not an error.</p>
+<p class="sn-para">Combined with <code class="sn-ic">retry</code> data showing the test passed on worker 0 and 1 but timed out on worker 2, we identified that worker 2 was loading a heavier dataset in its <code class="sn-ic">beforeAll</code>. We fixed it by reducing the seed data, and the flakiness disappeared.</p>
+<p class="sn-para">Without the <code class="sn-ic">duration</code>, <code class="sn-ic">workerIndex</code>, <code class="sn-ic">retry</code>, and <code class="sn-ic">attach()</code> capabilities of TestInfo, we would have spent days debugging what took us two hours.</p>
+    </div>
+  </div>
+
+  <!-- Q308.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.17</span>
+      <h2 class="sn-q-text">What is the TestInfo errors property?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().errors</code> is an array of errors that caused the test to fail. Normally it has zero or one entries, but it can have multiple if both the test body and <code class="sn-ic">afterEach</code> threw errors.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">const</span> errors = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().errors;
+
+  <span class="tc-kw">if</span> (errors.length &gt; <span class="tc-num">1</span>) {
+    <span class="tc-cm">// Both the test and afterEach failed — rare but important to catch</span>
+    console.<span class="tc-fn">error</span>(<span class="tc-str">`Multiple errors in &amp;quot;${test.info().title}&amp;quot;:`</span>);
+    errors.<span class="tc-fn">forEach</span>((err, i) =&gt; {
+      console.<span class="tc-fn">error</span>(<span class="tc-str">`  Error ${i + 1}: ${err.message}`</span>);
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">More commonly used in custom reporters, which iterate over <code class="sn-ic">errors</code> to extract failure messages, stack traces, and locations for reporting to external systems.</p>
+    </div>
+  </div>
+
+  <!-- Q308.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q308.18</span>
+      <h2 class="sn-q-text">Write a complete afterEach that uses six TestInfo properties together.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> fs <span class="tc-kw">from</span> <span class="tc-str">'fs/promises'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-kw">const</span> failed  = info.status !== info.expectedStatus;  <span class="tc-cm">// 1. status/expectedStatus</span>
+  <span class="tc-kw">const</span> flaky   = info.retry &gt; <span class="tc-num">0</span> &amp;&amp; !failed;            <span class="tc-cm">// 2. retry</span>
+  <span class="tc-kw">const</span> browser = info.project.name;                    <span class="tc-cm">// 3. project.name</span>
+  <span class="tc-kw">const</span> worker  = info.workerIndex;                     <span class="tc-cm">// 4. workerIndex</span>
+
+  <span class="tc-cm">// Always log</span>
+  <span class="tc-kw">const</span> icon = failed ? <span class="tc-str">'❌'</span> : flaky ? <span class="tc-str">'⚠️'</span> : <span class="tc-str">'✅'</span>;
+  console.<span class="tc-fn">log</span>(
+    <span class="tc-str">`${icon} [${browser}] [w${worker}] ${info.title} — ${info.duration}ms`</span> <span class="tc-cm">// 5. duration</span>
+    + (info.retry &gt; <span class="tc-num">0</span> ? <span class="tc-str">` [retry ${info.retry}]`</span> : <span class="tc-str">''</span>)
+  );
+
+  <span class="tc-kw">if</span> (failed) {
+    <span class="tc-cm">// 6. attach() — screenshot and URL in the report</span>
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'failure-url'</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+
+    <span class="tc-cm">// Runtime annotation for the report</span>
+    info.annotations.<span class="tc-fn">push</span>({
+      <span class="tc-kw">type</span>: <span class="tc-str">'failure-url'</span>,
+      description: page.<span class="tc-fn">url</span>(),
+    });
+  }
+
+  <span class="tc-kw">if</span> (flaky) {
+    info.annotations.<span class="tc-fn">push</span>({
+      <span class="tc-kw">type</span>: <span class="tc-str">'flaky'</span>,
+      description: <span class="tc-str">`Passed on retry ${info.retry} — browser: ${browser}, worker: ${worker}`</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">This <code class="sn-ic">afterEach</code> is production-ready. It logs every result, captures failure evidence with both a screenshot and URL, annotates flaky tests for the report, and includes browser and worker context for parallel debugging.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.info()</code> is a function call available anywhere in tests, hooks, and steps. It returns the live <code class="sn-ic">TestInfo</code> for the current test.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">status !== expectedStatus</code> is the correct failure check — handles <code class="sn-ic">test.fail()</code> tests correctly. Never use <code class="sn-ic">status === 'failed'</code> alone.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">retry</code> is 0 on first run. Use it to detect flaky tests in <code class="sn-ic">afterEach</code> and to adapt behaviour on retries.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">workerIndex</code> is unique per worker — essential for worker-isolated file paths and database resources in parallel execution.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">project.name</code> gives the browser or environment name — use for conditional skips and environment-specific assertions.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">duration</code> is the test duration in ms — available after the test ends. Use in <code class="sn-ic">afterEach</code> for performance monitoring.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">outputPath(filename)</code> returns a collision-safe, unique path inside the test's dedicated output directory.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">attach()</code> adds screenshots, logs, and files directly to the test's HTML report entry.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">annotations</code> is a mutable array — push new entries at runtime; they appear in HTML reports, JSON, and JUnit XML.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">setTimeout(ms)</code> overrides the timeout from inside the test — use when you cannot know duration at declaration time.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

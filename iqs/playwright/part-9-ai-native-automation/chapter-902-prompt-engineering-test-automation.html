@@ -1,0 +1,703 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 902 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Prompt</span> <span class="w2">Engineering</span> <span class="w3">for</span> <span class="w4">Test</span> <span class="w5">Automation</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">Prompt engineering is the skill of writing instructions that get reliable, useful output from an LLM. For test automation engineers, it is the difference between AI-generated code that works on the first try and code that needs heavy rework. This chapter covers the RCIF framework, prompting techniques, prompt patterns specific to Playwright, and how to standardise prompts across a team.</span>
+  </div>
+
+
+  <!-- Q902.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.1</span>
+      <h2 class="sn-q-text">What is prompt engineering and why does it matter for testers?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Prompt engineering is writing instructions to an LLM in a way that produces reliable, high-quality output. The quality of the output is determined almost entirely by the quality of the input.</p>
+      </div>
+<p class="sn-para">For test automation engineers, prompt engineering matters because:</p>
+<p class="sn-para"><strong class="k-blue">Bad prompt → unusable code.</strong> A vague prompt like "write a test for login" produces generic code that uses invented selectors, does not match your page object structure, and may use deprecated Playwright APIs.</p>
+<p class="sn-para"><strong class="k-blue">Good prompt → production-ready code.</strong> A structured prompt that includes your role, the application context, your coding standards, and the exact format you want produces code that compiles, follows your conventions, and tests the right thing.</p>
+<p class="sn-para">The skill is not about memorising magic phrases — it is about learning what information an LLM needs to do its job well, and providing that information clearly.</p>
+    </div>
+  </div>
+
+  <!-- Q902.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.2</span>
+      <h2 class="sn-q-text">What is the RCIF framework for writing prompts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">RCIF stands for Role, Context, Instruction, Format. It is a four-part structure for writing prompts that produce consistent, high-quality results.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">R — Role:</strong> Tell the model who it is.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Act as a Senior SDET with 5 years of Playwright and TypeScript experience.</div>
+      </div>
+<p class="sn-para"><strong class="k-green">C — Context:</strong> Give the background the model needs.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">We are testing OrangeHRM. The Employee page has a data table with columns:
+Employee Name, Job Title, Employment Status, Sub Unit, Action.
+The page object is EmployeePage with method getEmployeeRow(name: string).</div>
+      </div>
+<p class="sn-para"><strong class="k-green">I — Instruction:</strong> Tell the model exactly what to do.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Write a Playwright test that verifies a newly created employee appears in the
+employee list with the correct job title.</div>
+      </div>
+<p class="sn-para"><strong class="k-green">F — Format:</strong> Tell the model exactly how to format the output.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Output only the TypeScript test file. No explanation. Use imports from
+'@playwright/test'. Follow the project's pattern: fixtures import from
+'../fixtures', page objects from '../pages'.</div>
+      </div>
+<p class="sn-para">Combined:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Act as a Senior SDET with 5 years of Playwright and TypeScript experience.
+
+We are testing OrangeHRM. The Employee page has a data table. The page
+object EmployeePage has a method getEmployeeRow(name: string) that returns
+a Locator for the table row matching that employee name.
+
+Write a Playwright test that verifies a newly created employee appears in
+the employee list with the correct job title.
+
+Output only the TypeScript test file. No explanation.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q902.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.3</span>
+      <h2 class="sn-q-text">What is zero-shot prompting and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Zero-shot prompting asks the LLM to do a task without providing any examples. The model relies entirely on its training knowledge.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Zero-shot prompt:
+&quot;Explain what page.waitForLoadState('networkidle') does in Playwright.&quot;</div>
+      </div>
+<p class="sn-para">Use zero-shot when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The task is simple and well-defined</span></li>
+<li><span class="icon">💡</span><span>The topic is well-covered in the model's training data (Playwright, TypeScript)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>You want a quick answer and do not need custom formatting</span></li>
+</ul>
+<p class="sn-para">Zero-shot works well for: explaining concepts, converting small code snippets, answering factual questions about Playwright APIs.</p>
+<p class="sn-para">Zero-shot fails when:</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>You need output that follows your specific framework patterns</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The model has not seen enough examples of your particular task</span></li>
+<li><span class="icon">🔑</span><span>You need consistent, reproducible output across multiple calls</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q902.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.4</span>
+      <h2 class="sn-q-text">What is few-shot prompting and when is it better than zero-shot?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Few-shot prompting provides the model with examples of the input-output pattern you want before giving it the actual task. The examples show the model your format, style, and conventions.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Few-shot prompt for generating page object methods</span>
+<span class="tc-cm">/*
+Here are examples of how we write page object methods in our project:
+
+EXAMPLE 1:
+// Input: &amp;quot;click the Save button&amp;quot;
+async clickSave(): Promise&amp;lt;void&amp;gt; {
+  await this.page.getByRole('button', { name: 'Save' }).click();
+}
+
+EXAMPLE 2:
+// Input: &amp;quot;fill the Employee ID field with a value&amp;quot;
+async fillEmployeeId(id: string): Promise&amp;lt;void&amp;gt; {
+  await this.page.getByLabel('Employee ID').fill(id);
+}
+
+Now generate a method for: &amp;quot;select a value from the Job Title dropdown&amp;quot;
+*/</span></div>
+      </div>
+<p class="sn-para">Few-shot is better than zero-shot when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>You need code that matches your team's specific patterns</span></li>
+<li><span class="icon">💡</span><span>The default model output is close but needs style adjustment</span></li>
+<li><span class="icon">⚡</span><span>You are generating a series of similar items and want consistency</span></li>
+</ul>
+<p class="sn-para">For test generation, few-shot examples from your actual test files produce output that needs less editing than zero-shot prompts.</p>
+    </div>
+  </div>
+
+  <!-- Q902.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.5</span>
+      <h2 class="sn-q-text">What is chain-of-thought prompting and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Chain-of-thought (CoT) prompting asks the model to reason through a problem step by step before giving the final answer. Adding "think step by step" or "let's reason through this" to a prompt triggers this behaviour.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Zero-shot prompt:
+&quot;This Playwright test is flaky. Fix it.&quot;
+[paste test code]
+
+Chain-of-thought prompt:
+&quot;This Playwright test is flaky. Before suggesting a fix:
+1. Identify all async operations in the test
+2. Find any assertions that might race with network activity
+3. Check if any waitFor* calls could time out on slow CI
+4. Then suggest specific fixes for each issue you found.
+
+[paste test code]&quot;</div>
+      </div>
+<p class="sn-para">CoT is most useful for:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Debugging complex failures (flaky tests, race conditions)</span></li>
+<li><span class="icon">💡</span><span>Designing test architecture decisions</span></li>
+<li><span class="icon">⚡</span><span>Analysing trade-offs between approaches</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Tasks where the reasoning matters, not just the answer</span></li>
+</ul>
+<p class="sn-para">For simple code generation, CoT adds unnecessary overhead. Use it when the task needs real analysis, not just pattern completion.</p>
+    </div>
+  </div>
+
+  <!-- Q902.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.6</span>
+      <h2 class="sn-q-text">What is role prompting and why does it improve code generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Role prompting sets the model's persona, expertise level, and constraints before the task. It works because training data contains different quality levels of content from different "types" of authors.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Without role: &quot;Write a Playwright test for the login page.&quot;
+→ Generic output, may use outdated patterns
+
+With role: &quot;Act as a Senior SDET who has built enterprise-scale Playwright
+frameworks for 5 years. You write TypeScript with strict mode and always use
+the accessibility-first locator strategy. Write a Playwright test for login.&quot;
+→ More idiomatic, uses getByRole, includes proper typing</div>
+      </div>
+<p class="sn-para">The role should match the output quality you want:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-pink">"Senior SDET"</strong> → structured, idiomatic code</span></li>
+<li><span class="icon">💡</span><span><strong class="k-pink">"Principal test architect"</strong> → architectural thinking, discusses trade-offs</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-pink">"QA lead documenting for the team"</strong> → clear explanations, readable code</span></li>
+</ul>
+<p class="sn-para">Role prompting is most effective when combined with context and examples. Alone, it improves quality slightly. Combined with RCIF, it significantly reduces the editing needed after generation.</p>
+    </div>
+  </div>
+
+  <!-- Q902.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.7</span>
+      <h2 class="sn-q-text">What prompt patterns are specific to Playwright test generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Pattern 1 — Generating a test from a spec:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Act as a Senior SDET using Playwright TypeScript.
+
+Feature: Leave Application
+- User navigates to Leave &gt; Apply
+- Selects leave type &quot;Annual Leave&quot;
+- Selects From Date and To Date
+- Fills Comment field
+- Clicks Apply
+- Verifies success message &quot;Successfully Saved&quot;
+
+Framework conventions:
+- Import test from '../fixtures/base.fixture'
+- Page objects are in '../pages/' and passed via fixtures
+- Use getByRole and getByLabel — no CSS selectors
+- Each test should have a descriptive name
+
+Write the complete test file.</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Pattern 2 — Fixing a broken test:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">This Playwright test fails with:
+  Error: Timeout 30000ms exceeded waiting for expect(locator).toBeVisible()
+  Call log: waiting for getByRole('dialog', { name: 'Success' })
+
+The test:
+[paste test code]
+
+The current HTML after the button click:
+[paste HTML snippet]
+
+Diagnose why the dialog locator fails and suggest a fix.
+Explain your reasoning before giving the corrected code.</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Pattern 3 — Generating a page object:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Act as a Senior SDET using Playwright TypeScript.
+
+Here is the HTML for the Employee Add form: [paste HTML]
+Here is our BasePage class: [paste BasePage]
+Here is an example page object (LoginPage): [paste LoginPage.ts]
+
+Generate an EmployeeAddPage class that:
+- Extends BasePage
+- Has typed locators for all form fields
+- Has action methods: fillFirstName, fillLastName, selectJobTitle, clickSave
+- Returns Promise&lt;void&gt; from all action methods
+
+Output only the TypeScript class.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q902.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.8</span>
+      <h2 class="sn-q-text">How do you prevent AI from generating code with invented Playwright methods?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Invented methods are the most common hallucination in Playwright generation. Three techniques prevent them:</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">1. Ground the model with your imports:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">The only Playwright imports available are:
+import { test, expect } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+
+Do not use any methods not available on the standard Page and Locator classes.</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">2. Provide the method list explicitly for complex assertions:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Available expect methods for locators:
+toBeVisible(), toBeHidden(), toBeEnabled(), toBeDisabled(),
+toHaveText(), toContainText(), toHaveValue(), toHaveAttribute(),
+toHaveClass(), toHaveCount(), toBeFocused(), toBeChecked()
+
+Use only these. Do not invent methods like toBePresent() or assertText().</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">3. Run generated code immediately:</strong> TypeScript compilation catches most invented methods. A CI lint step that runs <code class="sn-ic">tsc --noEmit</code> before tests will catch hallucinated method names before they reach the test runner.</p>
+    </div>
+  </div>
+
+  <!-- Q902.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.9</span>
+      <h2 class="sn-q-text">How do you write prompts that generate self-contained, independent tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Poor AI-generated tests often depend on each other — test B assumes test A already created some data. To prevent this:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Critical requirements for every test:
+1. Each test must create its own test data via API before the test runs
+2. Each test must clean up after itself or use unique data that does not conflict
+3. Never use data created by another test
+4. Do not use hardcoded IDs or data that might already exist in the environment
+
+Test data creation pattern:
+const employee = await createEmployeeViaApi(request, {
+  firstName: faker.person.firstName(),
+  lastName: faker.person.lastName(),
+  employeeId: `EMP-${Date.now()}`
+});
+
+// Use employee data in the test
+// Clean up in afterEach</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q902.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.10</span>
+      <h2 class="sn-q-text">How do you build a team prompt library?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Individual prompt quality varies widely. A team prompt library standardises the prompts that work well, so every engineer gets consistent AI output.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+
+<span class="tc-cm">### Template 1 — Generate test from user story</span>
+Role: Senior SDET using Playwright TypeScript on OrangeHRM
+Context: [insert feature context]
+Standards: See STANDARDS.md
+Instruction: Write a <span class="tc-kw">test</span> file <span class="tc-kw">for</span> <span class="tc-kw">this</span> user story: [insert story]
+Format: TypeScript file, imports <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/base.fixture'</span>, no explanations
+
+
+
+<span class="tc-cm">### Template 2 — Fix a failing test</span>
+Role: Senior SDET debugging a Playwright <span class="tc-kw">test</span>
+Context: Framework uses Playwright <span class="tc-num">1.50</span>, TypeScript strict mode
+Error: [paste error message]
+Test code: [paste <span class="tc-kw">test</span>]
+Instruction: Diagnose the failure and provide a fixed <span class="tc-kw">test</span> with explanation
+Format: Explanation first, then corrected code
+
+
+
+<span class="tc-cm">### Template 3 — Generate page object from HTML</span>
+Role: Senior SDET building a Playwright POM framework
+Context: Base <span class="tc-kw">class</span> is BasePage. See example page object below: [paste example]
+HTML: [paste HTML]
+Instruction: Generate a page object <span class="tc-kw">for</span> <span class="tc-kw">this</span> page
+Format: TypeScript <span class="tc-kw">class</span> only, no tests
+
+
+
+<span class="tc-cm">### Template 4 — Review a test for quality</span>
+Role: Senior SDET reviewing a <span class="tc-kw">test</span> <span class="tc-kw">for</span> quality
+Review <span class="tc-kw">for</span>: flakiness risks, missing assertions, locator quality, <span class="tc-kw">test</span> independence
+Test: [paste <span class="tc-kw">test</span>]
+Instruction: Rate each criterion <span class="tc-num">1</span>-<span class="tc-num">5</span> and suggest improvements
+Format: Score table then list <span class="tc-kw">of</span> specific code improvements</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q902.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.11</span>
+      <h2 class="sn-q-text">What is negative prompting and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Negative prompting explicitly tells the model what NOT to do. It is most useful when the model has a strong default behaviour that conflicts with your requirements.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Do NOT:
+- Use page.waitForTimeout() — use expect assertions with auto-waiting instead
+- Use CSS class selectors — use getByRole, getByLabel, or getByTestId
+- Use XPath — it is banned in our framework
+- Add try/catch blocks — let Playwright's error reporting handle failures
+- Add console.log statements — use testInfo.attach for debugging info
+- Use implicit any types — TypeScript strict mode is required</div>
+      </div>
+<p class="sn-para">Negative prompting is especially effective when you have tried a normal prompt multiple times and the model keeps reverting to a pattern you do not want. Explicitly forbidding it in the prompt is more reliable than describing the correct pattern repeatedly.</p>
+    </div>
+  </div>
+
+  <!-- Q902.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.12</span>
+      <h2 class="sn-q-text">How do you use prompt chaining for complex test generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Prompt chaining breaks a complex task into a sequence of focused calls, where the output of one call becomes the input of the next.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Example — Generate a full test file in three chained calls:</strong></p>
+<p class="sn-para"><strong class="k-orange">Call 1 — Generate test scenarios:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Given this user story: [story]
+Generate 5–8 test scenario titles (no code). 
+One positive path, the rest negative/edge cases.</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Call 2 — Generate test structure from scenarios:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Here are the test scenarios: [output from Call 1]
+Here is the page object: [paste page object]
+Generate the test file structure — test.describe block, test cases with
+empty bodies, imports — but no test body code yet.</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Call 3 — Fill in each test body:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Here is the test structure: [output from Call 2]
+Here is the page object: [paste page object]
+Here is an example test for reference: [paste one complete test]
+Fill in the body for test case: &quot;[specific test name]&quot;</div>
+      </div>
+<p class="sn-para">Chaining produces higher-quality output than a single large prompt because each call is focused on a smaller, well-defined task. It also avoids hitting output token limits when generating large test files.</p>
+    </div>
+  </div>
+
+  <!-- Q902.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.13</span>
+      <h2 class="sn-q-text">What is a meta-prompt and how is it used for test generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A meta-prompt is a prompt that asks the LLM to generate or improve a prompt — rather than directly generating the output you want.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">I want to generate Playwright tests from user stories.
+My current prompt produces code that uses CSS selectors instead of getByRole.
+Here is my current prompt: [paste prompt]
+
+Improve this prompt so the model consistently uses accessibility-first
+locators. The model should never use CSS class selectors.
+Output only the improved prompt.</div>
+      </div>
+<p class="sn-para">Meta-prompting is useful when:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>You have a prompt that almost works but keeps failing in one specific way</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>You want the model to reason about why a prompt is not working</span></li>
+<li><span class="icon">⚡</span><span>You are building a prompt library and want AI to help write the templates</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q902.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.14</span>
+      <h2 class="sn-q-text">In your project, how do you standardise prompt usage across the team?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we manage prompts as engineering assets — not informal conversations each engineer has with AI.</p>
+      </div>
+<p class="sn-para">We have a <code class="sn-ic">docs/prompt-templates.md</code> file in the repository with four standard templates: test generation, test fixing, page object generation, and test review. Each template has a structure section (RCIF components), the prompt text with placeholders, an example, and notes on what the output should look like.</p>
+<p class="sn-para">New engineers learn the templates in the first week. Code reviews check whether AI-generated code matches framework standards — if it does not, the reviewer asks which prompt was used and whether the team template was followed.</p>
+<p class="sn-para">The templates are version-controlled. When a framework convention changes, the corresponding template is updated so the whole team gets consistent output from the new pattern. This was particularly useful when we migrated from CSS selectors to getByRole — updating the template meant all subsequent AI-generated tests used the new pattern automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q902.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q902.15</span>
+      <h2 class="sn-q-text">What are the signs of a poorly written prompt and how do you fix them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Sign 1 — Generic output that does not match your framework:</strong> Model used CSS selectors, imported from wrong paths, used methods you do not use. Fix: add the RCIF framework structure. Include your imports and one complete example.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Sign 2 — Output cuts off before completion:</strong> Large files exceed the model's output token limit. Fix: break the request into smaller pieces. Generate one test at a time.</p>
+<p class="sn-para"><strong class="k-red">Sign 3 — Model argues with you or adds warnings:</strong> "Note: this approach may not be ideal for..." Fix: add to the prompt: "Do not add any explanations or caveats. Output only code."</p>
+<p class="sn-para"><strong class="k-red">Sign 4 — Inconsistent output across multiple calls:</strong> Same prompt gives different results each time. Fix: set temperature to 0. Add few-shot examples to anchor the pattern.</p>
+<p class="sn-para"><strong class="k-red">Sign 5 — Model hallucinates Playwright methods:</strong> Output uses methods that do not exist in the Playwright API. Fix: add the negative list ("Do NOT use methods not in the standard Playwright API"). Immediately run <code class="sn-ic">tsc --noEmit</code> to catch invented method names.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Prompt engineering is providing the information an LLM needs to do its job well. Output quality is determined by prompt quality.</span></li>
+            <li><span class="icon">⭐</span><span>RCIF framework: Role (who the model is) + Context (background) + Instruction (what to do) + Format (how to output it). Use this structure for all test generation prompts.</span></li>
+            <li><span class="icon">⭐</span><span>Zero-shot: no examples, for simple tasks. Few-shot: provide examples, for framework-specific code generation. Chain-of-thought: ask model to reason first, for debugging.</span></li>
+            <li><span class="icon">⭐</span><span>Role prompting sets quality level. "Senior SDET" produces more idiomatic code than no role.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Negative prompting explicitly forbids patterns the model defaults to — useful when standard prompting keeps reverting to unwanted behaviour.</span></li>
+            <li><span class="icon">⭐</span><span>Prompt chaining: break large generation tasks into smaller focused calls. Produces better output and avoids token limits.</span></li>
+            <li><span class="icon">⭐</span><span>A team prompt library in version control ensures consistent AI output. Templates include RCIF components, examples, and format instructions.</span></li>
+            <li><span class="icon">⭐</span><span>Signs of a bad prompt: generic output, cut-off files, model argues, inconsistent results, hallucinated methods. Each has a specific fix.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

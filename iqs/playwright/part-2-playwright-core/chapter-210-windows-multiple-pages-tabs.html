@@ -1,0 +1,802 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 210 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Windows</span> <span class="w2">—</span> <span class="w3">Multiple</span> <span class="w4">Pages</span> <span class="w5">&amp;</span> <span class="w6">Tabs</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers one of the most tested topics in Playwright interviews: how Playwright handles timing. Auto-waiting is what makes Playwright tests reliable without explicit sleep calls. Understanding when auto-waiting works, when it does not, and how timeouts are structured separates candidates who have debugged real flaky tests from those who have only read documentation.</span>
+  </div>
+
+
+  <!-- Q210.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.1</span>
+      <h2 class="sn-q-text">What is auto-waiting in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Auto-waiting is Playwright's built-in mechanism that waits for an element to be ready before performing any action on it. Before every action — click, fill, hover, check — Playwright checks a set of conditions and retries until they all pass or the timeout is reached.</p>
+      </div>
+<p class="sn-para">This eliminates the need for explicit <code class="sn-ic">await page.waitForTimeout(2000)</code> calls before most interactions. The test code stays clean, and Playwright handles the timing.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// No explicit wait needed — Playwright waits automatically</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-cm">// Before clicking, Playwright verifies: visible, enabled, stable, not obscured</span></div>
+      </div>
+<p class="sn-para">Auto-waiting was one of the primary motivations for building Playwright. Selenium required explicit waits before almost every interaction. Playwright eliminated that ceremony for the common case.</p>
+    </div>
+  </div>
+
+  <!-- Q210.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.2</span>
+      <h2 class="sn-q-text">What actionability checks does Playwright perform before clicking?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Before performing a <code class="sn-ic">click()</code>, Playwright checks six conditions in sequence. If any check fails, Playwright retries until all pass or the timeout is reached.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">1. Attached</strong> — the element exists in the DOM (not detached or removed).</p>
+<p class="sn-para"><strong class="k-green">2. Visible</strong> — the element is visible. Not hidden with <code class="sn-ic">display:none</code>, <code class="sn-ic">visibility:hidden</code>, or zero opacity.</p>
+<p class="sn-para"><strong class="k-green">3. Stable</strong> — the element is not animating or moving. Playwright checks that the element's bounding box has stopped changing between two frames.</p>
+<p class="sn-para"><strong class="k-green">4. Receives events</strong> — the element is not obscured by another element. Playwright calculates the center point of the element and checks that no other element overlays that point.</p>
+<p class="sn-para"><strong class="k-green">5. Enabled</strong> — the element is not disabled (no <code class="sn-ic">disabled</code> attribute on buttons, inputs, or select elements).</p>
+<p class="sn-para"><strong class="k-green">6. Editable</strong> — for <code class="sn-ic">fill()</code> actions, the element must not be <code class="sn-ic">readonly</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// All 6 checks happen automatically before this click</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Pay Now'</span> }).<span class="tc-fn">click</span>();
+
+<span class="tc-cm">// If the button is disabled, Playwright retries — it does not fail immediately</span>
+<span class="tc-cm">// It waits until the button becomes enabled or the timeout expires</span></div>
+      </div>
+<p class="sn-para">Not all checks apply to every action. <code class="sn-ic">fill()</code> requires editable. <code class="sn-ic">check()</code> requires the element to be a checkbox. Playwright selects the right checks for each action type.</p>
+    </div>
+  </div>
+
+  <!-- Q210.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.3</span>
+      <h2 class="sn-q-text">How did you use auto-waiting in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we rely on auto-waiting for almost all interactions. We do not add explicit waits before clicks, fills, or assertions unless there is a specific reason.</p>
+      </div>
+<p class="sn-para">The one area where we add explicit waiting is after form submissions that trigger API calls. In that case, we wait for the API response before asserting the UI result:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// After clicking Submit — wait for the API response, then assert</span>
+<span class="tc-kw">const</span> [response] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/orders'</span>) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">201</span>),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Place Order'</span> }).<span class="tc-fn">click</span>(),
+]);
+
+<span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+<span class="tc-kw">expect</span>(body.orderId).<span class="tc-fn">toBeDefined</span>();
+
+<span class="tc-cm">// Now assert the UI — the data is guaranteed to be there</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-confirmation'</span>)).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+<p class="sn-para">We found that this pattern — <code class="sn-ic">Promise.all</code> with <code class="sn-ic">waitForResponse</code> — is more reliable than asserting directly, because it eliminates the race between the API response and the UI re-render.</p>
+    </div>
+  </div>
+
+  <!-- Q210.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.4</span>
+      <h2 class="sn-q-text">What types of timeouts exist in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright has four distinct timeout types that apply at different levels:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Test timeout</strong> — the maximum time a single test can run from start to finish. Set via <code class="sn-ic">timeout</code> in <code class="sn-ic">playwright.config.ts</code>. Default: 30,000ms.</p>
+<p class="sn-para"><strong class="k-orange">Action timeout</strong> — the maximum time Playwright waits for auto-waiting conditions (actionability checks) to pass on a single action. Set via <code class="sn-ic">use.actionTimeout</code>. Default: 0 (inherits from test timeout).</p>
+<p class="sn-para"><strong class="k-orange">Navigation timeout</strong> — the maximum time for navigation operations (<code class="sn-ic">goto</code>, <code class="sn-ic">waitForURL</code>, <code class="sn-ic">waitForNavigation</code>). Set via <code class="sn-ic">use.navigationTimeout</code>. Default: 0 (inherits from test timeout).</p>
+<p class="sn-para"><strong class="k-orange">Assertion timeout</strong> — the maximum time <code class="sn-ic">expect()</code> assertions retry before failing. Set via <code class="sn-ic">expect.timeout</code>. Default: 5,000ms.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  timeout: 30_000,          <span class="tc-cm">// test timeout</span>
+  <span class="tc-kw">expect</span>: {
+    timeout: 5_000,         <span class="tc-cm">// assertion timeout</span>
+  },
+  use: {
+    actionTimeout: 10_000,  <span class="tc-cm">// action timeout</span>
+    navigationTimeout: 30_000, <span class="tc-cm">// navigation timeout</span>
+  },
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q210.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.5</span>
+      <h2 class="sn-q-text">What is the difference between action timeout and test timeout?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Test timeout</strong> is the upper bound for the entire test. If the test runs longer than this, it is killed regardless of what it is doing.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Action timeout</strong> is the per-action wait limit. It controls how long Playwright retries actionability checks for a single action (like a click or fill).</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test starts
+├── action 1: click (waits up to actionTimeout)
+├── action 2: fill (waits up to actionTimeout)
+├── assertion 1: toBeVisible (waits up to expect.timeout)
+└── ...if the sum of all these exceeds test timeout → test is killed</div>
+      </div>
+<p class="sn-para">If <code class="sn-ic">actionTimeout</code> is 0 (the default), individual actions are limited only by the remaining test timeout. Setting a specific <code class="sn-ic">actionTimeout</code> like <code class="sn-ic">10_000ms</code> means each action has its own 10-second limit — after which that action fails without waiting for the full test timeout.</p>
+<p class="sn-para"><strong class="k-teal">Rule of thumb:</strong> Set <code class="sn-ic">actionTimeout</code> to roughly one-third of <code class="sn-ic">test timeout</code>. This allows a test to make progress through multiple actions before the full test timeout is reached.</p>
+    </div>
+  </div>
+
+  <!-- Q210.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.6</span>
+      <h2 class="sn-q-text">What is assertion timeout and why is it separate from action timeout?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">Assertion timeout</strong> applies to <code class="sn-ic">expect()</code> calls. Playwright assertions are auto-retrying — if the condition is not met immediately, Playwright retries the assertion until it passes or the assertion timeout expires.</p>
+      </div>
+<p class="sn-para">Assertions are separate from actions because:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Actions are about element state (visible, enabled, stable)</span></li>
+<li><span class="icon">💡</span><span>Assertions are about application state (text content, URL, visibility)</span></li>
+</ul>
+<p class="sn-para">A 5-second assertion timeout is often sufficient for UI updates after user actions. A 10-second action timeout is needed for actions that may wait for the element to appear.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// This assertion retries for up to 5 seconds (default expect.timeout)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Saved successfully'</span>);
+
+<span class="tc-cm">// Override for a specific assertion that may take longer</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'report-table'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: 15_000 });</div>
+      </div>
+<p class="sn-para">If you find yourself increasing assertion timeouts on every test, the real fix is usually to add a <code class="sn-ic">waitForResponse()</code> before the assertion — so you only assert after the data has actually arrived.</p>
+    </div>
+  </div>
+
+  <!-- Q210.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.7</span>
+      <h2 class="sn-q-text">What is the difference between page.waitForTimeout and expect-based waiting?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.waitForTimeout(ms)</code> — a hard sleep. Execution pauses for exactly the specified duration. The test waits this long regardless of application state.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">expect(locator).toBeVisible()</code> (and other assertions) — condition-based waiting. Playwright retries until the condition is met or the timeout expires. The test completes early if the condition passes before the timeout.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// waitForTimeout — hard sleep, always slow, fragile</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">3000</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>).<span class="tc-fn">click</span>(); <span class="tc-cm">// What if alert appeared in 500ms?</span>
+
+<span class="tc-cm">// Assertion-based — fast, reliable, explicit</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toBeVisible</span>(); <span class="tc-cm">// Passes as soon as visible</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>).<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">waitForTimeout</code> is officially documented as only suitable for debugging. It should never appear in a production test suite. Each occurrence adds fixed delay and makes tests fragile — if the application is slower one day, <code class="sn-ic">waitForTimeout(1000)</code> is no longer enough; if it is faster, you waited for nothing.</p>
+<p class="sn-para"><strong class="k-red">Use <code class="sn-ic">waitForTimeout</code> for:</strong> debugging, visual inspection during development. <strong class="k-red">Never use it:</strong> in committed test code.</p>
+    </div>
+  </div>
+
+  <!-- Q210.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.8</span>
+      <h2 class="sn-q-text">What is waitForSelector and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.waitForSelector(selector, options)</code> waits for a DOM element matching the selector to reach a specific state: <code class="sn-ic">'visible'</code>, <code class="sn-ic">'hidden'</code>, <code class="sn-ic">'attached'</code>, or <code class="sn-ic">'detached'</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Wait for an element to appear (attached + visible by default)</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForSelector</span>(<span class="tc-str">'.data-table'</span>);
+
+<span class="tc-cm">// Wait for an element to disappear</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForSelector</span>(<span class="tc-str">'.loading-spinner'</span>, { state: <span class="tc-str">'hidden'</span> });
+
+<span class="tc-cm">// Wait for element to be in DOM but possibly hidden</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForSelector</span>(<span class="tc-str">'[data-ready]'</span>, { state: <span class="tc-str">'attached'</span> });
+
+<span class="tc-cm">// Wait for element to be removed from DOM</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForSelector</span>(<span class="tc-str">'.toast-message'</span>, { state: <span class="tc-str">'detached'</span> });</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">When to use it:</strong> when you need to wait for an element that does not yet exist before applying a locator to it. This is rare because locator-based auto-waiting usually covers this.</p>
+<p class="sn-para">The modern alternative is <code class="sn-ic">locator.waitFor(options)</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Modern locator-based approach — preferred</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.data-table'</span>).<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span> });
+<span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.loading-spinner'</span>).<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'hidden'</span> });</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q210.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.9</span>
+      <h2 class="sn-q-text">What is waitForResponse and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.waitForResponse(urlOrPredicate)</code> waits for a network response matching the given URL pattern or predicate function. It resolves with the matching <code class="sn-ic">Response</code> object.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Wait for a specific endpoint</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(<span class="tc-str">'**/api/users'</span>);
+
+<span class="tc-cm">// Wait for a POST to /api/orders that returns 201</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(
+  r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/orders'</span>) &amp;&amp; r.<span class="tc-fn">method</span>() === <span class="tc-str">'POST'</span> &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">201</span>
+);
+
+<span class="tc-cm">// Always start listening BEFORE the action that triggers the request</span>
+<span class="tc-kw">const</span> [response] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/search'</span>)),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>(),
+]);
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Use it when:</strong> the UI update depends on an API call completing. Without <code class="sn-ic">waitForResponse</code>, you may assert the UI before the data has loaded, causing intermittent failures on slower environments.</p>
+    </div>
+  </div>
+
+  <!-- Q210.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.10</span>
+      <h2 class="sn-q-text">What is waitForFunction and when is it appropriate?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.waitForFunction(pageFunction)</code> evaluates a function in the browser context repeatedly until it returns a truthy value.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Wait for a global variable to be set by the application</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; window.appReady === <span class="tc-kw">true</span>);
+
+<span class="tc-cm">// Wait for a DOM condition more complex than a selector state</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(
+  () =&gt; document.<span class="tc-fn">querySelectorAll</span>(<span class="tc-str">'.row'</span>).length &gt;= <span class="tc-num">10</span>
+);
+
+<span class="tc-cm">// Wait for an animation to complete (checking CSS property)</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; {
+  <span class="tc-kw">const</span> el = document.<span class="tc-fn">querySelector</span>(<span class="tc-str">'.progress-bar'</span>);
+  <span class="tc-kw">return</span> el &amp;&amp; <span class="tc-fn">getComputedStyle</span>(el).width === <span class="tc-str">'100%'</span>;
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Use it when:</strong> the condition you are waiting for cannot be expressed with a locator state, URL, or network event. This is the escape hatch for complex client-side state.</p>
+<p class="sn-para"><strong class="k-green">Avoid it for:</strong> conditions that can be expressed as assertions — <code class="sn-ic">expect(locator).toHaveText('Done')</code> is more readable and maintainable than <code class="sn-ic">waitForFunction(() =&gt; document.querySelector('.status').textContent === 'Done')</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q210.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.11</span>
+      <h2 class="sn-q-text">How do you configure timeouts at different levels?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright supports timeout configuration at four levels, each overriding the previous for its scope:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Level 1 — Global (playwright.config.ts):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  timeout: 30_000,
+  <span class="tc-kw">expect</span>: { timeout: 5_000 },
+  use: {
+    actionTimeout: 10_000,
+    navigationTimeout: 30_000,
+  },
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Level 2 — Test file (test.describe or test):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'complex upload flow'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(120_000); <span class="tc-cm">// 2 minutes for this test only</span>
+  <span class="tc-cm">// ...</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Level 3 — Individual action:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Override timeout for one specific action</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate Report'</span> }).<span class="tc-fn">click</span>({ timeout: 60_000 });
+
+<span class="tc-cm">// Override timeout for one assertion</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.report'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: 60_000 });</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Level 4 — test.slow():</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'runs on slow network emulation'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">slow</span>(); <span class="tc-cm">// Triples the test timeout and all action timeouts</span>
+  <span class="tc-cm">// ...</span>
+});</div>
+      </div>
+<p class="sn-para">Later levels override earlier ones. A per-action timeout overrides the global <code class="sn-ic">actionTimeout</code> for that one call only.</p>
+    </div>
+  </div>
+
+  <!-- Q210.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.12</span>
+      <h2 class="sn-q-text">What is the difference between waitForLoadState and waitForURL?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.waitForLoadState(state)</code> waits for the page to reach a browser loading state — <code class="sn-ic">'load'</code>, <code class="sn-ic">'domcontentloaded'</code>, or <code class="sn-ic">'networkidle'</code>. It does not care about the URL.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.waitForURL(urlPattern)</code> waits for the current URL to match a pattern. It does not care about the page loading state — it resolves as soon as the URL matches.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// waitForLoadState — wait for resources to be loaded</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'link'</span>, { name: <span class="tc-str">'Reports'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'domcontentloaded'</span>);
+
+<span class="tc-cm">// waitForURL — wait for navigation to complete to a specific URL</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+
+<span class="tc-cm">// The modern assertion equivalent of waitForURL</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'/dashboard'</span>); <span class="tc-cm">// preferred — also an assertion</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">waitForLoadState</code> when you need to ensure the page is ready for interaction. Use <code class="sn-ic">waitForURL</code> (or the assertion form <code class="sn-ic">expect(page).toHaveURL()</code>) when you need to verify that navigation reached the correct destination.</p>
+    </div>
+  </div>
+
+  <!-- Q210.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.13</span>
+      <h2 class="sn-q-text">What is networkidle and when should you avoid it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">'networkidle'</code> is a <code class="sn-ic">waitUntil</code> / <code class="sn-ic">waitForLoadState</code> option that waits until there are no more than 0 active network connections for at least 500ms.</p>
+      </div>
+<p class="sn-para">It is the most complete way to confirm that an application has finished loading all resources — but it is also the most fragile.</p>
+<p class="sn-para"><strong class="k-teal">Avoid <code class="sn-ic">networkidle</code> when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The page has a WebSocket connection (chat, real-time updates) — the</span></li>
+</ul>
+<p class="sn-para">  WebSocket keeps the connection count above zero permanently</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>The page has polling (background API calls every few seconds) — the</span></li>
+</ul>
+<p class="sn-para">  network never fully idles</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>The page loads analytics or tracking scripts that fire on a delay</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Use <code class="sn-ic">networkidle</code> when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>You are generating a PDF or screenshot of a fully-rendered page</span></li>
+<li><span class="icon">📌</span><span>You are testing a static or near-static page with no background activity</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Fragile on apps with WebSocket — may time out</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/realtime-dashboard'</span>, { waitUntil: <span class="tc-str">'networkidle'</span> });
+
+<span class="tc-cm">// Better for most apps</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/realtime-dashboard'</span>, { waitUntil: <span class="tc-str">'domcontentloaded'</span> });
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'chart'</span>)).<span class="tc-fn">toBeVisible</span>(); <span class="tc-cm">// wait for key element</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q210.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.14</span>
+      <h2 class="sn-q-text">What is the waitFor method on a locator?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">locator.waitFor(options)</code> waits for the element matched by the locator to reach a specific state. It is the locator-based successor to <code class="sn-ic">waitForSelector</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> spinner = page.<span class="tc-fn">locator</span>(<span class="tc-str">'.loading-spinner'</span>);
+<span class="tc-kw">const</span> table   = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>);
+
+<span class="tc-cm">// Wait for spinner to disappear</span>
+<span class="tc-kw">await</span> spinner.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'hidden'</span> });
+
+<span class="tc-cm">// Wait for table to appear</span>
+<span class="tc-kw">await</span> table.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span> });
+
+<span class="tc-cm">// With custom timeout</span>
+<span class="tc-kw">await</span> table.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout: 15_000 });</div>
+      </div>
+<p class="sn-para">Available states: <code class="sn-ic">'attached'</code>, <code class="sn-ic">'detached'</code>, <code class="sn-ic">'visible'</code>, <code class="sn-ic">'hidden'</code>.</p>
+<p class="sn-para"><code class="sn-ic">locator.waitFor()</code> is preferred over <code class="sn-ic">page.waitForSelector()</code> because it uses the locator you have already defined — it stays consistent with the rest of your locator strategy.</p>
+    </div>
+  </div>
+
+  <!-- Q210.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.15</span>
+      <h2 class="sn-q-text">Write code that waits for a loading spinner to disappear before asserting.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A spinner that disappears after data loads is a very common pattern. The correct approach is to wait for the spinner to become hidden, then assert the loaded content:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'data table loads after spinner disappears'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/reports'</span>);
+
+  <span class="tc-cm">// Page shows a spinner while data loads</span>
+  <span class="tc-kw">const</span> spinner = page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'loading-spinner'</span>);
+  <span class="tc-kw">const</span> table   = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>);
+
+  <span class="tc-cm">// Wait for spinner to be gone — data is loaded</span>
+  <span class="tc-kw">await</span> spinner.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'hidden'</span>, timeout: 15_000 });
+
+  <span class="tc-cm">// Now assert the table content</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(table).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(table.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">10</span>);
+});</div>
+      </div>
+<p class="sn-para">An alternative using <code class="sn-ic">expect</code> assertions:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Using assertions — works because toBeHidden retries automatically</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'loading-spinner'</span>)).<span class="tc-fn">toBeHidden</span>({ timeout: 15_000 });
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>)).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q210.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.16</span>
+      <h2 class="sn-q-text">How do you handle a test that occasionally needs more time?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">test.slow()</code> to triple all timeouts for a specific test, or set a custom timeout with <code class="sn-ic">test.setTimeout()</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'report generation takes up to 90 seconds'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Triple all timeouts (test + action + navigation + assertion × 3)</span>
+  <span class="tc-kw">test</span>.<span class="tc-fn">slow</span>();
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/reports'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate Full Report'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'report-download-link'</span>)).<span class="tc-fn">toBeVisible</span>({
+    timeout: 90_000, <span class="tc-cm">// this specific assertion may take 90 seconds</span>
+  });
+});
+
+<span class="tc-cm">// OR — set a specific test timeout</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'bulk data import'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(180_000); <span class="tc-cm">// 3 minutes for this test only</span>
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/import'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">setInputFiles</span>(<span class="tc-str">' S4 
+  await page.getByRole('</span>button<span class="tc-str">', { name: '</span>Import<span class="tc-str">' }).click();
+  await expect(page.getByRole('</span>status<span class="tc-str">')).toHaveText('</span>Import complete');
+});</div>
+      </div>
+<p class="sn-para">Do not increase the global timeout in <code class="sn-ic">playwright.config.ts</code> for one slow test. Use per-test overrides so the global remains tight for all other tests.</p>
+    </div>
+  </div>
+
+  <!-- Q210.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.17</span>
+      <h2 class="sn-q-text">What anti-patterns in waits have you removed from your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we inherited a Selenium-style suite that had been partially migrated to Playwright. The suite was full of explicit sleep calls that we systematically replaced.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Pattern 1 — <code class="sn-ic">waitForTimeout</code> before assertions:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Before — hard sleep</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">3000</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Saved'</span>);
+
+<span class="tc-cm">// After — assertion-based retry</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Saved'</span>); <span class="tc-cm">// retries for 5s</span></div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Pattern 2 — Sequential <code class="sn-ic">waitForResponse</code> calls:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Before — sequential, slow</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Load Dashboard'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(<span class="tc-str">'**/api/users'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(<span class="tc-str">'**/api/stats'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(<span class="tc-str">'**/api/events'</span>);
+
+<span class="tc-cm">// After — parallel, fast</span>
+<span class="tc-kw">const</span> [,, ] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/users'</span>)),
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/stats'</span>)),
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/events'</span>)),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Load Dashboard'</span> }).<span class="tc-fn">click</span>(),
+]);</div>
+      </div>
+<p class="sn-para">The parallel pattern cut dashboard test execution by 35%.</p>
+    </div>
+  </div>
+
+  <!-- Q210.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q210.18</span>
+      <h2 class="sn-q-text">What is the most complex timeout scenario you have debugged?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we had a test for a report generation feature that was consistently timing out in CI but passing locally. The test ran well within the 30-second timeout locally, but CI builds were taking 60+ seconds on the same test.</p>
+      </div>
+<p class="sn-para">Investigation:</p>
+<ol class="sn-olist">
+<li>We added <code class="sn-ic">page.on('request')</code>  and <code class="sn-ic">page.on('response')</code> listeners to log</li>
+</ol>
+<p class="sn-para">   all network traffic in CI. We found that the report API was being called    twice — once by the frontend automatically on page load, and once by the    test's click action.</p>
+<ol class="sn-olist">
+<li>The first API call was populating a cache. The second call was a cache miss</li>
+</ol>
+<p class="sn-para">   in CI because the CI database was cold.</p>
+<ol class="sn-olist">
+<li>The test was using <code class="sn-ic">waitForTimeout(5000)</code> (legacy code) between the click</li>
+</ol>
+<p class="sn-para">   and the assertion. On local, the cached response came back in 400ms.    In CI, the cold database took 8 seconds.</p>
+<p class="sn-para">Fix:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Before — fragile timeout</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">5000</span>); <span class="tc-cm">// Not enough in CI</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'report-link'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+<span class="tc-cm">// After — event-driven</span>
+<span class="tc-kw">const</span> [response] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt;
+    r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/reports/generate'</span>) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>
+  ),
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate'</span> }).<span class="tc-fn">click</span>(),
+]);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'report-link'</span>)).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+<p class="sn-para">The lesson: <code class="sn-ic">waitForTimeout</code> masks real timing dependencies. Replace it with <code class="sn-ic">waitForResponse</code> or assertion-based waits that react to actual events.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Auto-waiting checks six actionability conditions (attached, visible, stable, receives events, enabled, editable) before every action.</span></li>
+            <li><span class="icon">⭐</span><span>Four timeout types: <code class="sn-ic">test timeout</code>, <code class="sn-ic">actionTimeout</code>, <code class="sn-ic">navigationTimeout</code>, and <code class="sn-ic">expect timeout</code>. Each applies at a different scope.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">waitForTimeout</code> is a hard sleep and should never appear in production test code. Replace it with assertion-based or event-based waits.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">waitForResponse</code> + <code class="sn-ic">Promise.all</code> is the reliable pattern for assertions that depend on API data.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">waitForFunction</code> is the escape hatch for complex browser-side conditions that cannot be expressed as locator states.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.slow()</code> triples all timeouts for one test. <code class="sn-ic">test.setTimeout(ms)</code> sets a specific value. Use these instead of inflating the global timeout.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">'networkidle'</code> is fragile on pages with WebSockets or background polling. Prefer <code class="sn-ic">'domcontentloaded'</code> + key element assertion.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

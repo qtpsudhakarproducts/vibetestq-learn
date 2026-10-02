@@ -1,0 +1,889 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🌐 Part 6 &nbsp;·&nbsp; Chapter 605 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Reporting,</span> <span class="w2">Configuration</span> <span class="w3">&amp;</span> <span class="w4">CI/CD</span> <span class="w5">in</span> <span class="w6">BDD</span></h1>
+    <p class="sn-title-sub">Cucumber BDD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the reporting stack (Cucumber HTML, multiple-cucumber-html-reporter, Allure), <code class="sn-ic">cucumber.js</code> configuration in depth, <code class="sn-ic">tsconfig.json</code> for BDD projects, the <code class="sn-ic">cross-env</code> headless pattern, and running BDD tests in CI. Interviewers ask these questions to assess whether you have shipped a BDD framework to production — configuration, reporting, and CI integration are what separate a learning exercise from a framework a team actually uses.</span>
+  </div>
+
+
+  <!-- Q605.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.1</span>
+      <h2 class="sn-q-text">What reporters does Cucumber support and when would you use each?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cucumber has built-in formatters and supports third-party reporters through the <code class="sn-ic">format</code> array in <code class="sn-ic">cucumber.js</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Built-in formatters:</strong></p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Formatter</th><th class="sn-th-blue">Output</th><th class="sn-th-green">Best for</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">progress-bar</code></td><td>Dots and coloured pass/fail in terminal</td><td>Local development, quick feedback</td></tr>
+          <tr><td><code class="sn-ic">json:path/to/file.json</code></td><td>Machine-readable JSON</td><td>Input to HTML reporters and Allure</td></tr>
+          <tr><td><code class="sn-ic">html:path/to/file.html</code></td><td>Self-contained HTML report</td><td>Sharing with the business team</td></tr>
+          <tr><td><code class="sn-ic">summary</code></td><td>Final count of pass/fail in terminal</td><td>CI when you only need the result</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-blue">Third-party reporters added in OrangeHRM project:</strong></p>
+<p class="sn-para"><code class="sn-ic">multiple-cucumber-html-reporter</code> — reads the JSON output and generates a rich multi-page HTML report with metadata (browser, platform, device), feature-level and scenario-level results, step timing, and screenshot attachments.</p>
+<p class="sn-para"><code class="sn-ic">allure-cucumberjs</code> — writes Allure-format JSON files that <code class="sn-ic">allure generate</code> converts into the Allure HTML report. Allure shows trends, history, retries, and has better filtering than the Cucumber HTML report.</p>
+<p class="sn-para">In <code class="sn-ic">cucumber.js</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">format: [
+  <span class="tc-str">'progress-bar'</span>,                         <span class="tc-cm">// terminal feedback during run</span>
+  <span class="tc-str">'json:reports/cucumber-report.json'</span>,    <span class="tc-cm">// feeds multiple-cucumber-html-reporter</span>
+  <span class="tc-str">'html:reports/cucumber-report.html'</span>,    <span class="tc-cm">// basic built-in HTML</span>
+  <span class="tc-str">'allure-cucumberjs/reporter'</span>,           <span class="tc-cm">// feeds Allure</span>
+],
+formatOptions: {
+  snippetInterface: <span class="tc-str">'async-await'</span>,
+  resultsDir: <span class="tc-str">'allure-results'</span>,           <span class="tc-cm">// where Allure adapter writes its files</span>
+},</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q605.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.2</span>
+      <h2 class="sn-q-text">How does multiple-cucumber-html-reporter work and how do you generate it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">multiple-cucumber-html-reporter</code> reads Cucumber's JSON output and generates a rich HTML report. It is not a Cucumber formatter — it is a Node.js script you run after the tests finish.</p>
+      </div>
+<p class="sn-para">Install:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev multiple-cucumber-html-reporter</div>
+      </div>
+<p class="sn-para">The OrangeHRM project has a <code class="sn-ic">reports/generate-report.js</code> script:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// reports/generate-report.js</span>
+<span class="tc-kw">const</span> reporter = <span class="tc-kw">require</span>(<span class="tc-str">'multiple-cucumber-html-reporter'</span>);
+<span class="tc-kw">const</span> path = <span class="tc-kw">require</span>(<span class="tc-str">'path'</span>);
+
+reporter.<span class="tc-fn">generate</span>({
+  jsonDir:    path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'reports'</span>),        <span class="tc-cm">// folder containing cucumber-report.json</span>
+  reportPath: path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'reports'</span>, <span class="tc-str">'html-report'</span>),
+
+  metadata: {
+    browser:  { name: <span class="tc-str">'chromium'</span>, version: <span class="tc-str">'latest'</span> },
+    device:   <span class="tc-str">'Local Development Machine'</span>,
+    platform: { name: <span class="tc-str">'Windows'</span>, version: <span class="tc-str">'10'</span> },
+  },
+
+  customData: {
+    title: <span class="tc-str">'OrangeHRM BDD Test Report'</span>,
+    data: [
+      { label: <span class="tc-str">'Project'</span>,   value: <span class="tc-str">'OrangeHRM Employee Management'</span> },
+      { label: <span class="tc-str">'Release'</span>,   value: <span class="tc-str">'1.0.0'</span> },
+      { label: <span class="tc-str">'Cycle'</span>,     value: <span class="tc-str">'Regression'</span> },
+      { label: <span class="tc-str">'Execution Start Time'</span>, value: <span class="tc-kw">new</span> Date().<span class="tc-fn">toLocaleString</span>() },
+    ],
+  },
+
+  displayDuration: <span class="tc-kw">true</span>,
+  durationInMS:    <span class="tc-kw">true</span>,
+});</div>
+      </div>
+<p class="sn-para">Generate the report:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">node reports/generate-report.js</div>
+      </div>
+<p class="sn-para">Or use the npm script from <code class="sn-ic">package.json</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm run report          # generate only
+npm run test:report     # run tests + generate report (default profile)
+npm run test:pom:report # run tests + generate report (pom profile)</div>
+      </div>
+<p class="sn-para">The report opens as <code class="sn-ic">reports/html-report/index.html</code> in any browser.</p>
+    </div>
+  </div>
+
+  <!-- Q605.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.3</span>
+      <h2 class="sn-q-text">How does Allure reporting integrate with Cucumber?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Allure uses an adapter (<code class="sn-ic">allure-cucumberjs</code>) that hooks into Cucumber's formatter system. It writes raw result files to <code class="sn-ic">allure-results/</code> during the test run. You then run <code class="sn-ic">allure generate</code> to turn those raw files into the HTML report.</p>
+      </div>
+<p class="sn-para">Install:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev allure-cucumberjs allure-commandline</div>
+      </div>
+<p class="sn-para">Add to <code class="sn-ic">format</code> in <code class="sn-ic">cucumber.js</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-str">'allure-cucumberjs/reporter'</span>,</div>
+      </div>
+<p class="sn-para">Add <code class="sn-ic">resultsDir</code> to <code class="sn-ic">formatOptions</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">formatOptions: {
+  resultsDir: <span class="tc-str">'allure-results'</span>,
+},</div>
+      </div>
+<p class="sn-para">Generate and open the report:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx allure generate allure-results --clean -o allure-report
+
+npx allure open allure-report
+
+npx allure serve allure-results</div>
+      </div>
+<p class="sn-para">npm scripts in the OrangeHRM project:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm run test:allure         # run all tests + generate + open Allure
+npm run test:pom:allure     # pom profile + Allure
+npm run test:login:allure   # login tests (pom) + Allure</div>
+      </div>
+<p class="sn-para">Allure automatically shows feature names, scenario names, steps, tags, and any <code class="sn-ic">this.attach()</code> screenshots from hooks. It also generates trend charts and failure analysis across multiple runs when you preserve the <code class="sn-ic">allure-report/history</code> folder between runs.</p>
+    </div>
+  </div>
+
+  <!-- Q605.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.4</span>
+      <h2 class="sn-q-text">What is the complete structure of cucumber.js and what does each key do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// cucumber.js — full annotated example from OrangeHRM project</span>
+<span class="tc-kw">module</span>.exports = {
+
+  <span class="tc-cm">// ─── Profile name ─────────────────────────────────────────</span>
+  <span class="tc-kw">default</span>: {
+
+    <span class="tc-cm">// Which module to use for running TypeScript without compiling</span>
+    requireModule: [<span class="tc-str">'ts-node/register'</span>],
+
+    <span class="tc-cm">// Files to load before features run — order matters:</span>
+    <span class="tc-cm">// world.ts first (registers World constructor), then hooks, then step defs</span>
+    <span class="tc-kw">require</span>: [
+      <span class="tc-str">'support/hooks.ts'</span>,
+      <span class="tc-str">'support/world.ts'</span>,
+      <span class="tc-str">'step-definitions S5 *.ts'</span>,
+    ],
+
+    <span class="tc-cm">// Which feature files to run</span>
+    features: [<span class="tc-str">'features S7 *.feature'</span>],
+
+    <span class="tc-cm">// Formatters — multiple can run simultaneously</span>
+    format: [
+      <span class="tc-str">'progress-bar'</span>,                       <span class="tc-cm">// terminal output during run</span>
+      <span class="tc-str">'json:reports/cucumber-report.json'</span>,  <span class="tc-cm">// JSON for HTML reporters</span>
+      <span class="tc-str">'html:reports/cucumber-report.html'</span>,  <span class="tc-cm">// built-in HTML report</span>
+      <span class="tc-str">'allure-cucumberjs/reporter'</span>,         <span class="tc-cm">// Allure adapter</span>
+    ],
+
+    <span class="tc-cm">// Options passed to formatters</span>
+    formatOptions: {
+      snippetInterface: <span class="tc-str">'async-await'</span>,   <span class="tc-cm">// generated snippets use async/await</span>
+      resultsDir: <span class="tc-str">'allure-results'</span>,      <span class="tc-cm">// Allure output directory</span>
+    },
+
+    <span class="tc-cm">// Suppress Cucumber Cloud publish warning</span>
+    publishQuiet: <span class="tc-kw">true</span>,
+
+    <span class="tc-cm">// Number of scenarios to run in parallel (1 = sequential)</span>
+    parallel: <span class="tc-num">1</span>,
+
+    <span class="tc-cm">// Passed to World constructor as options.parameters</span>
+    worldParameters: {
+      baseUrl: <span class="tc-str">'https: S19 
+      headless: false,
+      slowMo: 100,
+    },
+  },
+
+   S20 
+  pom: {
+    requireModule: ['</span>ts-node/register<span class="tc-str">'],
+    require: [
+      '</span>support/pom-hooks.ts<span class="tc-str">',
+      '</span>support/pom-world.ts<span class="tc-str">',
+      '</span>step-definitions-pom<span class="tc-cm">/**/</span>*.ts<span class="tc-str">',
+    ],
+    features: ['</span>features<span class="tc-cm">/**/</span>*.feature<span class="tc-str">'],
+    format: [
+      '</span>progress-bar<span class="tc-str">',
+      '</span>json:reports/cucumber-report-pom.json<span class="tc-str">',    S23 
+      '</span>html:reports/cucumber-report-pom.html<span class="tc-str">',    S24 
+      '</span>allure-cucumberjs/reporter<span class="tc-str">',
+    ],
+    formatOptions: {
+      snippetInterface: '</span><span class="tc-kw">async</span>-<span class="tc-kw">await</span><span class="tc-str">',
+      resultsDir: '</span>allure-results<span class="tc-str">',
+    },
+    publishQuiet: true,
+    parallel: 1,
+    worldParameters: {
+      baseUrl: '</span>https:<span class="tc-cm">//vibetestq-osondemand.orangehrm.com/auth/login',</span>
+      headless: <span class="tc-kw">false</span>,
+      slowMo: <span class="tc-num">100</span>,
+    },
+  },
+};</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q605.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.5</span>
+      <h2 class="sn-q-text">What is the tsconfig.json setup for a Cucumber TypeScript project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2020&quot;,          // compile to ES2020 — Node.js 14+ supports it
+    &quot;module&quot;: &quot;commonjs&quot;,        // Node.js uses CommonJS, not ESM
+    &quot;lib&quot;: [&quot;ES2020&quot;, &quot;DOM&quot;],    // DOM types needed for Playwright (window, document etc.)
+    &quot;types&quot;: [&quot;node&quot;],           // only include @types/node, not Jest or Mocha types
+    &quot;strict&quot;: true,              // enable all strict type checks
+    &quot;esModuleInterop&quot;: true,     // allow default imports from CommonJS modules
+    &quot;skipLibCheck&quot;: true,        // skip type checking of node_modules
+    &quot;outDir&quot;: &quot;./dist&quot;,          // compiled output (ts-node doesn't use this, but tsc does)
+    &quot;rootDir&quot;: &quot;./&quot;,             // source root
+    &quot;resolveJsonModule&quot;: true,   // allow import of JSON files
+    &quot;ignoreDeprecations&quot;: &quot;5.0&quot;  // suppress TypeScript 5.0 breaking change warnings
+  },
+  &quot;include&quot;: [
+    &quot;features/**/*.ts&quot;,
+    &quot;pages/**/*.ts&quot;,
+    &quot;step-definitions/**/*.ts&quot;,
+    &quot;step-definitions-pom/**/*.ts&quot;,
+    &quot;support/**/*.ts&quot;,
+    &quot;reports/**/*.ts&quot;
+  ],
+  &quot;exclude&quot;: [&quot;node_modules&quot;, &quot;dist&quot;]
+}</div>
+      </div>
+<p class="sn-para">Key decisions:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">&quot;module&quot;: &quot;commonjs&quot;</code> — Cucumber and Node.js use CommonJS. Using ESM (<code class="sn-ic">&quot;module&quot;: &quot;ES2020&quot;</code>) with Cucumber requires extra configuration and <code class="sn-ic">&quot;type&quot;: &quot;module&quot;</code> in <code class="sn-ic">package.json</code>. The OrangeHRM project uses <code class="sn-ic">&quot;type&quot;: &quot;commonjs&quot;</code> in <code class="sn-ic">package.json</code> to keep it simple.</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">&quot;types&quot;: [&quot;node&quot;]</code> — without this, TypeScript might pull in conflicting type definitions from Jest or other test libraries installed in the project.</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">ts-node/register</code> in <code class="sn-ic">requireModule</code> means TypeScript is compiled on the fly — <code class="sn-ic">outDir</code> is not used at runtime, only when running <code class="sn-ic">tsc</code> directly.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q605.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.6</span>
+      <h2 class="sn-q-text">How do you run tests in headless mode and why would you?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Headless mode runs the browser without showing a visible window. In CI environments (GitHub Actions, Jenkins, GitLab CI), there is no display — the browser must run headless or it crashes.</p>
+      </div>
+<p class="sn-para">The OrangeHRM project uses <code class="sn-ic">cross-env</code> to pass an environment variable:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm run test:headless</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">cross-env</code> sets environment variables in a way that works on Windows, macOS, and Linux. Without it, <code class="sn-ic">HEADLESS=true cucumber-js</code> works on macOS/Linux but fails on Windows (PowerShell uses different syntax).</p>
+<p class="sn-para">In the World constructor, read the environment variable:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-fn">constructor</span>(options: OrangeHRMWorldOptions) {
+  <span class="tc-fn">super</span>(options);
+  <span class="tc-cm">// process.env.HEADLESS overrides worldParameters.headless</span>
+  <span class="tc-kw">this</span>.headless = process.env.HEADLESS === <span class="tc-str">'true'</span> || (options.parameters?.headless ?? <span class="tc-kw">false</span>);
+  <span class="tc-kw">this</span>.slowMo   = options.parameters?.slowMo ?? <span class="tc-num">0</span>;
+}</div>
+      </div>
+<p class="sn-para">For CI, set <code class="sn-ic">HEADLESS=true</code> as an environment variable in the CI config — no code changes needed.</p>
+<p class="sn-para">In <code class="sn-ic">worldParameters</code> in <code class="sn-ic">cucumber.js</code>, <code class="sn-ic">headless: false</code> is the local default. CI overrides it with the environment variable.</p>
+    </div>
+  </div>
+
+  <!-- Q605.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.7</span>
+      <h2 class="sn-q-text">How do you run the BDD framework in a CI/CD pipeline?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The OrangeHRM project runs in GitHub Actions. A basic workflow:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: BDD Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  <span class="tc-kw">test</span>:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: <span class="tc-str">'20'</span>
+          cache: <span class="tc-str">'npm'</span>
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Run BDD <span class="tc-fn">tests</span> (POM profile, headless)
+        run: cross-env HEADLESS=<span class="tc-kw">true</span> npm run <span class="tc-kw">test</span>:pom
+        env:
+          BASE_URL: ${{ secrets.STAGING_URL }}
+
+      - name: Generate Allure report
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()   <span class="tc-cm"># run even if tests fail</span>
+        run: npm run allure:generate
+
+      - name: Upload <span class="tc-kw">test</span> report
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report/
+
+      - name: Upload Cucumber HTML report
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-html-report
+          path: reports/html-report/</div>
+      </div>
+<p class="sn-para">Key CI decisions:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">npm ci</code> instead of <code class="sn-ic">npm install</code> — installs exactly what is in <code class="sn-ic">package-lock.json</code>, never upgrades packages</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">npx playwright install chromium --with-deps</code> — installs Chromium and system dependencies (needed on Ubuntu)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">cross-env HEADLESS=true</code> — runs headless without display</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">if: always()</code> on the report steps — generates and uploads reports even when tests fail (that is when you need the report most)</span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">BASE_URL</code> from secrets — never hard-code staging URLs in the repo</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q605.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.8</span>
+      <h2 class="sn-q-text">What is the difference between the two HTML reports in this project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The project produces two separate HTML reports depending on which profile runs:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Report</th><th class="sn-th-blue">Profile</th><th class="sn-th-green">File</th><th class="sn-th-purple">Tool</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">cucumber-report.html</code></td><td>default</td><td><code class="sn-ic">reports/cucumber-report.html</code></td><td>Built-in Cucumber HTML formatter</td></tr>
+          <tr><td><code class="sn-ic">cucumber-report-pom.html</code></td><td>pom</td><td><code class="sn-ic">reports/cucumber-report-pom.html</code></td><td>Built-in Cucumber HTML formatter</td></tr>
+          <tr><td>HTML report</td><td>both</td><td><code class="sn-ic">reports/html-report/index.html</code></td><td>multiple-cucumber-html-reporter</td></tr>
+          <tr><td>Allure report</td><td>both</td><td><code class="sn-ic">allure-report/index.html</code></td><td>allure-commandline</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">They serve different audiences:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-yellow">Built-in Cucumber HTML</strong> — quick report, self-contained single file, easy to email</span></li>
+<li><span class="icon">💡</span><span><strong class="k-yellow">multiple-cucumber-html-reporter</strong> — richer layout with metadata (browser, device, platform), customData (project, release, cycle), and step-level timing</span></li>
+<li><span class="icon" style="color:var(--sn-blue)">💡</span><span><strong class="k-yellow">Allure</strong> — best for development team debugging — shows trends, history, attachments, retry analysis, and links to source code</span></li>
+</ul>
+<p class="sn-para">In practice, the business team gets the <code class="sn-ic">multiple-cucumber-html-reporter</code> output. The dev team uses Allure for failure analysis.</p>
+    </div>
+  </div>
+
+  <!-- Q605.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.9</span>
+      <h2 class="sn-q-text">What does <code class="sn-ic">publishQuiet: true</code> do in cucumber.js?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without it, every Cucumber run prints a message asking you to publish your results to the Cucumber Reports cloud service (<code class="sn-ic">https://reports.cucumber.io</code>). The message looks like:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">─────────────────────────────────────────────────────────────────────
+│ Share your Cucumber Report at https://reports.cucumber.io          │
+│ Run the command with CUCUMBER_PUBLISH_TOKEN environment variable   │
+│ or use publishQuiet: true to stop seeing this message             │
+─────────────────────────────────────────────────────────────────────</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">publishQuiet: true</code> silences this message. You are not publishing to the cloud; you are just telling Cucumber to stop asking.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    publishQuiet: <span class="tc-kw">true</span>,  <span class="tc-cm">// suppress the Cucumber Cloud publish message</span>
+    <span class="tc-cm">// ...</span>
+  },
+};</div>
+      </div>
+<p class="sn-para">This is not about parallel execution or performance — it is purely about suppressing a terminal noise message.</p>
+    </div>
+  </div>
+
+  <!-- Q605.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.10</span>
+      <h2 class="sn-q-text">How do you configure parallel execution in CucumberJS?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Set <code class="sn-ic">parallel</code> to the number of scenarios to run simultaneously:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    parallel: <span class="tc-num">4</span>,  <span class="tc-cm">// run 4 scenarios at the same time</span>
+    <span class="tc-cm">// ...</span>
+  },
+};</div>
+      </div>
+<p class="sn-para">With <code class="sn-ic">parallel: 1</code> (the OrangeHRM project default), scenarios run one at a time — sequentially. This is safe but slow.</p>
+<p class="sn-para">With <code class="sn-ic">parallel: 4</code>, Cucumber runs four scenarios simultaneously. Each scenario gets its own World instance (its own browser, context, and page). This is why per-scenario browser isolation matters — without it, parallel scenarios would interfere with each other.</p>
+<p class="sn-para"><strong class="k-green">Constraints with parallelism in Cucumber BDD:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">BeforeAll</code> and <code class="sn-ic">AfterAll</code> run once for the entire suite — they do not run per worker</span></li>
+<li><span class="icon">💡</span><span>Each parallel worker runs its own World and hooks</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">parallel</code> applies at the scenario level — one scenario runs on one worker from start to finish</span></li>
+<li><span class="icon">🎯</span><span>Parallel Cucumber BDD is less sophisticated than Playwright Test's parallel execution (no sharding, no blob reporters, no built-in parallelism reporting)</span></li>
+</ul>
+<p class="sn-para">For the OrangeHRM project, <code class="sn-ic">parallel: 1</code> was chosen deliberately because the scenarios create real data (employees and users) and the application is shared — running in parallel could cause scenarios to find each other's test data in search results.</p>
+    </div>
+  </div>
+
+  <!-- Q605.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.11</span>
+      <h2 class="sn-q-text">What is wrong with this cucumber.js configuration?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ COMMON MISTAKE — world.ts loaded after step-definitions</span>
+<span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    requireModule: [<span class="tc-str">'ts-node/register'</span>],
+    <span class="tc-kw">require</span>: [
+      <span class="tc-str">'step-definitions S1 *.ts'</span>,  <span class="tc-cm">// ← loaded before world.ts</span>
+      <span class="tc-str">'support/hooks.ts'</span>,
+      <span class="tc-str">'support/world.ts'</span>,          <span class="tc-cm">// ← setWorldConstructor called here, too late</span>
+    ],
+    <span class="tc-cm">// ...</span>
+  },
+};</div>
+      </div>
+<p class="sn-para">Step definitions run with <code class="sn-ic">this</code> typed as the default World because <code class="sn-ic">setWorldConstructor</code> has not been called yet when Cucumber processes the require list. The result is that <code class="sn-ic">this.page</code>, <code class="sn-ic">this.baseUrl</code>, and all custom World properties are <code class="sn-ic">undefined</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ CORRECT APPROACH — world.ts first, then hooks, then step definitions</span>
+<span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    requireModule: [<span class="tc-str">'ts-node/register'</span>],
+    <span class="tc-kw">require</span>: [
+      <span class="tc-str">'support/world.ts'</span>,              <span class="tc-cm">// 1. Register custom World first</span>
+      <span class="tc-str">'support/hooks.ts'</span>,              <span class="tc-cm">// 2. Hooks use the World</span>
+      <span class="tc-str">'step-definitions S3 *.ts'</span>,      <span class="tc-cm">// 3. Step defs use both World and hooks</span>
+    ],
+    <span class="tc-cm">// ...</span>
+  },
+};</div>
+      </div>
+<p class="sn-para">The load order in <code class="sn-ic">require</code> matters. <code class="sn-ic">world.ts</code> must be first so that by the time Cucumber registers step definitions and hooks, the custom World constructor is already set.</p>
+    </div>
+  </div>
+
+  <!-- Q605.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.12</span>
+      <h2 class="sn-q-text">How does the reporting setup differ between Cucumber BDD and native Playwright Test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Cucumber BDD reporters</th><th class="sn-th-green">Playwright Test reporters</th></tr></thead>
+          <tbody>
+          <tr><td>Built-in HTML report</td><td>Yes (<code class="sn-ic">html:file.html</code>)</td><td>Yes (<code class="sn-ic">--reporter=html</code>)</td></tr>
+          <tr><td>JSON output</td><td>Yes (<code class="sn-ic">json:file.json</code>)</td><td>Yes (<code class="sn-ic">--reporter=json</code>)</td></tr>
+          <tr><td>JUnit XML</td><td>Via third-party</td><td>Built-in (<code class="sn-ic">--reporter=junit</code>)</td></tr>
+          <tr><td>Allure</td><td><code class="sn-ic">allure-cucumberjs</code> adapter</td><td><code class="sn-ic">allure-playwright</code> adapter</td></tr>
+          <tr><td>Allure auto-capture</td><td>Steps, scenarios, attachments</td><td>Tests, steps, screenshots, traces</td></tr>
+          <tr><td>Trace viewer</td><td>Manual setup in hooks</td><td>Built-in (<code class="sn-ic">trace: 'on-first-retry'</code>)</td></tr>
+          <tr><td>Multi-machine merge</td><td>Not built-in</td><td><code class="sn-ic">--reporter=blob</code>, then <code class="sn-ic">npx playwright merge-reports</code></td></tr>
+          <tr><td>Screenshot on failure</td><td>Manual — <code class="sn-ic">this.attach()</code> in After hook</td><td>Automatic — <code class="sn-ic">screenshot: 'only-on-failure'</code> in config</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The main difference is that Playwright Test has tighter integration between the runner and the reporting system — screenshots, traces, and attachments are configured once in <code class="sn-ic">playwright.config.ts</code> and apply everywhere. In Cucumber, you wire all of this manually in hooks using <code class="sn-ic">this.attach()</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q605.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.13</span>
+      <h2 class="sn-q-text">Write the complete package.json scripts section for a BDD framework</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;scripts&quot;: {
+    // ─── Default profile ─────────────────────────────────────────
+    &quot;test&quot;:               &quot;cucumber-js --config cucumber.js&quot;,
+    &quot;test:login&quot;:         &quot;cucumber-js --config cucumber.js --tags \&quot;@login\&quot;&quot;,
+    &quot;test:employee&quot;:      &quot;cucumber-js --config cucumber.js --tags \&quot;@employee\&quot;&quot;,
+    &quot;test:user&quot;:          &quot;cucumber-js --config cucumber.js --tags \&quot;@user-management\&quot;&quot;,
+    &quot;test:headless&quot;:      &quot;cross-env HEADLESS=true cucumber-js --config cucumber.js&quot;,
+
+    // ─── POM profile ─────────────────────────────────────────────
+    &quot;test:pom&quot;:           &quot;cucumber-js --profile pom --config cucumber.js&quot;,
+    &quot;test:pom:login&quot;:     &quot;cucumber-js --profile pom --config cucumber.js --tags \&quot;@login\&quot;&quot;,
+    &quot;test:pom:employee&quot;:  &quot;cucumber-js --profile pom --config cucumber.js --tags \&quot;@employee\&quot;&quot;,
+    &quot;test:pom:user&quot;:      &quot;cucumber-js --profile pom --config cucumber.js --tags \&quot;@user-management\&quot;&quot;,
+
+    // ─── Reports ─────────────────────────────────────────────────
+    &quot;report&quot;:             &quot;node reports/generate-report.js&quot;,
+    &quot;test:report&quot;:        &quot;npm test &amp;&amp; npm run report&quot;,
+    &quot;test:pom:report&quot;:    &quot;npm run test:pom &amp;&amp; npm run report&quot;,
+
+    // ─── Allure ──────────────────────────────────────────────────
+    &quot;allure:generate&quot;:    &quot;allure generate allure-results --clean -o allure-report&quot;,
+    &quot;allure:open&quot;:        &quot;allure open allure-report&quot;,
+    &quot;allure:serve&quot;:       &quot;allure serve allure-results&quot;,
+    &quot;test:allure&quot;:        &quot;npm test &amp;&amp; npm run allure:generate &amp;&amp; npm run allure:open&quot;,
+    &quot;test:pom:allure&quot;:    &quot;npm run test:pom &amp;&amp; npm run allure:generate &amp;&amp; npm run allure:open&quot;,
+    &quot;test:login:allure&quot;:  &quot;npm run test:pom:login &amp;&amp; npm run allure:generate &amp;&amp; npm run allure:open&quot;
+  }
+}</div>
+      </div>
+<p class="sn-para">The pattern <code class="sn-ic">npm run [profile]:[tag]:[reporter]</code> makes the scripts composable and easy to discover. CI pipelines call specific scripts rather than building long Cucumber commands inline.</p>
+    </div>
+  </div>
+
+  <!-- Q605.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.14</span>
+      <h2 class="sn-q-text">How do you add a Playwright trace to CI for failed BDD scenarios?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In the <code class="sn-ic">After</code> hook, stop the trace and save it to a file when the scenario fails. In CI, upload the traces folder as an artifact.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// support/pom-hooks.ts</span>
+<span class="tc-kw">import</span> * as fs <span class="tc-kw">from</span> <span class="tc-str">'fs'</span>;
+<span class="tc-kw">import</span> * as path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">start</span>({ screenshots: <span class="tc-kw">true</span>, snapshots: <span class="tc-kw">true</span> });
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">const</span> safeName = scenario.pickle.name.<span class="tc-fn">replace</span>(/[^\w-]/g, <span class="tc-str">'-'</span>);
+    <span class="tc-kw">const</span> tracePath = path.<span class="tc-fn">join</span>(<span class="tc-str">'reports'</span>, <span class="tc-str">'traces'</span>, <span class="tc-str">`${safeName}.zip`</span>);
+    fs.<span class="tc-fn">mkdirSync</span>(path.<span class="tc-fn">dirname</span>(tracePath), { recursive: <span class="tc-kw">true</span> });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">stop</span>({ path: tracePath });
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+  } <span class="tc-kw">else</span> {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">stop</span>();  <span class="tc-cm">// discard trace on pass</span>
+  }
+
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();
+});</div>
+      </div>
+<p class="sn-para">GitHub Actions workflow — upload traces:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Upload Playwright traces
+  <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()    <span class="tc-cm"># only upload when tests fail</span>
+  uses: actions/upload-artifact@v4
+  with:
+    name: playwright-traces
+    path: reports/traces/</div>
+      </div>
+<p class="sn-para">Download the zip artifact from GitHub Actions and open it:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-trace &quot;path/to/Failed-Scenario-Name.zip&quot;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q605.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q605.15</span>
+      <h2 class="sn-q-text">What was a real reporting or CI challenge in your BDD project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM BDD project, the Allure report on GitHub Actions was generated correctly, but the screenshots from <code class="sn-ic">this.attach()</code> were not appearing in the report. The Allure HTML showed the scenario as failed and showed the steps — but no screenshot.</p>
+      </div>
+<p class="sn-para">After investigating, we found that <code class="sn-ic">allure-cucumberjs</code> reads the Cucumber JSON output to build its results, and the screenshots were binary data embedded in the JSON. On CI, the <code class="sn-ic">allure-results/</code> directory was being generated correctly, but we were running <code class="sn-ic">allure generate</code> in a separate job after uploading the results as an artifact and downloading them. The re-download changed the encoding of the binary attachment data.</p>
+<p class="sn-para">The fix was to run <code class="sn-ic">allure generate</code> in the same job, immediately after the test step, before any upload:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Run tests
+  run: cross-env HEADLESS=<span class="tc-kw">true</span> npm run <span class="tc-kw">test</span>:pom
+
+- name: Generate Allure report
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+  run: npm run allure:generate    <span class="tc-cm"># run in same job, same filesystem</span>
+
+- name: Upload Allure HTML report
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+  uses: actions/upload-artifact@v4
+  with:
+    name: allure-report
+    path: allure-report/          <span class="tc-cm"># upload the generated HTML, not raw results</span></div>
+      </div>
+<p class="sn-para">Uploading the already-generated HTML (not the raw <code class="sn-ic">allure-results/</code>) meant no binary encoding issues — the HTML report is static files that survive artifact upload/download intact.</p>
+<p class="sn-para">The lesson: test your entire CI reporting pipeline end-to-end, not just locally. Artifact encoding and directory structure behave differently between local and CI environments.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Use three reporters together: <code class="sn-ic">progress-bar</code> for terminal, <code class="sn-ic">json</code> for input to HTML reporters, <code class="sn-ic">allure-cucumberjs/reporter</code> for Allure. They all run simultaneously via the <code class="sn-ic">format</code> array.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">multiple-cucumber-html-reporter</code> reads the JSON file and generates a rich HTML report — run it with <code class="sn-ic">node reports/generate-report.js</code> after tests finish.</span></li>
+            <li><span class="icon">⭐</span><span>Allure requires <code class="sn-ic">allure generate allure-results</code> after the test run. Run it in the same CI job, not in a separate job, to avoid binary attachment encoding issues.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">publishQuiet: true</code> silences the Cucumber Cloud publish prompt — it has nothing to do with performance.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">parallel: N</code> runs N scenarios simultaneously. Each gets its own World and browser. Use <code class="sn-ic">parallel: 1</code> when tests share application state (like creating real data).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">cross-env HEADLESS=true</code> is the standard way to run headless on CI — works on Windows, macOS, and Linux without shell syntax changes.</span></li>
+            <li><span class="icon">⭐</span><span>In CI: use <code class="sn-ic">npm ci</code> (not <code class="sn-ic">npm install</code>), run <code class="sn-ic">playwright install chromium --with-deps</code>, upload reports with <code class="sn-ic">if: always()</code> so you get reports even on failure.</span></li>
+            <li><span class="icon">⭐</span><span>In interviews: know the difference between what each report is for, explain the <code class="sn-ic">require</code> load order issue, and describe a real CI reporting problem you solved.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

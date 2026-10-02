@@ -1,0 +1,512 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 107 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Objects</span> <span class="w2">&amp;</span> <span class="w3">Prototypes</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers JavaScript objects — the data structure behind every page object, test config, and test data record. Interviewers test objects because shared mutable state is one of the most common causes of flaky tests. Questions move from object basics through spread/freeze to practical data patterns.</span>
+  </div>
+
+
+  <!-- Q107.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.1</span>
+      <h2 class="sn-q-text">What is an object in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An object is a collection of key-value pairs. Keys are strings. Values can be any type.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> user = {
+  name:  &quot;Alice&quot;,
+  role:  &quot;admin&quot;,
+  active: <span class="tc-kw">true</span>,
+};
+
+console.<span class="tc-fn">log</span>(user.name);    <span class="tc-cm">// &amp;quot;Alice&amp;quot;</span>
+console.<span class="tc-fn">log</span>(user[&quot;role&quot;]); <span class="tc-cm">// &amp;quot;admin&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.2</span>
+      <h2 class="sn-q-text">What is the prototype chain in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every object has a hidden link to another object called its prototype. When you access a property the object doesn't have, JavaScript looks up the chain until it finds it or reaches <code class="sn-ic">null</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> animal = { breathes: <span class="tc-kw">true</span> };
+<span class="tc-kw">const</span> dog    = Object.<span class="tc-fn">create</span>(animal);
+
+dog.name = &quot;Rex&quot;;
+console.<span class="tc-fn">log</span>(dog.name);     <span class="tc-cm">// &amp;quot;Rex&amp;quot;    — own property</span>
+console.<span class="tc-fn">log</span>(dog.breathes); <span class="tc-cm">// true     — found on prototype</span></div>
+      </div>
+<p class="sn-para">Classes use this mechanism under the hood. For everyday work you don't interact with prototypes directly — but understanding the chain helps when debugging inherited behaviour.</p>
+    </div>
+  </div>
+
+  <!-- Q107.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.3</span>
+      <h2 class="sn-q-text">When do you use objects in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Objects represent test data (users, orders, products), configuration, and API request/response bodies. Page object instances are also objects.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> testUser = { email: &quot;<span class="tc-kw">test</span>@example.com&quot;, role: &quot;admin&quot; };
+<span class="tc-kw">const</span> config   = { timeout: <span class="tc-num">30000</span>, retries: <span class="tc-num">2</span> };
+<span class="tc-kw">const</span> headers  = { &quot;Content-Type&quot;: &quot;application/json&quot; };</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.4</span>
+      <h2 class="sn-q-text">How do you use objects in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every test data shape is an object returned by a factory function. We use <code class="sn-ic">Object.freeze</code> on shared constants. We use spread to apply overrides without mutating the original.</p>
+      </div>
+<p class="sn-para">We never put shared mutable objects at module level — a test that modifies such an object corrupts the data for all subsequent tests.</p>
+    </div>
+  </div>
+
+  <!-- Q107.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.5</span>
+      <h2 class="sn-q-text">What are Object.assign, Object.freeze, and Object.keys?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal"><code class="sn-ic">Object.assign(target, source)</code></strong> — copies properties from source into target. Mutates target and returns it.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">Object.freeze(obj)</code></strong> — makes an object immutable. Any write attempt is silently ignored (or throws in strict mode).</p>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">Object.keys(obj)</code></strong> — returns an array of the object's own property names.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> a = { x: <span class="tc-num">1</span> };
+<span class="tc-kw">const</span> b = Object.<span class="tc-fn">assign</span>({}, a, { y: <span class="tc-num">2</span> }); <span class="tc-cm">// { x: 1, y: 2 }</span>
+
+<span class="tc-kw">const</span> ROLES = Object.<span class="tc-fn">freeze</span>({ ADMIN: &quot;admin&quot;, VIEWER: &quot;viewer&quot; });
+ROLES.ADMIN = &quot;superadmin&quot;; <span class="tc-cm">// silently ignored</span>
+
+Object.<span class="tc-fn">keys</span>({ a: <span class="tc-num">1</span>, b: <span class="tc-num">2</span> }); <span class="tc-cm">// [&amp;quot;a&amp;quot;, &amp;quot;b&amp;quot;]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.6</span>
+      <h2 class="sn-q-text">What is object destructuring?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Destructuring extracts properties into named variables in one statement.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> user = { name: &quot;Alice&quot;, role: &quot;admin&quot;, active: <span class="tc-kw">true</span> };
+
+<span class="tc-kw">const</span> { name, role } = user;
+console.<span class="tc-fn">log</span>(name); <span class="tc-cm">// &amp;quot;Alice&amp;quot;</span>
+console.<span class="tc-fn">log</span>(role); <span class="tc-cm">// &amp;quot;admin&amp;quot;</span>
+
+<span class="tc-cm">// Rename while destructuring</span>
+<span class="tc-kw">const</span> { name: userName } = user;
+console.<span class="tc-fn">log</span>(userName); <span class="tc-cm">// &amp;quot;Alice&amp;quot;</span>
+
+<span class="tc-cm">// Default value</span>
+<span class="tc-kw">const</span> { timeout = <span class="tc-num">5000</span> } = config;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.7</span>
+      <h2 class="sn-q-text">What is the spread operator for objects?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">...</code> copies all own enumerable properties of an object into a new object. It is a shallow copy — nested objects are still shared by reference.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> defaults = { timeout: <span class="tc-num">5000</span>, retries: <span class="tc-num">0</span> };
+<span class="tc-kw">const</span> custom   = { ...defaults, retries: <span class="tc-num">3</span> }; <span class="tc-cm">// { timeout: 5000, retries: 3 }</span>
+
+console.<span class="tc-fn">log</span>(defaults.retries); <span class="tc-cm">// 0 — unchanged</span></div>
+      </div>
+<p class="sn-para">Later properties override earlier ones when keys clash. This is the standard pattern for applying overrides in factory functions.</p>
+    </div>
+  </div>
+
+  <!-- Q107.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.8</span>
+      <h2 class="sn-q-text">What is the this keyword in JavaScript and what does it refer to?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">this</code> refers to the object that is executing the current function. What it points to depends on how the function is called.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> counter = {
+  count: <span class="tc-num">0</span>,
+  <span class="tc-fn">increment</span>() {
+    <span class="tc-kw">this</span>.count++; <span class="tc-cm">// this = counter</span>
+  },
+};
+
+counter.<span class="tc-fn">increment</span>();
+console.<span class="tc-fn">log</span>(counter.count); <span class="tc-cm">// 1</span>
+
+<span class="tc-cm">// Detach the method — this is lost</span>
+<span class="tc-kw">const</span> fn = counter.increment;
+<span class="tc-fn">fn</span>(); <span class="tc-cm">// TypeError: Cannot read properties of undefined</span></div>
+      </div>
+<p class="sn-para">Arrow functions do not have their own <code class="sn-ic">this</code> — they inherit it from the surrounding scope.</p>
+    </div>
+  </div>
+
+  <!-- Q107.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.9</span>
+      <h2 class="sn-q-text">What is the difference between Object.assign and the spread operator?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both copy properties. The key difference:</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">Object.assign(target, source)</code> — <strong class="k-blue">mutates</strong> the target and returns it.</p>
+<p class="sn-para">Spread <code class="sn-ic">{ ...source }</code> — always creates a <strong class="k-blue">new object</strong>, never mutates.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> a = { x: <span class="tc-num">1</span> };
+
+<span class="tc-cm">// Object.assign — a is mutated</span>
+<span class="tc-kw">const</span> b = Object.<span class="tc-fn">assign</span>(a, { y: <span class="tc-num">2</span> });
+console.<span class="tc-fn">log</span>(a); <span class="tc-cm">// { x: 1, y: 2 } — a changed</span>
+
+<span class="tc-cm">// Spread — a is untouched</span>
+<span class="tc-kw">const</span> c = { ...a, y: <span class="tc-num">2</span> };
+console.<span class="tc-fn">log</span>(a); <span class="tc-cm">// { x: 1 } — unchanged</span></div>
+      </div>
+<p class="sn-para">Use spread in modern code. Use <code class="sn-ic">Object.assign</code> only when you explicitly need to mutate an existing object.</p>
+    </div>
+  </div>
+
+  <!-- Q107.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.10</span>
+      <h2 class="sn-q-text">What is the difference between dot notation and bracket notation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Dot notation — <code class="sn-ic">obj.key</code> — works for valid identifier names known at write time.</p>
+      </div>
+<p class="sn-para">Bracket notation — <code class="sn-ic">obj[&quot;key&quot;]</code> — works for any string, including names with special characters or names stored in a variable.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> cfg = { timeout: <span class="tc-num">5000</span>, &quot;base-url&quot;: &quot;https:<span class="tc-cm">//example.com&amp;quot; };</span>
+
+cfg.timeout;        <span class="tc-cm">// 5000 — dot notation</span>
+cfg[&quot;base-url&quot;];    <span class="tc-cm">// &amp;quot;https://example.com&amp;quot; — must use brackets (hyphen)</span>
+
+<span class="tc-kw">const</span> key = &quot;timeout&quot;;
+cfg[key];           <span class="tc-cm">// 5000 — dynamic key via variable</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.11</span>
+      <h2 class="sn-q-text">What is wrong with mutating a shared object in tests — show the bug?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Shared object — mutation persists</span>
+<span class="tc-kw">const</span> config = { retries: <span class="tc-num">0</span>, timeout: <span class="tc-num">5000</span> };
+
+<span class="tc-kw">test</span>(&quot;slow <span class="tc-kw">test</span>&quot;, () =&gt; {
+  config.timeout = <span class="tc-num">60000</span>; <span class="tc-cm">// mutates the shared object</span>
+});
+
+<span class="tc-kw">test</span>(&quot;normal <span class="tc-kw">test</span>&quot;, () =&gt; {
+  console.<span class="tc-fn">log</span>(config.timeout); <span class="tc-cm">// 60000 — wrong! previous test changed it</span>
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Fix — factory function returns a fresh object each time</span>
+<span class="tc-kw">function</span> <span class="tc-fn">getConfig</span>(overrides = {}) {
+  <span class="tc-kw">return</span> { retries: <span class="tc-num">0</span>, timeout: <span class="tc-num">5000</span>, ...overrides };
+}
+
+<span class="tc-kw">test</span>(&quot;slow <span class="tc-kw">test</span>&quot;, () =&gt; {
+  <span class="tc-kw">const</span> cfg = <span class="tc-fn">getConfig</span>({ timeout: <span class="tc-num">60000</span> }); <span class="tc-cm">// own copy</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.12</span>
+      <h2 class="sn-q-text">When does this cause problems in test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a class method is detached from its object and called as a plain function, <code class="sn-ic">this</code> is lost.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> Timer {
+  <span class="tc-fn">constructor</span>() { <span class="tc-kw">this</span>.elapsed = <span class="tc-num">0</span>; }
+  <span class="tc-fn">tick</span>()        { <span class="tc-kw">this</span>.elapsed++; }
+}
+
+<span class="tc-kw">const</span> t = <span class="tc-kw">new</span> Timer();
+
+<span class="tc-cm">// ❌ Detached — this is undefined inside tick</span>
+<span class="tc-fn">setTimeout</span>(t.tick, <span class="tc-num">1000</span>); <span class="tc-cm">// TypeError</span>
+
+<span class="tc-cm">// ✅ Wrap in arrow function — preserves this</span>
+<span class="tc-fn">setTimeout</span>(() =&gt; t.<span class="tc-fn">tick</span>(), <span class="tc-num">1000</span>);
+
+<span class="tc-cm">// ✅ Or bind</span>
+<span class="tc-fn">setTimeout</span>(t.tick.<span class="tc-fn">bind</span>(t), <span class="tc-num">1000</span>);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.13</span>
+      <h2 class="sn-q-text">Write a config builder using spread and Object.freeze</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> DEFAULTS = Object.<span class="tc-fn">freeze</span>({
+  host:    &quot;localhost&quot;,
+  port:    <span class="tc-num">3000</span>,
+  debug:   <span class="tc-kw">false</span>,
+});
+
+<span class="tc-kw">function</span> <span class="tc-fn">buildConfig</span>(overrides = {}) {
+  <span class="tc-kw">return</span> { ...DEFAULTS, ...overrides };
+}
+
+<span class="tc-kw">const</span> dev  = <span class="tc-fn">buildConfig</span>({ debug: <span class="tc-kw">true</span> });
+<span class="tc-kw">const</span> prod = <span class="tc-fn">buildConfig</span>({ host: &quot;api.example.com&quot;, port: <span class="tc-num">443</span> });
+
+console.<span class="tc-fn">log</span>(dev.host);  <span class="tc-cm">// &amp;quot;localhost&amp;quot;</span>
+console.<span class="tc-fn">log</span>(prod.port); <span class="tc-cm">// 443</span>
+<span class="tc-cm">// DEFAULTS is frozen — cannot be accidentally changed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.14</span>
+      <h2 class="sn-q-text">Write a test data object with nested structure and destructuring</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">createOrder</span>(overrides = {}) {
+  <span class="tc-kw">return</span> {
+    id:       <span class="tc-str">`ORD-${Date.now()}`</span>,
+    status:   &quot;pending&quot;,
+    customer: { name: &quot;Test User&quot;, city: &quot;London&quot; },
+    total:    <span class="tc-num">49.99</span>,
+    ...overrides,
+  };
+}
+
+<span class="tc-kw">const</span> order = <span class="tc-fn">createOrder</span>({ total: <span class="tc-num">99.99</span> });
+
+<span class="tc-cm">// Destructure what you need</span>
+<span class="tc-kw">const</span> { id, total, customer: { name, city } } = order;
+console.<span class="tc-fn">log</span>(id, total, name, city);
+<span class="tc-cm">// &amp;quot;ORD-1234&amp;quot; 99.99 &amp;quot;Test User&amp;quot; &amp;quot;London&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q107.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q107.15</span>
+      <h2 class="sn-q-text">Describe a bug caused by shared object state between tests</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project a shared <code class="sn-ic">config</code> object was declared at module level. One test modified <code class="sn-ic">config.headers</code> by pushing a new header. Every test that ran after it picked up that extra header — causing unexpected 401 errors because a test-specific auth token was being sent to the wrong API.</p>
+      </div>
+<p class="sn-para">The fix: factory function. <code class="sn-ic">getConfig()</code> returns a fresh object with a new <code class="sn-ic">headers</code> array each time. Mutations in one test no longer affect others. This one change eliminated a class of intermittent failures.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Objects are key-value pairs. Use dot notation for known keys, bracket notation for dynamic or special-character keys.</span></li>
+            <li><span class="icon">⭐</span><span>Spread <code class="sn-ic">{...obj}</code> creates a new object — never mutates. <code class="sn-ic">Object.assign</code> mutates the target.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Object.freeze</code> prevents all mutations — use for shared constants.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Never put mutable shared objects at module level. Use factory functions.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">this</code> in a regular method refers to the calling object. Arrow functions inherit <code class="sn-ic">this</code> from their outer scope.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

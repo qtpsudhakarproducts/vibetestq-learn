@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Practice Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive JavaScript multiple-choice challenges. Test hoisting, closures, async/await, array methods and ES6+ — with instant feedback and explanations.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-dark: #b45309;
+            --primary-light: #fffbeb;
+            --accent: #f97316;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        /* ── Header ── */
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1.5rem; gap: 1rem;
+        }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; background: #fffbeb; color: #b45309;
+            text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .back-btn:hover { background: #f59e0b; color: white; }
+        .logo {
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem;
+            color: #1e40af; text-decoration: none;
+        }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill {
+            background: #fffbeb; color: #b45309; padding: 4px 14px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+            border: 1px solid #fcd34d; transition: all 0.3s;
+        }
+        .score-pill.bump { background: #fef3c7; transform: scale(1.1); }
+
+        /* ── Layout ── */
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+
+        /* ── Sidebar ── */
+        aside {
+            width: var(--sidebar-width); background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - var(--header-height));
+            position: fixed; top: var(--header-height); left: 0;
+            overflow-y: auto; padding: 1.25rem 0.9rem;
+        }
+        .sidebar-title {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+            color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem;
+            font-weight: 700;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.6rem; border-radius: 8px;
+            text-decoration: none; color: var(--text); font-size: 0.82rem;
+            transition: all 0.2s; margin-bottom: 0.15rem;
+        }
+        .nav-item:hover { background: #fffbeb; color: #b45309; }
+        .nav-dot {
+            width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+            background: var(--border); margin-left: auto; transition: background 0.3s;
+        }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #f59e0b, #f97316); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+
+        /* ── Main ── */
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: #b45309;
+            display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;
+        }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* ── Challenge Card ── */
+        .challenge-card {
+            background: var(--card-bg); border-radius: 16px;
+            border: 2px solid var(--border); margin-bottom: 2rem;
+            overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05);
+            scroll-margin-top: calc(var(--header-height) + 1rem);
+            transition: border-color 0.4s;
+        }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header {
+            padding: 0.9rem 1.4rem;
+            background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;
+        }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: #b45309; font-size: 0.9rem; }
+        .badge {
+            padding: 2px 9px; border-radius: 20px; font-size: 0.68rem;
+            font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .badge.beginner     { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced     { background: #fce7f3; color: #831843; }
+        .topic-badge {
+            padding: 2px 9px; border-radius: 20px; font-size: 0.68rem;
+            font-weight: 700; background: #f0f9ff; color: #0369a1;
+        }
+        .solved-badge {
+            margin-left: auto; display: none; align-items: center; gap: 5px;
+            color: var(--success); font-size: 0.82rem; font-weight: 600;
+        }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code {
+            background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em; color: #7c3aed;
+        }
+
+        /* ── Code block ── */
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+
+        /* ── MCQ Options ── */
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn {
+            padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px;
+            background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif;
+            text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem;
+            line-height: 1.5;
+        }
+        .option-btn:hover:not(:disabled) { border-color: #f59e0b; background: #fffbeb; }
+        .option-letter {
+            width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9;
+            color: #475569; font-size: 0.72rem; font-weight: 700; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+        }
+        .option-btn:hover:not(:disabled) .option-letter { background: #f59e0b; color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+
+        /* ── Explanation ── */
+        .explanation {
+            display: none; padding: 1rem 1.1rem; border-radius: 10px;
+            background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d;
+            font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem;
+        }
+        .explanation code {
+            background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em;
+        }
+        .explanation strong { color: #065f46; }
+
+        /* ── Footer ── */
+        .ch-footer {
+            padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap;
+        }
+        .hint-btn {
+            padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; border: 1px solid #fcd34d; background: #fef3c7; color: #92400e;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .hint-btn:hover { background: #fde68a; }
+        .hint-box {
+            display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem;
+            width: 100%; background: #fffbeb; border: 1px solid #fcd34d; color: #78350f;
+            line-height: 1.65; margin-top: 0.25rem;
+        }
+        .hint-box code {
+            background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 860px) {
+            aside { display: none; }
+            main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+
+<!-- ── Sidebar ── -->
+<aside>
+    <div class="sidebar-title">JavaScript Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Post-Increment</span>      <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. typeof null</span>          <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. var Hoisting</span>         <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. let TDZ</span>              <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. Destructuring</span>        <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. Closure + Loop</span>       <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. Promise Order</span>        <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Array Methods</span>        <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. Object Spread</span>        <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. Optional Chaining</span>   <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. Async/Await Error</span>   <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. Short-Circuit</span>       <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<!-- ── Main ── -->
+<main>
+    <div class="page-header">
+        <h1><i class="fab fa-js-square"></i> JavaScript Challenges</h1>
+        <p>Read the code snippet, pick the correct answer. Instant feedback — green = correct, red = wrong. Hint available before you answer.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 1</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Variables</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the output?</div>
+            <div class="ch-desc">The post-increment operator <code>x++</code> is used here. What does the console print?</div>
+            <div class="code-block"><pre><code class="language-javascript">let x = 5;
+const y = x++;
+console.log(y, x);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> 6 &nbsp;6</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> 5 &nbsp;6</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> 5 &nbsp;5</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> 6 &nbsp;5</button>
+            </div>
+            <div class="explanation" id="c1-exp">
+                <strong>Answer: B — 5 6</strong><br>
+                <code>x++</code> is <em>post-increment</em>: it returns the current value of <code>x</code> (5) and <em>then</em> increments it. So <code>y</code> captures 5, and after the assignment <code>x</code> becomes 6. Use <code>++x</code> (pre-increment) if you want the incremented value returned.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c1-hint">There are two forms: <code>x++</code> (post) returns current value then increments, <code>++x</code> (pre) increments first then returns.</div>
+        </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 2</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Types</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does typeof return?</div>
+            <div class="ch-desc">A classic JavaScript gotcha. What is the result of this expression?</div>
+            <div class="code-block"><pre><code class="language-javascript">console.log(typeof null);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> "null"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> "object"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> "undefined"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> null</button>
+            </div>
+            <div class="explanation" id="c2-exp">
+                <strong>Answer: B — "object"</strong><br>
+                This is a well-known bug in JavaScript that has existed since the language's early days. <code>typeof null</code> returns <code>"object"</code>, not <code>"null"</code>. It was never fixed to preserve backwards compatibility. To reliably check for null, use strict equality: <code>value === null</code>.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c2-hint">This is one of JavaScript's most famous quirks. <code>typeof</code> does not always return what you'd expect for special values.</div>
+        </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 3</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Hoisting</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the output?</div>
+            <div class="ch-desc">A <code>var</code> declaration is accessed before it is assigned. What happens?</div>
+            <div class="code-block"><pre><code class="language-javascript">console.log(score);
+var score = 100;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> 100</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> undefined</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> ReferenceError</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> null</button>
+            </div>
+            <div class="explanation" id="c3-exp">
+                <strong>Answer: B — undefined</strong><br>
+                <code>var</code> declarations are <em>hoisted</em> to the top of their function scope. The declaration (<code>var score</code>) is moved up, but the assignment (<code>= 100</code>) stays in place. So the engine sees <code>var score</code> (initialised to <code>undefined</code>) at the top, then <code>console.log(score)</code> prints <code>undefined</code>, then the assignment runs.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c3-hint"><code>var</code> hoists its <em>declaration</em> to the top of the scope but not the <em>assignment</em>. What value does a declared-but-not-assigned variable hold?</div>
+        </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 4</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Hoisting</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What happens with let before declaration?</div>
+            <div class="ch-desc">Unlike <code>var</code>, <code>let</code> and <code>const</code> have a Temporal Dead Zone. What is the result here?</div>
+            <div class="code-block"><pre><code class="language-javascript">console.log(count);
+let count = 10;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> 10</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">B</span> undefined</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">C</span> ReferenceError</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> SyntaxError</button>
+            </div>
+            <div class="explanation" id="c4-exp">
+                <strong>Answer: C — ReferenceError</strong><br>
+                <code>let</code> and <code>const</code> are technically hoisted, but they are <strong>not initialised</strong>. Between the start of the block and the declaration line is the <em>Temporal Dead Zone (TDZ)</em>. Any access inside the TDZ throws a <code>ReferenceError: Cannot access 'count' before initialization</code>. This is intentional — it prevents the hard-to-debug behaviour that <code>var</code> silently creates.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c4-hint"><code>let</code>/<code>const</code> have a <em>Temporal Dead Zone</em> — the region from the start of the block to the declaration. Access inside TDZ doesn't return <code>undefined</code>.</div>
+        </div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 5</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Destructuring</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What are the values of a and b?</div>
+            <div class="ch-desc">Array destructuring allows you to skip elements. What does this print?</div>
+            <div class="code-block"><pre><code class="language-javascript">const [a, , b] = [10, 20, 30];
+console.log(a, b);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">A</span> 10 &nbsp;30</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">B</span> 10 &nbsp;20</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> 20 &nbsp;30</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> undefined &nbsp;30</button>
+            </div>
+            <div class="explanation" id="c5-exp">
+                <strong>Answer: A — 10 30</strong><br>
+                The double comma <code>[a, , b]</code> is a <em>hole</em> — it skips the second element (20). So <code>a</code> binds to the 1st element (10) and <code>b</code> binds to the 3rd element (30). This technique is handy when a function returns an array but you only care about certain positions.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c5-hint">In array destructuring, consecutive commas with nothing between them skip an element. Count the commas carefully.</div>
+        </div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 6</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Closures</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Classic closure + var loop. What is logged?</div>
+            <div class="ch-desc">A very common interview question. The <code>setTimeout</code> callbacks close over the loop variable.</div>
+            <div class="code-block"><pre><code class="language-javascript">for (var i = 0; i < 3; i++) {
+  setTimeout(() => console.log(i), 0);
+}</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> 0 &nbsp;1 &nbsp;2</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">B</span> 0 &nbsp;0 &nbsp;0</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> 1 &nbsp;2 &nbsp;3</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">D</span> 3 &nbsp;3 &nbsp;3</button>
+            </div>
+            <div class="explanation" id="c6-exp">
+                <strong>Answer: D — 3 3 3</strong><br>
+                <code>var</code> is function-scoped, so all three callbacks share <em>the same</em> <code>i</code>. By the time the callbacks run (after the loop finishes), <code>i</code> is 3. The fix: replace <code>var</code> with <code>let</code> (block-scoped — creates a new <code>i</code> per iteration), or wrap in an IIFE that captures the current value.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c6-hint"><code>var</code> is <em>not</em> block-scoped. All three arrow functions capture a reference to the same variable. What value does that variable hold after the loop ends?</div>
+        </div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 7</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Async / Promises</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the execution order?</div>
+            <div class="ch-desc">Promises use the microtask queue; <code>setTimeout</code> uses the macrotask queue. What is logged and in what order?</div>
+            <div class="code-block"><pre><code class="language-javascript">console.log('start');
+setTimeout(() => console.log('timeout'), 0);
+Promise.resolve().then(() => console.log('promise'));
+console.log('end');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> start → timeout → promise → end</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">B</span> start → promise → timeout → end</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">C</span> start → end → promise → timeout</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> start → end → timeout → promise</button>
+            </div>
+            <div class="explanation" id="c7-exp">
+                <strong>Answer: C — start → end → promise → timeout</strong><br>
+                The event loop processes tasks in this order: 1) all synchronous code runs first (<code>start</code>, <code>end</code>), 2) the <em>microtask queue</em> is drained (<code>promise</code> — resolved <code>.then</code> callbacks), 3) then one <em>macrotask</em> is picked (<code>timeout</code>). Because Promise callbacks go to the microtask queue, they always run before any setTimeout, regardless of delay.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c7-hint">Microtasks (Promise.then) are processed <em>before</em> macrotasks (setTimeout). Synchronous code runs before either queue is processed.</div>
+        </div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 8</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Array Methods</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does this chain return?</div>
+            <div class="ch-desc">Chaining <code>filter</code> and <code>map</code> is a core pattern. What is the final array?</div>
+            <div class="code-block"><pre><code class="language-javascript">const result = [1, 2, 3, 4, 5]
+  .filter(n => n % 2 === 0)
+  .map(n => n * 10);
+console.log(result);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> [10, 20, 30, 40, 50]</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> [20, 40]</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> [2, 4]</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> [10, 30, 50]</button>
+            </div>
+            <div class="explanation" id="c8-exp">
+                <strong>Answer: B — [20, 40]</strong><br>
+                Step 1 — <code>.filter(n =&gt; n % 2 === 0)</code>: keeps only even numbers → <code>[2, 4]</code>.<br>
+                Step 2 — <code>.map(n =&gt; n * 10)</code>: multiplies each by 10 → <code>[20, 40]</code>.<br>
+                Each array method returns a new array and does not mutate the original.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c8-hint">Apply each method one at a time. <code>filter</code> runs first — which numbers pass the <code>% 2 === 0</code> test? Then <code>map</code> transforms those survivors.</div>
+        </div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 9</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Objects / Spread</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is b.x?</div>
+            <div class="ch-desc">Object spread creates a shallow copy. Later properties override earlier ones. What does <code>b.x</code> equal?</div>
+            <div class="code-block"><pre><code class="language-javascript">const a = { x: 1, y: 2 };
+const b = { ...a, x: 99 };
+console.log(b.x);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> 1</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">B</span> 2</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">C</span> 99</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> undefined</button>
+            </div>
+            <div class="explanation" id="c9-exp">
+                <strong>Answer: C — 99</strong><br>
+                <code>{ ...a, x: 99 }</code> first spreads all properties from <code>a</code> (copies <code>x:1, y:2</code>), then the explicit <code>x: 99</code> overwrites the spread value. Object literal properties are processed left to right, so later entries win. This is a common pattern for creating updated copies of objects without mutation.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c9-hint">In an object literal, if the same key appears twice, which one wins — the first or the last?</div>
+        </div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 10</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Optional Chaining</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is logged?</div>
+            <div class="ch-desc">Optional chaining <code>?.</code> and nullish coalescing <code>??</code> — what does this produce?</div>
+            <div class="code-block"><pre><code class="language-javascript">const user = null;
+const name = user?.profile?.name ?? 'Guest';
+console.log(name);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> null</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> 'Guest'</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> undefined</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> TypeError</button>
+            </div>
+            <div class="explanation" id="c10-exp">
+                <strong>Answer: B — 'Guest'</strong><br>
+                <code>user?.profile</code> short-circuits to <code>undefined</code> because <code>user</code> is <code>null</code> (no TypeError thrown). <code>undefined?.name</code> also returns <code>undefined</code>. Then <code>undefined ?? 'Guest'</code> — the <code>??</code> operator returns the right side when the left is <code>null</code> or <code>undefined</code>, so the result is <code>'Guest'</code>.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c10-hint"><code>?.</code> short-circuits to <code>undefined</code> instead of throwing. Then <code>??</code> provides a fallback only when the left side is <code>null</code> or <code>undefined</code> (not for falsy values like <code>0</code> or <code>""</code>).</div>
+        </div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 11</span>
+            <span class="badge advanced">Advanced</span>
+            <span class="topic-badge">Async / Await</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is logged when the promise rejects?</div>
+            <div class="ch-desc">An async function uses <code>try/catch</code> to handle a rejected promise. What does the catch block receive?</div>
+            <div class="code-block"><pre><code class="language-javascript">async function fetchData() {
+  try {
+    const data = await Promise.reject(new Error('Network fail'));
+    console.log('data:', data);
+  } catch (err) {
+    console.log('caught:', err.message);
+  }
+}
+fetchData();</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> data: undefined</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">B</span> Unhandled rejection</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">C</span> caught: Network fail</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> Nothing — silent fail</button>
+            </div>
+            <div class="explanation" id="c11-exp">
+                <strong>Answer: C — caught: Network fail</strong><br>
+                <code>await</code> unwraps a rejected promise by <em>throwing</em> the rejection reason as an exception inside the async function. A surrounding <code>try/catch</code> catches it exactly like a synchronous throw. <code>err</code> is the <code>Error</code> object, and <code>err.message</code> is <code>'Network fail'</code>. This is why <code>async/await</code> makes async error handling look exactly like synchronous code.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c11-hint"><code>await</code> converts a rejected promise into a thrown exception. What handles thrown exceptions inside async functions?</div>
+        </div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 12</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Operators</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the output?</div>
+            <div class="ch-desc">Short-circuit evaluation with <code>||</code> and <code>&&</code>. What does each line print?</div>
+            <div class="code-block"><pre><code class="language-javascript">console.log(false || 'hello');
+console.log(true  && 'world');
+console.log(0     || 42);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> false / true / 0</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> 'hello' / 'world' / 42</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> true / true / true</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> 'hello' / true / 42</button>
+            </div>
+            <div class="explanation" id="c12-exp">
+                <strong>Answer: B — 'hello' / 'world' / 42</strong><br>
+                <code>||</code> returns the first <em>truthy</em> value (or the last value if none are truthy). <code>false || 'hello'</code> → <code>'hello'</code>. <code>&&</code> returns the first <em>falsy</em> value (or the last value if all are truthy). <code>true && 'world'</code> → <code>'world'</code>. <code>0 || 42</code> → <code>42</code> because <code>0</code> is falsy. These operators return <em>values</em>, not just booleans.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c12-hint"><code>||</code> and <code>&&</code> don't always return <code>true</code>/<code>false</code> — they return one of their <em>operands</em>. Think about which operand each operator evaluates to.</div>
+        </div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem('vtq-js-practice') || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) card.classList.add('solved');
+                const exp = document.getElementById(id + '-exp');
+                if (exp) exp.style.display = 'block';
+                const btns = card ? card.querySelectorAll('.option-btn') : [];
+                btns.forEach(b => {
+                    b.disabled = true;
+                    if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                    else b.classList.add('opt-wrong');
+                });
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+
+        document.getElementById(cardId + '-exp').style.display = 'block';
+
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem('vtq-js-practice', JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

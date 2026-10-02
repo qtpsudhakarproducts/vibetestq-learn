@@ -1,0 +1,795 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 511 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Runtime</span> <span class="w2">Self-Healing</span> <span class="w3">(L10)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the optional runtime self-healing layer — an LLM-powered locator recovery system built into <code class="sn-ic">WebActions.execute()</code>. When a locator fails mid-test, the engine intercepts the <code class="sn-ic">ElementNotFoundError</code>, snapshots the live accessibility tree, asks an LLM for a better locator, tries it, and if it works continues the test while logging the heal for human review. Interviewers ask about runtime healing to probe whether candidates can articulate the architectural seam that makes it possible, explain why it is CI-only and assertion-excluded, and describe the adapter pattern used for provider-agnosticism. Candidates who confuse runtime healing with the post-run Healer Agent (Level 9) will be identified immediately.</span>
+  </div>
+
+
+  <!-- Q511.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.1</span>
+      <h2 class="sn-q-text">What is the difference between runtime self-healing and the Playwright Healer Agent?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Playwright Healer Agent (Level 9):</strong> Post-execution. The agent runs after tests finish and fail. It replays failing test steps, inspects the DOM, patches the source code, and re-runs the test until it passes. It modifies test files and page object files.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Runtime Self-Healing (Level 10):</strong> Mid-execution. When a locator fails during a live test run, the framework intercepts the failure before it becomes a test failure, asks an LLM for a better locator, and tries it — all within the same test run. The test continues if healing succeeds. The source files are not touched; the suggested locator is logged for human review.</p>
+<p class="sn-para">They solve different problems:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Healer Agent: fixes failed tests after the run (changes code)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Runtime healing: keeps tests running during the run (does not change code)</span></li>
+</ul>
+<p class="sn-para">They complement each other: runtime healing keeps the nightly regression passing when UI changes break locators; the healer agent can then be run to apply permanent fixes to source files.</p>
+    </div>
+  </div>
+
+  <!-- Q511.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.2</span>
+      <h2 class="sn-q-text">What is the core architectural insight that makes runtime healing possible?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every interaction in the framework routes through a single method: <code class="sn-ic">WebActions.execute()</code>. This was established as the "single seam" in Level 6 for error classification. At Level 10, it becomes the single seam for healing:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test calls → page object method
+                ↓
+         WebActions.execute()
+                ↓
+         Playwright action runs
+                ↓
+         ElementNotFoundError thrown
+                ↓
+         HealingEngine.attempt()
+           — snapshot accessibility tree
+           — ask LLM for better locator
+           — try suggested locator
+                ↓
+         Success → continue test + write to log
+         Failure → throw original error</div>
+      </div>
+<p class="sn-para">Because <strong class="k-green">all</strong> interactions route through <code class="sn-ic">execute()</code>, healing is wired in once and covers every page object in the framework automatically. <code class="sn-ic">OrangeHRMControls</code>, <code class="sn-ic">AddUserPage</code>, <code class="sn-ic">ApplyLeavePage</code> — none of them need any changes. Add a new page object with 20 methods and every one of them is automatically covered.</p>
+    </div>
+  </div>
+
+  <!-- Q511.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.3</span>
+      <h2 class="sn-q-text">What are the four design decisions that govern the healing implementation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Pipeline only, never local.</strong> <code class="sn-ic">ENABLE_RUNTIME_HEALING=true</code> is set only in the CI nightly workflow. Locally, <code class="sn-ic">this.healing</code> is null, there is zero overhead and zero LLM calls. Developers see real failures immediately — healing does not mask them during development.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Actions only, never assertions.</strong> <code class="sn-ic">AssertionHelpers</code> calls <code class="sn-ic">expect()</code> directly — it never calls <code class="sn-ic">WebActions.execute()</code>. There is no code path from an assertion failure to the healing engine. This is structural, not a flag.</p>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">ElementNotFoundError</code> only, never <code class="sn-ic">TimeoutError</code>.</strong> A timeout means the element exists but the page is slow — a performance or environment problem. Changing the locator will not fix a slow page. Only missing elements trigger healing.</p>
+<p class="sn-para"><strong class="k-purple">Human review, never auto-commit.</strong> Every successful heal is written to <code class="sn-ic">healing-log.json</code>. A human reviews the log, decides which suggestions are correct, and updates the page objects. The framework never modifies source files automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q511.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.4</span>
+      <h2 class="sn-q-text">What does the healing file structure look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">helpers/
+  healing/
+    LLMAdapter.ts          ← interface — the only type WebActions knows about
+    AnthropicAdapter.ts    ← Anthropic API implementation
+    OpenAIAdapter.ts       ← OpenAI API implementation
+    GeminiAdapter.ts       ← Gemini API implementation
+    LLMAdapterFactory.ts   ← reads HEAL_LLM_PROVIDER, returns correct adapter
+    prompt.ts              ← shared prompt builder — one place to tune the instruction
+    HealingEngine.ts       ← orchestrator: snapshot → LLM → try → log
+    HealingLogger.ts       ← appends to healing-log.json
+    index.ts               ← exports HealingEngine only</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">WebActions</code> imports only:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { HealingEngine } <span class="tc-kw">from</span> <span class="tc-str">'./healing'</span>;</div>
+      </div>
+<p class="sn-para">Adapters, factory, logger, and prompt are internal implementation details. Nothing outside the <code class="sn-ic">healing/</code> folder knows they exist.</p>
+    </div>
+  </div>
+
+  <!-- Q511.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.5</span>
+      <h2 class="sn-q-text">Why is the .describe() label on every locator a hard prerequisite for healing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The LLM receives the locator's <code class="sn-ic">.describe()</code> label as the element description — not the locator expression itself:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Correct — LLM receives &amp;quot;User status dropdown&amp;quot;</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> statusDropdown = <span class="tc-kw">this</span>.page
+  .<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-text'</span>)
+  .<span class="tc-fn">nth</span>(<span class="tc-num">1</span>)
+  .<span class="tc-kw">describe</span>(<span class="tc-str">'User status dropdown'</span>);
+
+<span class="tc-cm">// ❌ Wrong — LLM receives &amp;quot;locator('.oxd-select-text').nth(1)&amp;quot;</span>
+<span class="tc-cm">// Not enough context to reason about what element to find</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> statusDropdown = <span class="tc-kw">this</span>.page
+  .<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-text'</span>)
+  .<span class="tc-fn">nth</span>(<span class="tc-num">1</span>);</div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">.describe()</code>, the prompt contains only the failed locator expression. The LLM sees <code class="sn-ic">locator('.oxd-select-text').nth(1)</code> — which tells it nothing about what the element is or what it does. Suggestion quality collapses.</p>
+<p class="sn-para">With <code class="sn-ic">.describe('User status dropdown')</code>, the LLM reasons about the semantic purpose of the element and finds a semantically correct replacement, typically <code class="sn-ic">getByRole('combobox', { name: 'Status' })</code>.</p>
+<p class="sn-para">This is why <code class="sn-ic">.describe()</code> is enforced as a STANDARDS.md rule and checked in the code review checklist. It is simultaneously a debugging aid (Level 6), an agent prerequisite (Level 9), and a healing prerequisite (Level 10).</p>
+    </div>
+  </div>
+
+  <!-- Q511.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.6</span>
+      <h2 class="sn-q-text">What does the LLMAdapter interface look like and why is it a single method?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/healing/LLMAdapter.ts</span>
+
+<span class="tc-kw">export</span> <span class="tc-kw">interface</span> LLMAdapter {
+  <span class="tc-fn">suggestLocator</span>(
+    description:       <span class="tc-kw">string</span>,
+    accessibilityTree: <span class="tc-kw">string</span>
+  ): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt;;
+}</div>
+      </div>
+<p class="sn-para">Single method because healing has exactly one responsibility: given an element description and a page snapshot, suggest a better locator. Keeping the interface at one method means:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Any LLM provider that can answer a text prompt implements it in one function</span></li>
+<li><span class="icon">💡</span><span>Switching providers never changes <code class="sn-ic">WebActions</code> or <code class="sn-ic">HealingEngine</code></span></li>
+<li><span class="icon">⚡</span><span>Adding a provider requires only a new adapter class and one switch-case in</span></li>
+</ul>
+<p class="sn-para">  the factory</p>
+<p class="sn-para">The interface is the contract between the healing orchestration and the external AI services. Making it minimal makes it stable.</p>
+    </div>
+  </div>
+
+  <!-- Q511.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.7</span>
+      <h2 class="sn-q-text">What does the shared healing prompt instruct the LLM to do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/healing/prompt.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">buildPrompt</span>(description: <span class="tc-kw">string</span>, accessibilityTree: <span class="tc-kw">string</span>): <span class="tc-kw">string</span> {
+  <span class="tc-kw">return</span> <span class="tc-str">`
+A Playwright locator failed. The element was described as: &amp;quot;${description}&amp;quot;.
+
+Here is the current accessibility tree of the page:
+${accessibilityTree}
+
+Return ONLY a single Playwright locator expression for this element.
+
+Rules:
+- Use semantic locators only: getByRole, getByLabel, getByPlaceholder, getByText
+- No CSS selectors, no XPath, no data-testid unless no semantic option exists
+- No explanation, no code block, no backticks
+- Just the locator expression on a single line
+
+Example: getByRole('combobox', { name: 'Status' })
+  `</span>.<span class="tc-fn">trim</span>();
+}</div>
+      </div>
+<p class="sn-para">The prompt is shared across all three providers — one place to tune. The LLM is instructed to return only the locator expression, never CSS selectors, and the response validation in <code class="sn-ic">HealingEngine</code> enforces this:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">if</span> (!suggestion || !suggestion.<span class="tc-fn">startsWith</span>(<span class="tc-str">'getBy'</span>)) {
+  <span class="tc-kw">return</span> <span class="tc-kw">null</span>;  <span class="tc-cm">// reject anything that is not a semantic locator</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q511.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.8</span>
+      <h2 class="sn-q-text">What does the AnthropicAdapter implementation look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/healing/AnthropicAdapter.ts</span>
+<span class="tc-kw">import</span> { LLMAdapter }  <span class="tc-kw">from</span> <span class="tc-str">'./LLMAdapter'</span>;
+<span class="tc-kw">import</span> { buildPrompt } <span class="tc-kw">from</span> <span class="tc-str">'./prompt'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AnthropicAdapter <span class="tc-kw">implements</span> LLMAdapter {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> apiKey: <span class="tc-kw">string</span>;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> model:  <span class="tc-kw">string</span>;
+
+  <span class="tc-fn">constructor</span>() {
+    <span class="tc-kw">this</span>.apiKey = process.env.HEAL_LLM_API_KEY!;
+    <span class="tc-kw">this</span>.model  = process.env.HEAL_LLM_MODEL ?? <span class="tc-str">'claude-sonnet-4-20250514'</span>;
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">suggestLocator</span>(description: <span class="tc-kw">string</span>, tree: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-fn">fetch</span>(<span class="tc-str">'https: S1 
+      method: '</span>POST<span class="tc-str">',
+      headers: {
+        '</span>Content-Type<span class="tc-str">':      '</span>application/json<span class="tc-str">',
+        '</span>x-api-key<span class="tc-str">':         this.apiKey,
+        '</span>anthropic-version<span class="tc-str">': '</span><span class="tc-num">2023</span>-<span class="tc-num">06</span>-<span class="tc-num">01</span><span class="tc-str">',
+      },
+      body: JSON.stringify({
+        model:      this.model,
+        max_tokens: 100,
+        messages:   [{ role: '</span>user', content: <span class="tc-fn">buildPrompt</span>(description, tree) }],
+      }),
+    });
+
+    <span class="tc-kw">const</span> data = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>() as {
+      content: Array&lt;{ text: <span class="tc-kw">string</span> }&gt;;
+    };
+
+    <span class="tc-kw">return</span> data.content?.[<span class="tc-num">0</span>]?.text?.<span class="tc-fn">trim</span>() ?? <span class="tc-kw">null</span>;
+  }
+
+}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">max_tokens: 100</code> — a locator expression is short; 100 tokens is more than enough. Using a small token budget minimises cost and latency. All three adapters follow the same pattern: constructor reads env vars, <code class="sn-ic">suggestLocator</code> makes the API call and extracts the text.</p>
+    </div>
+  </div>
+
+  <!-- Q511.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.9</span>
+      <h2 class="sn-q-text">What does the LLMAdapterFactory look like and why does it fail loudly on unknown providers?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/healing/LLMAdapterFactory.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">createLLMAdapter</span>(): LLMAdapter {
+  <span class="tc-kw">const</span> provider = process.env.HEAL_LLM_PROVIDER;
+
+  <span class="tc-kw">switch</span> (provider) {
+    <span class="tc-kw">case</span> <span class="tc-str">'anthropic'</span>: <span class="tc-kw">return</span> <span class="tc-kw">new</span> AnthropicAdapter();
+    <span class="tc-kw">case</span> <span class="tc-str">'openai'</span>:    <span class="tc-kw">return</span> <span class="tc-kw">new</span> OpenAIAdapter();
+    <span class="tc-kw">case</span> <span class="tc-str">'gemini'</span>:    <span class="tc-kw">return</span> <span class="tc-kw">new</span> GeminiAdapter();
+    <span class="tc-kw">default</span>:
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(
+        <span class="tc-str">`HEAL_LLM_PROVIDER &amp;quot;${provider}&amp;quot; is not supported.\n`</span> +
+        <span class="tc-str">`Supported values: anthropic, openai, gemini`</span>
+      );
+  }
+}</div>
+      </div>
+<p class="sn-para">The factory fails loudly for unknown providers rather than silently returning null or a fallback. If <code class="sn-ic">HEAL_LLM_PROVIDER</code> is missing or misspelled in the CI workflow, the failure is immediate — at the start of the test run, with a clear message — rather than silent for the entire run.</p>
+<p class="sn-para">Adding a new provider requires:</p>
+<ol class="sn-olist">
+<li>Create <code class="sn-ic">helpers/healing/YourProviderAdapter.ts</code> implementing <code class="sn-ic">LLMAdapter</code></li>
+<li>Add one case to the switch</li>
+<li>Nothing else changes — <code class="sn-ic">WebActions</code> and <code class="sn-ic">HealingEngine</code> are untouched</li>
+</ol>
+    </div>
+  </div>
+
+  <!-- Q511.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.10</span>
+      <h2 class="sn-q-text">What does HealingEngine.attempt() do step by step?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> attempt&lt;T&gt;(locator: Locator, fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T | <span class="tc-kw">null</span>&gt; {
+  <span class="tc-kw">try</span> {
+    <span class="tc-cm">// Step 1 — Snapshot the live accessibility tree at the point of failure</span>
+    <span class="tc-kw">const</span> snapshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.accessibility.<span class="tc-fn">snapshot</span>();
+    <span class="tc-kw">if</span> (!snapshot) <span class="tc-kw">return</span> <span class="tc-kw">null</span>;
+
+    <span class="tc-kw">const</span> description = locator.<span class="tc-fn">toString</span>();  <span class="tc-cm">// contains the .describe() label</span>
+
+    <span class="tc-cm">// Step 2 — Ask the configured LLM for a better locator</span>
+    <span class="tc-kw">const</span> suggestion = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.adapter.<span class="tc-fn">suggestLocator</span>(
+      description,
+      JSON.<span class="tc-fn">stringify</span>(snapshot, <span class="tc-kw">null</span>, <span class="tc-num">2</span>)
+    );
+
+    <span class="tc-cm">// Step 3 — Validate the suggestion</span>
+    <span class="tc-kw">if</span> (!suggestion || !suggestion.<span class="tc-fn">startsWith</span>(<span class="tc-str">'getBy'</span>)) {
+      <span class="tc-kw">return</span> <span class="tc-kw">null</span>;  <span class="tc-cm">// reject non-semantic suggestions</span>
+    }
+
+    <span class="tc-cm">// Step 4 — Build the healed locator on the live page</span>
+    <span class="tc-kw">const</span> healedLocator = <span class="tc-kw">this</span>.<span class="tc-fn">buildLocator</span>(suggestion);
+    <span class="tc-kw">if</span> (!healedLocator) <span class="tc-kw">return</span> <span class="tc-kw">null</span>;
+
+    <span class="tc-cm">// Step 5 — Re-run the original action with the healed locator</span>
+    <span class="tc-kw">const</span> result = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">runWithLocator</span>(fn, healedLocator);
+
+    <span class="tc-cm">// Step 6 — Log the successful heal for human review</span>
+    <span class="tc-kw">this</span>.logger.<span class="tc-fn">append</span>({
+      description,
+      original:  description,
+      suggested: suggestion,
+      action:    <span class="tc-str">'healed'</span>,
+      timestamp: <span class="tc-kw">new</span> Date().<span class="tc-fn">toISOString</span>(),
+    });
+
+    console.<span class="tc-fn">warn</span>(<span class="tc-str">`[HealingEngine] Healed: ${description} → ${suggestion}`</span>);
+    <span class="tc-kw">return</span> result;
+
+  } <span class="tc-kw">catch</span> {
+    <span class="tc-kw">return</span> <span class="tc-kw">null</span>;  <span class="tc-cm">// healing failed — let original error propagate</span>
+  }
+}</div>
+      </div>
+<p class="sn-para">The method returns <code class="sn-ic">T</code> on success or <code class="sn-ic">null</code> on any failure (snapshot unavailable, LLM returned null, suggestion is not semantic, healed locator fails). It never throws — the original error always reaches <code class="sn-ic">execute()</code> and is thrown from there.</p>
+    </div>
+  </div>
+
+  <!-- Q511.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.11</span>
+      <h2 class="sn-q-text">How is HealingEngine wired into WebActions with minimal change?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Two changes to <code class="sn-ic">WebActions.ts</code>:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Constructor</strong> — instantiate <code class="sn-ic">HealingEngine</code> only when the env flag is set:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { HealingEngine } <span class="tc-kw">from</span> <span class="tc-str">'./healing'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> WebActions {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page:    Page;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> waits:   WaitHelpers;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> healing: HealingEngine | <span class="tc-kw">null</span>;  <span class="tc-cm">// null locally</span>
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.page  = page;
+    <span class="tc-kw">this</span>.waits = <span class="tc-kw">new</span> WaitHelpers(page);
+
+    <span class="tc-cm">// Null locally — no overhead, no LLM calls</span>
+    <span class="tc-cm">// Active in CI nightly when ENABLE_RUNTIME_HEALING=true</span>
+    <span class="tc-kw">this</span>.healing = process.env.ENABLE_RUNTIME_HEALING === <span class="tc-str">'true'</span>
+      ? <span class="tc-kw">new</span> HealingEngine(page)
+      : <span class="tc-kw">null</span>;
+  }</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">execute()</strong> — attempt healing before classifying and throwing:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">private</span> <span class="tc-kw">async</span> execute&lt;T&gt;(action: <span class="tc-kw">string</span>, locator: Locator, fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt; {
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-fn">fn</span>();
+  } <span class="tc-kw">catch</span> (error) {
+    <span class="tc-kw">const</span> cause    = error as Error;
+    <span class="tc-kw">const</span> isNotFound =
+      cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'not found'</span>)   ||
+      cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'not visible'</span>) ||
+      cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'not attached'</span>);
+
+    <span class="tc-cm">// Attempt healing — CI only, ElementNotFoundError only</span>
+    <span class="tc-kw">if</span> (isNotFound &amp;&amp; <span class="tc-kw">this</span>.healing) {
+      <span class="tc-kw">const</span> healed = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.healing.<span class="tc-fn">attempt</span>(locator, fn);
+      <span class="tc-kw">if</span> (healed !== <span class="tc-kw">null</span>) <span class="tc-kw">return</span> healed;  <span class="tc-cm">// success — test continues</span>
+    }
+
+    <span class="tc-cm">// Classify and throw unchanged</span>
+    <span class="tc-kw">if</span> (cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'Timeout'</span>) || cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'timeout'</span>)) {
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> TimeoutError(action, locator.<span class="tc-fn">toString</span>(), cause);
+    }
+    <span class="tc-kw">if</span> (isNotFound) {
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> ElementNotFoundError(action, locator.<span class="tc-fn">toString</span>(), cause);
+    }
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> ActionError(action, locator.<span class="tc-fn">toString</span>(), cause);
+  }
+}</div>
+      </div>
+<p class="sn-para">Zero changes to page objects. Zero changes to <code class="sn-ic">OrangeHRMControls</code>. The entire healing mechanism is contained in <code class="sn-ic">WebActions</code> constructor + <code class="sn-ic">execute()</code> + the <code class="sn-ic">healing/</code> folder.</p>
+    </div>
+  </div>
+
+  <!-- Q511.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.12</span>
+      <h2 class="sn-q-text">What does the healing log look like and how is it reviewed?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;heals&quot;: [
+    {
+      &quot;description&quot;: &quot;locator('.oxd-select-text').nth(1).describe('User status dropdown')&quot;,
+      &quot;original&quot;:    &quot;locator('.oxd-select-text').nth(1).describe('User status dropdown')&quot;,
+      &quot;suggested&quot;:   &quot;getByRole('combobox', { name: 'Status' })&quot;,
+      &quot;action&quot;:      &quot;healed&quot;,
+      &quot;timestamp&quot;:   &quot;2026-03-03T02:14:33Z&quot;
+    },
+    {
+      &quot;description&quot;: &quot;getByPlaceholder('Username').describe('Username field on login')&quot;,
+      &quot;original&quot;:    &quot;getByPlaceholder('Username').describe('Username field on login')&quot;,
+      &quot;suggested&quot;:   &quot;getByLabel('Username')&quot;,
+      &quot;action&quot;:      &quot;healed&quot;,
+      &quot;timestamp&quot;:   &quot;2026-03-03T02:15:01Z&quot;
+    }
+  ]
+}</div>
+      </div>
+<p class="sn-para">The log is uploaded as a CI artifact after each nightly run (30-day retention).</p>
+<p class="sn-para">Review process:</p>
+<ol class="sn-olist">
+<li>Download <code class="sn-ic">healing-log-{run_number}</code> from CI artifacts</li>
+<li>For each entry — open the relevant page object</li>
+<li>Replace the <code class="sn-ic">original</code> locator with the <code class="sn-ic">suggested</code> locator</li>
+<li>Run the test locally to confirm the fix</li>
+<li>Commit and push</li>
+</ol>
+<p class="sn-para">The healing log is the bridge between the LLM's suggestion and the source code. The human always reviews before committing — the framework never writes back to page objects automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q511.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.13</span>
+      <h2 class="sn-q-text">How is healing added to the CI nightly workflow?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three environment variables added to the nightly regression step:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">
+      - name: Run full regression suite
+        run: npx playwright <span class="tc-kw">test</span> --grep @regression
+        env:
+          CI: <span class="tc-kw">true</span>
+          TEST_ENV: dev
+          <span class="tc-cm"># Runtime self-healing — nightly only</span>
+          ENABLE_RUNTIME_HEALING: <span class="tc-str">'true'</span>
+          HEAL_LLM_PROVIDER:      <span class="tc-str">'anthropic'</span>
+          HEAL_LLM_MODEL:         <span class="tc-str">'claude-sonnet-4-20250514'</span>
+          HEAL_LLM_API_KEY:       ${{ secrets.HEAL_LLM_API_KEY }}
+        <span class="tc-kw">continue</span>-on-error: <span class="tc-kw">true</span>
+
+      <span class="tc-cm"># Upload healing log as artifact for post-run review</span>
+      - name: Upload healing log
+        uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        with:
+          name:              healing-log-${{ github.run_number }}
+          path:              healing-log.json
+          <span class="tc-kw">if</span>-no-files-found: ignore
+          retention-days:    <span class="tc-num">30</span></div>
+      </div>
+<p class="sn-para">The PR check workflow does NOT get these variables. PR checks should fail fast on real failures — healing would mask regressions that developers need to see.</p>
+<p class="sn-para">Switching providers is two env var changes — nothing else:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">HEAL_LLM_PROVIDER: <span class="tc-str">'openai'</span>
+HEAL_LLM_MODEL:    <span class="tc-str">'gpt-4o'</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q511.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.14</span>
+      <h2 class="sn-q-text">Why does healing only fire on ElementNotFoundError and never on TimeoutError?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">ElementNotFoundError</code> means the locator cannot find the element in the DOM. The element is absent. The locator is wrong — it pointed to something that no longer matches any DOM node. This is exactly what changing the locator can fix.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">TimeoutError</code> means the element is in the DOM but did not become actionable within the timeout window. Playwright found the element but it was not ready. This is a timing issue — slow page, unresponsive application, CI environment latency. Changing the locator will not fix a timing problem. The engine would waste an LLM call and add latency to an already-slow test.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// In execute() — healing only for missing elements</span>
+<span class="tc-kw">if</span> (isNotFound &amp;&amp; <span class="tc-kw">this</span>.healing) {
+  <span class="tc-kw">const</span> healed = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.healing.<span class="tc-fn">attempt</span>(locator, fn);
+  <span class="tc-kw">if</span> (healed !== <span class="tc-kw">null</span>) <span class="tc-kw">return</span> healed;
+}
+
+<span class="tc-cm">// Timeouts pass through without healing — straight to classification</span>
+<span class="tc-kw">if</span> (cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'Timeout'</span>) || cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'timeout'</span>)) {
+  <span class="tc-kw">throw</span> <span class="tc-kw">new</span> TimeoutError(action, locatorDesc, cause);
+}</div>
+      </div>
+<p class="sn-para">The check order matters: timeouts are classified before <code class="sn-ic">ElementNotFoundError</code>, and the healing check is inside the <code class="sn-ic">isNotFound</code> branch only.</p>
+    </div>
+  </div>
+
+  <!-- Q511.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.15</span>
+      <h2 class="sn-q-text">Why is healing disabled locally and what is the design consequence?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Why disabled locally:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Developers need immediate, unmasked feedback. A healing attempt adds LLM call</span></li>
+</ul>
+<p class="sn-para">  latency (hundreds of milliseconds) to a failed interaction</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>A developer who breaks a locator should know immediately — not discover it when</span></li>
+</ul>
+<p class="sn-para">  the nightly run heals around it</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>Healing costs money (API calls); local runs would make development expensive</span></li>
+</ul>
+<p class="sn-para"><strong class="k-red">How it is disabled:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">this</span>.healing = process.env.ENABLE_RUNTIME_HEALING === <span class="tc-str">'true'</span>
+  ? <span class="tc-kw">new</span> HealingEngine(page)
+  : <span class="tc-kw">null</span>;</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">ENABLE_RUNTIME_HEALING</code> is absent from every <code class="sn-ic">.env.*</code> file. It is never set locally. <code class="sn-ic">this.healing</code> is null for every local test run. No conditional branches need checking at runtime — <code class="sn-ic">null</code> check is instantaneous.</p>
+<p class="sn-para"><strong class="k-red">Design consequence:</strong> developers who work only locally never see healing in action. The CI run is the only context where it fires. This is intentional — healing is a resilience mechanism for CI stability, not a developer convenience.</p>
+    </div>
+  </div>
+
+  <!-- Q511.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.16</span>
+      <h2 class="sn-q-text">How does buildLocator() safely construct a locator from an LLM suggestion?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">private</span> <span class="tc-fn">buildLocator</span>(suggestion: <span class="tc-kw">string</span>): Locator | <span class="tc-kw">null</span> {
+  <span class="tc-kw">try</span> {
+    <span class="tc-cm">// Only allow getBy* methods — validated before this call</span>
+    <span class="tc-kw">const</span> method = suggestion.<span class="tc-fn">match</span>(/^(getBy\w+)/)?.[<span class="tc-num">1</span>];
+    <span class="tc-kw">if</span> (!method || !(method <span class="tc-kw">in</span> <span class="tc-kw">this</span>.page)) <span class="tc-kw">return</span> <span class="tc-kw">null</span>;
+
+    <span class="tc-cm">// Build via Function constructor scoped to page — not global eval</span>
+    <span class="tc-kw">const</span> factory = <span class="tc-kw">new</span> Function(<span class="tc-str">'page'</span>, <span class="tc-str">`return page.${suggestion};`</span>);
+    <span class="tc-kw">return</span> <span class="tc-fn">factory</span>(<span class="tc-kw">this</span>.page) as Locator;
+  } <span class="tc-kw">catch</span> {
+    <span class="tc-kw">return</span> <span class="tc-kw">null</span>;
+  }
+}</div>
+      </div>
+<p class="sn-para">The method <code class="sn-ic">new Function('page', ...)</code> scopes execution to the <code class="sn-ic">page</code> object. The safety guard <code class="sn-ic">suggestion.startsWith('getBy')</code> (checked before <code class="sn-ic">buildLocator</code> is called) ensures the LLM cannot inject arbitrary code — only <code class="sn-ic">getBy*</code> Playwright methods are permitted.</p>
+<p class="sn-para">If the suggestion parses but the resulting locator call throws (bad arguments, unrecognised method name), the <code class="sn-ic">catch</code> returns null and healing fails gracefully — the original error is still thrown.</p>
+    </div>
+  </div>
+
+  <!-- Q511.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.17</span>
+      <h2 class="sn-q-text">What does the complete interaction stack look like at Level 10?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Page Objects
+    ↓ calls
+OrangeHRMControls    (application-specific component sequences)
+    ↓ calls
+WebActions           (generic interactions + execute() wrapper)
+    ↓ on ElementNotFoundError
+HealingEngine        (CI only — snapshot → LLM → try → log)
+    ↓ calls
+LLMAdapter           (interface)
+    ↓ implemented by
+AnthropicAdapter / OpenAIAdapter / GeminiAdapter
+    ↓ selected by
+LLMAdapterFactory    (reads HEAL_LLM_PROVIDER from env)</div>
+      </div>
+<p class="sn-para">Every interaction in the framework passes through <code class="sn-ic">WebActions</code>. Healing is wired at that single point. Adding a new page object, a new module, or a new test requires no healing-specific code — coverage is automatic.</p>
+<p class="sn-para">The Adapter pattern insulates <code class="sn-ic">WebActions</code> and <code class="sn-ic">HealingEngine</code> from provider details. The Factory pattern handles provider selection. The engine barrel export (<code class="sn-ic">index.ts</code> exporting only <code class="sn-ic">HealingEngine</code>) hides all implementation details from <code class="sn-ic">WebActions</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q511.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q511.18</span>
+      <h2 class="sn-q-text">What does runtime healing not do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Does not run locally</strong> — <code class="sn-ic">ENABLE_RUNTIME_HEALING</code> absent, <code class="sn-ic">this.healing</code> null, zero overhead.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Does not heal assertions</strong> — <code class="sn-ic">AssertionHelpers</code> calls <code class="sn-ic">expect()</code> directly, never calls <code class="sn-ic">WebActions.execute()</code>. There is no code path from assertion failure to healing. Structural enforcement, not a flag.</p>
+<p class="sn-para"><strong class="k-green">Does not heal timeouts</strong> — <code class="sn-ic">TimeoutError</code> bypasses the healing check. A timing problem requires a wait, not a different locator.</p>
+<p class="sn-para"><strong class="k-green">Does not commit automatically</strong> — <code class="sn-ic">healing-log.json</code> is logged and uploaded. A human reviews before updating source files.</p>
+<p class="sn-para"><strong class="k-green">Does not mask application defects</strong> — if a feature is genuinely removed, the accessibility tree will not contain the element under any locator. The LLM returns no useful suggestion, <code class="sn-ic">attempt()</code> returns null, and the test fails correctly. Healing cannot work around absent functionality.</p>
+<p class="sn-para"><strong class="k-green">Does not replace the Playwright Healer Agent</strong> — the healer agent patches source files after test completion. Runtime healing keeps tests moving during execution. They solve different problems and complement each other.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Runtime self-healing is CI-only, mid-execution locator recovery — distinct from the post-execution Playwright Healer Agent that patches source files.</span></li>
+            <li><span class="icon">⭐</span><span>The architectural seam is <code class="sn-ic">WebActions.execute()</code> — the single point all interactions pass through since Level 6; healing is wired here once and covers every page object automatically.</span></li>
+            <li><span class="icon">⭐</span><span>Four design decisions: pipeline-only (not local), actions-only (not assertions), <code class="sn-ic">ElementNotFoundError</code>-only (not <code class="sn-ic">TimeoutError</code>), human-review (not auto-commit).</span></li>
+            <li><span class="icon">⭐</span><span>File structure: eight files in <code class="sn-ic">helpers/healing/</code>; only <code class="sn-ic">HealingEngine</code> is exported; adapters and factory are internal details.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">.describe()</code> on every locator is a hard prerequisite — the LLM receives the semantic label, not the locator expression; without it, suggestion quality collapses.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">LLMAdapter</code> interface has one method: <code class="sn-ic">suggestLocator(description, accessibilityTree): Promise&lt;string | null&gt;</code> — minimal contract, provider-agnostic.</span></li>
+            <li><span class="icon">⭐</span><span>Shared <code class="sn-ic">prompt.ts</code> instructs the LLM: semantic locators only, single line, no explanation, no code blocks; validated with <code class="sn-ic">suggestion.startsWith('getBy')</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Three adapters (Anthropic, OpenAI, Gemini) follow the same pattern; adding a provider requires one new adapter class and one switch-case in <code class="sn-ic">LLMAdapterFactory</code>.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">LLMAdapterFactory</code> fails loudly on unknown providers — immediate error at test start rather than silent failure during the run.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">HealingEngine.attempt()</code> six steps: snapshot → ask LLM → validate → build locator → re-run action → log. Returns null on any failure; never throws.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">buildLocator()</code> uses <code class="sn-ic">new Function('page', ...)</code> scoped to <code class="sn-ic">page</code> — not global eval; safety guard ensures only <code class="sn-ic">getBy*</code> methods are accepted.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">WebActions</code> constructor: <code class="sn-ic">this.healing = ENABLE_RUNTIME_HEALING === 'true' ? new HealingEngine(page) : null</code>; null check in <code class="sn-ic">execute()</code> is instantaneous.</span></li>
+            <li><span class="icon">⭐</span><span>Healing fires only on <code class="sn-ic">isNotFound</code> — timeouts bypass the check entirely; the order in <code class="sn-ic">execute()</code> matters.</span></li>
+            <li><span class="icon">⭐</span><span>CI configuration: three env vars in nightly workflow, healing log uploaded as 30-day artifact; PR check has no healing vars.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">healing-log.json</code> records description, original locator, suggested replacement, action, timestamp; human reviews, updates page objects, and commits.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">if-no-files-found: ignore</code> on the healing log artifact upload — when no heals occurred, the file does not exist and the upload step should not fail.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

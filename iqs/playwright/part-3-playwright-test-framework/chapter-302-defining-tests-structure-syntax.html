@@ -1,0 +1,772 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 302 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Defining</span> <span class="w2">Tests</span> <span class="w3">—</span> <span class="w4">Structure</span> <span class="w5">&amp;</span> <span class="w6">Syntax</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter opens Part 3 — the Playwright Test Framework. It covers the <code class="sn-ic">test()</code> function: how to write a test, how to name it well, how to structure it with Arrange/Act/Assert, and how to control test execution with <code class="sn-ic">test.only</code>, <code class="sn-ic">test.skip</code>, <code class="sn-ic">test.fixme</code>, <code class="sn-ic">test.fail</code>, and <code class="sn-ic">test.slow</code>. Interviewers test this chapter early — these are the building blocks every other answer builds on.</span>
+  </div>
+
+
+  <!-- Q302.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.1</span>
+      <h2 class="sn-q-text">What is the test() function in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test()</code> is the function you use to define a single test case in Playwright. It registers the test with the Playwright test runner and gives it a title, an async function body, and optionally a details object.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user sees dashboard after login'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin@example.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'password123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'/dashboard'</span>);
+});</div>
+      </div>
+<p class="sn-para">The function passed to <code class="sn-ic">test()</code> always receives a fixtures object as its first argument. The most commonly used fixture is <code class="sn-ic">page</code> — a fresh browser page for each test. Fixtures are covered fully in Chapter 32.</p>
+    </div>
+  </div>
+
+  <!-- Q302.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.2</span>
+      <h2 class="sn-q-text">What are the two signatures of the test() function?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test()</code> accepts two signatures:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Short form</strong> — title and body only:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'test title'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// test body</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Long form</strong> — title, details object, and body:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(
+  <span class="tc-str">'test title'</span>,
+  { tag: <span class="tc-str">'@smoke'</span>, annotation: { <span class="tc-kw">type</span>: <span class="tc-str">'issue'</span>, description: <span class="tc-str">'TICKET-42'</span> } },
+  <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// test body</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">The details object supports: <code class="sn-ic">tag</code>, <code class="sn-ic">annotation</code>, <code class="sn-ic">timeout</code>, and <code class="sn-ic">retries</code>. Use the long form when a test needs metadata — tags for filtering, annotations for linking to issue trackers, or a per-test timeout override.</p>
+    </div>
+  </div>
+
+  <!-- Q302.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.3</span>
+      <h2 class="sn-q-text">How do you write test titles in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we write test titles as sentences that describe the expected behaviour — written for the failure report, not for the reader of the code.</p>
+      </div>
+<p class="sn-para">Good titles answer the question: "If this test fails, what broke?"</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Good — specific, self-explanatory in a failure report</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'user sees error message when password is incorrect'</span>, ...)
+<span class="tc-kw">test</span>(<span class="tc-str">'cart total updates when item quantity changes'</span>, ...)
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can delete an employee with no leave records'</span>, ...)
+
+<span class="tc-cm">// ❌ Bad — vague, requires opening the test to understand what failed</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'login test'</span>, ...)
+<span class="tc-kw">test</span>(<span class="tc-str">'check cart'</span>, ...)
+<span class="tc-kw">test</span>(<span class="tc-str">'employee deletion'</span>, ...)</div>
+      </div>
+<p class="sn-para">We also include a tag at the end of titles to support suite-level filtering: <code class="sn-ic">@smoke</code> for critical path tests and <code class="sn-ic">@regression</code> for the full suite.</p>
+    </div>
+  </div>
+
+  <!-- Q302.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.4</span>
+      <h2 class="sn-q-text">What is the Arrange / Act / Assert pattern?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Arrange / Act / Assert (AAA) is a three-phase structure for test bodies.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Arrange</strong> — set up the starting state. Navigate to the right page, pre-populate data, put the application in the state the test needs.</p>
+<p class="sn-para"><strong class="k-orange">Act</strong> — perform the action being tested. Click the button, submit the form, trigger the event.</p>
+<p class="sn-para"><strong class="k-orange">Assert</strong> — verify the outcome. Check that the UI shows the right result.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'form shows success message on valid submission'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// ARRANGE — navigate to starting state</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/contact'</span>);
+
+  <span class="tc-cm">// ACT — perform the action under test</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice Johnson'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'alice@example.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Send'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// ASSERT — verify the outcome</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Message sent successfully'</span>);
+});</div>
+      </div>
+<p class="sn-para">AAA is valuable because a failing test tells you exactly which phase broke. If ACT fails, the interaction itself is broken. If ASSERT fails, the action completed but produced the wrong result — that is a real application bug.</p>
+    </div>
+  </div>
+
+  <!-- Q302.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.5</span>
+      <h2 class="sn-q-text">What is the one-behaviour-per-test rule?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Each test should verify exactly one behaviour. A test that checks multiple independent outcomes at once hides failures and makes debugging harder.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ One test, multiple outcomes — hides failures</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'employee form works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees/add'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Saved successfully'</span>)).<span class="tc-fn">toBeVisible</span>(); <span class="tc-cm">// outcome 1</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/employees\/\d+/);                 <span class="tc-cm">// outcome 2</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>)).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Alice'</span>); <span class="tc-cm">// outcome 3</span>
+});
+<span class="tc-cm">// If outcome 1 fails, outcomes 2 and 3 never run.</span>
+<span class="tc-cm">// You learn about one failure per run.</span>
+
+<span class="tc-cm">// ✅ Three tests, one behaviour each — all three run independently</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'save shows success message'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+<span class="tc-kw">test</span>(<span class="tc-str">'save redirects to employee profile'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+<span class="tc-kw">test</span>(<span class="tc-str">'profile shows the submitted name'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });</div>
+      </div>
+<p class="sn-para">The exception is a genuine multi-step workflow. In that case, use <code class="sn-ic">test.step()</code> to name the phases inside a single test. That is covered in Chapter 26.</p>
+    </div>
+  </div>
+
+  <!-- Q302.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.6</span>
+      <h2 class="sn-q-text">What does test.only do and why should it never be committed?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.only()</code> tells Playwright to run only that test — all other tests in the file (and the project) are skipped. It is a local debugging tool.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">only</span>(<span class="tc-str">'add employee with duplicate ID shows error'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Only this test runs when you run the suite</span>
+});</div>
+      </div>
+<p class="sn-para">The danger: if <code class="sn-ic">test.only</code> is committed and pushed to the repository, CI runs only that one test. The pipeline reports green while all other tests are silently skipped. Bugs ship.</p>
+<p class="sn-para">Protect against this with one config line:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  forbidOnly: !!process.env.CI,
+});</div>
+      </div>
+<p class="sn-para">With this setting, if <code class="sn-ic">test.only</code> reaches CI, the entire run fails immediately:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Error: focused item found in the --forbid-only mode</div>
+      </div>
+<p class="sn-para">That is the correct outcome — a clear failure rather than silent coverage loss.</p>
+    </div>
+  </div>
+
+  <!-- Q302.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.7</span>
+      <h2 class="sn-q-text">What is test.skip and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.skip()</code> prevents a test from running. The test still appears in the HTML report as "skipped" — it is not hidden. The team can see it exists and knows it is not running.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Unconditional skip — test is not ready yet</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">skip</span>(<span class="tc-str">'export to PDF @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Feature not deployed in test environment</span>
+});
+
+<span class="tc-cm">// Conditional skip — skip only on specific browser or environment</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'invoice download works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">skip</span>(
+    <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().project.name === <span class="tc-str">'firefox'</span>,
+    <span class="tc-str">'Download API not supported in Firefox test environment'</span>
+  );
+  <span class="tc-cm">// Runs on Chromium and WebKit, skipped on Firefox</span>
+});</div>
+      </div>
+<p class="sn-para">Always include the reason string. Without it, the report shows "skipped" with no explanation — the team cannot tell if it is a deliberate choice or a forgotten test.</p>
+<p class="sn-para"><strong class="k-red">Use <code class="sn-ic">test.skip</code> when:</strong> a feature is not yet deployed, a dependency is unavailable, or a test is environment-specific and does not apply here.</p>
+    </div>
+  </div>
+
+  <!-- Q302.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.8</span>
+      <h2 class="sn-q-text">What is test.fixme and how is it different from test.skip?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both <code class="sn-ic">test.fixme</code> and <code class="sn-ic">test.skip</code> prevent a test from running. The difference is what they communicate:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">test.skip</code> says: this is deliberately disabled</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">test.fixme</code> says: this is broken and someone needs to fix it</span></li>
+</ul>
+<p class="sn-para">In the HTML report, fixme tests appear under a separate "Fixme" section — distinct from "Skipped". At a glance, the team can see how many tests are intentionally disabled vs how many are broken and awaiting repair.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Broken after a v2.0 regression — ticket #PW-99</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">fixme</span>(<span class="tc-str">'apply leave shows confirmation — ticket  S1 
+   S2 
+});
+
+ S3 
+test('</span>date range picker selects correct dates<span class="tc-str">', async ({ page }) =&amp;gt; {
+  test.fixme(
+    test.info().project.name === '</span>webkit<span class="tc-str">',
+    '</span>Date picker broken on Safari after v2.<span class="tc-num">0</span> upgrade — ticket <span class="tc-cm">#PW-102'</span>
+  );
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Use <code class="sn-ic">test.fixme</code></strong> when a test is broken due to a known bug or regression, and the intent is to return and fix it. Use it with a ticket reference.</p>
+    </div>
+  </div>
+
+  <!-- Q302.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.9</span>
+      <h2 class="sn-q-text">What is test.fail and when is it the right tool?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.fail()</code> marks a test as expected to fail. The test still runs. Playwright inverts its pass/fail logic:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>If the test fails as expected → reported as <strong class="k-blue">healthy</strong> (expected failure)</span></li>
+<li><span class="icon">💡</span><span>If the test passes unexpectedly → reported as <strong class="k-blue">"unexpected pass"</strong> (alerts the team)</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Known product bug — ticket #BUG-123</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">fail</span>(<span class="tc-str">'bulk delete crashes with employees having leave records — bug  S1 
+  async ({ page }) =&amp;gt; {
+    await page.goto('</span>/employees<span class="tc-str">');
+    await page.getByLabel('</span>Select All<span class="tc-str">').check();
+    await page.getByRole('</span>button<span class="tc-str">', { name: '</span>Delete Selected<span class="tc-str">' }).click();
+    await expect(page.getByRole('</span>alert<span class="tc-str">')).toHaveText('</span>Deleted successfully');
+    <span class="tc-cm">// Currently crashes before reaching the assertion — expected failure</span>
+  }
+);</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Why this matters:</strong> without <code class="sn-ic">test.fail</code>, your only options are to delete the test (losing coverage) or leave it failing (breaking CI). <code class="sn-ic">test.fail</code> keeps the test running, keeps CI green, and alerts you automatically when the bug is fixed — you see "unexpected pass" in the report.</p>
+<p class="sn-para"><strong class="k-blue">Use <code class="sn-ic">test.fail</code></strong> for known product bugs with an open ticket. <strong class="k-blue">Use <code class="sn-ic">test.fixme</code></strong> for broken test scripts (the test code needs repair).</p>
+    </div>
+  </div>
+
+  <!-- Q302.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.10</span>
+      <h2 class="sn-q-text">What is test.slow?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.slow()</code> multiplies all timeouts for that test by 3 — test timeout, action timeout, and assertion timeout. It is a relative modifier, not a hardcoded number.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'bulk report generation completes'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">slow</span>(); <span class="tc-cm">// 3× global timeouts for this test only</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/reports'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate Annual Report'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'download-link'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">If the global test timeout is 30 seconds, <code class="sn-ic">test.slow()</code> gives this test 90 seconds. If you later change the global timeout to 60 seconds, <code class="sn-ic">test.slow()</code> automatically becomes 180 seconds — no code change needed.</p>
+<p class="sn-para"><strong class="k-green">Use <code class="sn-ic">test.slow</code></strong> for tests that are inherently slow — large file uploads, report generation, email flows. Do not use it as a substitute for fixing flakiness caused by missing waits.</p>
+    </div>
+  </div>
+
+  <!-- Q302.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.11</span>
+      <h2 class="sn-q-text">What is the difference between test.skip, test.fixme, and test.fail?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Runs?</th><th class="sn-th-green">Report category</th><th class="sn-th-purple">Use when</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">test.skip</code></td><td>No</td><td>Skipped</td><td>Intentionally disabled</td></tr>
+          <tr><td><code class="sn-ic">test.fixme</code></td><td>No</td><td>Fixme</td><td>Broken, needs repair</td></tr>
+          <tr><td><code class="sn-ic">test.fail</code></td><td>Yes</td><td>Expected failure</td><td>Known product bug</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The key distinction is between intent and behaviour:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Skip and fixme both prevent execution — the difference is intent. Skip is</span></li>
+</ul>
+<p class="sn-para">  a deliberate choice; fixme is a broken test awaiting repair.</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Fail runs the test — it keeps the code path covered and alerts you when</span></li>
+</ul>
+<p class="sn-para">  the bug is resolved.</p>
+<p class="sn-para"><strong class="k-purple">Use skip</strong> for missing features or environment conditions. <strong class="k-purple">Use fixme</strong> for broken test scripts with a ticket reference. <strong class="k-purple">Use fail</strong> for known application bugs — keeps CI green and coverage intact.</p>
+    </div>
+  </div>
+
+  <!-- Q302.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.12</span>
+      <h2 class="sn-q-text">How do you add a tag to a test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tags are strings prefixed with <code class="sn-ic">@</code> that you include in the test title or in the details object. They enable CLI-based filtering of test runs.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Tag in the title (simple, widely used)</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'user can log in @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+<span class="tc-kw">test</span>(<span class="tc-str">'password reset sends email @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+
+<span class="tc-cm">// Tag in the details object (structured, supports multiple tags)</span>
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'checkout completes with valid card'</span>,
+  { tag: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@checkout'</span>] },
+  <span class="tc-kw">async</span> ({ page }) =&gt; { ... }
+);</div>
+      </div>
+<p class="sn-para">Run tests by tag:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep @smoke        # run all smoke tests
+npx playwright test --grep &quot;@smoke|@api&quot; # smoke OR api
+npx playwright test --grep-invert @slow  # everything except slow</div>
+      </div>
+<p class="sn-para">In our project, every test has at least one tag. We use <code class="sn-ic">@smoke</code> for the critical path (about 20 tests) and <code class="sn-ic">@regression</code> for the full suite. PRs run <code class="sn-ic">@smoke</code> only. Nightly runs execute the full suite.</p>
+    </div>
+  </div>
+
+  <!-- Q302.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.13</span>
+      <h2 class="sn-q-text">How do you attach custom annotations to a test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Custom annotations add metadata visible in HTML reports and JSON output. They link tests to external systems like Jira or Confluence.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Via the details object (declared at test definition)</span>
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'order confirmation email is sent'</span>,
+  {
+    annotation: [
+      { <span class="tc-kw">type</span>: <span class="tc-str">'issue'</span>, description: <span class="tc-str">'https: S1 
+      { type: '</span>owner<span class="tc-str">', description: '</span>checkout-team<span class="tc-str">' },
+    ]
+  },
+  async ({ page }) =&amp;gt; { ... }
+);
+
+ S2 
+test('</span>payment flow completes<span class="tc-str">', async ({ page }) =&amp;gt; {
+  test.info().annotations.push({
+    type: '</span>issue<span class="tc-str">',
+    description: '</span>https:<span class="tc-cm">//jira.example.com/browse/PAY-77'</span>
+  });
+  <span class="tc-cm">// ...</span>
+});</div>
+      </div>
+<p class="sn-para">Custom annotations appear in the HTML report alongside the test result. They also appear in JSON and JUnit XML output — which means CI dashboards and issue-tracker integrations can consume them programmatically.</p>
+    </div>
+  </div>
+
+  <!-- Q302.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.14</span>
+      <h2 class="sn-q-text">How do you set a custom timeout for one test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Pass a <code class="sn-ic">timeout</code> in the details object or use <code class="sn-ic">test.setTimeout()</code> inside the test body:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Via details object (declared at definition)</span>
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'large CSV import completes'</span>,
+  { timeout: 120_000 }, <span class="tc-cm">// 2 minutes for this test only</span>
+  <span class="tc-kw">async</span> ({ page }) =&gt; { ... }
+);
+
+<span class="tc-cm">// Via test.setTimeout() inside the body</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'bulk report generation'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(90_000); <span class="tc-cm">// 90 seconds</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Generate'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'report-link'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Per-test timeouts override the global <code class="sn-ic">timeout</code> in <code class="sn-ic">playwright.config.ts</code> for that test only. All other tests keep the global value.</p>
+    </div>
+  </div>
+
+  <!-- Q302.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.15</span>
+      <h2 class="sn-q-text">Write a complete, well-structured test with tags, AAA pattern, and a conditional skip.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'admin can delete an employee with no leave records @smoke'</span>,
+  { tag: <span class="tc-str">'@admin'</span> },
+  <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// ARRANGE — navigate and confirm employee exists</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Alice Johnson'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+    <span class="tc-cm">// Skip on Firefox — delete confirmation dialog behaves differently</span>
+    <span class="tc-kw">test</span>.<span class="tc-fn">skip</span>(
+      <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().project.name === <span class="tc-str">'firefox'</span>,
+      <span class="tc-str">'Delete dialog not rendering correctly on Firefox — ticket  S2 
+    );
+
+     S3 
+    await page.getByRole('</span>row<span class="tc-str">', { name: /Alice Johnson/ })
+               .getByRole('</span>button<span class="tc-str">', { name: '</span>Delete<span class="tc-str">' })
+               .click();
+
+    page.once('</span>dialog<span class="tc-str">', dialog =&amp;gt; dialog.accept());
+
+     S4 
+    await expect(page.getByText('</span>Alice Johnson<span class="tc-str">')).not.toBeVisible();
+    await expect(page.getByRole('</span>alert<span class="tc-str">')).toHaveText('</span>Employee deleted successfully');
+  }
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q302.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.16</span>
+      <h2 class="sn-q-text">How do you set retries for a specific test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Pass a <code class="sn-ic">retries</code> value in the details object or call <code class="sn-ic">test.info().retry</code> inside the body to check the current attempt:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Retry this specific test up to 2 times on failure</span>
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'payment gateway responds within 5 seconds'</span>,
+  { retries: <span class="tc-num">2</span> },
+  <span class="tc-kw">async</span> ({ page }) =&gt; { ... }
+);
+
+<span class="tc-cm">// Conditional logic based on retry number</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'flaky third-party widget loads'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().retry &gt; <span class="tc-num">0</span>) {
+    <span class="tc-cm">// Second attempt — reload before proceeding</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">reload</span>();
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'widget-container'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Global retries are set in <code class="sn-ic">playwright.config.ts</code>. Per-test retries override the global value for that test only. Retries are covered fully in Chapter 43.</p>
+    </div>
+  </div>
+
+  <!-- Q302.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.17</span>
+      <h2 class="sn-q-text">In your project, how do you use test.fail for known bugs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we treat CI green as a strict signal — a red build means something unexpected broke. <code class="sn-ic">test.fail</code> is how we keep CI green for known product bugs without losing test coverage.</p>
+      </div>
+<p class="sn-para">Our convention: every <code class="sn-ic">test.fail</code> must include the bug ticket in the title and cannot be merged without a linked ticket in our issue tracker.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">fail</span>(
+  <span class="tc-str">'checkout summary shows incorrect tax for EU customers — bug  S0 
+  async ({ page }) =&amp;gt; {
+    await page.goto('</span>/checkout<span class="tc-str">');
+    await page.getByTestId('</span>country-select<span class="tc-str">').selectOption('</span>DE<span class="tc-str">');
+    await page.getByRole('</span>button<span class="tc-str">', { name: '</span>Proceed<span class="tc-str">' }).click();
+
+     S1 
+     S2 
+    await expect(page.getByTestId('</span>tax-line<span class="tc-str">')).toHaveText('</span>VAT: <span class="tc-num">19</span>%');
+  }
+);</div>
+      </div>
+<p class="sn-para">When the engineering team fixes the bug, the test starts passing — Playwright reports it as "unexpected pass" in the HTML report. That is our trigger to remove <code class="sn-ic">test.fail</code> and let the test pass normally. It is a clean feedback loop.</p>
+    </div>
+  </div>
+
+  <!-- Q302.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q302.18</span>
+      <h2 class="sn-q-text">What is the testInfo object and what information does it expose?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">testInfo</code> is the second argument passed to every test function. It gives access to metadata about the currently running test.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'reads testInfo metadata'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  console.<span class="tc-fn">log</span>(testInfo.title);        <span class="tc-cm">// &amp;quot;reads testInfo metadata&amp;quot;</span>
+  console.<span class="tc-fn">log</span>(testInfo.file);         <span class="tc-cm">// &amp;quot;/tests/example.spec.ts&amp;quot;</span>
+  console.<span class="tc-fn">log</span>(testInfo.retry);        <span class="tc-cm">// 0 (first run), 1 (first retry)</span>
+  console.<span class="tc-fn">log</span>(testInfo.project.name); <span class="tc-cm">// &amp;quot;chromium&amp;quot;</span>
+  console.<span class="tc-fn">log</span>(testInfo.status);       <span class="tc-cm">// &amp;quot;passed&amp;quot;, &amp;quot;failed&amp;quot;, &amp;quot;skipped&amp;quot;</span>
+
+  <span class="tc-cm">// Attach a screenshot to the test report</span>
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+    body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+    contentType: <span class="tc-str">'image/png'</span>,
+  });
+
+  <span class="tc-cm">// Attach a JSON file</span>
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'api-response'</span>, {
+    body: JSON.<span class="tc-fn">stringify</span>({ orderId: <span class="tc-str">'123'</span> }),
+    contentType: <span class="tc-str">'application/json'</span>,
+  });
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">testInfo</code> is most useful in:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Custom fixtures (checking retry count to clean up before a retry)</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">afterEach</code> hooks (attaching screenshots only on failure)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Custom reporters (reading annotations and metadata)</span></li>
+</ul>
+<p class="sn-para"><code class="sn-ic">testInfo</code> is covered more deeply in Chapter 27.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test(title, body)</code> is the basic form. <code class="sn-ic">test(title, details, body)</code> adds tags, annotations, timeout, and retries.</span></li>
+            <li><span class="icon">⭐</span><span>Write test titles for the failure report — specific sentences that explain what broke without opening the file.</span></li>
+            <li><span class="icon">⭐</span><span>Arrange / Act / Assert: one test, one behaviour. Failing phase tells you exactly what broke.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.only</code> — local debugging only. Protect CI with <code class="sn-ic">forbidOnly: !!process.env.CI</code>.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.skip</code> — disabled, visible in report. Always include a reason string.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.fixme</code> — broken, needs repair. Separate report category from skipped. Use with a ticket reference.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.fail</code> — runs but expected to fail. Keeps CI green for known bugs. Reports "unexpected pass" when bug is fixed.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.slow</code> — triples all timeouts. Relative, not hardcoded — adjusts automatically when global timeout changes.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

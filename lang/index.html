@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Powered QA — LangChain, LangGraph, LangSmith & Playwright AI</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<link rel="stylesheet" href="../../linkedin-modal.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f1f5f9;--card:#ffffff;--bdr:#e2e8f0;
+  --tx:#0f172a;--mu:#64748b;
+  --r:10px;--sh:0 1px 3px rgba(0,0,0,.06),0 2px 10px rgba(0,0,0,.04);
+}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--tx);line-height:1.55}
+
+.site-header{position:sticky;top:0;z-index:220;background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--bdr)}
+.site-nav{max-width:1260px;margin:0 auto;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.site-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
+.site-logo img{height:40px;width:auto;display:block}
+.site-links{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;justify-content:flex-end}
+.site-link{padding:.28rem .58rem;border-radius:6px;font-size:.76rem;font-weight:700;color:#334155;text-decoration:none;transition:background .15s,color .15s}
+.site-link:hover{background:#e2e8f0;color:#0f172a}
+.site-link.active{background:#e2e8f0;color:#0f172a}
+.site-link.contact{background:#0f172a;color:#fff}
+.site-link.contact:hover{background:#1e293b;color:#fff}
+
+.hero{background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 50%,#0f172a 100%);color:#fff;padding:3rem 1.5rem;text-align:center}
+.hero h1{font-size:clamp(1.5rem,4vw,2.6rem);font-weight:900;letter-spacing:-.02em;line-height:1.15;margin-bottom:.5rem}
+.hero h1 em{color:#a78bfa;font-style:normal}
+.hero .sub{color:#94a3b8;font-size:.97rem;max-width:640px;margin:.5rem auto 1.8rem}
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem}
+.stat b{display:block;font-size:1.9rem;font-weight:900;color:#a78bfa;line-height:1.1}
+.stat s{display:block;font-size:.68rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin-top:.1rem;text-decoration:none}
+
+.books{max-width:1260px;margin:0 auto;padding:2rem 1.5rem}
+.books-hdr{text-align:center;margin-bottom:2rem}
+.books-hdr h2{font-size:1.4rem;font-weight:900;margin-bottom:.4rem}
+.books-hdr p{color:var(--mu);font-size:.92rem}
+
+.books-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.book-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s;text-decoration:none;color:inherit}
+.book-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.book-top{padding:1.5rem 1.25rem 1rem;display:flex;align-items:flex-start;gap:1rem}
+.book-icon{width:56px;height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0}
+.book-meta{flex:1}
+.book-num{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-bottom:.2rem}
+.book-title{font-size:1.1rem;font-weight:900;line-height:1.25;margin-bottom:.25rem}
+.book-subtitle{font-size:.78rem;color:var(--mu);line-height:1.4}
+.book-body{padding:0 1.25rem 1rem;flex:1}
+.book-desc{font-size:.83rem;color:var(--mu);line-height:1.55;margin-bottom:.75rem}
+.book-topics{display:flex;flex-wrap:wrap;gap:.35rem}
+.topic-tag{font-size:.65rem;font-weight:700;padding:.2rem .55rem;border-radius:4px}
+.book-foot{padding:.85rem 1.25rem;border-top:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.book-chapters{font-size:.75rem;color:var(--mu)}
+.book-chapters b{font-weight:800;color:var(--tx)}
+.book-cta{display:inline-flex;align-items:center;gap:.35rem;padding:.4rem 1rem;border-radius:7px;font-size:.76rem;font-weight:700;text-decoration:none;transition:filter .12s}
+.book-cta:hover{filter:brightness(.88)}
+
+.audience{max-width:1260px;margin:0 auto;padding:0 1.5rem 2rem}
+.aud-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.aud-grid{grid-template-columns:1fr}}
+.aud-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.25rem;box-shadow:var(--sh)}
+.aud-card h3{font-size:1rem;font-weight:800;margin-bottom:.6rem;display:flex;align-items:center;gap:.5rem}
+.aud-card ul{list-style:none;display:flex;flex-direction:column;gap:.45rem}
+.aud-card li{font-size:.83rem;color:var(--mu);padding-left:1.1rem;position:relative}
+.aud-card li::before{content:'→';position:absolute;left:0;color:#6d28d9;font-weight:700}
+
+.prereqs{max-width:1260px;margin:0 auto;padding:0 1.5rem 2.5rem}
+.prereqs-inner{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.25rem;box-shadow:var(--sh)}
+.prereqs-inner h2{font-size:1rem;font-weight:800;margin-bottom:.85rem}
+.prereqs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem}
+.prereq{display:flex;align-items:flex-start;gap:.5rem;font-size:.83rem}
+.prereq i{color:#6d28d9;margin-top:.15rem;flex-shrink:0}
+
+footer{text-align:center;padding:1.5rem;font-size:.75rem;color:var(--mu);border-top:1px solid var(--bdr);background:#fff;margin-top:1rem}
+</style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="site-nav">
+    <a href="../../index.html" class="site-logo">
+      <img src="../../assets/images/logo.png" alt="VibetestQ" onerror="this.style.display='none'">
+    </a>
+    <div class="site-links">
+      <a href="../../index.html" class="site-link">Home</a>
+      <a href="../playwright/index.html" class="site-link">Playwright</a>
+      <a href="index.html" class="site-link active">AI Books</a>
+      <a href="../../training.html" class="site-link">Training</a>
+      <a href="../../contact.html" class="site-link contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <h1>AI-Powered QA with <em>LangChain, LangGraph &amp; LangSmith</em></h1>
+  <p class="sub">Four complete books for QA engineers and test automation engineers — from zero AI knowledge to production-ready AI-augmented Playwright frameworks.</p>
+  <div class="stats">
+    <div class="stat"><b>4</b><s>Books</s></div>
+    <div class="stat"><b>50+</b><s>Chapters</s></div>
+    <div class="stat"><b>TypeScript</b><s>All examples</s></div>
+    <div class="stat"><b>50/50</b><s>Manual QA + Automation</s></div>
+  </div>
+</section>
+
+<section class="books">
+  <div class="books-hdr">
+    <h2>The Four Books</h2>
+    <p>Study them in order or jump to the one that fits your current need.</p>
+  </div>
+  <div class="books-grid">
+
+    <a href="langchain/index.html" class="book-card">
+      <div class="book-top">
+        <div class="book-icon" style="background:#fef3c7;color:#b45309">🔗</div>
+        <div class="book-meta">
+          <div class="book-num" style="color:#b45309">Book 1</div>
+          <div class="book-title">LangChain for QA Engineers</div>
+          <div class="book-subtitle">Build AI tools that help you test smarter</div>
+        </div>
+      </div>
+      <div class="book-body">
+        <p class="book-desc">Learn LangChain from scratch — no AI background required. Build test data generators, requirement analysers, bug classifiers, and more using TypeScript.</p>
+        <div class="book-topics">
+          <span class="topic-tag" style="background:#fef3c7;color:#92400e">Chains</span>
+          <span class="topic-tag" style="background:#fef3c7;color:#92400e">Prompts</span>
+          <span class="topic-tag" style="background:#fef3c7;color:#92400e">Structured Output</span>
+          <span class="topic-tag" style="background:#fef3c7;color:#92400e">Agents</span>
+          <span class="topic-tag" style="background:#fef3c7;color:#92400e">Memory</span>
+        </div>
+      </div>
+      <div class="book-foot">
+        <span class="book-chapters"><b>17</b> Chapters + 2 Appendices</span>
+        <span class="book-cta" style="background:#b45309;color:#fff">Open Book →</span>
+      </div>
+    </a>
+
+    <a href="langgraph/index.html" class="book-card">
+      <div class="book-top">
+        <div class="book-icon" style="background:#d1fae5;color:#047857">🕸</div>
+        <div class="book-meta">
+          <div class="book-num" style="color:#047857">Book 2</div>
+          <div class="book-title">LangGraph for QA Engineers</div>
+          <div class="book-subtitle">Orchestrate multi-step AI QA workflows</div>
+        </div>
+      </div>
+      <div class="book-body">
+        <p class="book-desc">Build stateful, graph-based AI workflows. Automate multi-step QA processes, add human approval checkpoints, and run AI agents that heal broken tests.</p>
+        <div class="book-topics">
+          <span class="topic-tag" style="background:#d1fae5;color:#065f46">StateGraph</span>
+          <span class="topic-tag" style="background:#d1fae5;color:#065f46">Interrupt</span>
+          <span class="topic-tag" style="background:#d1fae5;color:#065f46">Parallel Edges</span>
+          <span class="topic-tag" style="background:#d1fae5;color:#065f46">Agents</span>
+        </div>
+      </div>
+      <div class="book-foot">
+        <span class="book-chapters"><b>12</b> Chapters + Appendix</span>
+        <span class="book-cta" style="background:#047857;color:#fff">Open Book →</span>
+      </div>
+    </a>
+
+    <a href="langsmith/index.html" class="book-card">
+      <div class="book-top">
+        <div class="book-icon" style="background:#ede9fe;color:#6d28d9">🔬</div>
+        <div class="book-meta">
+          <div class="book-num" style="color:#6d28d9">Book 3</div>
+          <div class="book-title">LangSmith for QA Engineers</div>
+          <div class="book-subtitle">Observe, evaluate and improve your AI tools</div>
+        </div>
+      </div>
+      <div class="book-body">
+        <p class="book-desc">Trace every AI call, build evaluation datasets, run automated scoring, and integrate AI quality gates into CI/CD — applied directly to QA AI tools.</p>
+        <div class="book-topics">
+          <span class="topic-tag" style="background:#ede9fe;color:#4c1d95">Tracing</span>
+          <span class="topic-tag" style="background:#ede9fe;color:#4c1d95">Datasets</span>
+          <span class="topic-tag" style="background:#ede9fe;color:#4c1d95">Evaluators</span>
+          <span class="topic-tag" style="background:#ede9fe;color:#4c1d95">CI/CD</span>
+        </div>
+      </div>
+      <div class="book-foot">
+        <span class="book-chapters"><b>10</b> Chapters + Appendix</span>
+        <span class="book-cta" style="background:#6d28d9;color:#fff">Open Book →</span>
+      </div>
+    </a>
+
+    <a href="playwright-ai/index.html" class="book-card">
+      <div class="book-top">
+        <div class="book-icon" style="background:#dbeafe;color:#1d4ed8">🎭</div>
+        <div class="book-meta">
+          <div class="book-num" style="color:#1d4ed8">Book 4</div>
+          <div class="book-title">Playwright + AI Integration</div>
+          <div class="book-subtitle">Build a production AI-augmented test framework</div>
+        </div>
+      </div>
+      <div class="book-body">
+        <p class="book-desc">Put it all together — AI test data, selector healing, test generation, failure analysis, visual regression, LangGraph orchestration and LangSmith observability in one framework.</p>
+        <div class="book-topics">
+          <span class="topic-tag" style="background:#dbeafe;color:#1e3a8a">Data Factory</span>
+          <span class="topic-tag" style="background:#dbeafe;color:#1e3a8a">Healing</span>
+          <span class="topic-tag" style="background:#dbeafe;color:#1e3a8a">Visual AI</span>
+          <span class="topic-tag" style="background:#dbeafe;color:#1e3a8a">Failure Analysis</span>
+        </div>
+      </div>
+      <div class="book-foot">
+        <span class="book-chapters"><b>12</b> Chapters + Appendix</span>
+        <span class="book-cta" style="background:#1d4ed8;color:#fff">Open Book →</span>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<section class="audience">
+  <div class="aud-grid">
+    <div class="aud-card">
+      <h3><i class="fa-solid fa-user-check" style="color:#6d28d9"></i> For Manual QA Engineers</h3>
+      <ul>
+        <li>No prior AI or ML knowledge required</li>
+        <li>Learn how to use AI to generate test scenarios and data</li>
+        <li>Use AI to analyse bug reports and classify failures</li>
+        <li>Understand AI tools without writing complex code</li>
+        <li>Learn when AI helps and when human judgement is essential</li>
+      </ul>
+    </div>
+    <div class="aud-card">
+      <h3><i class="fa-solid fa-code" style="color:#6d28d9"></i> For Automation Engineers</h3>
+      <ul>
+        <li>Build AI-powered tools using TypeScript and LangChain</li>
+        <li>Create selector healers and AI POM generators</li>
+        <li>Orchestrate complex QA workflows with LangGraph</li>
+        <li>Add LangSmith evaluation to measure AI quality</li>
+        <li>Integrate everything into a CI/CD pipeline</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="prereqs">
+  <div class="prereqs-inner">
+    <h2><i class="fa-solid fa-list-check" style="color:#6d28d9;margin-right:.5rem"></i>Prerequisites</h2>
+    <div class="prereqs-grid">
+      <div class="prereq"><i class="fa-solid fa-check"></i><span>Basic TypeScript — variables, functions, async/await</span></div>
+      <div class="prereq"><i class="fa-solid fa-check"></i><span>Basic testing knowledge — what a test is and why we write them</span></div>
+      <div class="prereq"><i class="fa-solid fa-check"></i><span>Node.js installed (v18+)</span></div>
+      <div class="prereq"><i class="fa-solid fa-check"></i><span>OpenAI API key (paid) for running examples</span></div>
+      <div class="prereq"><i class="fa-solid fa-times" style="color:#94a3b8"></i><span style="color:#94a3b8">No AI/ML knowledge required</span></div>
+      <div class="prereq"><i class="fa-solid fa-times" style="color:#94a3b8"></i><span style="color:#94a3b8">No Python required</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 VibetestQ. All AI-powered documentation written for QA engineers by QA engineers.</p>
+</footer>
+
+</body>
+</html>

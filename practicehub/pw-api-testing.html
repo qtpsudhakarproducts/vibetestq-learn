@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright API Testing Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="15 interactive Playwright API testing MCQ challenges. Master HTTP methods, status codes, request fixture, auth headers and more with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #065f46;
+            --primary-light: #ecfdf5;
+            --accent: #10b981;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #6ee7b7; transition: all 0.3s; }
+        .score-pill.bump { background: #d1fae5; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #059669, #10b981); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #ecfdf5; color: #047857; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #065f46; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #6ee7b7; background: #d1fae5; color: #065f46; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #6ee7b7; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #ecfdf5; border: 1px solid #6ee7b7; color: #065f46; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 15</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">API Testing Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. POST returns 201</span>          <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. 401 vs 403</span>                <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. request fixture type</span>      <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. response.status()</span>         <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. POST with data key</span>        <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. Content-Type auto-set</span>     <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. json() vs text()</span>          <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Bearer token header</span>       <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. PUT vs PATCH</span>              <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. 204 No Content</span>           <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. extraHTTPHeaders config</span>  <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. response.ok()</span>            <div class="nav-dot" id="dot-c12"></div></a>
+    <a href="#c13" class="nav-item"><span>13. newContext() for reuse</span>   <div class="nav-dot" id="dot-c13"></div></a>
+    <a href="#c14" class="nav-item"><span>14. storageState for API</span>     <div class="nav-dot" id="dot-c14"></div></a>
+    <a href="#c15" class="nav-item"><span>15. 429 status meaning</span>       <div class="nav-dot" id="dot-c15"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-network-wired"></i> Playwright API Testing</h1>
+        <p>15 challenges covering HTTP methods, status codes, request fixture, auth headers, and API context reuse.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">HTTP Status</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What status code does a successful POST that creates a resource return?</div>
+            <div class="ch-desc">You send a POST request to create a new user. The operation succeeds and the resource is created. What HTTP status code should you expect?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> 200 OK</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> 201 Created</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> 202 Accepted</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> 204 No Content</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — 201 Created</strong><br><strong>201 Created</strong> is the correct status for a POST that successfully creates a new resource. The response typically includes the created resource in the body and a <code>Location</code> header pointing to the new resource's URL. <strong>200 OK</strong> is for general success (GET, PUT). <strong>202 Accepted</strong> means processing is async. <strong>204</strong> means success with no body (common for DELETE).</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint">POST creates → 201. GET retrieves → 200. PUT updates → 200. DELETE → 204. These are the most common patterns.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge beginner">Beginner</span><span class="topic-badge">HTTP Status</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the difference between 401 and 403?</div>
+            <div class="ch-desc">Two requests fail with authentication/authorization errors. One returns 401, the other 403. What do they mean?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> 401 = server error; 403 = client error</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> 401 = not authenticated (no/invalid credentials); 403 = authenticated but not authorized (lacks permission)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> 401 = wrong password; 403 = expired password</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> They mean the same thing — unauthorized access</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: B — 401 = unauthenticated; 403 = unauthorized</strong><br><strong>401 Unauthorized</strong>: The request lacks valid authentication credentials. "You haven't proven who you are." Retrying with valid credentials may succeed. <strong>403 Forbidden</strong>: The request is authenticated but the user lacks permission to perform this action. "We know who you are, but you can't do this." Retrying with the same credentials won't help — you need different permissions.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint">401 = "Who are you?" (missing/invalid auth). 403 = "I know who you are, but no." (missing permission).</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge beginner">Beginner</span><span class="topic-badge">request fixture</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What type is the built-in request fixture?</div>
+            <div class="ch-desc">In a Playwright test function, <code>{ request }</code> is destructured. What is the TypeScript type of <code>request</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> Page</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> APIRequestContext</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> BrowserContext</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> XMLHttpRequest</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — APIRequestContext</strong><br>The built-in <code>request</code> fixture is of type <code>APIRequestContext</code>. It provides methods: <code>get()</code>, <code>post()</code>, <code>put()</code>, <code>patch()</code>, <code>delete()</code>, <code>head()</code>, <code>fetch()</code>. It does not open a browser — it's a pure HTTP client. It respects <code>baseURL</code> from config and any <code>extraHTTPHeaders</code> defined at the context level.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint">Import hint: <code>import { APIRequestContext } from '@playwright/test'</code>. The built-in <code>request</code> fixture IS an <code>APIRequestContext</code>.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge beginner">Beginner</span><span class="topic-badge">Response</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does response.status() return?</div>
+            <div class="ch-desc">You call <code>const response = await request.post('/api/users', {...})</code>. What does <code>response.status()</code> return?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> A string like "201 Created"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> A numeric HTTP status code like 201</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> A boolean: true if 200-299, false otherwise</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> A Promise that resolves to the status code</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — numeric HTTP status code</strong><br><code>response.status()</code> is a synchronous method that returns the HTTP status code as a <strong>number</strong> (e.g., <code>200</code>, <code>201</code>, <code>404</code>). Use it with <code>expect(response.status()).toBe(201)</code>. Note that <code>response.ok()</code> is a convenience boolean for 200–299. <code>response.statusText()</code> returns the text phrase like <code>"Created"</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint"><code>response.status()</code> returns a number. <code>response.ok()</code> returns a boolean. <code>response.statusText()</code> returns the string phrase.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge beginner">Beginner</span><span class="topic-badge">Request Body</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you send a JSON body in a Playwright API POST request?</div>
+            <div class="ch-desc">Which option key sends a JavaScript object as a JSON request body?</div>
+            <div class="code-block"><pre><code class="language-typescript">const response = await request.post('/api/users', {
+  ???: { name: 'Alice', role: 'tester' }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> body:</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">B</span> json:</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">C</span> data:</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> payload:</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: C — data: key</strong><br>In Playwright's API request methods, the <code>data</code> key accepts a JavaScript object, string, or Buffer as the request body. When you pass a plain object to <code>data</code>, Playwright automatically serializes it to JSON and sets <code>Content-Type: application/json</code>. Options: <code>data</code> (auto-serialized), <code>form</code> (form-encoded), <code>multipart</code> (file uploads). There is no <code>body</code>, <code>json</code>, or <code>payload</code> key.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint">Playwright uses <code>data:</code> for request body — not <code>body:</code> or <code>json:</code>. Pass a plain object and Playwright serializes it to JSON automatically.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Headers</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What Content-Type does Playwright set when you use data: with an object?</div>
+            <div class="ch-desc">You pass a plain JavaScript object to <code>data:</code> in a POST request. What Content-Type header does Playwright set automatically?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> text/plain</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">B</span> application/x-www-form-urlencoded</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">C</span> application/json</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> multipart/form-data</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: C — application/json</strong><br>When you pass a plain JavaScript object to <code>data:</code>, Playwright automatically: (1) serializes it with <code>JSON.stringify()</code>, and (2) sets <code>Content-Type: application/json</code>. You don't need to set it manually. If you pass a string to <code>data:</code>, no Content-Type is set automatically. Use <code>form:</code> for <code>application/x-www-form-urlencoded</code>, and <code>multipart:</code> for <code>multipart/form-data</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint">Object + <code>data:</code> → JSON serialized + <code>Content-Type: application/json</code> auto-set. No manual header needed.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge beginner">Beginner</span><span class="topic-badge">Response</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When would you use response.text() instead of response.json()?</div>
+            <div class="ch-desc">A response returns HTML content, not JSON. Which method should you call to read the body?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> response.json() — it handles all content types</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> response.text() — for non-JSON responses like HTML or plain text</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> response.body() — returns the raw content as a string</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> response.read() — for text-based responses</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: B — response.text() for non-JSON content</strong><br><code>response.json()</code> attempts to parse the body as JSON and will throw if the body is not valid JSON. <code>response.text()</code> returns the raw body as a string — works for HTML, plain text, XML, CSV. <code>response.body()</code> returns a <code>Buffer</code> (binary data). Use the right method for the content type: JSON → <code>.json()</code>, text → <code>.text()</code>, binary → <code>.body()</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint"><code>.json()</code> = parse as JSON (throws if not JSON). <code>.text()</code> = raw string. <code>.body()</code> = Buffer for binary data.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Auth</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you send a Bearer token with every API request?</div>
+            <div class="ch-desc">You want to include an <code>Authorization: Bearer &lt;token&gt;</code> header on all requests from an <code>APIRequestContext</code>. What is the correct approach?</div>
+            <div class="code-block"><pre><code class="language-typescript">const context = await playwright.request.newContext({
+  baseURL: 'https://api.example.com',
+  ???: { 'Authorization': 'Bearer abc123' }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> headers:</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> extraHTTPHeaders:</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> auth:</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> defaultHeaders:</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: B — extraHTTPHeaders:</strong><br><code>extraHTTPHeaders</code> is the Playwright option for setting default headers on every request made by the context. Set it when creating the context (<code>playwright.request.newContext({ extraHTTPHeaders: {...} })</code>) or in <code>playwright.config.ts</code> under <code>use: { extraHTTPHeaders: {...} }</code>. These headers are merged with any per-request headers. Use this for auth tokens, API keys, and custom headers that apply to all requests.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint">The key is <code>extraHTTPHeaders</code> (not <code>headers</code>). It sets default headers on the context so every request includes them automatically.</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">HTTP Methods</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the difference between PUT and PATCH?</div>
+            <div class="ch-desc">You want to update a user's email only, leaving all other fields unchanged. Should you use PUT or PATCH?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> PUT — it only updates the specified field</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> PATCH — it applies a partial update; PUT replaces the entire resource</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> They are identical — use either</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> PATCH creates a new resource if it doesn't exist; PUT updates existing</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — PATCH for partial updates; PUT replaces all</strong><br><strong>PUT</strong>: Replace the entire resource. If you don't include a field, it gets reset/deleted. You must send the complete representation. <strong>PATCH</strong>: Partial update — only the fields you send are changed; others remain untouched. Use PATCH when updating a single field. Use PUT when replacing the full resource. Most modern REST APIs support both, but PATCH is safer for partial updates.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">PUT = total replacement (all fields required). PATCH = surgical update (only changed fields). Partial update → always PATCH.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge beginner">Beginner</span><span class="topic-badge">HTTP Status</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does 204 No Content mean and can you call response.json() on it?</div>
+            <div class="ch-desc">A DELETE request returns status 204. What does this mean, and is it safe to call <code>response.json()</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> 204 means the resource was not found; json() returns null</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> 204 means success with no response body; calling json() will throw an error</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> 204 means the response is empty JSON {}; json() returns an empty object</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> 204 is a redirect status code</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — success but no body; json() will throw</strong><br><strong>204 No Content</strong> means the operation succeeded but there is no body to return. Common for DELETE, and sometimes PUT/PATCH. The HTTP spec requires no body with 204. Calling <code>response.json()</code> on a 204 will throw a JSON parse error because there's nothing to parse. To assert a successful DELETE: <code>expect(response.status()).toBe(204)</code> — that's it, no body to check.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">204 = success + empty body. Never call <code>.json()</code> on a 204 response — there's nothing to parse. Just assert the status code.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Headers</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Where does extraHTTPHeaders in playwright.config.ts apply?</div>
+            <div class="ch-desc">You set <code>use: { extraHTTPHeaders: { 'X-API-Key': 'secret' } }</code> in config. Where are these headers applied?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> Only to requests made by the request fixture</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> To all HTTP requests made by every browser page and API request context in the test</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> Only to fetch() calls made inside page.evaluate()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> Only to requests within the same origin as baseURL</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — all requests from pages and API contexts</strong><br><code>extraHTTPHeaders</code> in the <code>use</code> section of config applies to the browser context — which means ALL HTTP requests made by pages (browser network requests) AND all requests made via the <code>request</code> fixture or <code>newContext()</code>. This is a powerful way to inject auth tokens globally. You can override or extend per-request with individual headers in specific calls.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint">Config-level <code>extraHTTPHeaders</code> is global — it applies to everything: browser page requests AND API request context calls.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge beginner">Beginner</span><span class="topic-badge">Response</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does response.ok() return?</div>
+            <div class="ch-desc">What does <code>response.ok()</code> return, and for which status codes does it return true?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> true only for status 200</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> true for any status 200–299 (successful responses)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> true for 200–399 (including redirects)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> A Promise that resolves to a boolean</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — true for 200–299</strong><br><code>response.ok()</code> is a synchronous boolean convenience method — it returns <code>true</code> if the HTTP status code is in the 200–299 range (success family). It returns <code>false</code> for 400+ (client errors), 500+ (server errors), and also for 300+ (redirects). Use it as a quick pass/fail check: <code>expect(response.ok()).toBeTruthy()</code> instead of checking the exact status code when you only care that the request succeeded.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint"><code>ok()</code> = 200-299 → true. Anything else → false. It's a shortcut for "did this request succeed?"</div></div>
+    </div>
+
+    <!-- C13 -->
+    <div class="challenge-card" id="c13">
+        <div class="ch-header"><span class="ch-num">Challenge 13</span><span class="badge advanced">Advanced</span><span class="topic-badge">API Context</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you create a reusable APIRequestContext outside of tests?</div>
+            <div class="ch-desc">You want to create a shared API client in a fixture or global setup. Which Playwright API creates an <code>APIRequestContext</code> independently?</div>
+            <div class="code-block"><pre><code class="language-typescript">import { chromium, ???  } from '@playwright/test';
+
+const apiContext = await playwright.request.newContext({
+  baseURL: 'https://api.example.com',
+  extraHTTPHeaders: { 'Authorization': 'Bearer token' }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c13',this,false)"><span class="option-letter">A</span> APIContext.create()</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c13',this,true)"><span class="option-letter">B</span> playwright.request.newContext()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c13',this,false)"><span class="option-letter">C</span> new APIRequestContext()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c13',this,false)"><span class="option-letter">D</span> browser.newAPIContext()</button>
+            </div>
+            <div class="explanation" id="c13-exp"><strong>Answer: B — playwright.request.newContext()</strong><br>To create a standalone <code>APIRequestContext</code> outside the test fixture system (e.g., in <code>globalSetup</code>), use <code>playwright.request.newContext(options)</code> where <code>playwright</code> is the Playwright instance imported from <code>@playwright/test</code>. Remember to call <code>await apiContext.dispose()</code> when done. Inside tests, it's easier to use the built-in <code>request</code> fixture which handles lifecycle automatically.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c13-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c13-hint">Outside tests: use <code>playwright.request.newContext()</code>. Inside tests: just use the built-in <code>request</code> fixture. Don't forget to <code>.dispose()</code> manual contexts.</div></div>
+    </div>
+
+    <!-- C14 -->
+    <div class="challenge-card" id="c14">
+        <div class="ch-header"><span class="ch-num">Challenge 14</span><span class="badge advanced">Advanced</span><span class="topic-badge">Auth</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Can storageState be used to reuse auth in API tests?</div>
+            <div class="ch-desc">You logged in via the UI and saved <code>storageState</code>. Can you reuse that in subsequent API request contexts?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c14',this,false)"><span class="option-letter">A</span> No — storageState only works with browser contexts</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c14',this,true)"><span class="option-letter">B</span> Yes — APIRequestContext accepts storageState to restore cookies and local storage</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c14',this,false)"><span class="option-letter">C</span> Yes, but only for the same origin as the saved session</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c14',this,false)"><span class="option-letter">D</span> No — API contexts don't support cookies at all</button>
+            </div>
+            <div class="explanation" id="c14-exp"><strong>Answer: B — APIRequestContext accepts storageState</strong><br><code>playwright.request.newContext({ storageState: 'auth.json' })</code> loads saved cookies and local storage into the API context. This means API requests will include session cookies from the saved auth state — allowing you to make authenticated API calls without re-logging in. This is the standard pattern for reusing browser sessions in API tests.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c14-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c14-hint">Both browser contexts AND API request contexts accept <code>storageState</code>. Cookies are shared — once you save the auth state, either can reuse it.</div></div>
+    </div>
+
+    <!-- C15 -->
+    <div class="challenge-card" id="c15">
+        <div class="ch-header"><span class="ch-num">Challenge 15</span><span class="badge beginner">Beginner</span><span class="topic-badge">HTTP Status</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does HTTP status 429 mean?</div>
+            <div class="ch-desc">Your API test suddenly starts returning <code>429</code>. What does this indicate?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c15',this,false)"><span class="option-letter">A</span> The server is unavailable (equivalent to 503)</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c15',this,true)"><span class="option-letter">B</span> Too Many Requests — the client has exceeded the rate limit</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c15',this,false)"><span class="option-letter">C</span> Request payload is too large</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c15',this,false)"><span class="option-letter">D</span> The resource has been permanently moved</button>
+            </div>
+            <div class="explanation" id="c15-exp"><strong>Answer: B — 429 Too Many Requests</strong><br><strong>429 Too Many Requests</strong> means the client has sent too many requests in a given time window — the rate limit has been exceeded. The server may include a <code>Retry-After</code> header indicating when to try again. In API tests, 429 can occur when tests run quickly in parallel and hammer the same endpoint. Solutions: add delays between requests, use test doubles/mocks, or test against a rate-limit-free staging environment.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c15-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c15-hint">429 = "Slow down!" Your tests are hitting the API too fast. Look for a <code>Retry-After</code> header in the response for guidance.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 15;
+    const STORAGE_KEY = 'vtq-pw-api';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

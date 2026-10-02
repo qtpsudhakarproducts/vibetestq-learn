@@ -1,0 +1,879 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">👁️ Part 7 &nbsp;·&nbsp; Chapter 706 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Mobile</span> <span class="w2">Emulation</span> <span class="w3">&amp;</span> <span class="w4">Cross-Browser</span></h1>
+    <p class="sn-title-sub">API &amp; Network — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's device emulation system, the <code class="sn-ic">devices</code> preset catalogue, the cross-browser projects matrix, locale and timezone testing, geolocation, and the Clock API. Interviewers ask these questions to judge whether candidates can configure a realistic cross-browser and cross-device strategy without tripling test execution time. Questions at senior level focus on the projects matrix design decision — which tests run on which browsers and why.</span>
+  </div>
+
+
+  <!-- Q706.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.1</span>
+      <h2 class="sn-q-text">What does Playwright emulate when you set a device?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright device emulation is not just window resizing. Setting a device preset configures five properties simultaneously:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Viewport</strong> — the pixel dimensions of the browser window content area.</p>
+<p class="sn-para"><strong class="k-blue">User Agent</strong> — the browser string sent in every HTTP request. Mobile User Agents tell the server the device type, which can affect which HTML or content is returned.</p>
+<p class="sn-para"><strong class="k-blue">Device Scale Factor (DPR)</strong> — the ratio of CSS pixels to physical pixels. iPhone 14 has DPR 3 — one CSS pixel = three physical pixels. Affects image resolution, canvas rendering, and screenshot quality.</p>
+<p class="sn-para"><strong class="k-blue">Touch support (<code class="sn-ic">hasTouch</code>)</strong> — tells the browser that touch events are available. Affects how JavaScript gesture libraries behave and how the browser handles <code class="sn-ic">click</code> vs <code class="sn-ic">tap</code>.</p>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">isMobile</code> flag</strong> — a browser flag that JavaScript can query. Affects CSS media queries (<code class="sn-ic">@media (pointer: coarse)</code>) and JavaScript that checks <code class="sn-ic">navigator.maxTouchPoints</code>.</p>
+<p class="sn-para">A 375px-wide window with desktop DPR and no touch events does not correctly emulate an iPhone. The <code class="sn-ic">devices</code> preset sets all five together correctly.</p>
+    </div>
+  </div>
+
+  <!-- Q706.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.2</span>
+      <h2 class="sn-q-text">How do you use the devices preset?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span>, devices } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-cm">// Per-file — applies to all tests in this file</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ ...devices[<span class="tc-str">'iPhone 14'</span>] });
+
+<span class="tc-kw">test</span>(<span class="tc-str">'mobile hamburger menu opens'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">tap</span>(<span class="tc-str">'.hamburger-icon'</span>); <span class="tc-cm">// tap, not click — touch event</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.mobile-nav'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">The spread operator (<code class="sn-ic">...devices['iPhone 14']</code>) expands all five properties into the <code class="sn-ic">use</code> block. Check the full device list in the Playwright source or by running:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-devices</div>
+      </div>
+<p class="sn-para">Commonly used presets:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Desktop Chrome       → 1280×720, Chrome engine
+Desktop Firefox      → 1280×720, Firefox engine
+Desktop Safari       → 1280×720, WebKit engine
+iPhone 14            → 390×844, WebKit mobile
+iPhone 14 Pro        → 393×852, WebKit mobile
+Pixel 7              → 412×915, Chrome mobile
+Galaxy S9+           → 320×658, Chrome mobile
+iPad Pro 11          → 834×1194, WebKit tablet</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.3</span>
+      <h2 class="sn-q-text">How do you configure a cross-browser projects matrix?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <code class="sn-ic">projects</code> array in <code class="sn-ic">playwright.config.ts</code> is the cross-browser matrix. Each project runs the full test suite with different browser settings:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { defineConfig, devices } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  projects: [
+    <span class="tc-cm">// Desktop browsers</span>
+    { name: <span class="tc-str">'chromium'</span>,       use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>]  } },
+    { name: <span class="tc-str">'firefox'</span>,        use: { ...devices[<span class="tc-str">'Desktop Firefox'</span>] } },
+    { name: <span class="tc-str">'webkit'</span>,         use: { ...devices[<span class="tc-str">'Desktop Safari'</span>]  } },
+
+    <span class="tc-cm">// Mobile devices</span>
+    { name: <span class="tc-str">'mobile-chrome'</span>,  use: { ...devices[<span class="tc-str">'Pixel 7'</span>]    } },
+    { name: <span class="tc-str">'mobile-safari'</span>,  use: { ...devices[<span class="tc-str">'iPhone 14'</span>]  } },
+
+    <span class="tc-cm">// Tablet</span>
+    { name: <span class="tc-str">'tablet'</span>,         use: { ...devices[<span class="tc-str">'iPad Pro 11'</span>] } },
+  ],
+});</div>
+      </div>
+<p class="sn-para">Running <code class="sn-ic">npx playwright test</code> executes all tests on all six projects. Running <code class="sn-ic">npx playwright test --project=chromium</code> runs on Chrome only.</p>
+    </div>
+  </div>
+
+  <!-- Q706.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.4</span>
+      <h2 class="sn-q-text">How do you avoid tripling test execution time with cross-browser testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Running every test on three browsers triples execution time. The practical strategy is to run different test scopes per browser using <code class="sn-ic">grep</code> per project:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  {
+    name: <span class="tc-str">'chromium-full'</span>,
+    use:  { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+    <span class="tc-cm">// No grep — runs everything: smoke + regression + edge cases</span>
+  },
+  {
+    name: <span class="tc-str">'firefox-smoke'</span>,
+    use:  { ...devices[<span class="tc-str">'Desktop Firefox'</span>] },
+    grep: /@smoke/,          <span class="tc-cm">// Only critical-path tests on Firefox</span>
+  },
+  {
+    name: <span class="tc-str">'webkit-smoke'</span>,
+    use:  { ...devices[<span class="tc-str">'Desktop Safari'</span>] },
+    grep: /@smoke/,          <span class="tc-cm">// Only critical-path tests on WebKit</span>
+  },
+  {
+    name: <span class="tc-str">'mobile-smoke'</span>,
+    use:  { ...devices[<span class="tc-str">'iPhone 14'</span>] },
+    grep: /@smoke.*@mobile/, <span class="tc-cm">// Only tests tagged for both smoke and mobile</span>
+  },
+],</div>
+      </div>
+<p class="sn-para">Result: Chrome runs 200 tests, Firefox/WebKit run 20, mobile runs 10. Total: 250 test executions instead of 800. You still get meaningful cross-browser coverage on the flows that matter most.</p>
+<p class="sn-para">The rule: run everything on your primary browser (Chrome), run smoke tests on secondary browsers, run touch-specific tests on mobile.</p>
+    </div>
+  </div>
+
+  <!-- Q706.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.5</span>
+      <h2 class="sn-q-text">What is the difference between tap and click in mobile emulation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">click()</code> dispatches a mouse click event. On desktop this is correct. On a mobile-emulated page, <code class="sn-ic">click()</code> still works for most elements — Playwright synthesises a tap from the click.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">tap()</code> dispatches a genuine touch event sequence: <code class="sn-ic">touchstart</code>, <code class="sn-ic">touchend</code>. Use <code class="sn-ic">tap()</code> when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Testing gesture libraries that specifically listen for touch events</span></li>
+<li><span class="icon">💡</span><span>The element has a <code class="sn-ic">touchstart</code> handler that differs from the <code class="sn-ic">click</code> handler</span></li>
+<li><span class="icon">⚡</span><span>You are testing swipe detection or multi-touch interactions</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ ...devices[<span class="tc-str">'iPhone 14'</span>] });
+
+<span class="tc-kw">test</span>(<span class="tc-str">'tap and click both work for buttons'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-cm">// Both work for standard buttons</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();  <span class="tc-cm">// works</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">tap</span>();    <span class="tc-cm">// also works</span>
+
+  <span class="tc-cm">// Use tap for touch-specific interactions</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.swipeable-card'</span>).<span class="tc-fn">tap</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.6</span>
+      <h2 class="sn-q-text">How do you test locale and timezone?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">test.use()</code> or project-level <code class="sn-ic">use</code> to set locale and timezone. These affect JavaScript's <code class="sn-ic">Intl</code> API — date formatting, number formatting, and currency display:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'German locale'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+    locale:     <span class="tc-str">'de-DE'</span>,
+    timezoneId: <span class="tc-str">'Europe/Berlin'</span>,
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'prices show German number format'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/pricing'</span>);
+    <span class="tc-cm">// In de-DE: 1.000,99 (period for thousands, comma for decimal)</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.price'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'1.000'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dates use German format'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/orders'</span>);
+    <span class="tc-cm">// In de-DE: DD.MM.YYYY</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.order-date'</span>).<span class="tc-fn">first</span>()).<span class="tc-fn">toContainText</span>(/\d{<span class="tc-num">2</span>}\.\d{<span class="tc-num">2</span>}\.\d{<span class="tc-num">4</span>}/);
+  });
+});</div>
+      </div>
+<p class="sn-para">Configure locale and timezone per project for a full internationalisation matrix:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  { name: <span class="tc-str">'en-US'</span>, use: { locale: <span class="tc-str">'en-US'</span>, timezoneId: <span class="tc-str">'America/New_York'</span> } },
+  { name: <span class="tc-str">'de-DE'</span>, use: { locale: <span class="tc-str">'de-DE'</span>, timezoneId: <span class="tc-str">'Europe/Berlin'</span>    } },
+  { name: <span class="tc-str">'ja-JP'</span>, use: { locale: <span class="tc-str">'ja-JP'</span>, timezoneId: <span class="tc-str">'Asia/Tokyo'</span>       } },
+],</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.7</span>
+      <h2 class="sn-q-text">How do you test geolocation features?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Set <code class="sn-ic">geolocation</code> and grant the <code class="sn-ic">geolocation</code> permission in <code class="sn-ic">test.use()</code>. Playwright automatically accepts the browser's "Allow location" prompt:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+  geolocation: { latitude: <span class="tc-num">51.5074</span>, longitude: -<span class="tc-num">0.1278</span> }, <span class="tc-cm">// London</span>
+  permissions:  [<span class="tc-str">'geolocation'</span>],
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'store locator shows nearby London stores'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/stores'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Use My Location'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// The browser returns the mocked geolocation</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.store-list'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'London'</span>);
+});</div>
+      </div>
+<p class="sn-para">For tests that need to change location mid-test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'location updates when moving'</span>, <span class="tc-kw">async</span> ({ page, context }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+    geolocation: { latitude: <span class="tc-num">51.5074</span>, longitude: -<span class="tc-num">0.1278</span> },
+    permissions: [<span class="tc-str">'geolocation'</span>],
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/map'</span>);
+
+  <span class="tc-cm">// Change location during the test</span>
+  <span class="tc-kw">await</span> context.<span class="tc-fn">setGeolocation</span>({ latitude: <span class="tc-num">48.8566</span>, longitude: <span class="tc-num">2.3522</span> }); <span class="tc-cm">// Paris</span>
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Refresh Location'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.current-city'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Paris'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.8</span>
+      <h2 class="sn-q-text">What permissions can Playwright grant or deny?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">context.grantPermissions()</code> or the <code class="sn-ic">permissions</code> option in <code class="sn-ic">test.use()</code> grants browser permissions automatically without prompting the user:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+  permissions: [<span class="tc-str">'geolocation'</span>, <span class="tc-str">'notifications'</span>, <span class="tc-str">'camera'</span>, <span class="tc-str">'microphone'</span>],
+});</div>
+      </div>
+<p class="sn-para">Available permissions include: <code class="sn-ic">'geolocation'</code>, <code class="sn-ic">'notifications'</code>, <code class="sn-ic">'camera'</code>, <code class="sn-ic">'microphone'</code>, <code class="sn-ic">'background-sync'</code>, <code class="sn-ic">'accelerometer'</code>, <code class="sn-ic">'gyroscope'</code>, <code class="sn-ic">'magnetometer'</code>, <code class="sn-ic">'clipboard-read'</code>, <code class="sn-ic">'clipboard-write'</code>, <code class="sn-ic">'payment-handler'</code>.</p>
+<p class="sn-para">To test the denied state (user clicks "Block"):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'shows fallback when location is denied'</span>, <span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+    <span class="tc-cm">// Do not include geolocation in permissions — it will be denied</span>
+  });
+  <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/stores'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Use My Location'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// App should show fallback search instead of auto-locating</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Enter your postcode'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.9</span>
+      <h2 class="sn-q-text">How do you test dark mode and color scheme preferences?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Dark mode'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ colorScheme: <span class="tc-str">'dark'</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dark theme is applied'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+    <span class="tc-cm">// Check that dark styles are active</span>
+    <span class="tc-kw">const</span> bgColor = <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(
+      () =&gt; window.<span class="tc-fn">getComputedStyle</span>(document.body).backgroundColor
+    );
+    <span class="tc-kw">expect</span>(bgColor).not.<span class="tc-fn">toBe</span>(<span class="tc-str">'rgb(255, 255, 255)'</span>); <span class="tc-cm">// not white</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dark mode screenshot matches baseline'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'dashboard-dark.png'</span>);
+  });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Light mode'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ colorScheme: <span class="tc-str">'light'</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'light theme is applied'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'html'</span>)).not.<span class="tc-fn">toHaveClass</span>(/dark/);
+  });
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">colorScheme</code> options: <code class="sn-ic">'light'</code>, <code class="sn-ic">'dark'</code>, <code class="sn-ic">'no-preference'</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q706.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.10</span>
+      <h2 class="sn-q-text">What is the Clock API and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.clock</code> controls the browser's concept of time — <code class="sn-ic">Date.now()</code>, <code class="sn-ic">setTimeout</code>, <code class="sn-ic">setInterval</code>, and <code class="sn-ic">requestAnimationFrame</code>. It is used to test time-dependent behaviour without waiting for real time to pass.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Without Clock API:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'idle timeout shows warning after 10 minutes'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(600_000); <span class="tc-cm">// ← 10 minutes! Test is unusable.</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Session expiring'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">With Clock API:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'idle timeout shows warning after 10 minutes'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Freeze time at a known point</span>
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>({ time: <span class="tc-kw">new</span> Date(<span class="tc-str">'2025-01-01T09:00:00'</span>) });
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// Jump forward 10 minutes instantly</span>
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">fastForward</span>(<span class="tc-str">'10:00'</span>);
+
+  <span class="tc-cm">// Assert — no real waiting</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Session expiring'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">The test runs in milliseconds instead of 10 minutes.</p>
+    </div>
+  </div>
+
+  <!-- Q706.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.11</span>
+      <h2 class="sn-q-text">What are the Clock API methods and what does each do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Install — freeze time at a specific point, take control of all timers</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>({ time: <span class="tc-kw">new</span> Date(<span class="tc-str">'2025-06-15T12:00:00'</span>) });
+
+<span class="tc-cm">// fastForward — advance time by duration (fires all elapsed timers instantly)</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">fastForward</span>(<span class="tc-num">5000</span>);        <span class="tc-cm">// advance by 5 seconds</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">fastForward</span>(<span class="tc-str">'02:30'</span>);     <span class="tc-cm">// advance by 2 minutes 30 seconds</span>
+
+<span class="tc-cm">// tick — same as fastForward but processes timers at each millisecond step</span>
+<span class="tc-cm">// (more realistic for animations and micro-timers)</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">tick</span>(<span class="tc-num">500</span>);
+
+<span class="tc-cm">// setSystemTime — move the clock to a specific moment (doesn't fire timers)</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">setSystemTime</span>(<span class="tc-kw">new</span> Date(<span class="tc-str">'2025-12-31T23:59:00'</span>));
+
+<span class="tc-cm">// runFor — run timers for a specified duration</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">runFor</span>(<span class="tc-num">1000</span>);
+
+<span class="tc-cm">// resume — let real time continue after installation</span>
+<span class="tc-kw">await</span> page.clock.<span class="tc-fn">resume</span>();</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">fastForward</code> is the most common method — it fires all timers that would have fired in the elapsed period. <code class="sn-ic">setSystemTime</code> moves the clock without firing timers — useful for testing date-display logic without triggering timeout-based side effects.</p>
+    </div>
+  </div>
+
+  <!-- Q706.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.12</span>
+      <h2 class="sn-q-text">How do you test a debounced search with the Clock API?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'search triggers after user stops typing'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/search'</span>);
+
+  <span class="tc-kw">const</span> searchInput = page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Search products'</span>);
+  <span class="tc-kw">await</span> searchInput.<span class="tc-fn">pressSequentially</span>(<span class="tc-str">'playwright'</span>);
+
+  <span class="tc-cm">// Results should NOT be visible yet — debounce hasn't fired</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.search-results'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Advance clock past the debounce window (500ms)</span>
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">fastForward</span>(<span class="tc-num">500</span>);
+
+  <span class="tc-cm">// Results should now appear</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.search-results'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'playwright'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Without the Clock API, this test would require a real <code class="sn-ic">page.waitForTimeout(500)</code> — which is an anti-pattern because it adds real wait time and is fragile if the debounce period changes.</p>
+    </div>
+  </div>
+
+  <!-- Q706.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.13</span>
+      <h2 class="sn-q-text">How do you test date-sensitive UI features?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The Clock API lets you pin the date to test features like "Today's deals", "Coming soon" countdowns, or date-range validation:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'New Year banner appears on 31 December'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Set system time to New Year's Eve</span>
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>({ time: <span class="tc-kw">new</span> Date(<span class="tc-str">'2025-12-31T20:00:00'</span>) });
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/home'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'new-year-banner'</span>)).<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'New Year banner is hidden in January'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>({ time: <span class="tc-kw">new</span> Date(<span class="tc-str">'2025-01-02T10:00:00'</span>) });
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/home'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'new-year-banner'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'cannot book a date in the past'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>({ time: <span class="tc-kw">new</span> Date(<span class="tc-str">'2025-06-15'</span>) });
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/bookings/new'</span>);
+
+  <span class="tc-kw">const</span> yesterday = page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Date'</span>);
+  <span class="tc-kw">await</span> yesterday.<span class="tc-fn">fill</span>(<span class="tc-str">'2025-06-14'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Book'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Date must be today or later'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.14</span>
+      <h2 class="sn-q-text">How do you simulate network throttling for mobile performance tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Network throttling requires the Chrome DevTools Protocol (CDP) — Chromium only:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'shows loading spinner on slow connection'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ ...devices[<span class="tc-str">'Pixel 7'</span>] });
+
+  <span class="tc-kw">const</span> cdp = <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">newCDPSession</span>(page);
+
+  <span class="tc-cm">// Emulate Slow 3G</span>
+  <span class="tc-kw">await</span> cdp.<span class="tc-fn">send</span>(<span class="tc-str">'Network.emulateNetworkConditions'</span>, {
+    offline:             <span class="tc-kw">false</span>,
+    latency:             <span class="tc-num">400</span>,                       <span class="tc-cm">// 400ms RTT</span>
+    downloadThroughput:  ((<span class="tc-num">500</span> * <span class="tc-num">1024</span>) / <span class="tc-num">8</span>),        <span class="tc-cm">// 500 kbps</span>
+    uploadThroughput:    ((<span class="tc-num">500</span> * <span class="tc-num">1024</span>) / <span class="tc-num">8</span>),
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// Spinner should be visible on slow connection</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'loading-spinner'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Content should eventually load</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'main-content'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">15000</span> });
+});</div>
+      </div>
+<p class="sn-para">Common presets:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-pink">Slow 3G:</strong> latency 400ms, 500 kbps down/up</span></li>
+<li><span class="icon">💡</span><span><strong class="k-pink">Fast 3G:</strong> latency 100ms, 1.5 Mbps down/up</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-pink">Offline:</strong> <code class="sn-ic">offline: true</code>, 0 throughput</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q706.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.15</span>
+      <h2 class="sn-q-text">How do you override a device preset for a custom viewport?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Spread the preset and override only the properties you want to change:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Custom large-screen iPhone</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+  ...devices[<span class="tc-str">'iPhone 14'</span>],
+  viewport: { width: <span class="tc-num">430</span>, height: <span class="tc-num">932</span> }, <span class="tc-cm">// iPhone 14 Pro Max size</span>
+});
+
+<span class="tc-cm">// Desktop Chrome with 1440px width</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+  ...devices[<span class="tc-str">'Desktop Chrome'</span>],
+  viewport: { width: <span class="tc-num">1440</span>, height: <span class="tc-num">900</span> },
+});
+
+<span class="tc-cm">// Desktop Chrome with forced touch support (for hybrid touch/pointer devices)</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({
+  ...devices[<span class="tc-str">'Desktop Chrome'</span>],
+  hasTouch: <span class="tc-kw">true</span>,
+  viewport: { width: <span class="tc-num">1280</span>, height: <span class="tc-num">800</span> },
+});</div>
+      </div>
+<p class="sn-para">Custom device in <code class="sn-ic">playwright.config.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">{
+  name: <span class="tc-str">'custom-mobile'</span>,
+  use: {
+    viewport:          { width: <span class="tc-num">360</span>, height: <span class="tc-num">780</span> },
+    userAgent:         <span class="tc-str">'Mozilla/5.0 (Android 13; Mobile)'</span>,
+    deviceScaleFactor: <span class="tc-num">2</span>,
+    hasTouch:          <span class="tc-kw">true</span>,
+    isMobile:          <span class="tc-kw">true</span>,
+  },
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.16</span>
+      <h2 class="sn-q-text">What is the difference between chromium, Chrome, and Chrome Canary in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright ships its own browser builds called "browser engines". The <code class="sn-ic">channel</code> option selects an installed system browser instead:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Playwright's own Chromium build (default, no install needed)</span>
+{ name: <span class="tc-str">'chromium'</span>, use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] } }
+
+<span class="tc-cm">// Installed Google Chrome (must be installed on the machine)</span>
+{ name: <span class="tc-str">'chrome'</span>, use: { channel: <span class="tc-str">'chrome'</span>, ...devices[<span class="tc-str">'Desktop Chrome'</span>] } }
+
+<span class="tc-cm">// Microsoft Edge (must be installed)</span>
+{ name: <span class="tc-str">'edge'</span>, use: { channel: <span class="tc-str">'msedge'</span>, ...devices[<span class="tc-str">'Desktop Chrome'</span>] } }
+
+<span class="tc-cm">// Chrome Beta channel</span>
+{ name: <span class="tc-str">'chrome-beta'</span>, use: { channel: <span class="tc-str">'chrome-beta'</span> } }</div>
+      </div>
+<p class="sn-para">Use Playwright's Chromium for CI — it is pinned to a known version that is always available. Use <code class="sn-ic">channel: 'chrome'</code> for tests that must verify behaviour on the exact Chrome version your users have. Use <code class="sn-ic">channel: 'msedge'</code> for enterprises where Edge is the standard browser.</p>
+    </div>
+  </div>
+
+  <!-- Q706.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.17</span>
+      <h2 class="sn-q-text">Write a complete cross-browser projects matrix for a production team.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">import</span> { defineConfig, devices } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">const</span> isCI = !!process.env.CI;
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  workers: isCI ? <span class="tc-num">4</span> : <span class="tc-num">2</span>,
+  retries: isCI ? <span class="tc-num">1</span> : <span class="tc-num">0</span>,
+
+  projects: [
+    <span class="tc-cm">// ── Auth setup (runs before all test projects) ────────────────────</span>
+    {
+      name:      <span class="tc-str">'setup'</span>,
+      testMatch: /.*\.setup\.ts/,
+    },
+
+    <span class="tc-cm">// ── Primary browser — full suite ──────────────────────────────────</span>
+    {
+      name:         <span class="tc-str">'chromium'</span>,
+      use:          { ...devices[<span class="tc-str">'Desktop Chrome'</span>],   storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+      dependencies: [<span class="tc-str">'setup'</span>],
+    },
+
+    <span class="tc-cm">// ── Secondary browsers — smoke tests only ─────────────────────────</span>
+    {
+      name:         <span class="tc-str">'firefox'</span>,
+      use:          { ...devices[<span class="tc-str">'Desktop Firefox'</span>],  storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+      grep:         /@smoke/,
+      dependencies: [<span class="tc-str">'setup'</span>],
+    },
+    {
+      name:         <span class="tc-str">'webkit'</span>,
+      use:          { ...devices[<span class="tc-str">'Desktop Safari'</span>],   storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+      grep:         /@smoke/,
+      dependencies: [<span class="tc-str">'setup'</span>],
+    },
+
+    <span class="tc-cm">// ── Mobile — touch-tagged tests only ──────────────────────────────</span>
+    {
+      name:         <span class="tc-str">'mobile-chrome'</span>,
+      use:          { ...devices[<span class="tc-str">'Pixel 7'</span>],          storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+      grep:         /@mobile/,
+      dependencies: [<span class="tc-str">'setup'</span>],
+    },
+    {
+      name:         <span class="tc-str">'mobile-safari'</span>,
+      use:          { ...devices[<span class="tc-str">'iPhone 14'</span>],        storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+      grep:         /@mobile/,
+      dependencies: [<span class="tc-str">'setup'</span>],
+    },
+
+    <span class="tc-cm">// ── Localisation projects (nightly only) ──────────────────────────</span>
+    ...(isCI ? [{
+      name: <span class="tc-str">'de-DE'</span>,
+      use:  { ...devices[<span class="tc-str">'Desktop Chrome'</span>], locale: <span class="tc-str">'de-DE'</span>, timezoneId: <span class="tc-str">'Europe/Berlin'</span>,
+               storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+      grep: /@i18n/,
+      dependencies: [<span class="tc-str">'setup'</span>] as <span class="tc-kw">string</span>[],
+    }] : []),
+  ],
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q706.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q706.18</span>
+      <h2 class="sn-q-text">In your project, how did you configure the cross-browser matrix?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, the cross-browser matrix was deliberately minimal for the demo project context. We ran three projects: <code class="sn-ic">chromium</code> (full suite, every test), <code class="sn-ic">firefox</code> (smoke tests tagged <code class="sn-ic">@smoke</code>), and <code class="sn-ic">mobile-chrome</code> using <code class="sn-ic">Pixel 7</code> (mobile-tagged tests for the responsive layout verification of the Leave module).</p>
+      </div>
+<p class="sn-para">The key decision was not to run the full 180-test regression suite on Firefox and WebKit. OrangeHRM is a server-rendered application with minimal JavaScript — the main cross-browser risk is CSS layout, not JavaScript behaviour. Running the 20 smoke tests on Firefox gave 95% of the cross-browser value at 10% of the cost.</p>
+<p class="sn-para">For the mobile project, we had to adjust two page object methods. The date picker in the Leave module uses a different tap interaction on mobile — the dropdown did not open on a standard <code class="sn-ic">click()</code>. Switching to <code class="sn-ic">tap()</code> in the <code class="sn-ic">MobileLeavePage</code> subclass fixed it. This is the exact kind of platform-specific difference that justifies having a mobile project at all.</p>
+<p class="sn-para">The Clock API was used in one test: verifying that a leave request with a past date is rejected. Instead of relying on today's date (which changes daily and makes tests brittle), we use <code class="sn-ic">page.clock.install()</code> to pin the date to a known value, then assert that a date one day prior is rejected.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Device emulation sets five properties simultaneously: viewport, User Agent, Device Scale Factor (DPR), <code class="sn-ic">hasTouch</code>, and <code class="sn-ic">isMobile</code> — not just window size.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">...devices['iPhone 14']</code> (spread) to apply a full device preset; override individual properties as needed.</span></li>
+            <li><span class="icon">⭐</span><span>The cross-browser projects matrix in <code class="sn-ic">playwright.config.ts</code> defines which browsers and devices run which tests.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">grep: /@smoke/</code> per project to avoid running every test on every browser — run full suite on Chrome, smoke only on Firefox/WebKit.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">tap()</code> fires touch events; <code class="sn-ic">click()</code> fires mouse events. Use <code class="sn-ic">tap()</code> for touch-specific interactions and gesture libraries.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">locale</code> and <code class="sn-ic">timezoneId</code> control JavaScript's <code class="sn-ic">Intl</code> API output — date formatting, number formatting, currency display.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">geolocation</code> + <code class="sn-ic">permissions: ['geolocation']</code> mocks the browser location API; use <code class="sn-ic">context.setGeolocation()</code> to change location mid-test.</span></li>
+            <li><span class="icon">⭐</span><span>The Clock API (<code class="sn-ic">page.clock.install()</code>, <code class="sn-ic">fastForward()</code>, <code class="sn-ic">setSystemTime()</code>) controls <code class="sn-ic">Date.now()</code> and all browser timers — eliminates <code class="sn-ic">waitForTimeout</code> for time-based tests.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">fastForward</code> fires all elapsed timers instantly; <code class="sn-ic">setSystemTime</code> moves the clock without firing timers.</span></li>
+            <li><span class="icon">⭐</span><span>Network throttling requires CDP (<code class="sn-ic">Network.emulateNetworkConditions</code>) and only works on Chromium.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

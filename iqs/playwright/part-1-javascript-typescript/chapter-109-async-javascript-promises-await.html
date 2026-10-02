@@ -1,0 +1,895 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 109 &nbsp;·&nbsp; 20 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Async</span> <span class="w2">JS</span> <span class="w3">—</span> <span class="w4">Promises</span> <span class="w5">&amp;</span> <span class="w6">async/await</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This is the most important chapter in Part 1. Every Playwright action is asynchronous. Interviewers test this topic heavily because async bugs are the single biggest source of flaky, non-deterministic test behaviour. Questions cover the event loop, promise states, async/await mechanics, and parallel execution patterns — all with automation-specific examples.</span>
+  </div>
+
+
+  <!-- Q109.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.1</span>
+      <h2 class="sn-q-text">What is asynchronous programming in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Synchronous code runs line by line. Each line waits for the previous one to finish before starting. Asynchronous code starts a long-running operation — like a network request or browser action — and instead of waiting, registers a callback and continues with other work. When the operation completes, the callback runs.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Synchronous — blocks until each line finishes</span>
+<span class="tc-kw">const</span> data = <span class="tc-fn">readFileSync</span>(&quot;data.json&quot;); <span class="tc-cm">// pauses everything</span>
+<span class="tc-fn">process</span>(data);
+
+<span class="tc-cm">// Asynchronous — does not block</span>
+<span class="tc-fn">readFile</span>(&quot;data.json&quot;, (error, data) =&gt; {
+  <span class="tc-fn">process</span>(data); <span class="tc-cm">// runs when ready</span>
+});
+<span class="tc-cm">// code here runs immediately, before readFile completes</span></div>
+      </div>
+<p class="sn-para">In test automation, every browser interaction takes time — navigations, network requests, DOM updates. JavaScript's async model lets Playwright send a command, wait for the browser's response, and only then move to the next step. Without async, tests would either miss events or require explicit delays everywhere.</p>
+    </div>
+  </div>
+
+  <!-- Q109.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.2</span>
+      <h2 class="sn-q-text">What is a Promise and what are its three states?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A Promise is an object that represents an async operation that will complete (or fail) in the future. It has exactly three states:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Pending</strong> — the operation has started but not finished yet.</p>
+<p class="sn-para"><strong class="k-green">Fulfilled</strong> — the operation completed successfully. The promise holds the resolved value.</p>
+<p class="sn-para"><strong class="k-green">Rejected</strong> — the operation failed. The promise holds the error reason.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> promise = <span class="tc-kw">new</span> Promise((resolve, reject) =&gt; {
+  <span class="tc-fn">setTimeout</span>(() =&gt; {
+    <span class="tc-fn">resolve</span>(&quot;data loaded&quot;); <span class="tc-cm">// moves to fulfilled</span>
+    <span class="tc-cm">// OR: reject(new Error(&amp;quot;failed&amp;quot;)); // moves to rejected</span>
+  }, <span class="tc-num">1000</span>);
+});
+
+promise
+  .<span class="tc-fn">then</span>(value =&gt; console.<span class="tc-fn">log</span>(value))   <span class="tc-cm">// &amp;quot;data loaded&amp;quot;</span>
+  .<span class="tc-kw">catch</span>(error =&gt; console.<span class="tc-fn">error</span>(error)); <span class="tc-cm">// runs if rejected</span></div>
+      </div>
+<p class="sn-para">Once a promise moves from pending to fulfilled or rejected, it stays in that state forever. A fulfilled promise always returns the same value.</p>
+<p class="sn-para">In Playwright, every <code class="sn-ic">page.goto()</code>, <code class="sn-ic">locator.click()</code>, and <code class="sn-ic">expect()</code> call returns a Promise. <code class="sn-ic">await</code> unwraps the resolved value and pauses until the promise settles.</p>
+    </div>
+  </div>
+
+  <!-- Q109.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.3</span>
+      <h2 class="sn-q-text">When do you need async/await in Playwright tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every time you interact with the browser. All Playwright methods that perform browser operations return Promises — they cannot complete instantaneously.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(&quot;user can log <span class="tc-kw">in</span>&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Every line below returns a Promise — await pauses until it settles</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/login&quot;);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(&quot;user@<span class="tc-kw">test</span>.com&quot;);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(&quot;Password&quot;).<span class="tc-fn">fill</span>(&quot;pass123&quot;);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(&quot;/dashboard&quot;);
+});</div>
+      </div>
+<p class="sn-para">If you omit <code class="sn-ic">await</code>, the next line runs before the browser action completes. The test becomes a race condition — sometimes it passes, sometimes it fails depending on timing.</p>
+<p class="sn-para">The rule is simple: <code class="sn-ic">await</code> every Playwright method call. The only exception is when you deliberately want parallel execution with <code class="sn-ic">Promise.all</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q109.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.4</span>
+      <h2 class="sn-q-text">How do you handle async operations in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we follow three rules consistently:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">1. Always <code class="sn-ic">await</code> Playwright method calls.</strong> ESLint's <code class="sn-ic">@typescript-eslint/no-floating-promises</code> rule catches any unawaited promise in code review automatically.</p>
+<p class="sn-para"><strong class="k-orange">2. Use <code class="sn-ic">for...of</code> for sequential async loops.</strong> Never <code class="sn-ic">forEach</code> with <code class="sn-ic">async</code>. We added <code class="sn-ic">no-restricted-syntax</code> ESLint rules to flag <code class="sn-ic">forEach(async</code>.</p>
+<p class="sn-para"><strong class="k-orange">3. Use <code class="sn-ic">Promise.all</code> for independent parallel operations.</strong> API setup calls that create multiple test records run in parallel. Page actions that depend on each other run sequentially.</p>
+<p class="sn-para">We also use <code class="sn-ic">try/catch</code> around API setup steps so test failures in setup produce clear error messages rather than cryptic "page closed" errors.</p>
+    </div>
+  </div>
+
+  <!-- Q109.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.5</span>
+      <h2 class="sn-q-text">What is the event loop and how does it handle async operations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">JavaScript runs on a single thread. The event loop is the mechanism that lets it handle async operations without blocking.</p>
+      </div>
+<p class="sn-para">Here is the sequence:</p>
+<ol class="sn-olist">
+<li>Your test calls <code class="sn-ic">await page.goto(&quot;/login&quot;)</code>.</li>
+<li>Playwright sends the navigation command to the browser and creates</li>
+</ol>
+<p class="sn-para">   a Promise.</p>
+<ol class="sn-olist">
+<li>The <code class="sn-ic">await</code> keyword suspends the test function at that line. Control</li>
+</ol>
+<p class="sn-para">   returns to the event loop.</p>
+<ol class="sn-olist">
+<li>The event loop checks the <strong class="k-teal">task queue</strong> for callbacks that are ready.</li>
+<li>When the browser finishes loading the page, it resolves the Promise.</li>
+</ol>
+<p class="sn-para">   The resolved callback is placed on the <strong class="k-teal">microtask queue</strong>.</p>
+<ol class="sn-olist">
+<li>The event loop picks up the microtask and resumes the test function</li>
+</ol>
+<p class="sn-para">   from after the <code class="sn-ic">await</code> line.</p>
+<p class="sn-para">The key insight: <code class="sn-ic">await</code> does not block the thread. It suspends the current function and gives the event loop a chance to do other work. This is why multiple Playwright tests can run in parallel in the same process — each test is just an async function that suspends and resumes.</p>
+    </div>
+  </div>
+
+  <!-- Q109.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.6</span>
+      <h2 class="sn-q-text">What happens if you forget to await a Playwright action?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The action starts but the next line runs immediately — before the browser has done anything.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Missing await — race condition</span>
+<span class="tc-kw">test</span>(&quot;login <span class="tc-kw">test</span>&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  page.<span class="tc-fn">goto</span>(&quot;/login&quot;);           <span class="tc-cm">// starts navigation — does NOT wait</span>
+  page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(&quot;user@<span class="tc-kw">test</span>.com&quot;); <span class="tc-cm">// runs before page loads</span>
+  <span class="tc-cm">// Result: &amp;quot;fill&amp;quot; fails because the login form is not yet visible</span>
+});</div>
+      </div>
+<p class="sn-para">The failure mode depends on timing. On a fast machine the page might load before <code class="sn-ic">fill</code> runs — the test passes. On a slow CI machine it fails. This is the definition of a flaky test.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Correct — await every action</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/login&quot;);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(&quot;user@<span class="tc-kw">test</span>.com&quot;);</div>
+      </div>
+<p class="sn-para">The ESLint rule <code class="sn-ic">@typescript-eslint/no-floating-promises</code> catches missing <code class="sn-ic">await</code> at build time. Any expression that returns a Promise and is not awaited, assigned, or returned is flagged as an error.</p>
+    </div>
+  </div>
+
+  <!-- Q109.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.7</span>
+      <h2 class="sn-q-text">What is Promise.all and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">Promise.all</code> takes an array of Promises and returns a new Promise that resolves when all of them resolve — or rejects immediately if any one rejects.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Sequential — takes sum of individual durations</span>
+<span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(&quot;alice@<span class="tc-kw">test</span>.com&quot;); <span class="tc-cm">// waits</span>
+<span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(&quot;bob@<span class="tc-kw">test</span>.com&quot;);   <span class="tc-cm">// then waits</span>
+<span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(&quot;carol@<span class="tc-kw">test</span>.com&quot;); <span class="tc-cm">// then waits</span>
+
+<span class="tc-cm">// Parallel with Promise.all — takes duration of the slowest</span>
+<span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  <span class="tc-fn">createUser</span>(&quot;alice@<span class="tc-kw">test</span>.com&quot;),
+  <span class="tc-fn">createUser</span>(&quot;bob@<span class="tc-kw">test</span>.com&quot;),
+  <span class="tc-fn">createUser</span>(&quot;carol@<span class="tc-kw">test</span>.com&quot;),
+]); <span class="tc-cm">// all three run at the same time</span></div>
+      </div>
+<p class="sn-para">In test automation, <code class="sn-ic">Promise.all</code> is used for:</p>
+<p class="sn-para"><strong class="k-red">Parallel API setup</strong> — creating multiple independent test records before a test runs.</p>
+<p class="sn-para"><strong class="k-red">Listening for a response before clicking</strong> — the most important pattern:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> [response] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(&quot;/api/orders&quot;)),
+  page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Place Order&quot; }).<span class="tc-fn">click</span>(),
+]);
+<span class="tc-cm">// response is captured — the click and the listener started simultaneously</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.8</span>
+      <h2 class="sn-q-text">What is the difference between Promise.all and Promise.allSettled?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow"><code class="sn-ic">Promise.all</code></strong> — rejects as soon as any single Promise rejects. You get the first error, but you do not know the outcome of the others.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow"><code class="sn-ic">Promise.allSettled</code></strong> — waits for every Promise to settle (resolve or reject). Returns an array where each entry has a <code class="sn-ic">status</code> of <code class="sn-ic">&quot;fulfilled&quot;</code> or <code class="sn-ic">&quot;rejected&quot;</code> and either a <code class="sn-ic">value</code> or <code class="sn-ic">reason</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> results = <span class="tc-kw">await</span> Promise.<span class="tc-fn">allSettled</span>([
+  <span class="tc-fn">createUser</span>(&quot;alice@<span class="tc-kw">test</span>.com&quot;),
+  <span class="tc-fn">createUser</span>(&quot;duplicate@<span class="tc-kw">test</span>.com&quot;), <span class="tc-cm">// this one fails</span>
+  <span class="tc-fn">createUser</span>(&quot;carol@<span class="tc-kw">test</span>.com&quot;),
+]);
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> result <span class="tc-kw">of</span> results) {
+  <span class="tc-kw">if</span> (result.status === &quot;fulfilled&quot;) {
+    console.<span class="tc-fn">log</span>(&quot;Created:&quot;, result.value.id);
+  } <span class="tc-kw">else</span> {
+    console.<span class="tc-fn">error</span>(&quot;Failed:&quot;, result.reason.message);
+  }
+}
+<span class="tc-cm">// All three results available — even if one failed</span></div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Use <code class="sn-ic">Promise.all</code></strong> when you need all operations to succeed and want to fail fast.</p>
+<p class="sn-para"><strong class="k-yellow">Use <code class="sn-ic">Promise.allSettled</code></strong> when you want to process results for all operations regardless of individual failures — for example, bulk cleanup in <code class="sn-ic">afterAll</code> where you want to attempt deleting all created records even if some deletions fail.</p>
+    </div>
+  </div>
+
+  <!-- Q109.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.9</span>
+      <h2 class="sn-q-text">What is the difference between async/await and .then() chains?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both handle Promises. <code class="sn-ic">async/await</code> is the modern syntax. <code class="sn-ic">.then()</code> chains are the older approach.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// .then() chain — nested callbacks, error handling is separate</span>
+page.<span class="tc-fn">goto</span>(&quot;/login&quot;)
+  .<span class="tc-fn">then</span>(() =&gt; page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(&quot;user@<span class="tc-kw">test</span>.com&quot;))
+  .<span class="tc-fn">then</span>(() =&gt; page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; }).<span class="tc-fn">click</span>())
+  .<span class="tc-fn">then</span>(() =&gt; <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(&quot;/dashboard&quot;))
+  .<span class="tc-kw">catch</span>(error =&gt; console.<span class="tc-fn">error</span>(error));
+
+<span class="tc-cm">// async/await — reads like synchronous code, errors via try/catch</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/login&quot;);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;).<span class="tc-fn">fill</span>(&quot;user@<span class="tc-kw">test</span>.com&quot;);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(&quot;/dashboard&quot;);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">async/await</code> is easier to read, easier to debug, and handles errors with standard <code class="sn-ic">try/catch</code>. The execution model is identical — both compile to the same Promise chain. Always use <code class="sn-ic">async/await</code> in Playwright test code. <code class="sn-ic">.then()</code> chains appear in legacy code and in the rare cases where chaining is genuinely cleaner than sequential awaits.</p>
+    </div>
+  </div>
+
+  <!-- Q109.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.10</span>
+      <h2 class="sn-q-text">When should you use Promise.all vs sequential await calls?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Sequential <code class="sn-ic">await</code></strong> — each operation waits for the previous one:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>When operations depend on each other's results</span></li>
+<li><span class="icon">💡</span><span>When they share a browser context or page (page actions)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>When the system has rate limits or cannot handle concurrent calls</span></li>
+<li><span class="icon">🎯</span><span>When the order of side effects matters</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">Promise.all</code></strong> — all operations start at the same time:</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>When operations are fully independent</span></li>
+<li><span class="icon">🔑</span><span>When they use separate API contexts or browser contexts</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>When speed matters and the system can handle concurrency</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Sequential — each API call creates a user, next step needs the previous ID</span>
+<span class="tc-kw">const</span> user1 = <span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(&quot;alice@<span class="tc-kw">test</span>.com&quot;);
+<span class="tc-kw">const</span> team  = <span class="tc-kw">await</span> <span class="tc-fn">createTeam</span>(user1.id); <span class="tc-cm">// needs user1</span>
+<span class="tc-kw">const</span> user2 = <span class="tc-kw">await</span> <span class="tc-fn">addToTeam</span>(team.id, &quot;bob@<span class="tc-kw">test</span>.com&quot;); <span class="tc-cm">// needs team</span>
+
+<span class="tc-cm">// Parallel — all three users are independent</span>
+<span class="tc-kw">const</span> [alice, bob, carol] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+  <span class="tc-fn">createUser</span>(&quot;alice@<span class="tc-kw">test</span>.com&quot;),
+  <span class="tc-fn">createUser</span>(&quot;bob@<span class="tc-kw">test</span>.com&quot;),
+  <span class="tc-fn">createUser</span>(&quot;carol@<span class="tc-kw">test</span>.com&quot;),
+]);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.11</span>
+      <h2 class="sn-q-text">What is wrong with this async code — find the missing await?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Find the bugs</span>
+<span class="tc-kw">test</span>(&quot;checkout flow&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  page.<span class="tc-fn">goto</span>(&quot;/cart&quot;);                                    <span class="tc-cm">// Bug 1</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Checkout&quot; }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">const</span> response = page.<span class="tc-fn">waitForResponse</span>(&quot;/api/order&quot;);   <span class="tc-cm">// Bug 2</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Confirm&quot; }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();                    <span class="tc-cm">// Bug 3</span>
+  <span class="tc-kw">expect</span>(body.orderId).<span class="tc-fn">toBeDefined</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Bug 1</strong> — <code class="sn-ic">page.goto</code> is not awaited. The click happens before the cart page loads.</p>
+<p class="sn-para"><strong class="k-purple">Bug 2</strong> — <code class="sn-ic">waitForResponse</code> is not awaited when creating the listener. The <code class="sn-ic">response</code> variable holds a Promise, not the resolved Response object. But the click happens after, so the listener was registered — the timing is accidentally "safe" here but the code is still wrong.</p>
+<p class="sn-para"><strong class="k-purple">Bug 3</strong> — <code class="sn-ic">response</code> is still a Promise (because Bug 2). Calling <code class="sn-ic">.json()</code> on a Promise throws a TypeError.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Fixed</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/cart&quot;);
+
+<span class="tc-kw">const</span> [response] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([                   <span class="tc-cm">// start listening AND clicking together</span>
+  page.<span class="tc-fn">waitForResponse</span>(r =&gt; r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(&quot;/api/order&quot;)),
+  page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Confirm&quot; }).<span class="tc-fn">click</span>(),
+]);
+
+<span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+<span class="tc-kw">expect</span>(body.orderId).<span class="tc-fn">toBeDefined</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.12</span>
+      <h2 class="sn-q-text">What is a floating promise and why is it dangerous in tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A floating promise is a Promise that is neither awaited, returned, nor assigned to a variable. It runs but nothing waits for it. Errors it throws are unhandled.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Floating promise — danger</span>
+<span class="tc-kw">test</span>(&quot;check dashboard&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/dashboard&quot;);
+
+  <span class="tc-cm">// This assertion runs but nobody awaits it</span>
+  <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(&quot;heading&quot;)).<span class="tc-fn">toBeVisible</span>(); <span class="tc-cm">// floating!</span>
+
+  <span class="tc-cm">// Test ends here — the assertion may not have started or may throw after the test ends</span>
+});</div>
+      </div>
+<p class="sn-para">Floating promises in tests produce one of two outcomes:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The test passes because the promise resolved before the test ended (flaky)</span></li>
+<li><span class="icon">💡</span><span>The test passes because the rejection is unhandled and lost (silent miss)</span></li>
+</ul>
+<p class="sn-para">The fix is always to <code class="sn-ic">await</code> every assertion and every action.</p>
+<p class="sn-para">ESLint rule <code class="sn-ic">@typescript-eslint/no-floating-promises</code> flags these automatically. The rule is standard in Playwright TypeScript projects.</p>
+    </div>
+  </div>
+
+  <!-- Q109.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.13</span>
+      <h2 class="sn-q-text">Write code using Promise.all to wait for multiple API responses simultaneously</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(&quot;dashboard loads all three data sections&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Register listeners BEFORE navigating — responses might arrive fast</span>
+  <span class="tc-kw">const</span> [productsResponse, ordersResponse, statsResponse] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+    page.<span class="tc-fn">waitForResponse</span>(r =&gt;
+      r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(&quot;/api/products&quot;) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>
+    ),
+    page.<span class="tc-fn">waitForResponse</span>(r =&gt;
+      r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(&quot;/api/orders&quot;) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>
+    ),
+    page.<span class="tc-fn">waitForResponse</span>(r =&gt;
+      r.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(&quot;/api/stats&quot;) &amp;&amp; r.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>
+    ),
+    page.<span class="tc-fn">goto</span>(&quot;/dashboard&quot;), <span class="tc-cm">// navigation is the fourth &amp;quot;promise&amp;quot; — triggers all three API calls</span>
+  ]);
+
+  <span class="tc-cm">// All three APIs have responded — now assert the UI</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(&quot;products-section&quot;)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(&quot;orders-section&quot;)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(&quot;stats-section&quot;)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Optionally verify response payloads</span>
+  <span class="tc-kw">const</span> stats = <span class="tc-kw">await</span> statsResponse.<span class="tc-fn">json</span>();
+  <span class="tc-kw">expect</span>(stats.totalOrders).<span class="tc-fn">toBeGreaterThan</span>(<span class="tc-num">0</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.14</span>
+      <h2 class="sn-q-text">Write an async retry utility that retries a flaky operation with backoff</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/helpers/async-retry.ts</span>
+
+<span class="tc-kw">interface</span> BackoffOptions {
+  maxAttempts?: <span class="tc-kw">number</span>;
+  initialDelayMs?: <span class="tc-kw">number</span>;
+  factor?: <span class="tc-kw">number</span>; <span class="tc-cm">// multiply delay by this each attempt (exponential backoff)</span>
+  onAttempt?: (attempt: <span class="tc-kw">number</span>, error: Error) =&gt; <span class="tc-kw">void</span>;
+}
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> withBackoff&lt;T&gt;(
+  fn: () =&gt; Promise&lt;T&gt;,
+  options: BackoffOptions = {}
+): Promise&lt;T&gt; {
+  <span class="tc-kw">const</span> {
+    maxAttempts = <span class="tc-num">3</span>,
+    initialDelayMs = <span class="tc-num">500</span>,
+    factor = <span class="tc-num">2</span>,
+    onAttempt,
+  } = options;
+
+  <span class="tc-kw">let</span> delay = initialDelayMs;
+
+  <span class="tc-kw">for</span> (<span class="tc-kw">let</span> attempt = <span class="tc-num">1</span>; attempt &lt;= maxAttempts; attempt++) {
+    <span class="tc-kw">try</span> {
+      <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-fn">fn</span>();
+    } <span class="tc-kw">catch</span> (error) {
+      <span class="tc-kw">if</span> (attempt === maxAttempts) <span class="tc-kw">throw</span> error; <span class="tc-cm">// last attempt — re-throw</span>
+
+      onAttempt?.(attempt, error as Error);
+      <span class="tc-kw">await</span> <span class="tc-kw">new</span> Promise(resolve =&gt; <span class="tc-fn">setTimeout</span>(resolve, delay));
+      delay *= factor; <span class="tc-cm">// exponential: 500ms, 1000ms, 2000ms...</span>
+    }
+  }
+
+  <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(&quot;unreachable&quot;); <span class="tc-cm">// TypeScript requires this</span>
+}
+
+<span class="tc-cm">// Usage — retry an API call that occasionally returns 503</span>
+<span class="tc-kw">const</span> user = <span class="tc-kw">await</span> <span class="tc-fn">withBackoff</span>(
+  () =&gt; apiContext.<span class="tc-fn">get</span>(&quot;/api/users/me&quot;).<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>()),
+  {
+    maxAttempts: <span class="tc-num">3</span>,
+    initialDelayMs: <span class="tc-num">500</span>,
+    onAttempt: (n, err) =&gt; console.<span class="tc-fn">warn</span>(<span class="tc-str">`Attempt ${n} failed: ${err.message}`</span>),
+  }
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.15</span>
+      <h2 class="sn-q-text">Describe a race condition or async bug you diagnosed in a Playwright test</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had a test that submitted a form and then asserted the confirmation email appeared in a test inbox. The test was flaky — it passed about 70% of the time.</p>
+      </div>
+<p class="sn-para">The original code:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Race condition — email check starts too soon</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Submit&quot; }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(&quot;/confirmation&quot;);
+<span class="tc-kw">const</span> emails = <span class="tc-kw">await</span> mailbox.<span class="tc-fn">getAll</span>(); <span class="tc-cm">// checked immediately</span>
+<span class="tc-kw">expect</span>(emails[<span class="tc-num">0</span>].subject).<span class="tc-fn">toContain</span>(&quot;Order Confirmed&quot;);</div>
+      </div>
+<p class="sn-para">The form submission triggered an async email send on the backend. The page redirect happened immediately, but the email was sent by a background job that could take up to two seconds. <code class="sn-ic">mailbox.getAll()</code> ran before the email arrived.</p>
+<p class="sn-para">We fixed it with a polling assertion:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Fixed — poll until email arrives</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Submit&quot; }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(&quot;/confirmation&quot;);
+
+<span class="tc-cm">// Poll the mailbox with retries — Playwright's expect retries automatically</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">poll</span>(
+  <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">const</span> emails = <span class="tc-kw">await</span> mailbox.<span class="tc-fn">getAll</span>();
+    <span class="tc-kw">return</span> emails.<span class="tc-fn">some</span>(e =&gt; e.subject.<span class="tc-fn">includes</span>(&quot;Order Confirmed&quot;));
+  },
+  { timeout: 10_000, intervals: [<span class="tc-num">1000</span>, <span class="tc-num">2000</span>, <span class="tc-num">3000</span>] }
+).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">expect.poll</code> retried the mailbox check every 1–3 seconds for up to 10 seconds. The flakiness disappeared completely.</p>
+    </div>
+  </div>
+
+  <!-- Q109.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.16</span>
+      <h2 class="sn-q-text">What is Promise.race and when would you use it in automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">Promise.race</code> returns a Promise that resolves (or rejects) with the outcome of whichever input Promise settles first.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> result = <span class="tc-kw">await</span> Promise.<span class="tc-fn">race</span>([
+  page.<span class="tc-fn">waitForResponse</span>(&quot;/api/fast-endpoint&quot;),
+  <span class="tc-kw">new</span> Promise((_, reject) =&gt;
+    <span class="tc-fn">setTimeout</span>(() =&gt; <span class="tc-fn">reject</span>(<span class="tc-kw">new</span> Error(&quot;Timeout after 5s&quot;)), <span class="tc-num">5000</span>)
+  ),
+]);</div>
+      </div>
+<p class="sn-para">In test automation, <code class="sn-ic">Promise.race</code> is useful for:</p>
+<p class="sn-para"><strong class="k-yellow">Implementing custom timeouts</strong> for operations that Playwright does not time out natively.</p>
+<p class="sn-para"><strong class="k-yellow">Detecting which of two events occurs first</strong> — for example, whether a success redirect or an error modal appears after a form submission.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Which happens first — success or error?</span>
+<span class="tc-kw">const</span> outcome = <span class="tc-kw">await</span> Promise.<span class="tc-fn">race</span>([
+  page.<span class="tc-fn">waitForURL</span>(&quot;/dashboard&quot;).<span class="tc-fn">then</span>(() =&gt; &quot;success&quot;),
+  page.<span class="tc-fn">getByRole</span>(&quot;alert&quot;).<span class="tc-fn">waitFor</span>().<span class="tc-fn">then</span>(() =&gt; &quot;error&quot;),
+]);
+<span class="tc-kw">expect</span>(outcome).<span class="tc-fn">toBe</span>(&quot;success&quot;);</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">Promise.race</code> sparingly. <code class="sn-ic">Promise.all</code> and sequential awaits cover most automation scenarios. <code class="sn-ic">Promise.race</code> is for genuinely competing async events.</p>
+    </div>
+  </div>
+
+  <!-- Q109.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.17</span>
+      <h2 class="sn-q-text">How do you handle errors in async code — try/catch vs .catch()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both catch rejected Promises. The choice is about readability and scope.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">try/catch</code></strong> — wraps a block of code, any rejection inside the block is caught.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">try</span> {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(&quot;/slow-page&quot;, { timeout: <span class="tc-num">5000</span> });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(&quot;heading&quot;)).<span class="tc-fn">toBeVisible</span>();
+} <span class="tc-kw">catch</span> (error) {
+  console.<span class="tc-fn">error</span>(&quot;Navigation failed:&quot;, error.message);
+  <span class="tc-kw">throw</span> error; <span class="tc-cm">// re-throw so the test still fails</span>
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">.catch()</code></strong> — chained onto a single Promise expression.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> body = <span class="tc-kw">await</span> apiContext.<span class="tc-fn">get</span>(&quot;/api/data&quot;)
+  .<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>())
+  .<span class="tc-kw">catch</span>(() =&gt; <span class="tc-kw">null</span>); <span class="tc-cm">// return null instead of throwing</span></div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Use <code class="sn-ic">try/catch</code></strong> when you need to handle errors from multiple <code class="sn-ic">await</code> calls in one block, or when the error handling code is more than one line.</p>
+<p class="sn-para"><strong class="k-blue">Use <code class="sn-ic">.catch()</code></strong> when you want to transform a rejection into a fallback value for a single expression.</p>
+<p class="sn-para">In test code, most errors should propagate — you want tests to fail when something goes wrong. Use <code class="sn-ic">try/catch</code> for retry logic and for cleanup in <code class="sn-ic">afterEach</code> where you want to attempt cleanup even after a test failure.</p>
+    </div>
+  </div>
+
+  <!-- Q109.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.18</span>
+      <h2 class="sn-q-text">What is an unhandled promise rejection and how do you prevent it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An unhandled promise rejection is a Promise that was rejected but had no <code class="sn-ic">.catch()</code> or <code class="sn-ic">try/catch</code> to handle the error. The Node.js process emits an <code class="sn-ic">unhandledRejection</code> event and (in newer Node.js versions) exits with a non-zero code.</p>
+      </div>
+<p class="sn-para">In tests, unhandled rejections appear as confusing errors because they may come from a different async context than the test that is currently running.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Creates an unhandled rejection</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">setup</span>() {
+  <span class="tc-fn">fetchUserData</span>(); <span class="tc-cm">// returns a Promise — not awaited, error is lost</span>
+}</div>
+      </div>
+<p class="sn-para">Prevention rules:</p>
+<ol class="sn-olist">
+<li><strong class="k-green"><code class="sn-ic">await</code> every Promise.</strong> The ESLint rule</li>
+</ol>
+<p class="sn-para">   <code class="sn-ic">@typescript-eslint/no-floating-promises</code> enforces this.</p>
+<ol class="sn-olist">
+<li><strong class="k-green">Wrap <code class="sn-ic">Promise.all</code> setups in <code class="sn-ic">try/catch</code></strong> so that if one API call</li>
+</ol>
+<p class="sn-para">   fails during test setup, the error is clearly reported.</p>
+<ol class="sn-olist">
+<li><strong class="k-green">Use <code class="sn-ic">.catch(noop)</code> deliberately</strong> when you intentionally want to</li>
+</ol>
+<p class="sn-para">   ignore a rejection — but always add a comment explaining why.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Deliberately ignore rejection — cleanup best-effort only</span>
+<span class="tc-kw">await</span> <span class="tc-fn">deleteTestUser</span>(userId).<span class="tc-kw">catch</span>(() =&gt; {<span class="tc-cm">/* user may not exist */</span>});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.19 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.19</span>
+      <h2 class="sn-q-text">Write code that runs setup tasks in parallel and teardown tasks sequentially</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, APIRequestContext } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">interface</span> TestFixtures {
+  testData: { adminId: <span class="tc-kw">string</span>; teamId: <span class="tc-kw">string</span>; projectId: <span class="tc-kw">string</span> };
+}
+
+<span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;TestFixtures&gt;({
+  testData: <span class="tc-kw">async</span> ({ request }, use) =&gt; {
+    <span class="tc-cm">// SETUP — parallel: all three resources are independent</span>
+    <span class="tc-kw">const</span> [admin, team, project] = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>([
+      request.<span class="tc-fn">post</span>(&quot;/api/users&quot;,    { data: { role: &quot;admin&quot; } }).<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>()),
+      request.<span class="tc-fn">post</span>(&quot;/api/teams&quot;,    { data: { name: &quot;Test Team&quot; } }).<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>()),
+      request.<span class="tc-fn">post</span>(&quot;/api/projects&quot;, { data: { name: &quot;Test Project&quot; } }).<span class="tc-fn">then</span>(r =&gt; r.<span class="tc-fn">json</span>()),
+    ]);
+
+    <span class="tc-cm">// Provide the IDs to the test</span>
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>({
+      adminId:   admin.id,
+      teamId:    team.id,
+      projectId: project.id,
+    });
+
+    <span class="tc-cm">// TEARDOWN — sequential: delete in dependency order (project → team → admin)</span>
+    <span class="tc-cm">// Parallel deletion would risk FK constraint errors</span>
+    <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/projects/${project.id}`</span>);
+    <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/teams/${team.id}`</span>);
+    <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${admin.id}`</span>);
+  },
+});
+
+<span class="tc-kw">test</span>(&quot;admin can assign project to team&quot;, <span class="tc-kw">async</span> ({ page, testData }) =&gt; {
+  <span class="tc-kw">const</span> { adminId, teamId, projectId } = testData;
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">`/admin/projects/${projectId}`</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Assign Team&quot; }).<span class="tc-fn">click</span>();
+  <span class="tc-cm">// ... rest of test</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q109.20 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q109.20</span>
+      <h2 class="sn-q-text">How does your team track and prevent async anti-patterns in the test codebase?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we prevent async bugs at three levels.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Level 1 — ESLint rules.</strong> Three rules run on every pull request:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">@typescript-eslint/no-floating-promises</code> — flags unawaited Promises</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">@typescript-eslint/await-thenable</code> — flags <code class="sn-ic">await</code> on non-Promise values</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">no-restricted-syntax</code> — flags <code class="sn-ic">forEach(async</code> patterns</span></li>
+</ul>
+<p class="sn-para">Any violation fails the CI lint check before tests even run.</p>
+<p class="sn-para"><strong class="k-orange">Level 2 — TypeScript strict null checks.</strong> <code class="sn-ic">&quot;strict&quot;: true</code> in <code class="sn-ic">tsconfig.json</code> means that return types of async functions are explicit. A function that accidentally returns <code class="sn-ic">void</code> instead of <code class="sn-ic">Promise&lt;void&gt;</code> gets flagged immediately.</p>
+<p class="sn-para"><strong class="k-orange">Level 3 — Code review checklist.</strong> Our PR template includes a section: "Async check: are all Playwright actions awaited? Are any loops using <code class="sn-ic">forEach</code> with async?" Reviewers check this explicitly for test files.</p>
+<p class="sn-para">We also have a team rule: any new async utility function must have a code comment that either marks it <code class="sn-ic">// must be awaited</code> or explains why it should not be awaited. This came from a bug where a logging helper returned a Promise that nobody realised needed awaiting.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Every Playwright browser action returns a Promise. Always <code class="sn-ic">await</code> it. Forgetting <code class="sn-ic">await</code> creates a race condition that looks like flakiness.</span></li>
+            <li><span class="icon">⭐</span><span>A Promise has three states: pending, fulfilled, rejected. Once settled, it never changes. <code class="sn-ic">await</code> unwraps the fulfilled value and throws on rejection.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">forEach</code> with <code class="sn-ic">async/await</code> does not work — <code class="sn-ic">forEach</code> ignores the returned Promise. Use <code class="sn-ic">for...of</code> for sequential async loops. Use <code class="sn-ic">Promise.all</code> with <code class="sn-ic">map</code> for parallel async loops.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Promise.all</code> rejects on first failure. <code class="sn-ic">Promise.allSettled</code> waits for everything to settle and reports each outcome.</span></li>
+            <li><span class="icon">⭐</span><span>The critical Playwright pattern: start <code class="sn-ic">waitForResponse</code> AND click inside the same <code class="sn-ic">Promise.all</code> — this guarantees the listener is registered before the click fires.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">@typescript-eslint/no-floating-promises</code> is the most important ESLint rule for async test code. Enable it in every Playwright TypeScript project.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

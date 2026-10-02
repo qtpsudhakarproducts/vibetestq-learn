@@ -1,0 +1,477 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 901 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">GenAI</span> <span class="w2">Fundamentals</span> <span class="w3">for</span> <span class="w4">Testers</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter teaches test automation engineers what they need to know about Large Language Models — not as end users, but as engineers who will integrate AI into their frameworks. Topics include how LLMs work, tokens and context windows, hallucination, temperature, RAG, and the key mental models that make every subsequent AI chapter make sense.</span>
+  </div>
+
+
+  <!-- Q901.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.1</span>
+      <h2 class="sn-q-text">What is a Large Language Model (LLM)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A Large Language Model is a neural network trained on massive amounts of text. It learns to predict the next word (or token) in a sequence. By doing this at enormous scale, it develops capabilities that look like reasoning, coding, summarising, and question answering.</p>
+      </div>
+<p class="sn-para">The key insight: an LLM does not "know" facts the way a database does. It has learned statistical patterns from text. When it writes a Playwright test, it is combining patterns it saw in training — TypeScript code, Playwright docs, test examples — not retrieving a stored answer.</p>
+<p class="sn-para">This has two consequences:</p>
+<ol class="sn-olist">
+<li>LLMs are extremely capable across diverse topics</li>
+<li>LLMs can be confidently wrong — they generate plausible-sounding text even</li>
+</ol>
+<p class="sn-para">   when the underlying claim is false (called hallucination)</p>
+    </div>
+  </div>
+
+  <!-- Q901.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.2</span>
+      <h2 class="sn-q-text">What is a token and why does it matter for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A token is the unit an LLM reads and writes. It is roughly 3–4 characters or about 0.75 words. LLMs do not process characters or words — they process tokens.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">&quot;playwright&quot;           → &quot;play&quot; + &quot;wright&quot;        = 2 tokens
+&quot;the&quot;                  → &quot;the&quot;                    = 1 token
+&quot;authentication&quot;       → &quot;authen&quot; + &quot;tication&quot;    = 2 tokens
+&quot;getByRole&quot;            → &quot;get&quot; + &quot;By&quot; + &quot;Role&quot;    = 3 tokens</div>
+      </div>
+<p class="sn-para">Why tokens matter for automation engineers:</p>
+<p class="sn-para"><strong class="k-green">Cost.</strong> API calls to LLMs are priced per token. Sending a 500-line page object to an LLM for every test generation call gets expensive fast. Knowing token counts helps you budget AI features in your framework.</p>
+<p class="sn-para"><strong class="k-green">Context window.</strong> Every LLM has a context window — the maximum number of tokens it can read and write in one conversation. Claude Sonnet 4.6 has 200,000 tokens. GPT-4o has 128,000 tokens. When your conversation exceeds the limit, the model can no longer see earlier messages. For agentic test generation this is critical: a context window filled with irrelevant files will degrade output quality.</p>
+<p class="sn-para"><strong class="k-green">Output limits.</strong> Most models generate up to 4,000–8,000 output tokens per call. If you ask for a full test file covering 50 scenarios, you will hit this limit before the file is complete. Break large generation tasks into smaller calls.</p>
+    </div>
+  </div>
+
+  <!-- Q901.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.3</span>
+      <h2 class="sn-q-text">What is the context window and how do you manage it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The context window is everything the LLM can see at once — your system prompt, the conversation history, any files you have pasted, and the response it is generating.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Context window = system prompt + conversation history + files + response
+
+Claude Sonnet 4.6:    200,000 tokens  (~150,000 words)
+GPT-4o:               128,000 tokens  (~96,000 words)
+Gemini 1.5 Pro:     1,000,000 tokens  (~750,000 words)</div>
+      </div>
+<p class="sn-para">For test automation agents, context management is a first-class engineering concern:</p>
+<p class="sn-para"><strong class="k-purple">Include only what matters.</strong> If you are generating a test for the Employee page, include only the Employee page object, the Employee API spec, and the relevant fixture — not the entire test suite.</p>
+<p class="sn-para"><strong class="k-purple">Use SKILL files instead of full files.</strong> A SKILL file with 200 tokens of instructions about coding standards replaces pasting 3,000-token source files. This is the key architectural idea behind Playwright CLI SKILLs.</p>
+<p class="sn-para"><strong class="k-purple">Summarise long files.</strong> When a source file is too long to fit, extract the relevant types, method signatures, and constants rather than the full implementation.</p>
+<p class="sn-para"><strong class="k-purple">Monitor token usage in agentic loops.</strong> An AI agent making many tool calls in a loop will fill the context window quickly. Budget the window: system instructions + standards file + current file + recent conversation.</p>
+    </div>
+  </div>
+
+  <!-- Q901.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.4</span>
+      <h2 class="sn-q-text">What is hallucination and how do you defend against it in test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hallucination is when an LLM generates content that is plausible but wrong. In test automation, hallucination most often appears as:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Invented Playwright methods that do not exist: <code class="sn-ic">page.waitForResponse2()</code>, <code class="sn-ic">locator.assertText()</code></span></li>
+<li><span class="icon">💡</span><span>Wrong method signatures: <code class="sn-ic">getByRole('button', 'Submit')</code> instead of <code class="sn-ic">getByRole('button', { name: 'Submit' })</code></span></li>
+<li><span class="icon">⚡</span><span>Invented configuration options in <code class="sn-ic">playwright.config.ts</code></span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Plausible but incorrect explanations of how Playwright works internally</span></li>
+</ul>
+<p class="sn-para"><strong class="k-orange">Defences:</strong></p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Run generated tests immediately.</strong> Hallucinated code fails when executed.</li>
+</ol>
+<p class="sn-para">   Do not review code then run later — run first, then review what passes.</p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Provide correct examples in your prompt.</strong> Few-shot examples showing your</li>
+</ol>
+<p class="sn-para">   real code patterns dramatically reduce hallucination by anchoring the model    to patterns that already work.</p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Use TypeScript strict mode.</strong> TypeScript type errors catch hallucinated</li>
+</ol>
+<p class="sn-para">   method names before the test runs.</p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Keep a STANDARDS.md file.</strong> An accurate standards file in context keeps</li>
+</ol>
+<p class="sn-para">   the model generating real patterns from your framework rather than inventing    ones it has seen elsewhere.</p>
+<ol class="sn-olist">
+<li><strong class="k-orange">Never trust generated assertions blindly.</strong> An LLM can write</li>
+</ol>
+<p class="sn-para">   <code class="sn-ic">expect(response.status()).toBe(200)</code> for a call that returns 201. Run    the test against a real backend and verify it fails when expected.</p>
+    </div>
+  </div>
+
+  <!-- Q901.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.5</span>
+      <h2 class="sn-q-text">What is temperature and how does it affect code generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Temperature is a parameter that controls how much randomness an LLM uses when choosing the next token. It ranges from 0 to 1 (or higher on some models).</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Temperature 0 (deterministic):</strong> The model always picks the highest-probability next token. Output is consistent and predictable. The same prompt gives the same output every time. Use for: generating test code, writing structured output, tasks with one right answer.</p>
+<p class="sn-para"><strong class="k-teal">Temperature 0.7 (default, balanced):</strong> Some randomness is introduced. The model may pick lower-probability tokens, producing more varied and creative output. Use for: brainstorming test scenarios, generating test data with variety.</p>
+<p class="sn-para"><strong class="k-teal">Temperature 1+ (highly random):</strong> Output becomes unpredictable and often incoherent for technical tasks. Rarely useful for automation.</p>
+<p class="sn-para">For test generation in production frameworks, use temperature 0 or close to 0. Consistent, deterministic output is what you want when generating code that must compile and run correctly.</p>
+    </div>
+  </div>
+
+  <!-- Q901.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.6</span>
+      <h2 class="sn-q-text">What is RAG and how does it apply to test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">RAG stands for Retrieval-Augmented Generation. It is the technique of retrieving relevant documents from a knowledge base and including them in the LLM's context before asking it to generate output.</p>
+      </div>
+<p class="sn-para">Without RAG, an LLM generates code based only on what it learned during training. It does not know your application's specific page objects, your team's coding conventions, or your API contracts.</p>
+<p class="sn-para">With RAG, you retrieve the relevant page object, the relevant API spec, and the coding standards file — then include them in the prompt. The LLM generates code that matches your actual framework.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Without RAG:
+  Prompt: &quot;Write a test for employee creation&quot;
+  → LLM invents a generic test using patterns from training data
+  → Code does not match your POM structure
+
+With RAG:
+  Retrieval: fetch EmployeePage.ts, employee-api.spec.ts, STANDARDS.md
+  Prompt: &quot;Given these files, write a test for employee creation&quot;
+  → LLM generates code that uses your actual page object methods
+  → Code fits your framework immediately</div>
+      </div>
+<p class="sn-para">In practice, RAG for test generation means: before calling the LLM API, search your codebase for the files most relevant to the test you want to generate, and include their content (or summaries) in the context. Tools like Cursor and GitHub Copilot do this automatically using vector search over your indexed codebase.</p>
+    </div>
+  </div>
+
+  <!-- Q901.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.7</span>
+      <h2 class="sn-q-text">What is the difference between a model and an agent?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <strong class="k-red">model</strong> is the LLM itself — it takes input text and generates output text. It has no memory between calls and takes no actions in the world on its own.</p>
+      </div>
+<p class="sn-para">An <strong class="k-red">agent</strong> is software that wraps a model in a loop, gives it tools, and lets it take actions until a goal is achieved.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Model alone:
+  You: &quot;Write a test for login&quot;
+  Model: &quot;Here is the code: ...&quot;
+  You: (copy, paste, save, run — all manual)
+
+Agent:
+  You: &quot;Write and run a passing test for login&quot;
+  Agent: calls model → gets code → writes file → runs test → reads failure
+       → calls model again with failure → gets fix → writes file → runs test
+       → all passing → reports done</div>
+      </div>
+<p class="sn-para">The agent loop has four parts:</p>
+<ol class="sn-olist">
+<li><strong class="k-red">Perceive</strong> — read current state (file contents, test output, page HTML)</li>
+<li><strong class="k-red">Plan</strong> — decide what action to take next</li>
+<li><strong class="k-red">Act</strong> — call a tool (write file, run command, navigate browser)</li>
+<li><strong class="k-red">Observe</strong> — read the result, update plan</li>
+</ol>
+<p class="sn-para">For test automation engineers, agents change what AI can do: from suggesting code (model) to actually generating, running, and fixing tests (agent).</p>
+    </div>
+  </div>
+
+  <!-- Q901.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.8</span>
+      <h2 class="sn-q-text">What is the difference between standard and reasoning models?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Standard models</strong> (Claude Sonnet 4.6, GPT-4o, Gemini Flash) generate the next token immediately using learned patterns. They are fast and cheap. They are excellent at code generation, explanation, and transformation tasks.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Reasoning models</strong> (Claude Opus 4.6 with extended thinking, o1, o3) spend compute time "thinking" before producing output. They generate internal reasoning steps that are not shown to you, then produce a final answer. They are slower and more expensive but significantly better at tasks requiring multi-step logic.</p>
+<p class="sn-para">When to use each for test automation:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Task</th><th class="sn-th-blue">Recommended model</th></tr></thead>
+          <tbody>
+          <tr><td>Generate a test from a spec</td><td>Standard model (fast, accurate enough)</td></tr>
+          <tr><td>Debug a complex flaky test</td><td>Reasoning model (deeper analysis)</td></tr>
+          <tr><td>Autocomplete a line of code</td><td>Standard model</td></tr>
+          <tr><td>Design a complete framework architecture</td><td>Reasoning model</td></tr>
+          <tr><td>Fix a locator that changed</td><td>Standard model</td></tr>
+          <tr><td>Diagnose a test that fails only in parallel</td><td>Reasoning model</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">For CI-integrated test generation where speed and cost matter, use standard models. For complex debugging or architecture decisions, use reasoning models.</p>
+    </div>
+  </div>
+
+  <!-- Q901.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.9</span>
+      <h2 class="sn-q-text">What are the main model providers and how do they differ for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Provider</th><th class="sn-th-blue">Model</th><th class="sn-th-green">Strengths for test automation</th></tr></thead>
+          <tbody>
+          <tr><td>Anthropic</td><td>Claude Sonnet 4.6</td><td>Long context (200k), excellent TypeScript, follows instructions precisely</td></tr>
+          <tr><td>OpenAI</td><td>GPT-4o</td><td>Strong code generation, widely supported in tools</td></tr>
+          <tr><td>Google</td><td>Gemini 1.5 Pro</td><td>1M token context, handles very large codebases</td></tr>
+          <tr><td>Meta</td><td>Llama 4</td><td>Open source, can run locally (data privacy)</td></tr>
+          <tr><td>DeepSeek</td><td>R1</td><td>Strong reasoning, open weights</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">For most test automation tasks, Claude Sonnet 4.6 and GPT-4o perform similarly. The practical differentiation comes from the tooling layer — which model your IDE integration (Copilot, Cursor) uses by default, and which model offers the API pricing that fits your automation budget.</p>
+    </div>
+  </div>
+
+  <!-- Q901.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.10</span>
+      <h2 class="sn-q-text">What is a system prompt and why does it matter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A system prompt is the instruction given to an LLM before the user's message. It defines the model's role, constraints, and behaviour for the entire conversation. In automation frameworks that call the LLM API directly, the system prompt is where you encode your framework standards.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// In a self-healing fixture or AI test generator</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> anthropic.messages.<span class="tc-fn">create</span>({
+  model: <span class="tc-str">'claude-sonnet-4-6'</span>,
+  system: <span class="tc-str">`You are a Playwright TypeScript expert working on the OrangeHRM
+  test automation framework.
+
+  Framework rules:
+  - All page objects extend BasePage
+  - Use getByRole first, getByLabel for forms, getByTestId as last resort
+  - All async methods return Promise&amp;lt;void&amp;gt;
+  - Use TypeScript strict mode
+  - Never use page.waitForTimeout() — use expect assertions instead
+
+  When generating tests, always follow these conventions exactly.`</span>,
+  messages: [
+    { role: <span class="tc-str">'user'</span>, content: prompt }
+  ]
+});</div>
+      </div>
+<p class="sn-para">A strong system prompt reduces hallucination by constraining the model to your specific patterns. Without it, the model generates generic code that may not match your framework's conventions.</p>
+    </div>
+  </div>
+
+  <!-- Q901.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.11</span>
+      <h2 class="sn-q-text">What is fine-tuning and is it relevant for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Fine-tuning is the process of continuing to train a pre-trained model on your own dataset, so it learns your specific patterns, conventions, and domain.</p>
+      </div>
+<p class="sn-para">For test automation, fine-tuning would mean training a model on your existing tests, page objects, and fixture files so it generates code that matches your framework perfectly without needing a system prompt or examples.</p>
+<p class="sn-para"><strong class="k-purple">Is it worth it?</strong> For most teams, no. Fine-tuning requires:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A large dataset of high-quality examples (hundreds of test files)</span></li>
+<li><span class="icon">💡</span><span>Significant compute cost to run the training</span></li>
+<li><span class="icon">⚡</span><span>Re-training whenever your framework conventions change</span></li>
+</ul>
+<p class="sn-para">RAG + strong system prompts + few-shot examples achieve 80–90% of fine-tuning's benefit at a fraction of the cost and effort. Fine-tuning makes sense only for very large teams with stable, well-documented frameworks that generate tests at scale.</p>
+    </div>
+  </div>
+
+  <!-- Q901.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.12</span>
+      <h2 class="sn-q-text">What is an embedding and how does it enable semantic code search?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An embedding is a numerical vector — a list of hundreds of numbers — that represents the meaning of a piece of text. Texts with similar meaning have similar embeddings (the vectors point in the same direction in high-dimensional space).</p>
+      </div>
+<p class="sn-para">For test automation, embeddings enable semantic search over your codebase:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Query: &quot;test that verifies employee leave application&quot;
+Embedding of query → [0.23, -0.41, 0.87, ...]
+
+Compare against embeddings of all files in the codebase:
+  leave-application.spec.ts     → similarity: 0.94  ← return this
+  employee-pom.ts               → similarity: 0.89  ← return this
+  login.spec.ts                 → similarity: 0.12  ← skip
+  playwright.config.ts          → similarity: 0.08  ← skip</div>
+      </div>
+<p class="sn-para">This is how Cursor and GitHub Copilot know which files to include when you ask about a specific test — they embed your query, embed all files, and retrieve the most similar ones to include in context. The same technique is used in RAG-based test generation: retrieve the most relevant page objects and specs before calling the LLM.</p>
+    </div>
+  </div>
+
+  <!-- Q901.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.13</span>
+      <h2 class="sn-q-text">What are the most common ways AI is used in test automation today?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Based on adoption in 2025–2026:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">1. Code generation inside the IDE</strong> — the most common use. GitHub Copilot or Cursor generates test code as you type. The AI sees your open files and suggests completions based on your patterns. Saves roughly 30–40% of typing time on repetitive test code.</p>
+<p class="sn-para"><strong class="k-teal">2. Chat-based debugging</strong> — paste a failing test and error message into Claude or ChatGPT, ask for diagnosis. Particularly useful for decoding complex Playwright timeout errors, async race conditions, and CI-only failures.</p>
+<p class="sn-para"><strong class="k-teal">3. Test generation from specs</strong> — paste a user story or requirements document, ask the AI to generate test scenarios and then test code. Useful for building initial coverage on a new feature.</p>
+<p class="sn-para"><strong class="k-teal">4. Locator recovery</strong> — when a selector breaks after a UI change, paste the new HTML and the old locator and ask the AI to suggest the new locator.</p>
+<p class="sn-para"><strong class="k-teal">5. Test data generation</strong> — use the AI to generate realistic, varied test data that matches domain rules, replacing brittle hardcoded strings.</p>
+<p class="sn-para"><strong class="k-teal">6. Autonomous agents (emerging)</strong> — agents that write, run, and fix tests in a loop with minimal human intervention. Still early in 2026 but growing rapidly.</p>
+    </div>
+  </div>
+
+  <!-- Q901.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.14</span>
+      <h2 class="sn-q-text">What data privacy risks exist when using AI tools with test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">Risk 1 — Sending production data to public LLMs.</strong> If your test fixtures contain real customer data — actual emails, real names, production API keys — and you paste them into ChatGPT or Claude.ai, that data is sent to the provider's servers. Most consumer AI services retain this data. Fix: use synthetic test data. Never use real PII in tests.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Risk 2 — Sending proprietary code to public LLMs.</strong> Pasting your entire framework codebase into an AI tool sends your IP to an external server. Some organisations ban this. Fix: use enterprise agreements with zero data retention (Anthropic, OpenAI both offer these), or use locally-hosted open-source models (Llama 4) for sensitive code.</p>
+<p class="sn-para"><strong class="k-pink">Risk 3 — API keys in prompts.</strong> If your prompt includes an API key or secret token for context, that secret is now in the LLM provider's logs. Fix: replace secrets with placeholders before sending to any AI tool.</p>
+<p class="sn-para"><strong class="k-pink">Risk 4 — AI-generated tests leaking data in CI.</strong> If AI-generated tests log sensitive data they retrieve from the application, and those logs are sent back to an AI tool for debugging, real data can leak. Fix: review AI-generated test code before committing. Ensure logging is sanitised.</p>
+    </div>
+  </div>
+
+  <!-- Q901.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q901.15</span>
+      <h2 class="sn-q-text">In your framework, how do you use GenAI practically?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we use AI at three levels.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Level 1 — Daily coding.</strong> GitHub Copilot is active in VS Code. It generates fixture methods, page object actions, and assertion patterns based on our open files. It saves roughly 30% of typing time on standard test patterns.</p>
+<p class="sn-para"><strong class="k-red">Level 2 — Test generation from specs.</strong> When a new feature ships, we use a structured prompt with the RCIF framework (Role, Context, Instruction, Format) to generate the initial test scenarios and the first draft of the test file. A human reviews and adjusts before committing.</p>
+<p class="sn-para"><strong class="k-red">Level 3 — Debugging.</strong> When a test fails in CI and the error is not obvious, we paste the test, the error message, and the trace output into Claude and ask for a diagnosis. This typically cuts debugging time from 30 minutes to 5 minutes.</p>
+<p class="sn-para">We do not send production data or API keys to any AI tool. All test data is synthetic (Faker-generated). Framework code is sent to Claude under an enterprise agreement with zero data retention.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>An LLM predicts the next token based on patterns learned from training data. It generates plausible text — which can be correct or hallucinated.</span></li>
+            <li><span class="icon">⭐</span><span>A token is ~0.75 words. Context windows have token limits. Manage context by including only relevant files, using SKILL files instead of full codebases, and monitoring usage in agentic loops.</span></li>
+            <li><span class="icon">⭐</span><span>Hallucination in test code appears as invented methods, wrong signatures, and incorrect configs. Defend with: run code immediately, provide examples, use TypeScript, use STANDARDS.md.</span></li>
+            <li><span class="icon">⭐</span><span>Temperature 0 gives deterministic output — use it for code generation. Higher temperature gives more variety — use it for brainstorming.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>RAG retrieves relevant files before prompting. This makes AI-generated code match your actual framework instead of generic patterns.</span></li>
+            <li><span class="icon">⭐</span><span>An agent wraps a model in a perceive-plan-act-observe loop. It can write files, run tests, and fix failures autonomously.</span></li>
+            <li><span class="icon">⭐</span><span>Standard models: fast, cheap, great for code generation. Reasoning models: slower, better for complex debugging and architecture.</span></li>
+            <li><span class="icon">⭐</span><span>Data privacy rules: no production data in prompts, no API keys in prompts, use enterprise agreements or local models for sensitive code.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

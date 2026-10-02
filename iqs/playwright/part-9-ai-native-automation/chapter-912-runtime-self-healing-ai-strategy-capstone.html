@@ -1,0 +1,653 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 912 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Runtime</span> <span class="w2">Self-Healing</span> <span class="w3">&amp;</span> <span class="w4">AI</span> <span class="w5">Strategy</span> <span class="w6">Capstone</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This is the final chapter of the book. It brings together everything covered in Parts 1–8. Runtime self-healing is the most advanced technique in modern test automation — LLM-powered locator recovery that fires mid-test when an element cannot be found. Beyond the implementation, this chapter covers the strategic picture: how to build an AI-native test automation organisation, how to measure ROI, and how to lead the adoption roadmap. This chapter builds on the self-healing concept introduced in Chapter 56 (POM Level 10). Here the treatment is deeper — full implementation mechanics, architecture decisions, CI configuration, and the human-in-the-loop governance model.</span>
+  </div>
+
+
+  <!-- Q912.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.1</span>
+      <h2 class="sn-q-text">What is runtime self-healing in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Runtime self-healing means a test recovers from a locator failure during execution — without stopping. Normally, if a locator cannot find an element, Playwright throws an error and the test fails. With self-healing, the framework intercepts that failure, asks an LLM to suggest a better locator using the current page structure, tries the suggestion, and if it works the test continues.</p>
+      </div>
+<p class="sn-para">The result: tests survive minor UI changes — a label rename, a CSS class change, a restructured form — without manual locator updates after every release.</p>
+<p class="sn-para">Self-healing has two distinct variants:</p>
+<p class="sn-para"><strong class="k-blue">Post-execution healing</strong> (the Playwright Healer Agent) runs after a test suite finishes. An AI agent analyses failures and patches the source files. This is post-run maintenance automation.</p>
+<p class="sn-para"><strong class="k-blue">Runtime self-healing</strong> fires during test execution, inside a running test. The framework intercepts <code class="sn-ic">ElementNotFoundError</code>, queries the LLM with the live accessibility tree, tries the suggested locator, and if successful continues the test. The original error is only thrown if healing fails.</p>
+<p class="sn-para">Runtime healing is built on three prerequisites:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>All interactions route through a single <code class="sn-ic">WebActions</code> class — the seam where</span></li>
+</ul>
+<p class="sn-para">  healing is injected</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Every locator has a <code class="sn-ic">.describe()</code> label — this gives the LLM semantic context</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The framework uses the accessibility tree, not DOM snapshots — semantic</span></li>
+</ul>
+<p class="sn-para">  structure is more stable than HTML markup</p>
+<p class="sn-para">The cost model without healing: each minor UI change in a release typically costs 2–8 hours of locator update work. At scale — ten engineers, four releases per year, twenty UI changes per release — that is 1,600–6,400 person-hours per year of mechanical maintenance. Self-healing converts most of that to minutes of log review. The LLM API cost is negligible by comparison.</p>
+    </div>
+  </div>
+
+  <!-- Q912.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.2</span>
+      <h2 class="sn-q-text">How does the runtime self-healing architecture work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The architecture flows through a single seam:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test calls → page object method
+                ↓
+         WebActions.execute()     ← the seam
+                ↓
+         Playwright action runs
+                ↓
+         ElementNotFoundError thrown
+                ↓
+         HealingEngine.attempt()
+           — snapshot accessibility tree
+           — ask LLM adapter for suggestion
+           — try suggested locator
+                ↓
+         Success → continue test + append to healing-log.json
+         Failure → throw original error (test fails normally)</div>
+      </div>
+<p class="sn-para">The key design decision: all interactions route through <code class="sn-ic">WebActions.execute()</code>. Every page object calls <code class="sn-ic">this.actions.click()</code>, <code class="sn-ic">this.actions.fill()</code> — never <code class="sn-ic">locator.click()</code> directly. Because everything routes through this one method, healing covers the entire framework without touching any page object class.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/WebActions.ts — simplified</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> WebActions {
+
+  <span class="tc-kw">private</span> healing: HealingEngine | <span class="tc-kw">null</span>;
+
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> page: Page) {
+    <span class="tc-kw">this</span>.healing = process.env.ENABLE_RUNTIME_HEALING === <span class="tc-str">'true'</span>
+      ? <span class="tc-kw">new</span> HealingEngine(page)
+      : <span class="tc-kw">null</span>;
+  }
+
+  <span class="tc-kw">async</span> execute&lt;T&gt;(locator: Locator, fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt; {
+    <span class="tc-kw">try</span> {
+      <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-fn">fn</span>();
+    } <span class="tc-kw">catch</span> (error) {
+      <span class="tc-kw">if</span> (error <span class="tc-kw">instanceof</span> Error &amp;&amp; error.message.<span class="tc-fn">includes</span>(<span class="tc-str">'Element not found'</span>)) {
+        <span class="tc-kw">if</span> (<span class="tc-kw">this</span>.healing) {
+          <span class="tc-kw">const</span> result = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.healing.<span class="tc-fn">attempt</span>(locator, fn);
+          <span class="tc-kw">if</span> (result !== <span class="tc-kw">null</span>) <span class="tc-kw">return</span> result;
+        }
+      }
+      <span class="tc-kw">throw</span> error;
+    }
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">click</span>(locator: Locator): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">execute</span>(locator, () =&gt; locator.<span class="tc-fn">click</span>());
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">fill</span>(locator: Locator, value: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">execute</span>(locator, () =&gt; locator.<span class="tc-fn">fill</span>(value));
+  }
+}</div>
+      </div>
+<p class="sn-para">The architecture is deliberately opinionated: healing is disabled locally and enabled only in the nightly CI pipeline. Locally, developers need fast, honest failure signals — healing would mask real problems and add LLM call latency. In the nightly pipeline, healing extends stability across minor UI changes and generates the healing log for human review. Heal at night, fail fast locally.</p>
+    </div>
+  </div>
+
+  <!-- Q912.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.3</span>
+      <h2 class="sn-q-text">How does the LLM receive enough context to suggest a correct locator?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The LLM receives two inputs: the element description and the current accessibility tree snapshot.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Element description</strong> comes from the locator's <code class="sn-ic">.describe()</code> label:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// In the page object — the describe label is what the LLM receives</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> statusDropdown = <span class="tc-kw">this</span>.page
+  .<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-text'</span>)
+  .<span class="tc-fn">nth</span>(<span class="tc-num">1</span>)
+  .<span class="tc-kw">describe</span>(<span class="tc-str">'User status dropdown in filter bar'</span>);</div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">.describe()</code>, the LLM receives the raw locator expression — <code class="sn-ic">locator('.oxd-select-text').nth(1)</code> — which is not enough to reason about what element to find.</p>
+<p class="sn-para"><strong class="k-purple">Accessibility tree snapshot</strong> comes from <code class="sn-ic">page.accessibility.snapshot()</code>. It returns a compact JSON structure of the page's semantic elements — roles, names, states. It is stable across CSS changes because it reflects semantic meaning, not HTML structure. A typical page snapshot is 50–200 nodes — far more compact than raw HTML, and focused on what actually matters to the LLM.</p>
+<p class="sn-para">The prompt is structured to return only a locator expression — no explanation, no code block, just the locator on one line:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/healing/prompt.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">buildPrompt</span>(description: <span class="tc-kw">string</span>, tree: <span class="tc-kw">string</span>): <span class="tc-kw">string</span> {
+  <span class="tc-kw">return</span> <span class="tc-str">`
+A Playwright locator failed. The element was described as: &amp;quot;${description}&amp;quot;.
+
+Current accessibility tree:
+${tree}
+
+Return ONLY a single Playwright locator expression.
+Rules:
+- Use semantic locators only: getByRole, getByLabel, getByPlaceholder, getByText
+- No CSS selectors, no XPath
+- No explanation, no code block, no backticks
+- Just the locator on a single line
+
+Example: getByRole('combobox', { name: 'Status' })
+  `</span>.<span class="tc-fn">trim</span>();
+}</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">.describe()</code> convention is the most important prerequisite. Without it, suggestion quality collapses. Enforce it as a lint rule — any locator without <code class="sn-ic">.describe()</code> fails the CI lint check before healing is even relevant.</p>
+    </div>
+  </div>
+
+  <!-- Q912.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.4</span>
+      <h2 class="sn-q-text">How is the LLM provider configured in the self-healing framework?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The framework uses an adapter pattern. The provider is selected at runtime via environment variables — no code changes required to switch providers.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/healing/LLMAdapter.ts — the interface</span>
+<span class="tc-kw">export</span> <span class="tc-kw">interface</span> LLMAdapter {
+  <span class="tc-fn">suggestLocator</span>(
+    description: <span class="tc-kw">string</span>,
+    accessibilityTree: <span class="tc-kw">string</span>
+  ): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt;;
+}
+
+<span class="tc-cm">// helpers/healing/LLMAdapterFactory.ts — selects based on env var</span>
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">createLLMAdapter</span>(): LLMAdapter {
+  <span class="tc-kw">const</span> provider = process.env.HEAL_LLM_PROVIDER ?? <span class="tc-str">'anthropic'</span>;
+  <span class="tc-kw">switch</span> (provider) {
+    <span class="tc-kw">case</span> <span class="tc-str">'anthropic'</span>: <span class="tc-kw">return</span> <span class="tc-kw">new</span> AnthropicAdapter();
+    <span class="tc-kw">case</span> <span class="tc-str">'openai'</span>:    <span class="tc-kw">return</span> <span class="tc-kw">new</span> OpenAIAdapter();
+    <span class="tc-kw">case</span> <span class="tc-str">'gemini'</span>:    <span class="tc-kw">return</span> <span class="tc-kw">new</span> GeminiAdapter();
+    <span class="tc-kw">default</span>: <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Unknown HEAL_LLM_PROVIDER: ${provider}`</span>);
+  }
+}</div>
+      </div>
+<p class="sn-para">Environment variables for the CI pipeline:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">ENABLE_RUNTIME_HEALING=true           # master switch — absent locally
+HEAL_LLM_PROVIDER=anthropic           # anthropic | openai | gemini
+HEAL_LLM_MODEL=claude-sonnet-4-20250514
+HEAL_LLM_API_KEY=${{ secrets.HEAL_LLM_API_KEY }}  # stored as a GitHub secret</div>
+      </div>
+<p class="sn-para">Switching from Anthropic to OpenAI means changing two env vars — nothing else. <code class="sn-ic">WebActions</code> depends only on the <code class="sn-ic">LLMAdapter</code> interface, never on a concrete provider. Each adapter handles exactly one thing: the HTTP call to its provider.</p>
+<p class="sn-para">Run periodic benchmarks when providers release new models. Feed 100 historical healing cases through the new model and compare suggestion accuracy against the current model. Upgrade on data, not marketing.</p>
+    </div>
+  </div>
+
+  <!-- Q912.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.5</span>
+      <h2 class="sn-q-text">What does the healing log contain and how do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every successful healing attempt appends an entry to <code class="sn-ic">healing-log.json</code> in the project root:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;heals&quot;: [
+    {
+      &quot;description&quot;: &quot;locator('.oxd-select-text').nth(1).describe('User status dropdown')&quot;,
+      &quot;original&quot;:    &quot;locator('.oxd-select-text').nth(1)&quot;,
+      &quot;suggested&quot;:   &quot;getByRole('combobox', { name: 'Status' })&quot;,
+      &quot;action&quot;:      &quot;healed&quot;,
+      &quot;timestamp&quot;:   &quot;2026-03-03T02:14:33Z&quot;
+    },
+    {
+      &quot;description&quot;: &quot;getByPlaceholder('Username').describe('Username field on login')&quot;,
+      &quot;original&quot;:    &quot;getByPlaceholder('Username')&quot;,
+      &quot;suggested&quot;:   &quot;getByLabel('Username')&quot;,
+      &quot;action&quot;:      &quot;healed&quot;,
+      &quot;timestamp&quot;:   &quot;2026-03-03T02:15:01Z&quot;
+    }
+  ]
+}</div>
+      </div>
+<p class="sn-para">The CI pipeline uploads the log as an artifact after each nightly run. The review workflow is:</p>
+<ol class="sn-olist">
+<li>Download <code class="sn-ic">healing-log-{run_number}</code> from CI artifacts</li>
+<li>For each entry, open the relevant page object</li>
+<li>Replace the original locator with the suggested one</li>
+<li>Run the test locally to confirm</li>
+<li>Commit the fix</li>
+</ol>
+<p class="sn-para">Every fix is a deliberate human decision. The framework never writes back to source files automatically.</p>
+<p class="sn-para">The log is also a quality signal. A high heal count per run means either the application UI is changing frequently or locator quality is low. Track the weekly heal count in the quality dashboard. A sudden spike triggers an investigation: is a team making frequent CSS renames? Is a high-churn module in need of better locators?</p>
+<p class="sn-para">Track suggestion accuracy too — how many logged suggestions were applied versus reverted. A 15–20% reversion rate is typical. Reverted suggestions feed back into prompt improvements.</p>
+    </div>
+  </div>
+
+  <!-- Q912.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.6</span>
+      <h2 class="sn-q-text">What are the five design rules for runtime self-healing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">These rules are architectural constraints, not preferences. Each one prevents a specific category of failure.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Rule 1 — CI only, never local.</strong> <code class="sn-ic">ENABLE_RUNTIME_HEALING</code> is absent in local environments. Developers need fast, honest failure signals. Healing adds LLM call latency and masks real problems locally. The flag is set only in the nightly pipeline.</p>
+<p class="sn-para"><strong class="k-pink">Rule 2 — Actions only, never assertions.</strong> <code class="sn-ic">AssertionHelpers</code> calls <code class="sn-ic">expect()</code> directly and never routes through <code class="sn-ic">WebActions.execute()</code>. There is no code path from a failing assertion to the healing engine. A failing assertion is a real test failure — it must reach the report unchanged. This boundary is structural, not a flag.</p>
+<p class="sn-para"><strong class="k-pink">Rule 3 — Heal <code class="sn-ic">ElementNotFoundError</code> only, never <code class="sn-ic">TimeoutError</code>.</strong> A timeout means the element exists but the page is slow. Changing the locator does not fix a slow page. Only element-not-found errors trigger healing.</p>
+<p class="sn-para"><strong class="k-pink">Rule 4 — Human review, never auto-commit.</strong> The healing log stores suggestions. A human applies them after reviewing. The framework never writes back to source files. Every fix is a deliberate decision.</p>
+<p class="sn-para"><strong class="k-pink">Rule 5 — Reject non-semantic suggestions.</strong> If the LLM returns a CSS selector or XPath expression, the suggestion is rejected. Only <code class="sn-ic">getBy*</code> semantic locators are accepted. This enforces the framework's locator standards through the healing path — CSS classes cannot sneak back in via AI suggestions.</p>
+<p class="sn-para">Without Rule 2, a genuine application bug (the Submit button was removed) could be "healed" into a wrong element — a dangerous false positive. Without Rule 4, AI-generated code enters production without review. Without Rule 5, CSS class locators erode the framework from within.</p>
+    </div>
+  </div>
+
+  <!-- Q912.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.7</span>
+      <h2 class="sn-q-text">What is the difference between runtime self-healing and the Playwright Healer Agent?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both involve AI fixing broken locators, but they operate at different times and with different scope.</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Runtime Self-Healing</th><th class="sn-th-green">Playwright Healer Agent</th></tr></thead>
+          <tbody>
+          <tr><td><strong>When it runs</strong></td><td>During test execution</td><td>After test run completes</td></tr>
+          <tr><td><strong>Trigger</strong></td><td><code class="sn-ic">ElementNotFoundError</code> mid-test</td><td>Failed test in run report</td></tr>
+          <tr><td><strong>Effect</strong></td><td>Test continues in same run</td><td>Source files patched for next run</td></tr>
+          <tr><td><strong>Output</strong></td><td><code class="sn-ic">healing-log.json</code></td><td>Updated page object files (PR)</td></tr>
+          <tr><td><strong>Human review</strong></td><td>Log review → manual commit</td><td>PR review before merge</td></tr>
+          <tr><td><strong>Typical use</strong></td><td>Nightly regression pipeline</td><td>Post-release maintenance cycle</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Runtime healing keeps the nightly run green when minor UI changes occur between sprints. The Healer Agent does deeper, slower maintenance — it patches entire test files and can fix multiple locators in a single agent loop.</p>
+<p class="sn-para">Use both together with an escalation threshold: if the same locator heals three or more times, that signals the locator needs a permanent fix. Trigger the Healer Agent on those cases. This creates a maintenance escalation path: first heal (runtime), then alert (heal count threshold), then fix (Healer Agent PR).</p>
+    </div>
+  </div>
+
+  <!-- Q912.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.8</span>
+      <h2 class="sn-q-text">How do you measure the ROI of self-healing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Collect baseline data before enabling healing. The key metrics:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Locator-related test failures per sprint (from test reports)</span></li>
+<li><span class="icon">💡</span><span>Average engineer hours to fix a batch of locator failures</span></li>
+<li><span class="icon">⚡</span><span>Number of UI changes per sprint (from the development team)</span></li>
+</ul>
+<p class="sn-para">After enabling healing, measure:</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Heals per sprint (from healing-log.json)</span></li>
+<li><span class="icon">📌</span><span>Failures that still reach engineers (healing failed)</span></li>
+<li><span class="icon">🔑</span><span>Time spent on log review per sprint</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">ROI calculation:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Hours saved = (heals per sprint) × (average fix time per locator)
+LLM cost    = (heals per sprint) × (avg tokens per heal) × (token price)
+Net ROI     = (hours saved × hourly rate) − LLM cost</div>
+      </div>
+<p class="sn-para">Example: 40 heals per sprint, 30 minutes average fix time, $100/hour rate:</p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Hours saved: 40 × 0.5 = 20 hours = $2,000</span></li>
+<li><span class="icon">🌟</span><span>LLM cost: 40 × 1,000 tokens × $0.003/1k = $0.12</span></li>
+<li><span class="icon">📦</span><span>Net ROI: ~$2,000 per sprint</span></li>
+</ul>
+<p class="sn-para">The financial case is clear — LLM API cost for healing is negligible against engineer time. But ROI has two other dimensions:</p>
+<p class="sn-para"><strong class="k-yellow">Quality</strong> — does healing reduce flakiness in the nightly run? Track the nightly pass rate before and after enabling healing. A typical improvement is from 87% to 95%+ in the first month.</p>
+<p class="sn-para"><strong class="k-yellow">Adoption</strong> — do engineers trust the healing log enough to apply suggestions without re-verifying each one manually? After two to three months, most teams reach 85–90% direct application rate. Track this monthly.</p>
+<p class="sn-para">Present all three dimensions — financial, quality, adoption — to leadership quarterly. Financial alone undersells the impact.</p>
+    </div>
+  </div>
+
+  <!-- Q912.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.9</span>
+      <h2 class="sn-q-text">How do you build an AI adoption roadmap for a test automation team?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">AI adoption in test automation is not a switch — it is a phased journey. Teams that try to adopt everything at once end up using nothing properly.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Phase 1 — Assisted Generation (Month 1–2)</strong> Engineers use GitHub Copilot or Cursor for code completion and test generation. No new processes, no new infrastructure. Add the tool, get familiar, observe where it helps and where it struggles.</p>
+<p class="sn-para"><strong class="k-blue">Phase 2 — Structured Prompting (Month 2–3)</strong> Introduce the RCIF framework (Role, Context, Instructions, Format) for test generation prompts. Write shared prompt templates for common tasks: new page object, parameterised test, API test fixture. Teams start seeing consistent, reusable AI output across engineers.</p>
+<p class="sn-para"><strong class="k-blue">Phase 3 — STANDARDS.md and Agent Context (Month 3–4)</strong> Write the framework STANDARDS.md. Configure Cursor or Copilot to read it as agent context. Engineers run agent loops for page object generation — the agent reads standards, reads existing page objects, and generates new ones that match the codebase style. Review quality is the key metric here.</p>
+<p class="sn-para"><strong class="k-blue">Phase 4 — MCP Integration (Month 4–6)</strong> Set up Playwright MCP in a test environment. Use it for locator discovery and exploratory test generation. Review all AI-generated tests before committing. Measure locator accuracy and generation speed versus manual authoring.</p>
+<p class="sn-para"><strong class="k-blue">Phase 5 — Runtime Self-Healing (Month 6+)</strong> Enable self-healing in the nightly pipeline. Review the healing log weekly. Use heal count metrics to identify page objects that need locator quality improvement. Connect healing metrics to the team quality dashboard.</p>
+<p class="sn-para">The roadmap is sequenced because each phase creates the prerequisite for the next. Agent loops (Phase 3) require structured prompts (Phase 2). Self-healing (Phase 5) requires STANDARDS.md (Phase 3) to define what good locators look like — otherwise the healing log has no baseline to compare against.</p>
+    </div>
+  </div>
+
+  <!-- Q912.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.10</span>
+      <h2 class="sn-q-text">What governance model does an AI-native test automation team need?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three governance concerns arise with AI-native automation:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Code quality</strong> — AI-generated code must meet the same standards as human-written code. Enforce the same lint rules, TypeScript types, and code review process. Engineers review AI output before committing — the same bar as any PR.</p>
+<p class="sn-para"><strong class="k-green">Non-determinism</strong> — AI tools in agent loops produce different output on different runs. Treat AI-generated code as a draft, not a final output. Always run, review, and commit manually.</p>
+<p class="sn-para"><strong class="k-green">Security and data privacy</strong> — AI tools may send code and context to external APIs. Establish a clear policy on what can be sent. Internal proprietary code, credentials, and PII must not be sent without explicit approval. New AI tools go through a security review before adoption.</p>
+<p class="sn-para">A complete governance framework has four pillars:</p>
+<p class="sn-para"><strong class="k-green">Human-in-the-loop mandate</strong> — No AI-generated code merges without human review. This applies to Copilot inline suggestions, agent-generated files, and healing log suggestions. There is no exception path.</p>
+<p class="sn-para"><strong class="k-green">Approval tiers for AI tooling</strong> — New tools go through security review. The review checks data handling policy, terms of service, and integration security. This prevents individual engineers from adopting tools that send proprietary code to unauthorised services.</p>
+<p class="sn-para"><strong class="k-green">AI output tracking</strong> — Use PR labels to track AI-generated code. This enables adoption measurement, quality audits, and pattern detection. When an AI-generated locator heals three times, flag it for manual refactoring.</p>
+<p class="sn-para"><strong class="k-green">Feedback loops</strong> — Engineers submit failing prompts and bad suggestions to a shared folder. Review monthly to improve prompt templates and STANDARDS.md. The system learns from its failures if you deliberately collect them.</p>
+    </div>
+  </div>
+
+  <!-- Q912.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.11</span>
+      <h2 class="sn-q-text">What is the strategic shift in a test automation engineer's role?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In a traditional team, a test automation engineer writes locators, writes test code, and fixes broken tests. In an AI-native team, AI handles much of the mechanical work. The engineer's role shifts to:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Writing the standards and context that guide AI output</span></li>
+<li><span class="icon">💡</span><span>Reviewing AI-generated code for quality and accuracy</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Designing the architecture that AI agents work within</span></li>
+<li><span class="icon">🎯</span><span>Making governance decisions about which AI tools to adopt</span></li>
+<li><span class="icon">📌</span><span>Measuring and improving AI output quality over time</span></li>
+</ul>
+<p class="sn-para">The most valuable new skill is <strong class="k-purple">context engineering</strong> — designing the information that AI agents receive:</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span><code class="sn-ic">STANDARDS.md</code>: what conventions must all code follow?</span></li>
+<li><span class="icon" style="color:var(--sn-blue)">💡</span><span>Prompt templates: what instructions produce the best output for common tasks?</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">.describe()</code> labels: what semantic context do locators provide to the healing engine?</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>SKILL files: what capabilities can the Playwright CLI agent be given for</span></li>
+</ul>
+<p class="sn-para">  specific tasks?</p>
+<p class="sn-para">Engineers who invest in context quality get dramatically better AI output than engineers who rely on default tool behaviour.</p>
+<p class="sn-para">The skills that matter most in this transition:</p>
+<ul class="sn-list">
+<li><span class="icon">🔶</span><span>Deep Playwright internals knowledge — to catch AI errors in generated code</span></li>
+<li><span class="icon">🎪</span><span>Prompt and context engineering — to guide AI effectively</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Framework architecture — to design seams where AI can be integrated cleanly</span></li>
+<li><span class="icon">🔷</span><span>Data analysis — to measure AI ROI and adoption metrics</span></li>
+<li><span class="icon">💡</span><span>Communication — to explain AI adoption decisions to non-technical stakeholders</span></li>
+</ul>
+<p class="sn-para">These are human skills that AI does not replace. Engineers who develop them become indispensable in the AI-native era.</p>
+    </div>
+  </div>
+
+  <!-- Q912.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.12</span>
+      <h2 class="sn-q-text">How do you handle cases where self-healing suggests the wrong element?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Wrong suggestions follow two patterns:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Wrong element, same name.</strong> The LLM finds a "Status" dropdown but it is the wrong one on the page — two dropdowns share the same accessible name. Both are caught during healing log review when the engineer runs the suggested locator locally and sees unexpected behaviour.</p>
+<p class="sn-para"><strong class="k-orange">Wrong element, similar context.</strong> The LLM finds an element that looks semantically close to the description but serves a different purpose.</p>
+<p class="sn-para">To reduce wrong suggestions:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Too vague — LLM cannot distinguish if multiple &amp;quot;Status&amp;quot; elements exist</span>
+.<span class="tc-kw">describe</span>(<span class="tc-str">'Status dropdown'</span>)
+
+<span class="tc-cm">// Better — include page section and form context</span>
+.<span class="tc-kw">describe</span>(<span class="tc-str">'User status dropdown in filter bar'</span>)
+.<span class="tc-kw">describe</span>(<span class="tc-str">'Status dropdown in Add User form'</span>)</div>
+      </div>
+<p class="sn-para">Scope the locator description to its container. A description like <code class="sn-ic">'Status dropdown in Add User form'</code> gives the LLM enough context to avoid selecting the "Status" dropdown in the search filter on the same page.</p>
+<p class="sn-para">Wrong suggestions are also framework feedback. If the LLM cannot tell two elements apart from the accessibility tree and the <code class="sn-ic">.describe()</code> label, human engineers would have the same problem. The ambiguity reveals two issues at once: duplicate ARIA labels in the HTML (an accessibility problem) and vague locator descriptions (a locator quality problem). Fix both — not just the prompt.</p>
+<p class="sn-para">Track wrong-suggestion patterns in a shared document. The most common root cause is always duplicate accessible names on the same page. That is the right place to fix the problem.</p>
+    </div>
+  </div>
+
+  <!-- Q912.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.13</span>
+      <h2 class="sn-q-text">How do you test the self-healing framework itself?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The healing framework needs its own test suite. Three scenarios to cover:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/healing/healing.spec.ts</span>
+
+<span class="tc-kw">test</span>(<span class="tc-str">'healing recovers from element-not-found using the describe label'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/users/add'</span>);
+
+  <span class="tc-cm">// A broken locator with a valid describe label</span>
+  <span class="tc-kw">const</span> brokenLocator = page
+    .<span class="tc-fn">locator</span>(<span class="tc-str">'.non-existent-class'</span>)
+    .<span class="tc-kw">describe</span>(<span class="tc-str">'Save button in Add User form'</span>);
+
+  <span class="tc-cm">// Mock the LLM adapter to return the correct semantic locator</span>
+  process.env.ENABLE_RUNTIME_HEALING = <span class="tc-str">'true'</span>;
+  <span class="tc-kw">const</span> actions = <span class="tc-kw">new</span> WebActions(page);
+  <span class="tc-kw">await</span> actions.<span class="tc-fn">click</span>(brokenLocator);
+
+  <span class="tc-cm">// Downstream assertion confirms the right element was clicked</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Successfully Saved'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'healing does not fire on timeout errors'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> locator = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Slow button'</span> });
+  <span class="tc-kw">const</span> actions = <span class="tc-kw">new</span> WebActions(page);
+
+  <span class="tc-cm">// TimeoutError must pass through — healing must not intercept it</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(actions.<span class="tc-fn">click</span>(locator)).rejects.<span class="tc-fn">toThrow</span>(<span class="tc-str">'TimeoutError'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'healing rejects non-semantic suggestions'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Mock adapter returns a CSS selector — framework must reject it and throw</span>
+  <span class="tc-kw">const</span> mockAdapter: LLMAdapter = {
+    <span class="tc-kw">async</span> <span class="tc-fn">suggestLocator</span>() { <span class="tc-kw">return</span> <span class="tc-str">'.submit-btn'</span>; }
+  };
+  <span class="tc-cm">// Inject mock, verify original error is thrown</span>
+});</div>
+      </div>
+<p class="sn-para">Use a mock LLM adapter for unit tests — no real API calls, fully deterministic:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> MockLLMAdapter <span class="tc-kw">implements</span> LLMAdapter {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> response: <span class="tc-kw">string</span> | <span class="tc-kw">null</span>) {}
+  <span class="tc-kw">async</span> <span class="tc-fn">suggestLocator</span>(): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt; {
+    <span class="tc-kw">return</span> <span class="tc-kw">this</span>.response;
+  }
+}</div>
+      </div>
+<p class="sn-para">For integration testing, maintain a set of golden test cases — 20 known-broken locators paired with their correct semantic equivalents. Run them against the live LLM in the nightly pipeline. Require at least 80% correct suggestions before accepting a model upgrade. If accuracy drops below the threshold, investigate the prompt before considering a model change.</p>
+    </div>
+  </div>
+
+  <!-- Q912.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.14</span>
+      <h2 class="sn-q-text">What are the boundaries of what self-healing can and cannot do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">What self-healing can recover from:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>CSS class renames (<code class="sn-ic">.submit-btn</code> → <code class="sn-ic">.action-btn</code>)</span></li>
+<li><span class="icon">💡</span><span>Element restructuring (button moved inside a different container)</span></li>
+<li><span class="icon">⚡</span><span>Label text changes (<code class="sn-ic">'Save'</code> → <code class="sn-ic">'Save changes'</code>) — the description label</span></li>
+</ul>
+<p class="sn-para">  provides the intent, the tree reveals the renamed element</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>The gap between a release and when page objects are updated</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">What self-healing cannot do:</strong></p>
+<p class="sn-para"><em>Fix genuinely removed features.</em> If the button no longer exists anywhere on the page, the LLM will not find it either. <code class="sn-ic">attempt()</code> returns null, the original <code class="sn-ic">ElementNotFoundError</code> is thrown, and the test fails correctly.</p>
+<p class="sn-para"><em>Recover from timeout errors.</em> A slow environment is not a locator problem. Changing the locator will not fix a slow page. Timeouts pass through <code class="sn-ic">execute()</code> without reaching the healing engine.</p>
+<p class="sn-para"><em>Heal assertions.</em> <code class="sn-ic">AssertionHelpers</code> never routes through <code class="sn-ic">WebActions.execute()</code>. This is structural — there is no code path from <code class="sn-ic">expect()</code> to the healing engine. A failing assertion is a real quality signal and must reach the report unchanged.</p>
+<p class="sn-para"><em>Replace locator maintenance.</em> Healing keeps tests passing but every successful heal should trigger a locator update. The heal log is the maintenance backlog.</p>
+<p class="sn-para"><em>Work without <code class="sn-ic">.describe()</code> labels.</em> Healing quality collapses without semantic context. No describe label means the LLM receives a raw CSS expression and suggestion accuracy drops significantly.</p>
+<p class="sn-para">The most important boundary: healing does not mask application bugs. The framework distinguishes between "locator broke because of a CSS change" (heal it) and "element no longer exists because the feature was removed" (fail it). This distinction keeps the test suite honest as an application quality signal.</p>
+    </div>
+  </div>
+
+  <!-- Q912.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q912.15</span>
+      <h2 class="sn-q-text">How does the book's full learning arc connect to runtime self-healing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Runtime self-healing is only possible when the earlier parts of the book are understood and implemented:</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Part 1 (JS/TS)</strong> — <code class="sn-ic">async/await</code>, error handling with <code class="sn-ic">try/catch</code>, the adapter and factory patterns. The healing engine is an async error interceptor built on these fundamentals.</p>
+<p class="sn-para"><strong class="k-red">Part 2 (Playwright Core)</strong> — <code class="sn-ic">page.accessibility.snapshot()</code>, the <code class="sn-ic">Locator</code> API, how Playwright throws <code class="sn-ic">ElementNotFoundError</code> vs <code class="sn-ic">TimeoutError</code>.</p>
+<p class="sn-para"><strong class="k-red">Part 3–4 (Test Framework)</strong> — Fixtures and configuration wire the <code class="sn-ic">ENABLE_RUNTIME_HEALING</code> env var into the test lifecycle cleanly.</p>
+<p class="sn-para"><strong class="k-red">Part 5 (POM L6)</strong> — <code class="sn-ic">WebActions</code> is the seam. Without a shared interaction layer, there is no single place to inject healing. This is why the helper layer (L6) is a prerequisite for L10.</p>
+<p class="sn-para"><strong class="k-red">Part 5 (POM L10)</strong> — The healing integration itself, built on top of <code class="sn-ic">WebActions</code>. The <code class="sn-ic">.describe()</code> convention originates here as a framework standard.</p>
+<p class="sn-para"><strong class="k-red">Part 7 (Accessibility)</strong> — The accessibility tree is the healing engine's context source. Accessible HTML with proper ARIA labels produces better healing results — accessible HTML and self-healing-friendly HTML are the same thing.</p>
+<p class="sn-para"><strong class="k-red">Part 8 (AI-Native)</strong> — LLM adapters, prompt engineering, accessibility tree as AI context, MCP's use of the same <code class="sn-ic">browser_snapshot</code> tool. All feed into the healing architecture.</p>
+<p class="sn-para">The skills are cumulative. An engineer who has worked through Parts 1–7 can implement self-healing in an afternoon. An engineer who skips to Part 8 will hit prerequisite gaps at every step.</p>
+<p class="sn-para">This is also the strategic message for teams adopting AI-native automation: <strong class="k-red">invest in foundations first</strong>. AI amplifies the quality of your existing framework — it does not replace it. A team with clean POM architecture, semantic locators, accessible HTML, and a shared <code class="sn-ic">WebActions</code> layer gets dramatically more value from self-healing than a team whose tests call <code class="sn-ic">locator.click()</code> directly and whose elements have no ARIA labels.</p>
+<p class="sn-para">The AI-native test automation engineer understands the full stack: JavaScript, Playwright internals, framework design, accessibility semantics, and AI integration. This book has been a complete journey through that stack — from <code class="sn-ic">var/let/const</code> in Chapter 1 to LLM-powered locator recovery in Chapter 80.</p>
+<p class="sn-para">The competitive advantage goes to engineers who understand all of it.</p>
+    </div>
+  </div>
+
+
+
+
+
+</div>
+</div>

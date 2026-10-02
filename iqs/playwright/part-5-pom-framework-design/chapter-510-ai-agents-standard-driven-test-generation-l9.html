@@ -1,0 +1,774 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 510 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">AI</span> <span class="w2">Agents</span> <span class="w3">&amp;</span> <span class="w4">Standard-Driven</span> <span class="w5">Test</span> <span class="w6">Generation</span> <span class="w7">(L9)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright Agents — the planner, generator, and healer cycle that accelerates test authoring without abandoning framework standards. Interviewers ask about AI-assisted testing to gauge whether candidates understand where automation agents add value and where they need human oversight. Candidates who can explain why <code class="sn-ic">STANDARDS.md</code> is the critical integration point, articulate the seed test's role, and be honest about agent limitations will stand out. This topic is increasingly common at senior level as AI tooling enters production testing workflows.</span>
+  </div>
+
+
+  <!-- Q510.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.1</span>
+      <h2 class="sn-q-text">What problem does Level 9 solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">After eight levels the framework is production-grade: independent tests, typed data, tagged runs, CI pipelines, Allure history. Every test was written by a human engineer who understood eight levels of deliberate design.</p>
+      </div>
+<p class="sn-para">When OrangeHRM adds a new module — Performance Management, Training, Recruitment — that same engineer needs to write page objects, fixtures, API setup, test files, and apply the tagging conventions. At one or two features per sprint, test authoring becomes the bottleneck.</p>
+<p class="sn-para">Level 9 introduces Playwright Agents to address this:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The <strong class="k-blue">planner</strong> explores the live application and produces a human-readable</span></li>
+</ul>
+<p class="sn-para">  test plan from a requirement</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>The <strong class="k-blue">generator</strong> converts the plan into executable Playwright code</span></li>
+<li><span class="icon">⚡</span><span>The <strong class="k-blue">healer</strong> runs the tests and fixes failures automatically</span></li>
+</ul>
+<p class="sn-para">The human reviews, approves, and commits. The time from requirement to committed tests drops from hours to minutes.</p>
+    </div>
+  </div>
+
+  <!-- Q510.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.2</span>
+      <h2 class="sn-q-text">What are the three Playwright Agents and what does each one do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Planner</strong> — navigates the live application, reads the DOM, understands available interactions. Given a requirement, produces a Markdown test plan in <code class="sn-ic">specs/</code>. Human-readable and editable before generation begins.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Generator</strong> — reads the <code class="sn-ic">specs/</code> Markdown plan and produces executable TypeScript test files. Verifies selectors against the live application as it generates rather than guessing. Mirrors the seed test's import patterns and fixture usage.</p>
+<p class="sn-para"><strong class="k-green">Healer</strong> — runs generated tests, pauses on failures, inspects the DOM, identifies root causes (changed locator, timing issue, wrong assertion), patches the test, and re-runs until it passes. If the application itself is broken (not the test), marks the test <code class="sn-ic">test.skip()</code> with an explanatory comment rather than permanently failing.</p>
+<p class="sn-para">The workflow:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Requirement
+    ↓
+Planner → specs/feature.md       (human reviews + edits)
+    ↓
+Generator → tests/feature.spec.ts (human reviews against STANDARDS.md)
+    ↓
+Healer → passing tests or skipped with defect comments
+    ↓
+Human review → commit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q510.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.3</span>
+      <h2 class="sn-q-text">How are Playwright Agents initialised?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @playwright/test@latest
+npx playwright install chromium
+
+npx playwright init-agents --loop=vscode</div>
+      </div>
+<p class="sn-para">This generates three agent definition files in <code class="sn-ic">.github/</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">.github/
+  playwright-test-planner.md    ← planner agent instructions + MCP tools
+  playwright-test-generator.md  ← generator agent instructions + MCP tools
+  playwright-test-healer.md     ← healer agent instructions + MCP tools</div>
+      </div>
+<p class="sn-para">These files contain natural language instructions and MCP tool definitions that connect the AI (GitHub Copilot in VS Code) to Playwright's browser automation tools. The AI can navigate pages, inspect DOM elements, click elements, fill forms, take screenshots, and run tests.</p>
+<p class="sn-para">Regenerate when Playwright is updated:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright init-agents --loop=vscode</div>
+      </div>
+<p class="sn-para">Agent definitions are versioned with Playwright. Running an old definition against a new Playwright version may miss new tools and capabilities.</p>
+    </div>
+  </div>
+
+  <!-- Q510.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.4</span>
+      <h2 class="sn-q-text">Why does generated code violate framework conventions without a standards file?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without <code class="sn-ic">STANDARDS.md</code>, an agent generates code that runs but violates every convention the framework has established:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Generated without STANDARDS.md</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'add employee'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'https: S1 
+  await page.click('</span>.oxd-input<span class="tc-str">');
+  await page.fill('</span>.oxd-input<span class="tc-str">', '</span>John<span class="tc-str">');
+  await page.locator('</span>button[<span class="tc-kw">type</span>=&quot;submit&quot;]<span class="tc-str">').click();
+  expect(await page.locator('</span>.success-message<span class="tc-str">').textContent())
+    .toBe('</span>Successfully Saved');
+});</div>
+      </div>
+<p class="sn-para">Violations: CSS selectors, raw <code class="sn-ic">page</code> interactions (no page objects), no fixture injection, hardcoded data, no tags, no annotations, no cleanup.</p>
+<p class="sn-para">With <code class="sn-ic">STANDARDS.md</code>, the same agent generates:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Generated with STANDARDS.md</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> }           <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures'</span>;
+<span class="tc-kw">import</span> { generateEmployee } <span class="tc-kw">from</span> <span class="tc-str">'../../data/generate'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'PIM — Employee Management'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can add a new employee via UI'</span>,
+    { tag: [<span class="tc-str">'@pim'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] },
+    <span class="tc-kw">async</span> ({ addEmployeePage, employeeListPage }, testInfo) =&gt; {
+      <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();
+      testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'employeeId'</span>, description: employee.employeeId });
+
+      <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(employee);
+      <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+    }
+  );
+
+});</div>
+      </div>
+<p class="sn-para">The standards file is the difference between generated code that gets merged and generated code that gets rejected.</p>
+    </div>
+  </div>
+
+  <!-- Q510.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.5</span>
+      <h2 class="sn-q-text">What does STANDARDS.md cover?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">STANDARDS.md</code> lives at the project root and encodes every framework convention the agents must follow. Seven sections:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">1. Project structure</strong> — which files go where, what directories exist and what each contains, where new modules are placed.</p>
+<p class="sn-para"><strong class="k-teal">2. Naming conventions</strong> — file names (<code class="sn-ic">PascalCase.ts</code> for page objects, <code class="sn-ic">kebab-case.spec.ts</code> for tests), class names, method prefixes (<code class="sn-ic">assert*</code> for assertions, <code class="sn-ic">goto</code> for navigation).</p>
+<p class="sn-para"><strong class="k-teal">3. Locator strategy</strong> — semantic locators only (<code class="sn-ic">getByRole</code>, <code class="sn-ic">getByLabel</code>, <code class="sn-ic">getByPlaceholder</code>), never CSS selectors or XPath, <code class="sn-ic">.describe()</code> on every locator defined in a page object, locators as private class properties never inline in methods.</p>
+<p class="sn-para"><strong class="k-teal">4. Page object structure</strong> — exact template with sections in order: helpers, locators, constructor, navigation, actions, composite methods, assertions. What belongs in a page object and what never belongs there.</p>
+<p class="sn-para"><strong class="k-teal">5. Data conventions</strong> — always use generators, never hardcode, composite methods accept typed objects not individual parameters, overrides only when the test specifically cares about the value.</p>
+<p class="sn-para"><strong class="k-teal">6. Test structure</strong> — complete test file template with <code class="sn-ic">beforeAll</code>/<code class="sn-ic">afterAll</code> pattern, three-tag rule, annotation pattern, when to use <code class="sn-ic">beforeAll</code> vs per-test generation.</p>
+<p class="sn-para"><strong class="k-teal">7. What the agent must never do</strong> — explicit prohibition list: CSS selectors, hardcoded data, selectors in test files, page objects without <code class="sn-ic">.describe()</code>, tests without three tags, individual parameters in composite methods, importing from <code class="sn-ic">@playwright/test</code> directly instead of <code class="sn-ic">../../fixtures</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q510.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.6</span>
+      <h2 class="sn-q-text">What is seed.spec.ts and why is it the critical integration point?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The seed test connects the agents to the eight-level framework:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// seed.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> }                      <span class="tc-kw">from</span> <span class="tc-str">'./fixtures'</span>;
+<span class="tc-kw">import</span> { generateEmployee, generateUser,
+         generateLeave }                     <span class="tc-kw">from</span> <span class="tc-str">'./data/generate'</span>;
+<span class="tc-kw">import</span> { readEnv }                           <span class="tc-kw">from</span> <span class="tc-str">'./data/readers'</span>;
+<span class="tc-kw">import</span> { EmployeeData, UserData, LeaveData } <span class="tc-kw">from</span> <span class="tc-str">'./data/types'</span>;
+<span class="tc-kw">import</span> { EmployeeApi, UserApi, LeaveApi }    <span class="tc-kw">from</span> <span class="tc-str">'./api'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'seed'</span>, <span class="tc-kw">async</span> ({
+  page,
+  addEmployeePage,
+  employeeListPage,
+  userManagementPage,
+  addUserPage,
+  applyLeavePage,
+  leaveListPage,
+  employeeApi,
+  userApi,
+  leaveApi,
+}) =&gt; {
+  <span class="tc-cm">// Confirms auth state is loaded, app is reachable</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/dashboard/index'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/dashboard/);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Why it is critical:</strong></p>
+<p class="sn-para">The planner runs this test before exploring the application. The auth state is loaded (<code class="sn-ic">storageState</code> from <code class="sn-ic">global-setup.ts</code>), all fixtures are activated, and the API clients are available. The planner sees the application post-setup, not the login page.</p>
+<p class="sn-para">The generator reads the seed as a pattern reference. By importing every fixture and data utility, the seed communicates to the generator:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>"These are the fixtures available — use them, do not instantiate page objects</span></li>
+</ul>
+<p class="sn-para">  manually in tests"</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>"This is the correct import path for generators — <code class="sn-ic">./data/generate</code>, not inline"</span></li>
+<li><span class="icon">⚡</span><span>"These are the API fixtures — use <code class="sn-ic">employeeApi.create()</code> for preconditions"</span></li>
+<li><span class="icon">🎯</span><span>"Import from <code class="sn-ic">./fixtures</code>, never from <code class="sn-ic">@playwright/test</code> directly"</span></li>
+</ul>
+<p class="sn-para">The richer the seed's imports, the more conventions the generator picks up automatically without needing to be told explicitly.</p>
+    </div>
+  </div>
+
+  <!-- Q510.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.7</span>
+      <h2 class="sn-q-text">What does a planner prompt look like and what does it produce?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Planner prompt in VS Code Copilot (Agent mode):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Use the playwright test planner agent.
+
+Context:
+- seed test: seed.spec.ts
+- standards: STANDARDS.md
+- application URL: https://opensource-demo.orangehrmlive.com
+
+Requirement:
+As an Admin, I want to search for system users by username so that
+I can quickly find and manage specific user accounts.
+
+Generate a test plan for user search in the Admin module.
+Include smoke, regression, and edge case scenarios.</div>
+      </div>
+<p class="sn-para">Example planner output in <code class="sn-ic">specs/user-search.md</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+
+<span class="tc-cm">### Test Scenarios</span>
+
+<span class="tc-cm">### Scenario 1 — Search Returns Matching User [smoke, critical]</span>
+Precondition: A system user exists with a known username.
+Steps: Navigate to Admin → User Management, enter username, click Search.
+Expected: Table shows exactly one row with the correct username.
+
+<span class="tc-cm">### Scenario 2 — Non-Existent Username Shows No Results [regression, medium]</span>
+Precondition: None.
+Steps: Enter a username that does not exist, click Search.
+Expected: &quot;No Records Found&quot; message, no rows.
+
+<span class="tc-cm">### Scenario 3 — Empty Search Returns All Users [regression, medium]</span>
+Steps: Leave Username field empty, click Search.
+Expected: Table shows all users, row count greater than zero.
+
+<span class="tc-cm">### Scenario 4 — Partial Username Match [regression, high]</span>
+Precondition: User exists whose username contains <span class="tc-str">'admin'</span>.
+Steps: Enter partial username, click Search.
+Expected: All matching users shown; others not shown.</div>
+      </div>
+<p class="sn-para">The plan is reviewed and edited before the generator runs. Editing the plan is cheaper than correcting generated code.</p>
+    </div>
+  </div>
+
+  <!-- Q510.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.8</span>
+      <h2 class="sn-q-text">What does the generator produce from the plan?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Generator prompt in VS Code Copilot (Agent mode):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Use the playwright test generator agent.
+
+Context:
+- spec: specs/user-search.md
+- seed test: seed.spec.ts
+- standards: STANDARDS.md
+
+Generate tests for all scenarios. Follow STANDARDS.md exactly.
+Save to tests/admin/user-search.spec.ts.</div>
+      </div>
+<p class="sn-para">Example generator output (abridged):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/admin/user-search.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> }                <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures'</span>;
+<span class="tc-kw">import</span> { generateEmployee, generateUser } <span class="tc-kw">from</span> <span class="tc-str">'../../data/generate'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin — User Search'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> empNumber: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> employee:  ReturnType&lt;<span class="tc-kw">typeof</span> generateEmployee&gt;;
+  <span class="tc-kw">let</span> user:      ReturnType&lt;<span class="tc-kw">typeof</span> generateUser&gt;;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi, userApi }) =&gt; {
+    employee  = <span class="tc-fn">generateEmployee</span>();
+    empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);
+    user      = <span class="tc-fn">generateUser</span>(employee);
+    <span class="tc-kw">await</span> userApi.<span class="tc-fn">create</span>(user, empNumber);
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-kw">if</span> (empNumber) <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">delete</span>(empNumber);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'search returns matching user'</span>,
+    { tag: [<span class="tc-str">'@admin'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] },
+    <span class="tc-kw">async</span> ({ userManagementPage }, testInfo) =&gt; {
+      testInfo.annotations.<span class="tc-fn">push</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'username'</span>, description: user.username });
+
+      <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">searchByUsername</span>(user.username);
+      <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">assertUserExistsInList</span>(user.username);
+      <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">assertTableRowCount</span>(<span class="tc-num">1</span>);
+    }
+  );
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'search returns no results for unknown username'</span>,
+    { tag: [<span class="tc-str">'@admin'</span>, <span class="tc-str">'@regression'</span>, <span class="tc-str">'@medium'</span>] },
+    <span class="tc-kw">async</span> ({ userManagementPage }) =&gt; {
+      <span class="tc-kw">const</span> phantom = <span class="tc-fn">generateUser</span>(<span class="tc-fn">generateEmployee</span>());
+      <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">searchByUsername</span>(phantom.username + <span class="tc-str">'NOTEXIST'</span>);
+      <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">assertNoRecordsFound</span>();
+    }
+  );
+
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q510.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.9</span>
+      <h2 class="sn-q-text">How do you review generated code against STANDARDS.md?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Before running the healer, verify the generated file against this checklist:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ Imports from <code class="sn-ic">../../fixtures</code> — not <code class="sn-ic">@playwright/test</code> directly</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ Uses <code class="sn-ic">generateEmployee()</code> and <code class="sn-ic">generateUser()</code> — no hardcoded data</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ <code class="sn-ic">beforeAll</code> API setup and <code class="sn-ic">afterAll</code> cleanup when shared preconditions exist</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ Typed data objects — <code class="sn-ic">generateEmployee()</code> returns <code class="sn-ic">EmployeeData</code></span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ Three tags on every test — module, type, severity</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ <code class="sn-ic">testInfo.annotations</code> for generated IDs</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ Page object methods used — no raw <code class="sn-ic">page.click()</code> or <code class="sn-ic">page.fill()</code> in tests</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ Assertion methods with <code class="sn-ic">assert</code> prefix</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ No hardcoded strings for expected values that should come from generators</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>✅ <code class="sn-ic">.describe()</code> on all locators if new page objects were generated</span></li>
+</ul>
+<p class="sn-para">If anything violates standards, correct it manually before running the healer. The healer fixes test failures — it does not fix standards violations.</p>
+    </div>
+  </div>
+
+  <!-- Q510.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.10</span>
+      <h2 class="sn-q-text">What does the healer do when a test fails?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Healer prompt:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Use the playwright test healer agent.
+
+Run tests in tests/admin/user-search.spec.ts.
+Fix any failing tests.
+Do not change passing tests.
+If a test failure indicates the functionality is broken rather than
+the test being wrong, mark the test as skipped with a comment explaining why.</div>
+      </div>
+<p class="sn-para"><strong class="k-green">When it finds a failing test:</strong></p>
+<ol class="sn-olist">
+<li>Replays the failing steps up to the point of failure</li>
+<li>Pauses and inspects the current DOM</li>
+<li>Identifies the root cause: changed locator, missing wait, incorrect assertion</li>
+<li>Patches the test — updates the failing line</li>
+<li>Re-runs — repeats until the test passes</li>
+</ol>
+<p class="sn-para"><strong class="k-green">When it cannot fix the test:</strong></p>
+<p class="sn-para">If the healer determines the application is not behaving as expected (a genuine defect, not a test error), it marks the test <code class="sn-ic">test.skip()</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-fn">skip</span>(<span class="tc-str">'admin can approve leave request'</span>,
+  <span class="tc-cm">// HEALER: Skipped — approval button is not rendered on the leave list page.</span>
+  <span class="tc-cm">// This appears to be a genuine defect in the demo environment.</span>
+  <span class="tc-cm">// Re-enable when the button is confirmed present.</span>
+  { tag: [<span class="tc-str">'@leave'</span>, <span class="tc-str">'@smoke'</span>, <span class="tc-str">'@critical'</span>] },
+  <span class="tc-kw">async</span> ({ leaveListPage }) =&gt; { ... }
+);</div>
+      </div>
+<p class="sn-para">This surfaces the defect without hiding it in a permanently failing test. The skip comment is a tracked record of the known issue.</p>
+    </div>
+  </div>
+
+  <!-- Q510.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.11</span>
+      <h2 class="sn-q-text">What is the full cycle demonstrated on the Job Title Management feature?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">New requirement: Job Title Management
+  - Admin can add a job title with name and description
+  - Admin can edit an existing job title
+  - Admin can delete a job title
+  - Duplicate names are rejected with a validation error</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Step 1 — Run the planner</strong> with the requirement: → <code class="sn-ic">specs/job-title-management.md</code> is created with 4–6 scenarios. Review and adjust: confirm scenarios match acceptance criteria, add edge cases for duplicate validation, remove out-of-scope scenarios.</p>
+<p class="sn-para"><strong class="k-purple">Step 2 — Run the generator</strong> with the plan: → <code class="sn-ic">tests/admin/job-title-management.spec.ts</code> is created. Generator may also create <code class="sn-ic">pages/admin/JobTitlePage.ts</code> if that page object does not exist. Review against <code class="sn-ic">STANDARDS.md</code> checklist.</p>
+<p class="sn-para"><strong class="k-purple">Step 3 — Run the healer</strong> on the new spec file: → Locators that are slightly off are corrected. Timing issues resolved. Any tests exposing genuine defects are skipped with comments.</p>
+<p class="sn-para"><strong class="k-purple">Step 4 — Human review:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Review all generated and healed code against <code class="sn-ic">STANDARDS.md</code></span></li>
+<li><span class="icon">💡</span><span>Run <code class="sn-ic">npm run test:smoke</code> to confirm no regressions</span></li>
+<li><span class="icon">⚡</span><span>Commit spec, tests, and any new page objects</span></li>
+</ul>
+<p class="sn-para"><strong class="k-purple">Total time from requirement to committed tests: minutes, not hours.</strong></p>
+    </div>
+  </div>
+
+  <!-- Q510.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.12</span>
+      <h2 class="sn-q-text">What are the honest boundaries of what agents can and cannot do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">What agents do well:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Exploring unfamiliar application areas and producing structured test plans</span></li>
+<li><span class="icon">💡</span><span>Generating test code that follows the seed test's patterns</span></li>
+<li><span class="icon">⚡</span><span>Fixing broken locators when UI changes cause test failures</span></li>
+<li><span class="icon">🎯</span><span>Covering happy-path and common edge case scenarios</span></li>
+</ul>
+<p class="sn-para"><strong class="k-orange">What agents cannot do:</strong></p>
+<p class="sn-para"><strong class="k-orange">Decide what to test.</strong> The planner proposes scenarios — but which scenarios matter, which risks are highest, and which edge cases are business-critical requires domain knowledge and risk assessment. The planner produces coverage; the human decides what coverage means.</p>
+<p class="sn-para"><strong class="k-orange">Understand test independence.</strong> The generator follows the seed's patterns but does not reason about whether a test creates a dependency that another test relies on. API setup, <code class="sn-ic">beforeAll</code>/<code class="sn-ic">afterAll</code> patterns, and cleanup logic require human judgment about state management.</p>
+<p class="sn-para"><strong class="k-orange">Keep STANDARDS.md current.</strong> When the framework evolves — a new helper, a new fixture pattern, a new naming rule — <code class="sn-ic">STANDARDS.md</code> must be updated manually. An outdated standards file produces outdated generated code.</p>
+<p class="sn-para"><strong class="k-orange">Handle complex business flows.</strong> Multi-step workflows with conditional branching and non-obvious data relationships require human-authored specs.</p>
+<p class="sn-para"><strong class="k-orange">Replace engineering judgment.</strong> Agents accelerate test authoring. They do not replace the test engineer who understands the application, knows the risks, designs the test strategy, and maintains the framework.</p>
+    </div>
+  </div>
+
+  <!-- Q510.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.13</span>
+      <h2 class="sn-q-text">What is the STANDARDS.md section on what the agent must never do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The explicit prohibition list in <code class="sn-ic">STANDARDS.md</code> — the most important section for keeping generated code reviewable:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+<span class="tc-cm">### 8. What the Agent Must Never Do</span>
+
+- Use CSS selectors or XPath — semantic locators only
+- Hardcode <span class="tc-kw">test</span> data — always use generators
+- Put selectors <span class="tc-kw">in</span> <span class="tc-kw">test</span> files — selectors belong <span class="tc-kw">in</span> page objects
+- Create page objects without .<span class="tc-kw">describe</span>() on locators
+- Write tests without all three tags
+- Accept individual parameters <span class="tc-kw">in</span> composite methods — always typed objects
+- Skip <span class="tc-kw">beforeAll</span>/<span class="tc-kw">afterAll</span> when API-created data needs cleanup
+- Import directly <span class="tc-kw">from</span> @playwright/<span class="tc-kw">test</span> <span class="tc-kw">in</span> <span class="tc-kw">test</span> files — always use ../../fixtures
+- Call locator.<span class="tc-fn">click</span>() or locator.<span class="tc-fn">fill</span>() directly <span class="tc-kw">in</span> page objects — all interactions
+  route through <span class="tc-kw">this</span>.actions.* or <span class="tc-kw">this</span>.controls.*
+- Use <span class="tc-kw">this</span>.actions.* <span class="tc-kw">for</span> OrangeHRM-specific components — selectDropdown,
+  fillAutocomplete, fillDateInput belong on <span class="tc-kw">this</span>.controls.*
+- Use <span class="tc-kw">this</span>.controls.* <span class="tc-kw">for</span> generic interactions — click, fill, check, hover
+  belong on <span class="tc-kw">this</span>.actions.*</div>
+      </div>
+<p class="sn-para">This list makes prohibitions explicit rather than relying on the agent to infer them from positive examples. Agents respond better to explicit "never" rules than to inferring exclusions from patterns.</p>
+    </div>
+  </div>
+
+  <!-- Q510.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.14</span>
+      <h2 class="sn-q-text">How do agents connect to the running application?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright Agents use MCP (Model Context Protocol) tools that connect the AI's reasoning to a live browser instance. The agent definition files in <code class="sn-ic">.github/</code> contain MCP tool definitions that allow the AI to:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Navigate to URLs</span></li>
+<li><span class="icon">💡</span><span>Read the current DOM</span></li>
+<li><span class="icon">⚡</span><span>Click elements identified by locator</span></li>
+<li><span class="icon">🎯</span><span>Fill input fields</span></li>
+<li><span class="icon">📌</span><span>Take screenshots</span></li>
+<li><span class="icon">🔑</span><span>Run <code class="sn-ic">npx playwright test</code> and read the results</span></li>
+</ul>
+<p class="sn-para">The seed test is run before the planner begins exploration. This ensures the agent starts from a known state — authenticated admin session, all fixtures registered, global setup complete. The planner then navigates through the live application and reads real DOM elements to verify selectors, not simulated or cached content.</p>
+    </div>
+  </div>
+
+  <!-- Q510.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.15</span>
+      <h2 class="sn-q-text">How does the generator handle new page objects?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">If the spec calls for testing a page that has no page object in the <code class="sn-ic">pages/</code> directory, the generator creates one:</p>
+      </div>
+<ol class="sn-olist">
+<li>Navigates to the page in the live application</li>
+<li>Reads the DOM to find relevant form fields, buttons, dropdowns, tables</li>
+<li>Creates semantic locators for each element using <code class="sn-ic">getByRole</code>,</li>
+</ol>
+<p class="sn-para">   <code class="sn-ic">getByLabel</code>, <code class="sn-ic">getByPlaceholder</code></p>
+<ol class="sn-olist">
+<li>Writes the page object following the <code class="sn-ic">STANDARDS.md</code> structure template —</li>
+</ol>
+<p class="sn-para">   helpers, locators, constructor, navigation, actions, composite methods,    assertions</p>
+<p class="sn-para">The generated page object is reviewed against the same checklist: every locator has <code class="sn-ic">.describe()</code>, composite methods accept typed objects, all interactions route through <code class="sn-ic">this.actions.*</code> or <code class="sn-ic">this.controls.*</code>.</p>
+<p class="sn-para">If the new feature needs new type definitions (for example, <code class="sn-ic">JobTitleData</code>), the generator adds them to <code class="sn-ic">data/types.ts</code> and creates a corresponding generator function in <code class="sn-ic">data/generate.ts</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q510.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.16</span>
+      <h2 class="sn-q-text">What changed and what did not change at Level 9?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Changed:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">STANDARDS.md</code> — created, encodes all framework conventions</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">seed.spec.ts</code> — agent entry point</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">.github/playwright-test-planner.md</code> — created by <code class="sn-ic">init-agents</code></span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">.github/playwright-test-generator.md</code> — created by <code class="sn-ic">init-agents</code></span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">.github/playwright-test-healer.md</code> — created by <code class="sn-ic">init-agents</code></span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">specs/</code> — new folder for planner output</span></li>
+<li><span class="icon">🚀</span><span><code class="sn-ic">tests/</code> — agents generate new test files here</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">pages/</code> — agents may generate new page objects here</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Unchanged:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📦</span><span>All existing page objects</span></li>
+<li><span class="icon">🔶</span><span>All helpers</span></li>
+<li><span class="icon">🎪</span><span>All fixtures</span></li>
+<li><span class="icon">🔹</span><span>The data layer</span></li>
+<li><span class="icon">🔷</span><span>The API layer</span></li>
+<li><span class="icon">💡</span><span>All three CI workflows</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">playwright.config.ts</code></span></li>
+</ul>
+<p class="sn-para">The framework infrastructure built across Levels 1 through 8 is not touched. Agents generate code that fits into it. This is the critical design constraint — agents extend the framework, they do not alter it.</p>
+    </div>
+  </div>
+
+  <!-- Q510.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.17</span>
+      <h2 class="sn-q-text">Why must STANDARDS.md be updated when the framework evolves?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">STANDARDS.md</code> is the agent's ground truth. It is not derived automatically from the codebase — it is manually maintained.</p>
+      </div>
+<p class="sn-para">When Level 6 added <code class="sn-ic">OrangeHRMControls</code>, the rule "use <code class="sn-ic">this.controls.*</code> for OrangeHRM-specific components" was added to <code class="sn-ic">STANDARDS.md</code>. If an engineer adds a new helper (for example, <code class="sn-ic">TableHelpers</code> at a future Level 10) without updating <code class="sn-ic">STANDARDS.md</code>, the generator will not use it. Generated page objects will implement table interactions inline instead of delegating to <code class="sn-ic">TableHelpers</code>.</p>
+<p class="sn-para">The maintenance contract: every framework decision that changes — new helpers, new naming conventions, new import rules, new fixture patterns — is reflected in <code class="sn-ic">STANDARDS.md</code> before agents run again. Outdated standards produce outdated generated code.</p>
+<p class="sn-para">A practical approach: treat <code class="sn-ic">STANDARDS.md</code> updates as part of the same commit that adds a new framework convention, not as a separate cleanup task.</p>
+    </div>
+  </div>
+
+  <!-- Q510.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q510.18</span>
+      <h2 class="sn-q-text">How does Level 9 complete the nine-level journey?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Level</th><th class="sn-th-blue">Problem Solved</th></tr></thead>
+          <tbody>
+          <tr><td>0</td><td>POM theory — understanding design patterns before writing code</td></tr>
+          <tr><td>1</td><td>Selectors scattered in test files</td></tr>
+          <tr><td>2</td><td>Boilerplate repeated in every page object</td></tr>
+          <tr><td>3</td><td>Login repeated before every test</td></tr>
+          <tr><td>4</td><td>Tests dependent on each other for state</td></tr>
+          <tr><td>5</td><td>Hardcoded data causing conflicts and maintenance burden</td></tr>
+          <tr><td>6</td><td>UI patterns reimplemented in every page object</td></tr>
+          <tr><td>7</td><td>Test results meaningless at scale</td></tr>
+          <tr><td>8</td><td>Tests running locally only, no team visibility</td></tr>
+          <tr><td>9</td><td>Test authoring as the productivity bottleneck</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Each level solves one specific problem while introducing the next. Level 9 completes the loop: the framework is good enough to be used as training data for an AI agent. The agent can only generate code that matches the framework's standards because the framework's standards are good enough to be written down precisely in <code class="sn-ic">STANDARDS.md</code>.</p>
+<p class="sn-para">A framework that cannot be described clearly enough to guide an AI agent is a framework that cannot be understood clearly enough to be maintained consistently by a human team either. <code class="sn-ic">STANDARDS.md</code> is valuable independent of agents — it is the framework's architectural documentation.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Level 9 addresses test authoring as the bottleneck — agents generate tests from requirements, cutting hours to minutes.</span></li>
+            <li><span class="icon">⭐</span><span>Three agents: planner (requirement → Markdown plan), generator (plan → TypeScript tests), healer (failing tests → passing or skipped).</span></li>
+            <li><span class="icon">⭐</span><span>Agents are Playwright-native (v1.56+), initialised with <code class="sn-ic">npx playwright init-agents --loop=vscode</code>, integrated through VS Code + GitHub Copilot.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">STANDARDS.md</code> is the critical integration point — without it, agents generate running code that violates every convention; with it, agents generate mergeable code.</span></li>
+            <li><span class="icon">⭐</span><span>Seven STANDARDS.md sections: project structure, naming conventions, locator strategy, page object structure, data conventions, test structure, explicit prohibition list.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">seed.spec.ts</code> connects agents to the framework: runs before the planner, loads auth state, declares all fixtures and data imports so the generator mirrors them.</span></li>
+            <li><span class="icon">⭐</span><span>The planner navigates the live application DOM; the generator verifies selectors live; the healer replays failures and patches line by line.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Pre-healer review checklist: correct imports, generators not hardcode, three tags, annotations, <code class="sn-ic">beforeAll</code>/<code class="sn-ic">afterAll</code> pattern, page objects not raw <code class="sn-ic">page.*</code>.</span></li>
+            <li><span class="icon">⭐</span><span>The healer marks unfixable tests <code class="sn-ic">test.skip()</code> with a comment — surfaces real defects without permanently failing tests.</span></li>
+            <li><span class="icon">⭐</span><span>What agents cannot do: decide what matters to test, reason about state independence, maintain their own standards documentation, handle complex conditional flows, replace engineering judgment.</span></li>
+            <li><span class="icon">⭐</span><span>STANDARDS.md must be updated with every framework evolution — it is not auto-derived from the codebase; outdated standards produce outdated generated code.</span></li>
+            <li><span class="icon">⭐</span><span>The full cycle for a new feature: planner → review → generator → review → healer → human review → commit → PR check fires.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">STANDARDS.md</code> has value beyond agents — it is the framework's architectural documentation, written precisely enough to guide both AI agents and new team members.</span></li>
+            <li><span class="icon">⭐</span><span>The nine-level journey ends with a framework good enough to teach itself: each level solves one problem, introduces the next, and Level 9 closes the loop by using the framework as its own training data.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

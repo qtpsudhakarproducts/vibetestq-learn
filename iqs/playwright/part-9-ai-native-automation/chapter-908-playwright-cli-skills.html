@@ -1,0 +1,609 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 908 &nbsp;·&nbsp; 14 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Playwright</span> <span class="w2">CLI</span> <span class="w3">&amp;</span> <span class="w4">SKILLs</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">Playwright CLI is a command-line agent tool that generates, runs, and maintains Playwright tests with minimal human intervention. It uses SKILL files as its instruction set. This chapter covers what the CLI is, how it uses SKILLs, the key commands, the token efficiency argument vs MCP, and when to choose CLI over MCP.</span>
+  </div>
+
+
+  <!-- Q908.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.1</span>
+      <h2 class="sn-q-text">What is the Playwright CLI in the context of AI agents?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The Playwright CLI (also called <code class="sn-ic">playwright-cli</code> or accessed via <code class="sn-ic">npx playwright</code>) includes an AI agent mode that writes, runs, and fixes tests autonomously. Unlike the Playwright MCP server (which gives an agent live browser control), the CLI agent operates on your codebase — reading files, writing code, running tests, and iterating on failures.</p>
+      </div>
+<p class="sn-para">The two tools have different roles:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright MCP Server</th><th class="sn-th-green">Playwright CLI (agent mode)</th></tr></thead>
+          <tbody>
+          <tr><td>Primary role</td><td>Live browser control</td><td>Codebase-level code generation</td></tr>
+          <tr><td>Context</td><td>Page accessibility tree</td><td>Source files + SKILL file</td></tr>
+          <tr><td>Token cost</td><td>High (30+ tool schemas)</td><td>Low (SKILL = 200-400 tokens)</td></tr>
+          <tr><td>Output</td><td>Locators + interaction results</td><td>Written test files</td></tr>
+          <tr><td>Best for</td><td>Exploration, debugging</td><td>Bulk test generation, maintenance</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q908.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.2</span>
+      <h2 class="sn-q-text">How do SKILL files integrate with the Playwright CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When you run the CLI agent, it reads the SKILL file first. The SKILL file is the agent's instruction set — it tells the agent how your framework works before it writes any code.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright codegen --skill docs/skills/playwright-framework.skill.md</div>
+      </div>
+<p class="sn-para">Without a SKILL file, the CLI agent generates generic Playwright code that uses its training patterns. With a SKILL file, it generates code that matches your framework's import paths, locator strategy, fixture structure, and naming conventions.</p>
+<p class="sn-para">The CLI + SKILL combination achieves the same framework consistency as MCP + full source files, at a fraction of the context cost.</p>
+    </div>
+  </div>
+
+  <!-- Q908.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.3</span>
+      <h2 class="sn-q-text">Why are CLI SKILLs more token-efficient than MCP tool schemas?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When an AI agent connects to the Playwright MCP server, it reads all tool schemas at session start. With 30+ tools at ~250 tokens each:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">MCP tool schemas:   30 tools × 250 tokens = 7,500 tokens
+                    Used before any code generation begins
+
+CLI SKILL file:     200-400 tokens total
+                    Covers framework standards, patterns, one example</div>
+      </div>
+<p class="sn-para">For a coding agent that generates 50 test files in one session, this difference multiplies:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">MCP (each turn has tool schemas in context):
+  50 generations × 7,500 tokens = 375,000 tokens for tool schemas alone
+
+CLI SKILL (read once, cached):
+  1 × 400 tokens = 400 tokens for the SKILL</div>
+      </div>
+<p class="sn-para">For coding tasks — writing, running, fixing tests — the CLI with a SKILL file is dramatically more efficient than MCP. MCP wins only when live browser interaction is genuinely needed.</p>
+    </div>
+  </div>
+
+  <!-- Q908.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.4</span>
+      <h2 class="sn-q-text">What are the main CLI commands for AI-assisted test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Record mode — generate code by demonstrating in a browser:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright codegen https://yourapp.com</div>
+      </div>
+<p class="sn-para">Opens a browser and records your clicks/fills as Playwright code. Not AI — rule-based recording. Good for initial test scaffolding.</p>
+<p class="sn-para">Test generation with AI (where supported):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">claude 'Write a Playwright test for the leave application feature.
+        Use the existing LeaveApplicationPage page object.
+        Follow the patterns in tests/specs/employee.spec.ts'</div>
+      </div>
+<p class="sn-para">Run and fix loop:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test tests/specs/leave.spec.ts
+
+claude 'Run the leave tests, identify failures, and fix them.
+        Do not change the test assertions — only fix locator issues.'</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q908.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.5</span>
+      <h2 class="sn-q-text">What is the SKILL file format for Playwright CLI agents?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The SKILL file is a plain markdown document. Its content follows the structure covered in Chapter 72 — but with one critical addition for CLI agents: the expected output section must describe the exact files to create and where to put them.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+
+<span class="tc-cm">### Directory Structure</span>
+tests/
+  specs/     &lt;- <span class="tc-kw">test</span> files named *.spec.ts
+  pages/     &lt;- page objects named *.page.ts
+  fixtures/  &lt;- fixtures <span class="tc-kw">in</span> base.fixture.ts
+  data/      &lt;- testData factory <span class="tc-kw">in</span> <span class="tc-kw">test</span>-data.ts
+
+
+<span class="tc-cm">### Import Pattern</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/base.fixture'</span>;
+<span class="tc-kw">import</span> { testData } <span class="tc-kw">from</span> <span class="tc-str">'../data/test-data'</span>;
+
+
+<span class="tc-cm">### Locator Priority</span>
+<span class="tc-num">1</span>. <span class="tc-fn">getByRole</span> (buttons, links, headings)
+<span class="tc-num">2</span>. <span class="tc-fn">getByLabel</span> (form fields)
+<span class="tc-num">3</span>. <span class="tc-fn">getByTestId</span> (custom components)
+<span class="tc-num">4</span>. NEVER: CSS selectors, XPath
+
+
+<span class="tc-cm">### Test Example</span>
+[complete working <span class="tc-kw">test</span>]
+
+
+<span class="tc-cm">### Rules</span>
+- No page.<span class="tc-fn">waitForTimeout</span>() — use <span class="tc-kw">expect</span> assertions
+- No hardcoded <span class="tc-kw">test</span> data — use testData factory
+- Tests must be independent — create own data
+
+
+<span class="tc-cm">### Anti-Patterns</span>
+- <span class="tc-kw">await</span> page.<span class="tc-fn">click</span>('<span class="tc-cm">#save') // WRONG — use getByRole</span>
+- <span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">2000</span>) <span class="tc-cm">// WRONG — use expect</span>
+
+
+<span class="tc-cm">### Expected Output</span>
+- Test file: tests/specs/[feature].spec.ts
+- Page <span class="tc-fn">object</span> (<span class="tc-kw">if</span> missing): tests/pages/[feature].page.ts
+- Run: npx playwright <span class="tc-kw">test</span> tests/specs/[feature].spec.ts
+- All tests must pass before reporting done.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q908.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.6</span>
+      <h2 class="sn-q-text">How do you configure the CLI agent to use a SKILL file automatically?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Different agents read instructions from different locations:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Claude Code:</strong> reads <code class="sn-ic">CLAUDE.md</code> in the project root automatically. Put your framework SKILL content in <code class="sn-ic">CLAUDE.md</code> and Claude Code uses it without needing an explicit <code class="sn-ic">--skill</code> flag.</p>
+<p class="sn-para"><strong class="k-pink">Cursor:</strong> reads <code class="sn-ic">.cursorrules</code> in the project root. Add your SKILL content to <code class="sn-ic">.cursorrules</code> for automatic inclusion.</p>
+<p class="sn-para"><strong class="k-pink">GitHub Copilot:</strong> reads <code class="sn-ic">.github/copilot-instructions.md</code>.</p>
+<p class="sn-para"><strong class="k-pink">Pattern:</strong> one SKILL file, multiple entrypoints:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docs/skills/playwright-framework.skill.md
+
+CLAUDE.md -&gt; docs/skills/playwright-framework.skill.md
+.cursorrules -&gt; docs/skills/playwright-framework.skill.md
+.github/copilot-instructions.md -&gt; docs/skills/playwright-framework.skill.md</div>
+      </div>
+<p class="sn-para">Keeping one authoritative SKILL and linking from each tool's config location ensures all agents get the same instructions without maintaining duplicates.</p>
+    </div>
+  </div>
+
+  <!-- Q908.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.7</span>
+      <h2 class="sn-q-text">How does the CLI agent loop work for test generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A CLI agent running a test generation task follows this loop:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">1. READ SKILL    — load framework instructions
+2. READ TASK     — understand what to generate
+3. READ CONTEXT  — load relevant page objects, fixtures, example tests (RAG or manual)
+4. GENERATE      — write the test file
+5. RUN           — execute: npx playwright test [file]
+6. READ RESULTS  — parse the test output
+7. PASS? → DONE  — report completion
+   FAIL? → DIAGNOSE → FIX CODE → go to step 5</div>
+      </div>
+<p class="sn-para">The loop continues until all tests pass or a maximum iteration count is reached. The SKILL file is in context at every step — it ensures the agent does not drift to different patterns between the generation step and the fix step.</p>
+    </div>
+  </div>
+
+  <!-- Q908.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.8</span>
+      <h2 class="sn-q-text">What is the difference between Playwright codegen and CLI agent mode?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">npx playwright codegen</code> is a recording tool, not an AI agent. It:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Opens a headed browser</span></li>
+<li><span class="icon">💡</span><span>Records your manual interactions</span></li>
+<li><span class="icon">⚡</span><span>Converts them to Playwright code in real time</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Outputs static code based on rules (not LLM inference)</span></li>
+</ul>
+<p class="sn-para">CLI agent mode (Claude Code, Cursor Composer, GitHub Copilot agent) is an LLM-powered loop that:</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Reads your instructions and framework context</span></li>
+<li><span class="icon">🔑</span><span>Generates code using a language model</span></li>
+<li><span class="icon">🚀</span><span>Runs the code and iterates on failures</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Can handle complex conditional logic and test structure</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">codegen: You click Save → agent writes await page.click('button:has-text(&quot;Save&quot;)')
+         (CSS selector, no understanding of accessibility)
+
+CLI agent: 'Generate a test for saving an employee' →
+            await page.getByRole('button', { name: 'Save' }).click()
+            (uses getByRole because SKILL specifies accessibility-first locators)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q908.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.9</span>
+      <h2 class="sn-q-text">How do you run the CLI agent for maintenance tasks (fixing broken tests)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">claude 'Some tests in tests/specs/ are failing after the UI redesign.
+        Run all tests, identify failures caused by changed locators,
+        and fix the locators. Do not change test assertions or test logic.
+        Only fix selectors that no longer work.'</div>
+      </div>
+<p class="sn-para">This maintenance workflow is one of the highest-ROI uses of CLI agents — it turns a half-day of manual locator hunting into a 15-minute automated task.</p>
+    </div>
+  </div>
+
+  <!-- Q908.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.10</span>
+      <h2 class="sn-q-text">How do you combine CLI and MCP in a single workflow?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Some tasks benefit from both. Use MCP for the parts that require live browser observation, then CLI for the parts that require code generation.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Example workflow: Generate tests for a new feature:</strong></p>
+<p class="sn-para"><strong class="k-green">Step 1 — MCP phase (live browser observation):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Connect Playwright MCP to Cursor.
+Navigate to the new feature pages.
+Read snapshots to discover locators.
+Walk through the feature flow.
+Ask agent to output: locator reference table and flow description.</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Step 2 — CLI phase (code generation):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Disconnect MCP (save context window tokens).
+Provide the locator table and flow description as context.
+Add SKILL file.
+Ask agent to generate the page object and test file.
+Agent runs tests and fixes failures.</div>
+      </div>
+<p class="sn-para">This two-phase approach uses each tool for what it is best at.</p>
+    </div>
+  </div>
+
+  <!-- Q908.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.11</span>
+      <h2 class="sn-q-text">What are the CLI options most useful for test automation agents?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test tests/specs/leave.spec.ts
+
+npx playwright test --project=chromium
+
+npx playwright test --headed
+
+npx playwright test --reporter=list
+
+npx playwright test --reporter=json &gt; results.json
+
+npx playwright test --last-failed
+
+npx playwright test --debug tests/specs/leave.spec.ts
+
+npx playwright test --update-snapshots
+
+npx tsc --noEmit</div>
+      </div>
+<p class="sn-para">Agents use <code class="sn-ic">--reporter=list</code> most often because it produces clean, easy-to-parse output. <code class="sn-ic">--last-failed</code> is valuable in repair loops to focus only on tests that need fixing.</p>
+    </div>
+  </div>
+
+  <!-- Q908.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.12</span>
+      <h2 class="sn-q-text">How do you handle agent-generated code quality in the CLI workflow?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">AI-generated code can compile and pass while still having quality issues:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Tests that assert the wrong thing (assert what is convenient, not what matters)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Tests that are not actually independent (depend on test order)</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Locators that work but are fragile (text matching instead of role matching)</span></li>
+</ul>
+<p class="sn-para">Quality gates for CLI-generated tests:</p>
+<p class="sn-para"><strong class="k-orange">Gate 1 — TypeScript compilation:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx tsc --noEmit</div>
+      </div>
+<p class="sn-para">Catches invented methods, wrong types, import errors.</p>
+<p class="sn-para"><strong class="k-orange">Gate 2 — Run in isolation:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test [file] --workers=1</div>
+      </div>
+<p class="sn-para">Each test must pass alone before it can pass in parallel.</p>
+<p class="sn-para"><strong class="k-orange">Gate 3 — Run in random order:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test [file] --workers=4</div>
+      </div>
+<p class="sn-para">Tests that pass alone but fail in parallel have state dependencies.</p>
+<p class="sn-para"><strong class="k-orange">Gate 4 — Human review checklist:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Does each test have at least one meaningful assertion (not just toBeVisible)?</span></li>
+<li><span class="icon">📌</span><span>Does each test use the testData factory?</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Are locators using getByRole/getByLabel (not CSS)?</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q908.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.13</span>
+      <h2 class="sn-q-text">What is the SKILL file maintenance cycle?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A SKILL file is only effective if it stays current. The maintenance cycle:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Framework change detected
+      ↓
+Update SKILL file (same PR as the framework change)
+      ↓
+Run a generation task using the updated SKILL
+      ↓
+Review generated code — does it follow the new pattern?
+      ↓
+Yes → merge PR          No → refine the SKILL, repeat</div>
+      </div>
+<p class="sn-para">Common SKILL updates that trigger the cycle:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>New import path (fixtures moved, renamed)</span></li>
+<li><span class="icon">💡</span><span>New locator rule (switched from getByTestId to getByRole)</span></li>
+<li><span class="icon">⚡</span><span>New test data factory pattern</span></li>
+<li><span class="icon">🎯</span><span>New page object base class or method signature</span></li>
+<li><span class="icon">📌</span><span>New CI command or test runner flag</span></li>
+</ul>
+<p class="sn-para">A SKILL that lags behind the framework by one sprint will cause the agent to generate code that uses the old patterns — which then fails or requires manual editing.</p>
+    </div>
+  </div>
+
+  <!-- Q908.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q908.14</span>
+      <h2 class="sn-q-text">In your project, how do you use the CLI agent workflow?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we use Claude Code as our primary CLI agent for test generation and maintenance.</p>
+      </div>
+<p class="sn-para">Our <code class="sn-ic">CLAUDE.md</code> (the Claude Code instruction file) contains our full framework SKILL. When we start a generation session, Claude Code reads <code class="sn-ic">CLAUDE.md</code> automatically and has the full framework context without any additional setup.</p>
+<p class="sn-para">The standard generation workflow:</p>
+<ol class="sn-olist">
+<li>Product team delivers a user story with acceptance criteria</li>
+<li>QA engineer pastes the story into Claude Code:</li>
+</ol>
+<p class="sn-para">   'Generate tests for this user story. Use existing page objects.     Run the tests and fix any failures.'</p>
+<ol class="sn-olist">
+<li>Claude Code reads CLAUDE.md (SKILL), reads existing page objects, writes tests,</li>
+</ol>
+<p class="sn-para">   runs them, fixes locator issues, and reports completion</p>
+<ol class="sn-olist">
+<li>QA engineer reviews the generated tests for correctness and commits</li>
+</ol>
+<p class="sn-para">Average time from user story to committed, passing tests: 25 minutes. Same task done manually: 90–120 minutes. The time savings allow the team to cover more edge cases and spend more time on test design decisions rather than typing boilerplate.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Playwright CLI agent mode uses an LLM to generate, run, and fix tests autonomously. Different from <code class="sn-ic">playwright codegen</code> (recording tool) — this is a full AI agent loop.</span></li>
+            <li><span class="icon">⭐</span><span>SKILL files integrate with CLI agents as the framework instruction set. Read once per session, keep the agent generating consistent, framework-correct code.</span></li>
+            <li><span class="icon">⭐</span><span>Token efficiency: SKILL file = 200-400 tokens. MCP tool schemas = 7,500+ tokens. For code generation tasks, CLI + SKILL is dramatically cheaper than MCP.</span></li>
+            <li><span class="icon">⭐</span><span>CLI agent loop: Read SKILL → Read task → Generate code → Run tests → Read results → Fix failures → Repeat until passing.</span></li>
+            <li><span class="icon">⭐</span><span>Configure SKILL for each agent tool: <code class="sn-ic">CLAUDE.md</code> for Claude Code, <code class="sn-ic">.cursorrules</code> for Cursor, <code class="sn-ic">.github/copilot-instructions.md</code> for GitHub Copilot.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Key CLI flags for agents: <code class="sn-ic">--reporter=list</code> (clean output), <code class="sn-ic">--last-failed</code> (repair loops), <code class="sn-ic">--workers=1</code> (isolation test), <code class="sn-ic">tsc --noEmit</code> (type check).</span></li>
+            <li><span class="icon">⭐</span><span>CLI + MCP combined workflow: use MCP for live browser locator discovery, then CLI for code generation. Each phase uses the tool it is best at.</span></li>
+            <li><span class="icon">⭐</span><span>Quality gates for generated code: TypeScript compile, run in isolation, run in parallel, human review checklist.</span></li>
+            <li><span class="icon">⭐</span><span>SKILL maintenance: update in same PR as framework change, test with a generation run, merge only when output matches new patterns.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

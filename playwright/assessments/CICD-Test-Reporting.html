@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: CI/CD & Test Reporting - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --secondary: #22c55e;
+    --accent: #f97316;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.logo img {
+    height: 50px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.assessment-title {
+    text-align: right;
+}
+
+.assessment-title h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.assessment-title p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.question-number {
+    color: var(--primary);
+    min-width: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background-color: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.option input {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.option.correct {
+    border-color: var(--secondary);
+    background-color: #ecfdf5;
+}
+
+.option.incorrect {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.question.unanswered {
+    border: 2px solid var(--danger) !important;
+    background-color: #fef2f2 !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.result-section {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.name-input-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.name-input-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.name-input-section input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: none;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary);
+}
+
+@media print {
+
+    .btn,
+    .name-input-section {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .explanation,
+    .result-section {
+        display: block !important;
+    }
+
+    #printed-name {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+}
+
+#printed-name {
+    display: none;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #e11d48;
+    font-family: monospace;
+}
+
+pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo"></div>
+            <a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i> Back to Assessments Home</a>
+            <div class="assessment-title">
+                <h1>Assessment</h1>
+                <p>Loading topics...</p>
+            </div>
+        </header>
+
+        <div id="result-container" class="card result-section">
+            <div id="printed-name"></div>
+            <h2>Assessment Completed!</h2>
+            <div id="score-display" class="score-display">0 / 0</div>
+            <p id="feedback-text" class="feedback-text"></p>
+            <div class="name-input-section">
+                <label for="student-name">Enter your name for the report:</label>
+                <input type="text" id="student-name" placeholder="Your Full Name"><br>
+                <button class="btn btn-success" onclick="preparePrint()"><i class="fas fa-print"></i> Print
+                    Result</button>
+            </div>
+        </div>
+
+        <div id="quiz-container">
+            <div class="card">
+                <form id="quiz-form"></form>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-light); font-size: 0.8rem;">
+            &copy; 2026 VibeTestQ. All rights reserved.
+        </footer>
+    </div>
+
+    <script type="text/plain" id="assessment-markdown">
+# Assessment: CI/CD & Test Reporting MCQ
+
+**Total Questions:** 30  
+**Time:** 30 minutes  
+**Pass Mark:** 60%  
+**Topics:** CI/CD Pipelines, Test Reports, Parallelization, Artifacts
+
+---
+
+## Questions
+
+### Question 1
+Which statement best describes Pipeline stages?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Flaky tests fail intermittently without code changes.
+
+**Answer: A) Pipelines include build, test, and deploy stages.**
+
+**Explanation:** Pipelines include build, test, and deploy stages.
+
+---
+
+### Question 2
+What is a best practice for Pipeline stages?
+
+A) Pipelines include build, test, and deploy stages.
+B) Keep stages fast and deterministic.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Keep stages fast and deterministic.**
+
+**Explanation:** Keep stages fast and deterministic.
+
+---
+
+### Question 3
+Which pitfall should you avoid with Pipeline stages?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Combining build and deploy without testing.
+D) Test reports provide result visibility.
+
+**Answer: C) Combining build and deploy without testing.**
+
+**Explanation:** Combining build and deploy without testing.
+
+---
+
+### Question 4
+Which statement best describes Artifacts?
+
+A) Pipelines include build, test, and deploy stages.
+B) Test reports provide result visibility.
+C) Flaky tests fail intermittently without code changes.
+D) Artifacts store build output and reports.
+
+**Answer: D) Artifacts store build output and reports.**
+
+**Explanation:** Artifacts store build output and reports.
+
+---
+
+### Question 5
+What is a best practice for Artifacts?
+
+A) Publish artifacts after each stage.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Publish artifacts after each stage.**
+
+**Explanation:** Publish artifacts after each stage.
+
+---
+
+### Question 6
+Which pitfall should you avoid with Artifacts?
+
+A) Pipelines include build, test, and deploy stages.
+B) Dropping artifacts on failure.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Dropping artifacts on failure.**
+
+**Explanation:** Dropping artifacts on failure.
+
+---
+
+### Question 7
+Which statement best describes Test reports?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Flaky tests fail intermittently without code changes.
+
+**Answer: C) Test reports provide result visibility.**
+
+**Explanation:** Test reports provide result visibility.
+
+---
+
+### Question 8
+What is a best practice for Test reports?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Use JUnit or HTML reports with CI.
+
+**Answer: D) Use JUnit or HTML reports with CI.**
+
+**Explanation:** Use JUnit or HTML reports with CI.
+
+---
+
+### Question 9
+Which pitfall should you avoid with Test reports?
+
+A) Running tests without reporting.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Running tests without reporting.**
+
+**Explanation:** Running tests without reporting.
+
+---
+
+### Question 10
+Which statement best describes Flaky tests?
+
+A) Pipelines include build, test, and deploy stages.
+B) Flaky tests fail intermittently without code changes.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Flaky tests fail intermittently without code changes.**
+
+**Explanation:** Flaky tests fail intermittently without code changes.
+
+---
+
+### Question 11
+What is a best practice for Flaky tests?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Track flake rate and quarantine tests.
+D) Test reports provide result visibility.
+
+**Answer: C) Track flake rate and quarantine tests.**
+
+**Explanation:** Track flake rate and quarantine tests.
+
+---
+
+### Question 12
+Which pitfall should you avoid with Flaky tests?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Ignoring flaky tests in production pipelines.
+
+**Answer: D) Ignoring flaky tests in production pipelines.**
+
+**Explanation:** Ignoring flaky tests in production pipelines.
+
+---
+
+### Question 13
+Which statement best describes Parallelization?
+
+A) Parallelization speeds up CI runs.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Parallelization speeds up CI runs.**
+
+**Explanation:** Parallelization speeds up CI runs.
+
+---
+
+### Question 14
+What is a best practice for Parallelization?
+
+A) Pipelines include build, test, and deploy stages.
+B) Split suites by tags or file groups.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Split suites by tags or file groups.**
+
+**Explanation:** Split suites by tags or file groups.
+
+---
+
+### Question 15
+Which pitfall should you avoid with Parallelization?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Parallelizing without shared data isolation.
+D) Test reports provide result visibility.
+
+**Answer: C) Parallelizing without shared data isolation.**
+
+**Explanation:** Parallelizing without shared data isolation.
+
+---
+
+### Question 16
+Which statement best describes Environment promotion?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Promotion moves builds across environments.
+
+**Answer: D) Promotion moves builds across environments.**
+
+**Explanation:** Promotion moves builds across environments.
+
+---
+
+### Question 17
+What is a best practice for Environment promotion?
+
+A) Use gated approvals for production.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Use gated approvals for production.**
+
+**Explanation:** Use gated approvals for production.
+
+---
+
+### Question 18
+Which pitfall should you avoid with Environment promotion?
+
+A) Pipelines include build, test, and deploy stages.
+B) Skipping validation before production.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Skipping validation before production.**
+
+**Explanation:** Skipping validation before production.
+
+---
+
+### Question 19
+Which statement best describes Version tagging?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Tags label releases and artifacts.
+D) Test reports provide result visibility.
+
+**Answer: C) Tags label releases and artifacts.**
+
+**Explanation:** Tags label releases and artifacts.
+
+---
+
+### Question 20
+What is a best practice for Version tagging?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Align tags with release notes.
+
+**Answer: D) Align tags with release notes.**
+
+**Explanation:** Align tags with release notes.
+
+---
+
+### Question 21
+Which pitfall should you avoid with Version tagging?
+
+A) Deploying without version labels.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Deploying without version labels.**
+
+**Explanation:** Deploying without version labels.
+
+---
+
+### Question 22
+Which statement best describes Notifications?
+
+A) Pipelines include build, test, and deploy stages.
+B) Notifications alert teams of build status.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Notifications alert teams of build status.**
+
+**Explanation:** Notifications alert teams of build status.
+
+---
+
+### Question 23
+What is a best practice for Notifications?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Notify only actionable events.
+D) Test reports provide result visibility.
+
+**Answer: C) Notify only actionable events.**
+
+**Explanation:** Notify only actionable events.
+
+---
+
+### Question 24
+Which pitfall should you avoid with Notifications?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Creating alert fatigue.
+
+**Answer: D) Creating alert fatigue.**
+
+**Explanation:** Creating alert fatigue.
+
+---
+
+### Question 25
+Which statement best describes Security checks?
+
+A) Security checks scan dependencies and configs.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Security checks scan dependencies and configs.**
+
+**Explanation:** Security checks scan dependencies and configs.
+
+---
+
+### Question 26
+What is a best practice for Security checks?
+
+A) Pipelines include build, test, and deploy stages.
+B) Include SAST and dependency scans.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Include SAST and dependency scans.**
+
+**Explanation:** Include SAST and dependency scans.
+
+---
+
+### Question 27
+Which pitfall should you avoid with Security checks?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Ignoring vulnerability reports.
+D) Test reports provide result visibility.
+
+**Answer: C) Ignoring vulnerability reports.**
+
+**Explanation:** Ignoring vulnerability reports.
+
+---
+
+### Question 28
+Which statement best describes Rollbacks?
+
+A) Pipelines include build, test, and deploy stages.
+B) Artifacts store build output and reports.
+C) Test reports provide result visibility.
+D) Rollback strategies restore stable builds.
+
+**Answer: D) Rollback strategies restore stable builds.**
+
+**Explanation:** Rollback strategies restore stable builds.
+
+---
+
+### Question 29
+What is a best practice for Rollbacks?
+
+A) Automate rollback steps for failures.
+B) Pipelines include build, test, and deploy stages.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: A) Automate rollback steps for failures.**
+
+**Explanation:** Automate rollback steps for failures.
+
+---
+
+### Question 30
+Which pitfall should you avoid with Rollbacks?
+
+A) Pipelines include build, test, and deploy stages.
+B) Manual rollback without documented steps.
+C) Artifacts store build output and reports.
+D) Test reports provide result visibility.
+
+**Answer: B) Manual rollback without documented steps.**
+
+**Explanation:** Manual rollback without documented steps.
+
+---
+
+</script>
+    <script>
+(() => {
+    const markdownNode = document.getElementById('assessment-markdown');
+    if (!markdownNode) {
+        return;
+    }
+
+    const markdown = markdownNode.textContent.trim();
+    const form = document.getElementById('quiz-form');
+    const titleElement = document.querySelector('.assessment-title h1');
+    const subtitleElement = document.querySelector('.assessment-title p');
+    const scoreDisplay = document.getElementById('score-display');
+
+    const assessmentData = parseAssessmentMarkdown(markdown);
+    renderAssessment(assessmentData);
+
+    function parseAssessmentMarkdown(raw) {
+        const lines = raw.replace(/\r\n/g, '\n').split('\n');
+        const titleLine = lines.find((line) => line.trim().startsWith('# ')) || '';
+        const rawTitle = titleLine.replace(/^#\s*/, '').trim();
+        const cleanedTitle = rawTitle
+            .replace(/^Assessment\s*\d*\s*:?\s*/i, '')
+            .replace(/\bMCQ\b/i, '')
+            .trim();
+
+        let topics = '';
+        const topicsLine =
+            lines.find((line) => /^\*\*Topics/i.test(line)) ||
+            lines.find((line) => /^\*\*Topics Covered/i.test(line));
+        if (topicsLine) {
+            const parts = topicsLine.split(':');
+            topics = parts.length > 1 ? parts.slice(1).join(':').replace(/\*\*/g, '').trim() : '';
+        }
+
+        if (!topics) {
+            const subtitleLine = lines.find((line) => line.trim().startsWith('## '));
+            if (subtitleLine) {
+                topics = subtitleLine.replace(/^##\s*/, '').trim();
+            }
+        }
+
+        const questionBlocks = [];
+        const hasQuestionsHeading = lines.some((line) => /^##\s*Questions/i.test(line.trim()));
+        let inQuestions = !hasQuestionsHeading;
+        let stopQuestions = false;
+        let current = null;
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (/^##\s*Questions/i.test(trimmed)) {
+                inQuestions = true;
+                continue;
+            }
+
+            if (inQuestions && /^##\s+/i.test(trimmed) && !/^##\s*Questions/i.test(trimmed)) {
+                stopQuestions = true;
+                if (current) {
+                    questionBlocks.push(current);
+                    current = null;
+                }
+                continue;
+            }
+
+            if (!inQuestions || stopQuestions) {
+                continue;
+            }
+
+            if (/^###\s*Question\s*\d+/i.test(trimmed)) {
+                if (current) {
+                    questionBlocks.push(current);
+                }
+                current = [];
+                continue;
+            }
+
+            if (current) {
+                current.push(line);
+            }
+        }
+
+        if (current) {
+            questionBlocks.push(current);
+        }
+
+        const questions = questionBlocks
+            .map((block) => parseQuestionBlock(block))
+            .filter((question) => question.options.length > 0);
+
+        return {
+            title: cleanedTitle || rawTitle || 'Assessment',
+            topics,
+            questions
+        };
+    }
+
+    function parseQuestionBlock(lines) {
+        const questionLines = [];
+        const options = [];
+        let answer = '';
+        const explanationLines = [];
+        let capturingExplanation = false;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (/^\*\*Answer:/i.test(trimmed)) {
+                const match = trimmed.match(/Answer:\s*([A-D])/i);
+                if (match) {
+                    answer = match[1].toLowerCase();
+                }
+                capturingExplanation = false;
+                return;
+            }
+
+            if (/^\*\*Explanation:/i.test(trimmed)) {
+                capturingExplanation = true;
+                const explanationText = trimmed
+                    .replace(/^\*\*Explanation:\*\*\s*/i, '')
+                    .replace(/^\*\*Explanation:\s*/i, '')
+                    .trim();
+                if (explanationText) {
+                    explanationLines.push(explanationText);
+                }
+                return;
+            }
+
+            if (capturingExplanation) {
+                if (trimmed === '---') {
+                    capturingExplanation = false;
+                } else {
+                    explanationLines.push(line);
+                }
+                return;
+            }
+
+            const optionMatch = trimmed.match(/^[-*]?\s*([A-D])\)\s*(.*)$/);
+            if (optionMatch) {
+                options.push({
+                    letter: optionMatch[1].toLowerCase(),
+                    text: optionMatch[2].trim()
+                });
+                return;
+            }
+
+            if (trimmed === '---' || /^##/.test(trimmed)) {
+                return;
+            }
+
+            questionLines.push(line);
+        });
+
+        if (!answer && options.length > 0) {
+            answer = options[0].letter;
+        }
+
+        const { promptLine, bodyLines } = splitPromptAndBody(questionLines);
+
+        return {
+            promptHtml: formatInlineCode(promptLine || 'Select the correct option.'),
+            bodyHtml: formatLinesToHtml(bodyLines),
+            options: options.map((opt) => ({
+                letter: opt.letter,
+                html: formatInlineCode(opt.text)
+            })),
+            answer,
+            explanationHtml: formatLinesToHtml(explanationLines)
+        };
+    }
+
+    function splitPromptAndBody(lines) {
+        let promptLine = '';
+        const bodyLines = [];
+        let foundPrompt = false;
+
+        lines.forEach((line) => {
+            if (!foundPrompt && line.trim() && !line.trim().startsWith('```')) {
+                promptLine = line.trim();
+                foundPrompt = true;
+            } else {
+                bodyLines.push(line);
+            }
+        });
+
+        return { promptLine, bodyLines };
+    }
+
+    function formatLinesToHtml(lines) {
+        if (!lines.length) {
+            return '';
+        }
+
+        const parts = [];
+        let inCodeBlock = false;
+        let codeLines = [];
+        let textLines = [];
+
+        const flushText = () => {
+            if (!textLines.length) {
+                return;
+            }
+            parts.push(textLines.map(formatInlineCode).join('<br>'));
+            textLines = [];
+        };
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('```')) {
+                if (inCodeBlock) {
+                    parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                    codeLines = [];
+                    inCodeBlock = false;
+                } else {
+                    flushText();
+                    inCodeBlock = true;
+                }
+                return;
+            }
+
+            if (inCodeBlock) {
+                codeLines.push(line);
+            } else if (trimmed !== '') {
+                textLines.push(line);
+            }
+        });
+
+        if (codeLines.length) {
+            parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+        }
+
+        flushText();
+        return parts.join('');
+    }
+
+    function formatInlineCode(text) {
+        if (!text) {
+            return '';
+        }
+
+        const segments = text.split('`');
+        return segments
+            .map((segment, index) => {
+                if (index % 2 === 1) {
+                    return `<code>${escapeHtml(segment)}</code>`;
+                }
+                return escapeHtml(segment);
+            })
+            .join('');
+    }
+
+    function escapeHtml(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderAssessment(data) {
+        const heading = data.title ? `Assessment: ${data.title}` : 'Assessment';
+        titleElement.textContent = heading;
+        subtitleElement.textContent = data.topics || data.title || 'Multiple Choice Questions';
+        document.title = `${heading} - VibeTestQ`;
+
+        form.innerHTML = '';
+
+        data.questions.forEach((question, index) => {
+            form.appendChild(buildQuestionElement(question, index));
+        });
+
+        const submitWrap = document.createElement('div');
+        submitWrap.style.textAlign = 'center';
+        submitWrap.style.marginTop = '30px';
+        submitWrap.innerHTML = `
+            <button type="button" class="btn btn-primary" onclick="submitQuiz()">
+                <i class="fas fa-paper-plane"></i> Submit Assessment
+            </button>
+        `;
+        form.appendChild(submitWrap);
+
+        scoreDisplay.textContent = `0 / ${data.questions.length}`;
+    }
+
+    function buildQuestionElement(question, index) {
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.dataset.answer = question.answer;
+
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'question-number';
+        numberSpan.textContent = `${index + 1}.`;
+
+        const textSpan = document.createElement('span');
+        textSpan.innerHTML = question.promptHtml;
+
+        questionText.appendChild(numberSpan);
+        questionText.appendChild(textSpan);
+        questionElement.appendChild(questionText);
+
+        if (question.bodyHtml) {
+            const body = document.createElement('div');
+            body.className = 'question-body';
+            body.innerHTML = question.bodyHtml;
+            questionElement.appendChild(body);
+        }
+
+        const options = document.createElement('div');
+        options.className = 'options';
+
+        question.options.forEach((option) => {
+            const label = document.createElement('label');
+            label.className = 'option';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `q${index + 1}`;
+            input.value = option.letter;
+
+            const optionText = document.createElement('span');
+            optionText.innerHTML = option.html;
+
+            label.appendChild(input);
+            label.appendChild(optionText);
+            options.appendChild(label);
+        });
+
+        questionElement.appendChild(options);
+
+        const explanation = document.createElement('p');
+        explanation.className = 'explanation';
+        explanation.innerHTML = question.explanationHtml || '';
+        questionElement.appendChild(explanation);
+
+        return questionElement;
+    }
+
+    window.submitQuiz = function submitQuiz() {
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        const unAnsweredSet = [];
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            if (!selected) {
+                unAnsweredSet.push(q);
+                q.classList.add('unanswered');
+            } else {
+                q.classList.remove('unanswered');
+            }
+        });
+
+        if (unAnsweredSet.length > 0) {
+            showToast("Please answer all questions before submitting.");
+            unAnsweredSet[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            const correctAnswer = q.getAttribute('data-answer');
+            const options = q.querySelectorAll('.option');
+            const explanation = q.querySelector('.explanation');
+
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+
+            options.forEach(opt => {
+                const radio = opt.querySelector('input');
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (selected && radio === selected && radio.value !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected && selected.value === correctAnswer) {
+                score += 1;
+            }
+        });
+
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('score-display').innerText = `${score} / ${questions.length}`;
+
+        let feedback = "";
+        const percentage = (score / questions.length) * 100;
+        if (percentage === 100) feedback = "Perfect Score! You are a JS Wizard!";
+        else if (percentage >= 80) feedback = "Excellent! You have a strong grasp of fundamentals.";
+        else if (percentage >= 60) feedback = "Good job! Keep practicing to master the concepts.";
+        else feedback = "Keep learning! Review the Docs to strengthen your basics.";
+
+        document.getElementById('feedback-text').innerText = feedback;
+
+        form.querySelectorAll('input').forEach(input => input.disabled = true);
+        const submitButton = form.querySelector('button');
+        if (submitButton) {
+            submitButton.style.display = 'none';
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.preparePrint = function preparePrint() {
+        const name = document.getElementById('student-name').value;
+        if (name) {
+            document.getElementById('printed-name').innerText = "Student: " + name;
+        } else {
+            document.getElementById('printed-name').innerText = "";
+        }
+        window.print();
+    };
+
+    function showToast(message) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+})();
+    </script>
+</body>
+
+</html>

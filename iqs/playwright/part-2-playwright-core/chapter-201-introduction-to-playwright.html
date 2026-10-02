@@ -1,0 +1,427 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 201 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Introduction</span> <span class="w2">to</span> <span class="w3">Playwright</span> <span class="w4">&amp;</span> <span class="w5">Architecture</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers what Playwright is, why it exists, and how it compares to other tools. Interviewers ask these questions as a warmup to judge whether the candidate has worked with Playwright deeply or just followed tutorials. Questions progress from definition through feature comparison to a concrete code example and a real project story.</span>
+  </div>
+
+
+  <!-- Q201.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.1</span>
+      <h2 class="sn-q-text">What is Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright is an open-source browser automation library created by Microsoft. It lets you write code that controls a real browser — Chromium, Firefox, or WebKit — to navigate pages, fill forms, click buttons, and assert that the application behaves correctly.</p>
+      </div>
+<p class="sn-para">Playwright is both a library (playwright-core) and a full test runner (@playwright/test). Most teams use @playwright/test, which provides test structure, fixtures, assertions, reporters, and parallelism out of the box.</p>
+<p class="sn-para">It was released publicly in 2020 and is actively maintained by Microsoft. As of 2025, it is the most widely adopted new browser automation framework for enterprise TypeScript projects.</p>
+    </div>
+  </div>
+
+  <!-- Q201.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.2</span>
+      <h2 class="sn-q-text">Why was Playwright created and what problem does it solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright was created to solve the reliability problems that plagued earlier browser automation tools — primarily Selenium.</p>
+      </div>
+<p class="sn-para">Selenium uses the W3C WebDriver protocol: every command makes an HTTP round trip to a WebDriver server, which then communicates with the browser. This overhead causes timing problems and requires explicit waits everywhere.</p>
+<p class="sn-para">Playwright communicates with browser engines directly over a persistent WebSocket connection using the Chrome DevTools Protocol (CDP) for Chromium and equivalent protocols for Firefox and WebKit. This gives it real-time bidirectional communication with the browser, which enables built-in auto-waiting, network interception, and reliable event handling.</p>
+<p class="sn-para">The problem Playwright solves: flaky tests caused by timing issues in dynamic web applications. In practice, Playwright tests need far fewer explicit waits than equivalent Selenium tests.</p>
+    </div>
+  </div>
+
+  <!-- Q201.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.3</span>
+      <h2 class="sn-q-text">When would you choose Playwright for a new automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Choose Playwright when:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The application uses modern JavaScript (React, Vue, Angular, Next.js) with</span></li>
+</ul>
+<p class="sn-para">  dynamic content loaded via API calls</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>The team uses TypeScript — Playwright's TypeScript support is first-class</span></li>
+<li><span class="icon">⚡</span><span>You need cross-browser testing including Safari/WebKit</span></li>
+<li><span class="icon">🎯</span><span>You need network interception, request mocking, or API + UI hybrid testing</span></li>
+<li><span class="icon">📌</span><span>You need reliable parallel test execution built into the runner</span></li>
+<li><span class="icon">🔑</span><span>You are starting a new project with no existing Selenium investment</span></li>
+</ul>
+<p class="sn-para">Consider other tools when:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The team has a large, mature Selenium suite — migration cost may not</span></li>
+</ul>
+<p class="sn-para">  justify the benefit</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The application is a pure mobile native app — Playwright does not automate</span></li>
+</ul>
+<p class="sn-para">  native mobile (use Appium/WebDriverIO instead)</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The team exclusively tests in IE11 or legacy browsers — Playwright does not</span></li>
+</ul>
+<p class="sn-para">  support IE</p>
+    </div>
+  </div>
+
+  <!-- Q201.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.4</span>
+      <h2 class="sn-q-text">How is Playwright used in your current project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, Playwright is used as the primary end-to-end testing tool for a TypeScript web application. We use @playwright/test as the test runner.</p>
+      </div>
+<p class="sn-para">Our suite has three test categories: smoke tests that run on every PR, regression tests that run on merge to main, and nightly tests that cover the full critical path. All three use the same Playwright framework — configuration in playwright.config.ts selects which tests run via tag-based filtering.</p>
+<p class="sn-para">We run tests in parallel across Chromium and Firefox. WebKit is run nightly only. Tests use fixtures for page objects and authentication setup. API calls for test data creation use Playwright's <code class="sn-ic">request</code> fixture so all test resources go through a single setup/teardown lifecycle.</p>
+    </div>
+  </div>
+
+  <!-- Q201.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.5</span>
+      <h2 class="sn-q-text">What browsers does Playwright support?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright supports three browser engines:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Chromium</strong> — used by Google Chrome, Microsoft Edge, Opera, and Brave. Playwright ships its own Chromium build.</p>
+<p class="sn-para"><strong class="k-teal">Firefox</strong> — Mozilla's browser engine. Playwright ships a patched Firefox.</p>
+<p class="sn-para"><strong class="k-teal">WebKit</strong> — the engine behind Safari on macOS and iOS. Playwright ships a WebKit build for Linux/Windows, enabling Safari-like testing on non-Apple platforms.</p>
+<p class="sn-para">For each engine, Playwright downloads and manages its own browser builds via <code class="sn-ic">npx playwright install</code>. You can also run against installed system browsers with <code class="sn-ic">channel: 'chrome'</code> or <code class="sn-ic">channel: 'msedge'</code> in the config.</p>
+<p class="sn-para">Mobile browser emulation is available for all three engines without requiring a real device — Playwright emulates mobile viewports, touch events, and device pixel ratios through browser API flags.</p>
+    </div>
+  </div>
+
+  <!-- Q201.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.6</span>
+      <h2 class="sn-q-text">What are the key features of Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The features that matter most for test automation:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Auto-waiting</strong> — every action waits for the element to be ready before proceeding. No manual waits in 95% of tests.</p>
+<p class="sn-para"><strong class="k-pink">Web-first assertions</strong> — <code class="sn-ic">expect(locator).toBeVisible()</code> retries until the condition is true or times out. No <code class="sn-ic">isVisible()</code> + <code class="sn-ic">toBe(true)</code> patterns.</p>
+<p class="sn-para"><strong class="k-pink">Network interception</strong> — intercept, mock, or modify any HTTP request or response from within a test. This enables UI+API hybrid testing.</p>
+<p class="sn-para"><strong class="k-pink">BrowserContext isolation</strong> — each test gets its own isolated browser session with separate cookies, local storage, and auth state.</p>
+<p class="sn-para"><strong class="k-pink">Fixtures</strong> — dependency injection for tests. Page objects, auth sessions, and shared resources are injected into tests without global state.</p>
+<p class="sn-para"><strong class="k-pink">Trace Viewer</strong> — a full timeline recorder that captures every action, network call, DOM snapshot, and screenshot for post-failure debugging.</p>
+<p class="sn-para"><strong class="k-pink">Multiple workers</strong> — tests run in parallel across multiple processes, reducing suite execution time proportionally to the number of available workers.</p>
+    </div>
+  </div>
+
+  <!-- Q201.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.7</span>
+      <h2 class="sn-q-text">What is the difference between Playwright and Selenium?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright</th><th class="sn-th-green">Selenium</th></tr></thead>
+          <tbody>
+          <tr><td>Browser protocol</td><td>CDP / WebSocket (direct)</td><td>HTTP / WebDriver</td></tr>
+          <tr><td>Auto-waiting</td><td>Built-in</td><td>Manual (<code class="sn-ic">WebDriverWait</code>)</td></tr>
+          <tr><td>Test runner</td><td>Included (<code class="sn-ic">@playwright/test</code>)</td><td>Separate (JUnit, TestNG, pytest)</td></tr>
+          <tr><td>Network interception</td><td>First-class API</td><td>Third-party (BrowserMob)</td></tr>
+          <tr><td>Multi-tab / multi-window</td><td>Native, clean API</td><td>Complex, window handle switching</td></tr>
+          <tr><td>Assertion retries</td><td>Built-in (web-first)</td><td>Manual retry logic</td></tr>
+          <tr><td>Speed</td><td>Faster (no HTTP overhead per command)</td><td>Slower</td></tr>
+          <tr><td>Browser support</td><td>Chromium, Firefox, WebKit</td><td>Chrome, Firefox, Edge, Safari, IE</td></tr>
+          <tr><td>Language support</td><td>JS/TS, Python, Java, C#</td><td>Most languages</td></tr>
+          <tr><td>Community age</td><td>Since 2020</td><td>Since 2004</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The practical difference: a Playwright test that reliably passes on the first run typically needs about 70% fewer explicit wait statements than the equivalent Selenium test.</p>
+    </div>
+  </div>
+
+  <!-- Q201.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.8</span>
+      <h2 class="sn-q-text">What is the difference between Playwright and Cypress?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright</th><th class="sn-th-green">Cypress</th></tr></thead>
+          <tbody>
+          <tr><td>Execution model</td><td>Out-of-process (Node.js controls browser)</td><td>In-process (runs inside browser)</td></tr>
+          <tr><td>Multi-browser</td><td>Chrome, Firefox, WebKit</td><td>Chrome, Firefox, Edge (limited WebKit)</td></tr>
+          <tr><td>Multi-tab</td><td>Yes, native</td><td>No (Cypress cannot control new tabs)</td></tr>
+          <tr><td>Cross-origin</td><td>Yes</td><td>Restricted (same-origin policy in older versions)</td></tr>
+          <tr><td>Network interception</td><td>Request and response bodies</td><td>Requests only (no response body streaming)</td></tr>
+          <tr><td>Language</td><td>JS, TS, Python, Java, C#</td><td>JavaScript / TypeScript only</td></tr>
+          <tr><td>Parallel execution</td><td>Built-in, multi-process</td><td>Requires Cypress Cloud (paid) for full parallelism</td></tr>
+          <tr><td>API testing</td><td>Full request/response API</td><td><code class="sn-ic">cy.request()</code> (HTTP only, no WebSocket)</td></tr>
+          <tr><td>iframe support</td><td>Native <code class="sn-ic">frameLocator()</code></td><td>Limited, complex</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-yellow">When to choose Playwright over Cypress:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>You need multi-tab or cross-origin testing</span></li>
+<li><span class="icon">💡</span><span>You need WebKit / Safari coverage</span></li>
+<li><span class="icon">⚡</span><span>You need full network interception (response body mocking)</span></li>
+<li><span class="icon">🎯</span><span>You need free parallel execution at scale</span></li>
+<li><span class="icon">📌</span><span>Your team uses TypeScript seriously</span></li>
+</ul>
+<p class="sn-para">Cypress has better interactive debugging in its Test Runner for junior teams who prefer a visual-first workflow. Playwright's Trace Viewer closes this gap.</p>
+    </div>
+  </div>
+
+  <!-- Q201.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.9</span>
+      <h2 class="sn-q-text">What is the difference between @playwright/test and playwright-core?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">playwright-core</strong> is the core library. It provides the browser automation API — <code class="sn-ic">chromium.launch()</code>, <code class="sn-ic">page.goto()</code>, <code class="sn-ic">locator.click()</code> — with no test runner, no assertions, no fixtures, and no reporters.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">@playwright/test</strong> is the complete testing package. It includes everything in playwright-core plus: the <code class="sn-ic">test</code> and <code class="sn-ic">expect</code> API, fixtures, configuration via <code class="sn-ic">playwright.config.ts</code>, built-in reporters, parallel execution, trace viewer integration, and the <code class="sn-ic">npx playwright test</code> CLI.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright-core only — manual browser management</span>
+<span class="tc-kw">import</span> { chromium } <span class="tc-kw">from</span> <span class="tc-str">'playwright-core'</span>;
+<span class="tc-kw">const</span> browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>();
+<span class="tc-kw">const</span> page = <span class="tc-kw">await</span> browser.<span class="tc-fn">newPage</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'https: S1 
+await browser.close();
+
+ S2 
+import { test, expect } from '</span>@playwright/<span class="tc-kw">test</span><span class="tc-str">';
+test('</span>page title<span class="tc-str">', async ({ page }) =&amp;gt; {
+  await page.goto('</span>https:<span class="tc-cm">//example.com');</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveTitle</span>(/Example/);
+});</div>
+      </div>
+<p class="sn-para">Almost all test projects should use @playwright/test. playwright-core is for embedding Playwright in non-test contexts — scraping, monitoring, PDF generation.</p>
+    </div>
+  </div>
+
+  <!-- Q201.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.10</span>
+      <h2 class="sn-q-text">When would you choose Playwright over Cypress?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Choose Playwright over Cypress when:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Multi-tab or popup testing is required.</strong> Cypress cannot control new browser tabs. Playwright handles them natively with <code class="sn-ic">context.waitForEvent('page')</code>.</p>
+<p class="sn-para"><strong class="k-green">WebKit / Safari coverage is required.</strong> Cypress support for WebKit is experimental. Playwright's WebKit engine is production-ready.</p>
+<p class="sn-para"><strong class="k-green">Cross-origin flows are required.</strong> OAuth redirects, payment provider iframes, and third-party login pages often cross origin boundaries. Playwright handles this transparently. Cypress requires workarounds.</p>
+<p class="sn-para"><strong class="k-green">Free parallel execution at scale is required.</strong> Playwright's parallel workers are built-in and free. Cypress parallelism requires Cypress Cloud, which is paid.</p>
+<p class="sn-para"><strong class="k-green">The team works primarily in TypeScript.</strong> Playwright's TypeScript support is first-class — types for every API, full IDE autocomplete. Cypress's TypeScript support exists but has more gaps.</p>
+<p class="sn-para">Choose Cypress over Playwright when the team values interactive debugging in a visual runner and works primarily on a single-browser, single-domain application.</p>
+    </div>
+  </div>
+
+  <!-- Q201.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.11</span>
+      <h2 class="sn-q-text">What are the limitations of Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright has a few genuine limitations:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">No native mobile app testing.</strong> Playwright only automates browsers. For native iOS or Android apps, use Appium or similar tools.</p>
+<p class="sn-para"><strong class="k-purple">No IE11 support.</strong> Playwright does not and will not support Internet Explorer.</p>
+<p class="sn-para"><strong class="k-purple">Browser binary downloads are large.</strong> <code class="sn-ic">npx playwright install</code> downloads ~200–500MB of browser binaries. First-time CI setup requires caching to avoid slow downloads on every run.</p>
+<p class="sn-para"><strong class="k-purple">WebKit on Linux is a patched build, not real Safari.</strong> Playwright's WebKit closely approximates Safari but is not identical. Very Safari-specific bugs (font rendering, specific WebKit APIs) may not reproduce.</p>
+<p class="sn-para"><strong class="k-purple">No real-time interactive test runner like Cypress.</strong> Playwright's UI Mode (<code class="sn-ic">--ui</code> flag) provides interactive debugging but does not match Cypress's real-time watch experience.</p>
+    </div>
+  </div>
+
+  <!-- Q201.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.12</span>
+      <h2 class="sn-q-text">How does Playwright compare to Selenium for cross-browser testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright supports Chromium, Firefox, and WebKit. Selenium supports Chrome, Firefox, Edge, Safari, and IE (via WebDriver implementations).</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Practical advantage for Playwright:</strong></p>
+<p class="sn-para">Playwright downloads and manages its own browser builds. Cross-browser tests just work out of the box — no need to install ChromeDriver, GeckoDriver, or Safari WebDriver separately, or keep driver versions in sync with browser versions. The most common Selenium setup pain — driver version mismatch — does not exist in Playwright.</p>
+<p class="sn-para">Playwright's WebKit engine enables Safari-like testing on Linux CI machines, where actual Safari is not available. This is a significant advantage for teams without macOS CI runners.</p>
+<p class="sn-para"><strong class="k-orange">Where Selenium still wins:</strong></p>
+<p class="sn-para">Selenium supports a wider range of programming languages (all major ones). For very large organisations with existing Selenium investment and dedicated cross-browser QA infrastructure, the switching cost may not justify the reliability gains.</p>
+    </div>
+  </div>
+
+  <!-- Q201.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.13</span>
+      <h2 class="sn-q-text">What Playwright version is your project using and how do you keep it updated?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we pin the Playwright version in <code class="sn-ic">package.json</code> using an exact version (no <code class="sn-ic">^</code> or <code class="sn-ic">~</code>). This prevents automatic upgrades that could introduce breaking changes during a test run.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;devDependencies&quot;: {
+    &quot;@playwright/test&quot;: &quot;1.47.2&quot;
+  }
+}</div>
+      </div>
+<p class="sn-para">We update quarterly or when a specific feature or bugfix we need lands in a newer release. The update process:</p>
+<ol class="sn-olist">
+<li>Update the version in <code class="sn-ic">package.json</code></li>
+<li>Run <code class="sn-ic">npm install</code> to update <code class="sn-ic">package-lock.json</code></li>
+<li>Run <code class="sn-ic">npx playwright install</code> to download the new browser binaries</li>
+<li>Run the full test suite and review any failures</li>
+<li>Update snapshot baselines if visual tests need regeneration</li>
+<li>Commit the <code class="sn-ic">package.json</code>, <code class="sn-ic">package-lock.json</code>, and any updated snapshots</li>
+</ol>
+<p class="sn-para">We track Playwright's release notes to understand what changed. Breaking changes are rare but do occur on major version bumps.</p>
+    </div>
+  </div>
+
+  <!-- Q201.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.14</span>
+      <h2 class="sn-q-text">Write a minimal Playwright test that opens a page and asserts its title</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'homepage has correct title'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Navigate to the application</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-cm">// Assert the page title — toHaveTitle retries until it matches or times out</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveTitle</span>(/My Application/);
+
+  <span class="tc-cm">// Assert the main heading is visible</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { level: <span class="tc-num">1</span> })
+  ).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Key points:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">async ({ page })</code> — <code class="sn-ic">page</code> is injected by Playwright's fixture system</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">page.goto('/')</code> — relative URL resolved against <code class="sn-ic">baseURL</code> in <code class="sn-ic">playwright.config.ts</code></span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">expect(page).toHaveTitle(/My Application/)</code> — regex match, retries automatically</span></li>
+<li><span class="icon">🎯</span><span>No <code class="sn-ic">await browser.close()</code> — Playwright handles cleanup via fixtures</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q201.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q201.15</span>
+      <h2 class="sn-q-text">Describe why your team migrated to or chose Playwright over another tool</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Our team previously used Cypress. The decision to move to Playwright came from two recurring problems.</p>
+      </div>
+<p class="sn-para">First, we had a multi-step checkout flow that triggered a payment provider in an iframe from a different origin. Cypress blocked cross-origin iframe interaction. We were maintaining a separate WebDriverIO suite just for payment tests. That duplication had a real maintenance cost.</p>
+<p class="sn-para">Second, we needed WebKit coverage because a significant portion of our users were on Safari. Cypress could not give us that on our Linux CI machines.</p>
+<p class="sn-para">We migrated over three months: new tests in Playwright, parallel Cypress tests kept running to catch regressions. After 1,000 Playwright tests, we retired the Cypress suite.</p>
+<p class="sn-para">The outcome: the cross-origin payment tests now run in Playwright without workarounds. Safari coverage runs on Linux CI via Playwright's WebKit. And overall test execution time dropped by 40% because Playwright's parallel workers are more efficient than Cypress's default single-process execution.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Playwright is Microsoft's browser automation library and test runner for Chromium, Firefox, and WebKit.</span></li>
+            <li><span class="icon">⭐</span><span>It communicates directly over CDP/WebSocket — no HTTP-per-command overhead like Selenium. This enables auto-waiting and real-time event handling.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">@playwright/test</code> is the full testing package. <code class="sn-ic">playwright-core</code> is the raw library without a runner or fixtures.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Playwright wins over Cypress for multi-tab, cross-origin, WebKit, and free parallel execution. Cypress wins for visual interactive debugging.</span></li>
+            <li><span class="icon">⭐</span><span>Playwright wins over Selenium for auto-waiting, TypeScript, and zero driver management. Selenium wins for legacy browser support and broader language ecosystem.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

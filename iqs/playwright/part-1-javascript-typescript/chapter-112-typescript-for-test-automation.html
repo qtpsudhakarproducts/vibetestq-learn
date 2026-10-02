@@ -1,0 +1,1113 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 112 &nbsp;·&nbsp; 22 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">TypeScript</span> <span class="w2">for</span> <span class="w3">Test</span> <span class="w4">Automation</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the TypeScript features that matter most in a Playwright project. Interviewers test TypeScript because it is the default language for production Playwright test suites — and because TypeScript catches whole categories of bugs before any test ever runs. Questions build from what TypeScript is through generics, strict mode, and utility types to code that demonstrates TypeScript working in a real framework context. > Note: This chapter has 22 questions. Q12.16–Q12.22 were added to cover > topics that senior and architect-level interviewers consistently ask > about: compile-time vs runtime types, utility types (Partial, Pick, Omit), > typing async functions, tsconfig setup, declaration merging, and extending > Playwright types.</span>
+  </div>
+
+
+  <!-- Q112.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.1</span>
+      <h2 class="sn-q-text">What is TypeScript and why was it created?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">TypeScript is a programming language created by Microsoft and released in</p>
+      </div>
+<ol class="sn-olist">
+<li>It adds a static type system to JavaScript.</li>
+</ol>
+<p class="sn-para">JavaScript is dynamic — types are checked only at runtime. TypeScript adds type annotations to variables, function parameters, and return values. A TypeScript compiler (<code class="sn-ic">tsc</code>) checks these types before the code runs and reports any mismatches as errors.</p>
+<p class="sn-para">TypeScript was created to make large JavaScript codebases maintainable. Without types, refactoring a shared function in a big codebase means checking every caller manually. With types, the compiler checks them all instantly and flags anything that breaks.</p>
+<p class="sn-para">For test automation, TypeScript provides:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>IDE autocomplete for Playwright's entire API</span></li>
+<li><span class="icon">💡</span><span>Compile-time detection of typos in method names</span></li>
+<li><span class="icon">⚡</span><span>Type-safe test data objects (wrong shape = error before tests run)</span></li>
+<li><span class="icon">🎯</span><span>Self-documenting code — function signatures tell you what they expect</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q112.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.2</span>
+      <h2 class="sn-q-text">What is the difference between a type and an interface in TypeScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both define the shape of an object. They are nearly identical for most use cases.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// interface</span>
+<span class="tc-kw">interface</span> TestUser {
+  email: <span class="tc-kw">string</span>;
+  role: &quot;admin&quot; | &quot;viewer&quot;;
+  active: <span class="tc-kw">boolean</span>;
+}
+
+<span class="tc-cm">// type alias</span>
+<span class="tc-kw">type</span> TestUser = {
+  email: <span class="tc-kw">string</span>;
+  role: &quot;admin&quot; | &quot;viewer&quot;;
+  active: <span class="tc-kw">boolean</span>;
+};</div>
+      </div>
+<p class="sn-para">Key differences:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">interface</code></th><th class="sn-th-green"><code class="sn-ic">type</code></th></tr></thead>
+          <tbody>
+          <tr><td>Extension</td><td><code class="sn-ic">extends</code> keyword</td><td><code class="sn-ic">&amp;</code> intersection</td></tr>
+          <tr><td>Declaration merging</td><td>Yes — can add fields across files</td><td>No</td></tr>
+          <tr><td>Union types</td><td>No</td><td>Yes — `type ID = string \</td><td>number`</td></tr>
+          <tr><td>Primitive aliases</td><td>No</td><td>Yes — <code class="sn-ic">type Name = string</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-green">Use <code class="sn-ic">interface</code> for object shapes</strong> that represent data or classes — especially in page objects and test data definitions.</p>
+<p class="sn-para"><strong class="k-green">Use <code class="sn-ic">type</code> for unions, intersections, and aliases</strong> — <code class="sn-ic">type Status = &quot;pass&quot; \| &quot;fail&quot;</code>, <code class="sn-ic">type PageFixture = Page &amp; { isAdmin: boolean }</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q112.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.3</span>
+      <h2 class="sn-q-text">When do you use TypeScript features in Playwright test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">TypeScript features appear in every file of a Playwright project:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Interfaces</strong> — for test data shapes, API response shapes, fixture types.</p>
+<p class="sn-para"><strong class="k-purple">Union types</strong> — for status enums, role names, environment strings: <code class="sn-ic">&quot;admin&quot; | &quot;viewer&quot;</code>, <code class="sn-ic">&quot;staging&quot; | &quot;production&quot;</code>.</p>
+<p class="sn-para"><strong class="k-purple">Generics</strong> — for factory functions that return typed data, for typed <code class="sn-ic">Promise&lt;T&gt;</code> return values, and for Playwright's own typed APIs like <code class="sn-ic">page.evaluate&lt;T&gt;()</code>.</p>
+<p class="sn-para"><strong class="k-purple">Type guards</strong> — when handling errors (<code class="sn-ic">error instanceof Error</code>), when narrowing API response fields, when checking if an optional value exists.</p>
+<p class="sn-para"><strong class="k-purple">Utility types</strong> — <code class="sn-ic">Partial&lt;T&gt;</code> in factory functions that accept optional overrides, <code class="sn-ic">Pick&lt;T, K&gt;</code> to select a subset of an interface for a specific context.</p>
+    </div>
+  </div>
+
+  <!-- Q112.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.4</span>
+      <h2 class="sn-q-text">How does your project use TypeScript to improve test reliability?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, TypeScript works as a first line of defence at three levels.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Typed test data</strong> — every test data factory function has a return type. If a test passes the wrong field or the wrong type, the compiler catches it before the test ever runs.</p>
+<p class="sn-para"><strong class="k-orange">Typed API responses</strong> — every API response is cast to a typed interface. If the API shape changes, TypeScript flags every place that reads the changed field.</p>
+<p class="sn-para"><strong class="k-orange">Strict mode + no-any</strong> — <code class="sn-ic">tsconfig.json</code> has <code class="sn-ic">&quot;strict&quot;: true</code> and our ESLint config bans <code class="sn-ic">any</code>. This means no implicit type holes. Every function parameter and return value is typed.</p>
+<p class="sn-para">In practice, TypeScript has caught: wrong method names on page objects (typos that would have been runtime errors), wrong number of arguments to helper functions, and missing required fields in test data objects — all before any test ran.</p>
+    </div>
+  </div>
+
+  <!-- Q112.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.5</span>
+      <h2 class="sn-q-text">What are generics in TypeScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Generics are placeholders for a type that is specified when the function, class, or interface is used. They let you write reusable code that works with any type while remaining type-safe.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without generics — returns any, loses type information</span>
+<span class="tc-kw">function</span> <span class="tc-fn">getFirst</span>(array: <span class="tc-kw">any</span>[]): <span class="tc-kw">any</span> {
+  <span class="tc-kw">return</span> array[<span class="tc-num">0</span>];
+}
+
+<span class="tc-cm">// With generics — type is preserved</span>
+<span class="tc-kw">function</span> getFirst&lt;T&gt;(array: T[]): T {
+  <span class="tc-kw">return</span> array[<span class="tc-num">0</span>];
+}
+
+<span class="tc-kw">const</span> firstName = <span class="tc-fn">getFirst</span>([&quot;Alice&quot;, &quot;Bob&quot;]); <span class="tc-cm">// type: string</span>
+<span class="tc-kw">const</span> firstNum  = <span class="tc-fn">getFirst</span>([<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>]);        <span class="tc-cm">// type: number</span></div>
+      </div>
+<p class="sn-para">In Playwright projects, generics appear in:</p>
+<p class="sn-para"><strong class="k-teal">Factory functions:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> createData&lt;T&gt;(base: T, overrides?: Partial&lt;T&gt;): T {
+  <span class="tc-kw">return</span> { ...base, ...overrides };
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">Typed API calls:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-kw">function</span> getJson&lt;T&gt;(request: APIRequestContext, url: <span class="tc-kw">string</span>): Promise&lt;T&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(url);
+  <span class="tc-kw">return</span> response.<span class="tc-fn">json</span>() as T;
+}
+<span class="tc-kw">const</span> user = <span class="tc-kw">await</span> getJson&lt;TestUser&gt;(request, &quot;/api/users/<span class="tc-num">1</span>&quot;);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.6</span>
+      <h2 class="sn-q-text">What are enums in TypeScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Enums define a set of named constants. They make code more readable when a variable can only hold one of a fixed set of values.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">enum</span> UserRole {
+  Admin   = &quot;admin&quot;,
+  Viewer  = &quot;viewer&quot;,
+  Manager = &quot;manager&quot;,
+}
+
+<span class="tc-kw">interface</span> TestUser {
+  email: <span class="tc-kw">string</span>;
+  role: UserRole;
+}
+
+<span class="tc-kw">const</span> admin: TestUser = {
+  email: &quot;alice@<span class="tc-kw">test</span>.com&quot;,
+  role:  UserRole.Admin, <span class="tc-cm">// ✅ — correct</span>
+};
+
+<span class="tc-kw">const</span> broken: TestUser = {
+  email: &quot;bob@<span class="tc-kw">test</span>.com&quot;,
+  role:  &quot;superadmin&quot;, <span class="tc-cm">// ❌ TypeScript error — not a valid UserRole</span>
+};</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">String enums</strong> (as shown above) are the most common in test automation. They keep values readable in reports and logs.</p>
+<p class="sn-para">An alternative to enums is a union type:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> UserRole = &quot;admin&quot; | &quot;viewer&quot; | &quot;manager&quot;;</div>
+      </div>
+<p class="sn-para">Union types are lighter weight and do not produce any runtime code. Use enums when you want the named constant syntax (<code class="sn-ic">UserRole.Admin</code>) and when refactoring the string value everywhere would be error-prone.</p>
+    </div>
+  </div>
+
+  <!-- Q112.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.7</span>
+      <h2 class="sn-q-text">What is the difference between any, unknown, and never?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red"><code class="sn-ic">any</code></strong> — opt out of type checking entirely. A variable typed <code class="sn-ic">any</code> can be assigned anything and TypeScript will not check what you do with it. It is a type hole — avoid it.</p>
+      </div>
+<p class="sn-para"><strong class="k-red"><code class="sn-ic">unknown</code></strong> — a safer alternative to <code class="sn-ic">any</code>. A value typed <code class="sn-ic">unknown</code> can hold anything, but you cannot use it without first checking its type.</p>
+<p class="sn-para"><strong class="k-red"><code class="sn-ic">never</code></strong> — a type that should never have a value. A function that always throws or loops forever returns <code class="sn-ic">never</code>. It appears in exhaustive checks.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// any — no safety</span>
+<span class="tc-kw">let</span> x: <span class="tc-kw">any</span> = &quot;hello&quot;;
+x.<span class="tc-fn">toFixed</span>(<span class="tc-num">2</span>); <span class="tc-cm">// TypeScript allows this — no error at compile time, crashes at runtime</span>
+
+<span class="tc-cm">// unknown — safe</span>
+<span class="tc-kw">let</span> y: <span class="tc-kw">unknown</span> = &quot;hello&quot;;
+y.<span class="tc-fn">toFixed</span>(<span class="tc-num">2</span>);              <span class="tc-cm">// ❌ TypeScript error — must check type first</span>
+<span class="tc-kw">if</span> (<span class="tc-kw">typeof</span> y === &quot;<span class="tc-kw">string</span>&quot;) {
+  y.<span class="tc-fn">toUpperCase</span>();         <span class="tc-cm">// ✅ — TypeScript knows it's a string now</span>
+}
+
+<span class="tc-cm">// never — exhaustiveness check</span>
+<span class="tc-kw">type</span> Env = &quot;staging&quot; | &quot;production&quot;;
+<span class="tc-kw">function</span> <span class="tc-fn">getUrl</span>(env: Env): <span class="tc-kw">string</span> {
+  <span class="tc-kw">switch</span> (env) {
+    <span class="tc-kw">case</span> &quot;staging&quot;:    <span class="tc-kw">return</span> &quot;https:<span class="tc-cm">//staging.example.com&amp;quot;;</span>
+    <span class="tc-kw">case</span> &quot;production&quot;: <span class="tc-kw">return</span> &quot;https:<span class="tc-cm">//app.example.com&amp;quot;;</span>
+    <span class="tc-kw">default</span>:
+      <span class="tc-kw">const</span> _check: <span class="tc-kw">never</span> = env; <span class="tc-cm">// TypeScript errors if Env has unhandled cases</span>
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Unhandled env: ${env}`</span>);
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.8</span>
+      <h2 class="sn-q-text">What are type guards and when do you use them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A type guard is a runtime check that narrows a value from a wider type to a more specific one. After a type guard passes, TypeScript knows the more specific type and allows you to use it safely.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// instanceof type guard</span>
+<span class="tc-kw">function</span> <span class="tc-fn">handleError</span>(error: <span class="tc-kw">unknown</span>): <span class="tc-kw">string</span> {
+  <span class="tc-kw">if</span> (error <span class="tc-kw">instanceof</span> Error) {
+    <span class="tc-kw">return</span> error.message; <span class="tc-cm">// TypeScript knows error is Error here</span>
+  }
+  <span class="tc-kw">return</span> String(error);
+}
+
+<span class="tc-cm">// typeof type guard</span>
+<span class="tc-kw">function</span> <span class="tc-fn">formatTimeout</span>(value: <span class="tc-kw">string</span> | <span class="tc-kw">number</span>): <span class="tc-kw">number</span> {
+  <span class="tc-kw">if</span> (<span class="tc-kw">typeof</span> value === &quot;<span class="tc-kw">string</span>&quot;) {
+    <span class="tc-kw">return</span> <span class="tc-fn">parseInt</span>(value, <span class="tc-num">10</span>);
+  }
+  <span class="tc-kw">return</span> value; <span class="tc-cm">// TypeScript knows value is number here</span>
+}
+
+<span class="tc-cm">// Custom type guard — function that returns type predicate</span>
+<span class="tc-kw">interface</span> TestUser { email: <span class="tc-kw">string</span>; role: <span class="tc-kw">string</span>; }
+<span class="tc-kw">function</span> <span class="tc-fn">isTestUser</span>(value: <span class="tc-kw">unknown</span>): value is TestUser {
+  <span class="tc-kw">return</span> (
+    <span class="tc-kw">typeof</span> value === &quot;object&quot; &amp;&amp;
+    value !== <span class="tc-kw">null</span> &amp;&amp;
+    &quot;email&quot; <span class="tc-kw">in</span> value &amp;&amp;
+    &quot;role&quot; <span class="tc-kw">in</span> value
+  );
+}</div>
+      </div>
+<p class="sn-para">In test automation, type guards appear when: processing API responses that might have different shapes, narrowing <code class="sn-ic">unknown</code> in catch blocks, and validating parsed JSON before using it.</p>
+    </div>
+  </div>
+
+  <!-- Q112.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.9</span>
+      <h2 class="sn-q-text">What is the difference between type and interface in practice?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">For object shapes in a test project, the practical difference is small. Both work. The choice to make:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Use <code class="sn-ic">interface</code> for</strong> page object types, test data shapes, fixture types, and any object that might need to be extended or merged across files.</p>
+<p class="sn-para"><strong class="k-blue">Use <code class="sn-ic">type</code> for</strong> union types, intersection types, primitive aliases, and mapped types. Things you cannot express with <code class="sn-ic">interface</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Things only type can do:</span>
+<span class="tc-kw">type</span> Status   = &quot;pass&quot; | &quot;fail&quot; | &quot;skip&quot;;  <span class="tc-cm">// union</span>
+<span class="tc-kw">type</span> ID       = <span class="tc-kw">string</span> | <span class="tc-kw">number</span>;           <span class="tc-cm">// union of primitives</span>
+<span class="tc-kw">type</span> LogLevel = &quot;debug&quot; | &quot;info&quot; | &quot;warn&quot; | &quot;error&quot;;
+
+<span class="tc-cm">// Either works — choose interface for objects, type for everything else</span>
+<span class="tc-kw">interface</span> CheckoutData { shipping: Address; payment: Card; }
+<span class="tc-kw">type</span> CheckoutData = { shipping: Address; payment: Card; }; <span class="tc-cm">// also valid</span></div>
+      </div>
+<p class="sn-para">The popular guideline: start with <code class="sn-ic">interface</code>. Only switch to <code class="sn-ic">type</code> when you need something <code class="sn-ic">interface</code> cannot express.</p>
+    </div>
+  </div>
+
+  <!-- Q112.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.10</span>
+      <h2 class="sn-q-text">When should you use generics vs union types?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Use union types</strong> when the type can be one of a fixed, known set of specific types:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> Status   = &quot;pass&quot; | &quot;fail&quot; | &quot;skip&quot;;
+<span class="tc-kw">type</span> Response = SuccessResponse | ErrorResponse;</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Use generics</strong> when you are writing a function or class that should work with any type, and the caller provides the specific type:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Generic — works with any type T</span>
+<span class="tc-kw">function</span> getFirst&lt;T&gt;(items: T[]): T | <span class="tc-kw">undefined</span> {
+  <span class="tc-kw">return</span> items[<span class="tc-num">0</span>];
+}
+
+<span class="tc-cm">// Not generic — would need separate overloads for each type</span>
+<span class="tc-kw">function</span> <span class="tc-fn">getFirstUser</span>(users: User[]): User | <span class="tc-kw">undefined</span> { ... }
+<span class="tc-kw">function</span> <span class="tc-fn">getFirstOrder</span>(orders: Order[]): Order | <span class="tc-kw">undefined</span> { ... }</div>
+      </div>
+<p class="sn-para"><strong class="k-green">The decision rule:</strong> if the type is determined by the caller at the call site, use generics. If the type is a fixed set of known options, use a union type.</p>
+    </div>
+  </div>
+
+  <!-- Q112.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.11</span>
+      <h2 class="sn-q-text">What is wrong with using any — show the problem and the typed alternative?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Using any — completely bypasses type checking</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">getOrderStatus</span>(orderId: <span class="tc-kw">any</span>): Promise&lt;<span class="tc-kw">any</span>&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/orders/${orderId}`</span>);
+  <span class="tc-kw">const</span> body: <span class="tc-kw">any</span> = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+  <span class="tc-kw">return</span> body.status; <span class="tc-cm">// TypeScript cannot check if .status exists</span>
+}
+
+<span class="tc-cm">// Problems:</span>
+<span class="tc-cm">// 1. orderId accepts anything — a number, an object, undefined</span>
+<span class="tc-cm">// 2. body is any — .status could be undefined, a typo, anything</span>
+<span class="tc-cm">// 3. The return type is any — callers get no type safety</span>
+<span class="tc-cm">// 4. Refactoring the API response shape = silent runtime failures</span></div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Typed alternative</span>
+<span class="tc-kw">interface</span> OrderResponse {
+  id:        <span class="tc-kw">string</span>;
+  status:    &quot;pending&quot; | &quot;shipped&quot; | &quot;delivered&quot; | &quot;cancelled&quot;;
+  createdAt: <span class="tc-kw">string</span>;
+}
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">getOrderStatus</span>(orderId: <span class="tc-kw">string</span>): Promise&lt;OrderResponse[&quot;status&quot;]&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/orders/${orderId}`</span>);
+
+  <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Failed to get order ${orderId}: ${response.status()}`</span>);
+  }
+
+  <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>() as OrderResponse;
+  <span class="tc-kw">return</span> body.status; <span class="tc-cm">// TypeScript knows this is a valid status string</span>
+}</div>
+      </div>
+<p class="sn-para">The typed version catches: wrong orderId type, wrong property name on response, and any change to the <code class="sn-ic">OrderResponse</code> shape that breaks callers.</p>
+    </div>
+  </div>
+
+  <!-- Q112.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.12</span>
+      <h2 class="sn-q-text">What TypeScript strict mode options matter most for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">&quot;strict&quot;: true</code> in <code class="sn-ic">tsconfig.json</code> enables a group of checks. The ones that matter most for test automation:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">strictNullChecks</code></strong> — variables cannot be <code class="sn-ic">null</code> or <code class="sn-ic">undefined</code> unless the type says so. Catches <code class="sn-ic">locator.textContent()</code> returning <code class="sn-ic">string | null</code> without a null check.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">noImplicitAny</code></strong> — parameters and return values without a type annotation are not silently <code class="sn-ic">any</code>. They are an error. Forces all function signatures to be typed.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">strictFunctionTypes</code></strong> — function parameters are checked more strictly for assignability. Prevents subtle callback type mismatches.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">strictPropertyInitialization</code></strong> — class properties must be initialised in the constructor. Catches page object locators that are declared but never assigned.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">// tsconfig.json — minimum config for a Playwright project
+{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2020&quot;,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;strict&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;outDir&quot;: &quot;./dist&quot;,
+    &quot;rootDir&quot;: &quot;./tests&quot;
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.13</span>
+      <h2 class="sn-q-text">Write a typed page object using an interface to define its shape</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/pages/types.ts</span>
+<span class="tc-kw">import</span> { Locator } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-cm">// Interface defines the contract — what every page object must expose</span>
+<span class="tc-kw">interface</span> IPage {
+  <span class="tc-fn">goto</span>(): Promise&lt;<span class="tc-kw">void</span>&gt;;
+}
+
+<span class="tc-kw">interface</span> ILoginPage <span class="tc-kw">extends</span> IPage {
+  <span class="tc-fn">login</span>(email: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt;;
+  <span class="tc-fn">getErrorText</span>(): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt;;
+}
+
+<span class="tc-cm">// File: tests/pages/LoginPage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { ILoginPage } <span class="tc-kw">from</span> <span class="tc-str">'./types'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage <span class="tc-kw">implements</span> ILoginPage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> emailInput:    Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> passwordInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> submitButton:  Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> errorAlert:    Locator;
+
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page) {
+    <span class="tc-kw">this</span>.emailInput    = page.<span class="tc-fn">getByLabel</span>(&quot;Email&quot;);
+    <span class="tc-kw">this</span>.passwordInput = page.<span class="tc-fn">getByLabel</span>(&quot;Password&quot;);
+    <span class="tc-kw">this</span>.submitButton  = page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Sign In&quot; });
+    <span class="tc-kw">this</span>.errorAlert    = page.<span class="tc-fn">getByRole</span>(&quot;alert&quot;);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(&quot;/login&quot;);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(email: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.emailInput.<span class="tc-fn">fill</span>(email);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.passwordInput.<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.submitButton.<span class="tc-fn">click</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">getErrorText</span>(): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt; {
+    <span class="tc-kw">return</span> <span class="tc-kw">this</span>.errorAlert.<span class="tc-fn">textContent</span>();
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.14</span>
+      <h2 class="sn-q-text">Write a generic data factory function using TypeScript generics</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/data/factory.ts</span>
+
+<span class="tc-cm">/**
+ * Creates a test data object by merging base defaults with optional overrides.
+ * Generic so it works with any typed data shape.
+ */</span>
+<span class="tc-kw">function</span> createData&lt;T&gt;(base: T, overrides?: Partial&lt;T&gt;): T {
+  <span class="tc-kw">return</span> { ...base, ...overrides };
+}
+
+<span class="tc-cm">// Specific factories use the generic — typed and reusable</span>
+<span class="tc-kw">interface</span> TestUser {
+  email:    <span class="tc-kw">string</span>;
+  password: <span class="tc-kw">string</span>;
+  role:     &quot;admin&quot; | &quot;viewer&quot;;
+  active:   <span class="tc-kw">boolean</span>;
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">createTestUser</span>(overrides?: Partial&lt;TestUser&gt;): TestUser {
+  <span class="tc-kw">return</span> createData&lt;TestUser&gt;(
+    {
+      email:    <span class="tc-str">`user+${Date.now()}@test.example.com`</span>,
+      password: &quot;Test1234!&quot;,
+      role:     &quot;viewer&quot;,
+      active:   <span class="tc-kw">true</span>,
+    },
+    overrides
+  );
+}
+
+<span class="tc-kw">interface</span> TestOrder {
+  productId: <span class="tc-kw">string</span>;
+  quantity:  <span class="tc-kw">number</span>;
+  promoCode?: <span class="tc-kw">string</span>;
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">createTestOrder</span>(overrides?: Partial&lt;TestOrder&gt;): TestOrder {
+  <span class="tc-kw">return</span> createData&lt;TestOrder&gt;(
+    { productId: &quot;P001&quot;, quantity: <span class="tc-num">1</span> },
+    overrides
+  );
+}
+
+<span class="tc-cm">// Usage</span>
+<span class="tc-kw">const</span> admin       = <span class="tc-fn">createTestUser</span>({ role: &quot;admin&quot; });
+<span class="tc-kw">const</span> bulkOrder   = <span class="tc-fn">createTestOrder</span>({ quantity: <span class="tc-num">10</span>, promoCode: &quot;BULK10&quot; });</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.15</span>
+      <h2 class="sn-q-text">Describe a TypeScript type error that caught a real bug before a test ran</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had a helper that was supposed to return a user's <code class="sn-ic">id</code> as a <code class="sn-ic">string</code>. We used it to build API URLs:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> userId = <span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(); <span class="tc-cm">// inferred as User object, not string</span>
+<span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${userId}`</span>); <span class="tc-cm">// URL: /api/users/[object Object]</span></div>
+      </div>
+<p class="sn-para">The function signature returned <code class="sn-ic">Promise&lt;User&gt;</code> but the test was treating the result as a <code class="sn-ic">string</code>. The URL was being built with <code class="sn-ic">[object Object]</code> because JavaScript converts an object to a string that way.</p>
+<p class="sn-para">The API returned a 404 for <code class="sn-ic">[object Object]</code> — not the TypeError we expected. The test passed. The user was never deleted.</p>
+<p class="sn-para">After we added the return type annotation properly:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">createUser</span>(): Promise&lt;User&gt; { ... }
+<span class="tc-kw">const</span> user = <span class="tc-kw">await</span> <span class="tc-fn">createUser</span>(); <span class="tc-cm">// TypeScript knows type is User</span>
+<span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${user.id}`</span>); <span class="tc-cm">// .id is the string</span></div>
+      </div>
+<p class="sn-para">TypeScript immediately flagged every place where we were using <code class="sn-ic">user</code> as if it were a string. Two tests that were silently never cleaning up their test data were fixed in that one pass.</p>
+    </div>
+  </div>
+
+  <!-- Q112.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.16</span>
+      <h2 class="sn-q-text">What is the difference between compile-time and runtime type checking?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Compile-time checking</strong> — TypeScript checks types when you build the code. The compiler analyses your source files and reports errors before any code runs. Types exist only in the source — they are erased in the compiled JavaScript.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Runtime checking</strong> — JavaScript actually executes and checks values as they appear. Runtime types can be anything — TypeScript's types are gone. API responses, user inputs, and environment variables can all hold unexpected types at runtime.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// TypeScript says this is a string — but what does the API actually return?</span>
+<span class="tc-kw">const</span> status: <span class="tc-kw">string</span> = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>(); <span class="tc-cm">// compile-time: string</span>
+<span class="tc-cm">// At runtime, the API might return { status: &amp;quot;shipped&amp;quot; } — an object, not a string!</span>
+
+<span class="tc-cm">// Runtime check — validate what you actually receive</span>
+<span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+<span class="tc-kw">if</span> (<span class="tc-kw">typeof</span> body.status !== &quot;<span class="tc-kw">string</span>&quot;) {
+  <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Unexpected status type: ${typeof body.status}`</span>);
+}</div>
+      </div>
+<p class="sn-para">In test automation: TypeScript protects you from your own code. Runtime checks protect you from external systems (APIs, databases, environment variables) that can return anything regardless of your TypeScript types.</p>
+    </div>
+  </div>
+
+  <!-- Q112.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.17</span>
+      <h2 class="sn-q-text">What are utility types in TypeScript — Partial, Required, Pick, Omit?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Utility types transform existing types. They are built into TypeScript.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">Partial&lt;T&gt;</code></strong> — makes all properties of <code class="sn-ic">T</code> optional. Used in factory function overrides.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">createUser</span>(overrides?: Partial&lt;TestUser&gt;): TestUser { ... }
+<span class="tc-cm">// overrides can have any subset of TestUser's fields</span></div>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">Required&lt;T&gt;</code></strong> — makes all properties required. The opposite of Partial.</p>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">Pick&lt;T, K&gt;</code></strong> — create a new type with only the specified keys from <code class="sn-ic">T</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> UserCredentials = Pick&lt;TestUser, &quot;email&quot; | &quot;password&quot;&gt;;
+<span class="tc-cm">// { email: string; password: string } — only these two fields</span></div>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">Omit&lt;T, K&gt;</code></strong> — create a new type with specified keys removed.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">type</span> UserWithoutPassword = Omit&lt;TestUser, &quot;password&quot;&gt;;
+<span class="tc-cm">// TestUser minus the password field</span></div>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">Readonly&lt;T&gt;</code></strong> — makes all properties readonly.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> config: Readonly&lt;TestConfig&gt; = <span class="tc-fn">buildConfig</span>();
+config.timeout = <span class="tc-num">5000</span>; <span class="tc-cm">// ❌ TypeScript error — cannot assign to readonly</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.18</span>
+      <h2 class="sn-q-text">How do you type an async function that returns a Playwright Locator?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { Page, Locator } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-cm">// Return type is Locator — not Promise&amp;lt;Locator&amp;gt; — because</span>
+<span class="tc-cm">// Playwright locators are lazy: they don't query the DOM until used</span>
+<span class="tc-kw">function</span> <span class="tc-fn">getSubmitButton</span>(page: Page): Locator {
+  <span class="tc-kw">return</span> page.<span class="tc-fn">getByRole</span>(&quot;button&quot;, { name: &quot;Submit&quot; });
+}
+
+<span class="tc-cm">// If the helper does async work (waits, navigates) before returning the locator:</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">getFirstResultRow</span>(page: Page): Promise&lt;Locator&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForSelector</span>(&quot;[data-testid=<span class="tc-str">'result-row'</span>]&quot;);
+  <span class="tc-kw">return</span> page.<span class="tc-fn">getByTestId</span>(&quot;result-row&quot;).<span class="tc-fn">first</span>();
+}
+
+<span class="tc-cm">// Typed helper that finds a row containing specific text</span>
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">findTableRow</span>(page: Page, text: <span class="tc-kw">string</span>): Promise&lt;Locator&gt; {
+  <span class="tc-kw">const</span> rows = page.<span class="tc-fn">getByRole</span>(&quot;row&quot;);
+  <span class="tc-cm">// filter() returns a Locator — no await needed</span>
+  <span class="tc-kw">return</span> rows.<span class="tc-fn">filter</span>({ hasText: text });
+}</div>
+      </div>
+<p class="sn-para">Key point: <code class="sn-ic">Locator</code> objects themselves do not query the DOM when created. They query on action (<code class="sn-ic">click</code>, <code class="sn-ic">fill</code>) or assertion (<code class="sn-ic">toBeVisible</code>). So a function that just creates and returns a locator is synchronous and returns <code class="sn-ic">Locator</code>, not <code class="sn-ic">Promise&lt;Locator&gt;</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q112.19 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.19</span>
+      <h2 class="sn-q-text">Write a typed environment config reader using TypeScript interfaces</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/config/env.ts</span>
+
+<span class="tc-kw">type</span> Environment = &quot;dev&quot; | &quot;staging&quot; | &quot;production&quot;;
+
+<span class="tc-kw">interface</span> EnvConfig {
+  <span class="tc-kw">readonly</span> baseUrl:     <span class="tc-kw">string</span>;
+  <span class="tc-kw">readonly</span> apiUrl:      <span class="tc-kw">string</span>;
+  <span class="tc-kw">readonly</span> environment: Environment;
+  <span class="tc-kw">readonly</span> timeout:     <span class="tc-kw">number</span>;
+  <span class="tc-kw">readonly</span> retries:     <span class="tc-kw">number</span>;
+  <span class="tc-kw">readonly</span> headless:    <span class="tc-kw">boolean</span>;
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">requireEnv</span>(name: <span class="tc-kw">string</span>): <span class="tc-kw">string</span> {
+  <span class="tc-kw">const</span> value = process.env[name];
+  <span class="tc-kw">if</span> (!value) <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Required env var &amp;quot;${name}&amp;quot; is missing`</span>);
+  <span class="tc-kw">return</span> value;
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">readEnvConfig</span>(): EnvConfig {
+  <span class="tc-kw">const</span> env = (process.env.TEST_ENV ?? &quot;staging&quot;) as Environment;
+
+  <span class="tc-kw">const</span> urls: Record&lt;Environment, { baseUrl: <span class="tc-kw">string</span>; apiUrl: <span class="tc-kw">string</span> }&gt; = {
+    dev:        { baseUrl: &quot;https:<span class="tc-cm">//localhost:3000&amp;quot;,         apiUrl: &amp;quot;http://localhost:4000&amp;quot; },</span>
+    staging:    { baseUrl: &quot;https:<span class="tc-cm">//staging.example.com&amp;quot;,    apiUrl: &amp;quot;https://api.staging.example.com&amp;quot; },</span>
+    production: { baseUrl: &quot;https:<span class="tc-cm">//app.example.com&amp;quot;,        apiUrl: &amp;quot;https://api.example.com&amp;quot; },</span>
+  };
+
+  <span class="tc-kw">const</span> rawTimeout = process.env.TIMEOUT;
+  <span class="tc-kw">const</span> timeout = rawTimeout ? Number(rawTimeout) : 30_000;
+
+  <span class="tc-kw">return</span> Object.<span class="tc-fn">freeze</span>({
+    ...urls[env],
+    environment: env,
+    timeout,
+    retries:  Number(process.env.RETRIES ?? &quot;<span class="tc-num">0</span>&quot;),
+    headless: process.env.HEADLESS !== &quot;<span class="tc-kw">false</span>&quot;,
+  });
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> envConfig: EnvConfig = <span class="tc-fn">readEnvConfig</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q112.20 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.20</span>
+      <h2 class="sn-q-text">How does your team configure tsconfig.json for a Playwright project and why?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2020&quot;,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;lib&quot;: [&quot;ES2020&quot;, &quot;DOM&quot;],
+    &quot;strict&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;resolveJsonModule&quot;: true,
+    &quot;outDir&quot;: &quot;./dist&quot;,
+    &quot;rootDir&quot;: &quot;.&quot;,
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;@pages/*&quot;:   [&quot;tests/pages/*&quot;],
+      &quot;@helpers/*&quot;: [&quot;tests/helpers/*&quot;],
+      &quot;@data/*&quot;:    [&quot;tests/data/*&quot;]
+    }
+  },
+  &quot;include&quot;: [&quot;tests/**/*&quot;, &quot;playwright.config.ts&quot;],
+  &quot;exclude&quot;: [&quot;node_modules&quot;, &quot;dist&quot;]
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Why each setting:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span><code class="sn-ic">&quot;strict&quot;: true</code> — enables all strict checks. The most important</span></li>
+</ul>
+<p class="sn-para">  setting for catching real bugs.</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span><code class="sn-ic">&quot;target&quot;: &quot;ES2020&quot;</code> — modern output. Supports optional chaining</span></li>
+</ul>
+<p class="sn-para">  and nullish coalescing natively.</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span><code class="sn-ic">&quot;esModuleInterop&quot;: true</code> — allows <code class="sn-ic">import x from 'module'</code> to work</span></li>
+</ul>
+<p class="sn-para">  correctly for CommonJS modules.</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span><code class="sn-ic">&quot;resolveJsonModule&quot;: true</code> — allows importing JSON files directly</span></li>
+</ul>
+<p class="sn-para">  (test data, config files).</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span><code class="sn-ic">&quot;paths&quot;</code> — short imports. <code class="sn-ic">import { LoginPage } from '@pages/LoginPage'</code></span></li>
+</ul>
+<p class="sn-para">  instead of <code class="sn-ic">../../pages/LoginPage</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q112.21 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.21</span>
+      <h2 class="sn-q-text">What is declaration merging and when would a test framework engineer use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Declaration merging is TypeScript's ability to combine multiple declarations of the same name into one type. It works for interfaces, namespaces, and module augmentation.</p>
+      </div>
+<p class="sn-para">In test automation, the most important use is extending Playwright's built-in fixture types when you create custom fixtures:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without declaration merging — test() only knows about built-in fixtures</span>
+<span class="tc-kw">test</span>(&quot;example&quot;, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+
+<span class="tc-cm">// With declaration merging — test() knows about your custom fixtures too</span>
+<span class="tc-kw">type</span> TestFixtures = {
+  loginPage:    LoginPage;
+  dashboardPage: DashboardPage;
+  testUser:     TestUser;
+};
+
+<span class="tc-cm">// Extend Playwright's test with custom fixtures</span>
+<span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;TestFixtures&gt;({ ... });
+
+<span class="tc-cm">// Now TypeScript autocompletes your fixtures</span>
+<span class="tc-kw">test</span>(&quot;example&quot;, <span class="tc-kw">async</span> ({ page, loginPage, testUser }) =&gt; { ... });
+<span class="tc-cm">//                                ^^^^^^^^^ — TypeScript knows the type</span></div>
+      </div>
+<p class="sn-para">This is standard in every mature Playwright TypeScript project. The extended <code class="sn-ic">test</code> function carries the full type information for all custom fixtures.</p>
+    </div>
+  </div>
+
+  <!-- Q112.22 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q112.22</span>
+      <h2 class="sn-q-text">How do you extend Playwright's built-in types in your framework?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Two main scenarios: adding custom fixture types and augmenting Playwright's existing interfaces.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Scenario 1 — Custom fixture types (most common):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File: tests/fixtures/index.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { LoginPage }    <span class="tc-kw">from</span> <span class="tc-str">'@pages/LoginPage'</span>;
+<span class="tc-kw">import</span> { DashboardPage } <span class="tc-kw">from</span> <span class="tc-str">'@pages/DashboardPage'</span>;
+
+<span class="tc-kw">type</span> Fixtures = {
+  loginPage:     LoginPage;
+  dashboardPage: DashboardPage;
+  authenticatedPage: Page;
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;Fixtures&gt;({
+  loginPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LoginPage(page));
+  },
+  dashboardPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> DashboardPage(page));
+  },
+  authenticatedPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-cm">// Perform login and provide the authenticated page</span>
+    <span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(process.env.TEST_EMAIL!, process.env.TEST_PASSWORD!);
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+  },
+});
+
+<span class="tc-kw">export</span> { <span class="tc-kw">expect</span> };</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Tests import from fixtures, not from @playwright/test directly</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures'</span>;
+
+<span class="tc-kw">test</span>(&quot;authenticated user sees dashboard&quot;, <span class="tc-kw">async</span> ({ authenticatedPage, dashboardPage }) =&gt; {
+  <span class="tc-kw">await</span> dashboardPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(dashboardPage.heading).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Scenario 2 — Augmenting TestInfo</strong> (adding custom annotation helpers):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Extend TestInfo to add a typed helper method</span>
+declare <span class="tc-kw">module</span> <span class="tc-str">'@playwright/test'</span> {
+  <span class="tc-kw">interface</span> TestInfo {
+    <span class="tc-fn">attachScreenshotOnFailure</span>(): Promise&lt;<span class="tc-kw">void</span>&gt;;
+  }
+}</div>
+      </div>
+<p class="sn-para">This pattern uses TypeScript module augmentation — adding properties to an existing interface from an external module.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>TypeScript adds compile-time type checking to JavaScript. Types are erased at runtime — they only exist in the source code.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">interface</code> is for object shapes. <code class="sn-ic">type</code> is for unions, intersections, and aliases. In practice, use interface for data shapes in test code.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">any</code> removes type safety. Use <code class="sn-ic">unknown</code> when a type is genuinely unknown — it forces you to check the type before using the value.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Partial&lt;T&gt;</code> makes all fields optional — perfect for factory function overrides. <code class="sn-ic">Pick</code> and <code class="sn-ic">Omit</code> select or remove fields from a type.</span></li>
+            <li><span class="icon">⭐</span><span>Enable <code class="sn-ic">&quot;strict&quot;: true</code> in <code class="sn-ic">tsconfig.json</code>. The most important checks are <code class="sn-ic">strictNullChecks</code> (catches null misses) and <code class="sn-ic">noImplicitAny</code> (forces typed signatures).</span></li>
+            <li><span class="icon">⭐</span><span>Extend Playwright's <code class="sn-ic">test</code> with custom fixtures using <code class="sn-ic">base.extend&lt;T&gt;()</code>. TypeScript carries full type information through to every test that imports your extended test function.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+  <!-- PART SUMMARY -->
+  <div class="sn-remember sn-reveal" style="margin-top:2.5rem">
+    <div class="sn-remember-hd" style="color:var(--sn-pink)"><span>🏆</span><span>Part 1 — Chapter Summary</span></div>
+    <div class="sn-cloud" style="border-color:var(--sn-pink);background:linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)">
+      <div style="text-align:left">
+        <p class="sn-para" style="margin-bottom:.75rem">Part 1 covered the JavaScript and TypeScript foundation every test automation engineer needs. Here is what to know for your interview:</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>Language foundations (Ch 1–3):</strong> JavaScript runs in Node.js. ES6 added everything you write daily. TypeScript is the default for production suites. Always use <code class="sn-ic">===</code>, <code class="sn-ic">const</code> first, <code class="sn-ic">let</code> when needed, never <code class="sn-ic">var</code>.</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>Data structures and iteration (Ch 4–5):</strong> <code class="sn-ic">for...of</code> + <code class="sn-ic">await</code> is the correct async loop. <code class="sn-ic">forEach</code> + <code class="sn-ic">await</code> silently ignores the async work. <code class="sn-ic">map</code>, <code class="sn-ic">filter</code>, <code class="sn-ic">find</code>, and spread are the essential array tools.</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>Functions and objects (Ch 6–7):</strong> Arrow functions inherit <code class="sn-ic">this</code>. Regular methods have their own <code class="sn-ic">this</code>. Closures capture references. Never mutate shared objects between tests — use factory functions.</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>Strings and regex (Ch 8):</strong> Normalise DOM text before asserting. Use regex for patterns with variable parts. <code class="sn-ic">test()</code> for checking existence, <code class="sn-ic">match()</code> for extracting values.</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>Async (Ch 9):</strong> The most important chapter. Every Playwright action returns a Promise. Always <code class="sn-ic">await</code> it. <code class="sn-ic">Promise.all</code> for parallel, <code class="sn-ic">for...of</code> for sequential. Start <code class="sn-ic">waitForResponse</code> listeners inside <code class="sn-ic">Promise.all</code> with the triggering click.</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>Classes and modules (Ch 10–11):</strong> Page objects are classes. Utilities are modules. Never put assertions inside page objects. Custom error classes give structured context. Never swallow errors silently.</p>
+<p class="sn-para" style="margin-bottom:.75rem"><strong>TypeScript (Ch 12):</strong> <code class="sn-ic">strict: true</code>, typed data factories with <code class="sn-ic">Partial&lt;T&gt;</code>, generics for reusable helpers, and <code class="sn-ic">base.extend&lt;T&gt;()</code> to carry fixture types across your test suite.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>

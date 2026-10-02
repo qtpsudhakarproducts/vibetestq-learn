@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Locators Practice - VibeTestQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb; --primary-dark: #1e40af; --primary-light: #eff6ff;
+            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --bg: #f8fafc; --card-bg: #ffffff; --text: #0f172a; --text-light: #64748b;
+            --border: #e2e8f0; --sidebar-width: 260px; --header-height: 70px;
+            --glass: rgba(255,255,255,0.9);
+            --shadow: 0 4px 6px -1px rgb(0 0 0/0.1),0 2px 4px -2px rgb(0 0 0/0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: var(--glass); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; gap: 1rem; }
+        .logo { font-family: 'Outfit',sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--primary-dark); text-decoration: none; }
+        .back-btn { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--primary-light); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .level-badge { padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; background: #fce7f3; color: #9d174d; letter-spacing: 0.04em; }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.5rem 1rem; }
+        .sidebar-section-title { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.875rem; transition: all 0.2s; margin-bottom: 0.2rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-item i { font-size: 0.8rem; color: var(--text-light); width: 14px; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.5rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit',sans-serif; font-size: 1.9rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+        .page-header p { color: var(--text-light); font-size: 0.95rem; }
+
+        .section-intro { background: linear-gradient(135deg,#fdf4ff,#fae8ff); border: 1.5px solid #e879f9; border-radius: 14px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; scroll-margin-top: calc(var(--header-height) + 1rem); }
+        .section-intro h3 { font-family: 'Outfit',sans-serif; font-size: 1.1rem; color: #86198f; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .section-intro p { font-size: 0.88rem; color: #6b21a8; line-height: 1.7; margin-bottom: 0.35rem; }
+        .section-intro .note { font-size: 0.82rem; color: #7e22ce; background: rgba(255,255,255,0.6); border-radius: 6px; padding: 5px 10px; margin-top: 0.5rem; display: flex; align-items: flex-start; gap: 6px; }
+        .section-intro .note i { margin-top: 2px; flex-shrink: 0; }
+
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: var(--shadow); scroll-margin-top: calc(var(--header-height) + 1rem); }
+        .ch-header { padding: 1rem 1.5rem; background: linear-gradient(135deg,#f8fafc,#f1f5f9); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit',sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.95rem; }
+        .badge.advanced { background: #fce7f3; color: #9d174d; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+        .ch-body { padding: 1.5rem; }
+        .ch-title { font-family: 'Outfit',sans-serif; font-size: 1.15rem; font-weight: 600; margin-bottom: 0.4rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.9rem; margin-bottom: 0.9rem; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-family: 'Fira Code',monospace; font-size: 0.85em; color: #7c3aed; }
+        .target-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary); padding: 5px 13px; border-radius: 8px; font-size: 0.82rem; font-weight: 600; margin-bottom: 1.1rem; }
+        .sandbox-wrapper { border: 2px dashed var(--border); border-radius: 12px; padding: 1.5rem; background: #fafbff; margin-bottom: 1.25rem; position: relative; }
+        .sandbox-label { position: absolute; top: -10px; left: 14px; background: #fafbff; padding: 0 6px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); font-weight: 700; }
+        .sandbox { font-size: 0.875rem; }
+        .sandbox label { font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 3px; }
+        .sandbox .sb-form { display: flex; flex-direction: column; gap: 0.7rem; max-width: 340px; }
+        .sandbox input, .sandbox select, .sandbox textarea { padding: 7px 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem; font-family: 'Inter',sans-serif; background: white; outline: none; pointer-events: none; }
+        .sandbox .sb-btn { padding: 7px 15px; border: none; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: default; font-family: 'Inter',sans-serif; pointer-events: none; }
+        .sandbox .btn-primary { background: #2563eb; color: white; }
+        .sandbox .btn-success { background: #10b981; color: white; }
+        .sandbox .btn-danger  { background: #ef4444; color: white; }
+        .sandbox table { width: 100%; border-collapse: collapse; }
+        .sandbox th { background: #f1f5f9; padding: 8px 12px; text-align: left; font-weight: 600; border: 1px solid #e2e8f0; font-size: 0.8rem; }
+        .sandbox td { padding: 8px 12px; border: 1px solid #e2e8f0; }
+        .sandbox .chip { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+        .sandbox .chip-active  { background: #d1fae5; color: #065f46; }
+        .sandbox .chip-warning { background: #fef3c7; color: #92400e; }
+        .sandbox .chip-danger  { background: #fee2e2; color: #991b1b; }
+        .locator-match { outline: 3px solid #10b981 !important; outline-offset: 2px !important; background-color: rgba(16,185,129,0.12) !important; border-radius: 3px; }
+        .practice-area { border-top: 1px solid var(--border); padding-top: 1.25rem; }
+        .loc-group { margin-bottom: 0.9rem; }
+        .loc-label { display: flex; align-items: center; gap: 7px; font-size: 0.73rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.45rem; }
+        .type-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .type-css   { background: #dbeafe; color: #1e40af; }
+        .type-xpath { background: #f3e8ff; color: #6b21a8; }
+        .input-row { display: flex; gap: 0.5rem; align-items: center; }
+        .loc-input { flex: 1; padding: 9px 13px; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'Fira Code',monospace; font-size: 0.875rem; transition: border-color 0.2s,box-shadow 0.2s; background: white; color: var(--text); }
+        .loc-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .loc-input.pass { border-color: var(--success); background: #f0fdf4; }
+        .loc-input.fail { border-color: var(--danger); background: #fff5f5; }
+        .check-btn { padding: 9px 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap; font-family: 'Inter',sans-serif; }
+        .check-btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .result-msg { margin-top: 0.5rem; padding: 7px 13px; border-radius: 8px; font-size: 0.82rem; font-weight: 500; display: none; align-items: center; gap: 7px; }
+        .result-msg.pass { display: flex; background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .result-msg.fail { display: flex; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .result-msg.err  { display: flex; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .na-block { background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 8px 13px; font-size: 0.82rem; color: var(--text-light); display: flex; align-items: flex-start; gap: 8px; margin-bottom: 0.9rem; }
+        .na-block i { color: #94a3b8; margin-top: 2px; flex-shrink: 0; }
+        .ch-footer { padding: 0.9rem 1.5rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap; }
+        .hint-btn, .answer-btn { padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); transition: all 0.2s; font-family: 'Inter',sans-serif; }
+        .hint-btn   { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+        .hint-btn:hover { background: #fde68a; }
+        .answer-btn { background: #f1f5f9; color: var(--text-light); }
+        .answer-btn:hover { background: var(--border); color: var(--text); }
+        .hint-box, .answer-box { display: none; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.875rem; width: 100%; margin-top: 0.25rem; line-height: 1.7; }
+        .hint-box   { background: #fffbeb; border: 1px solid #fcd34d; color: #78350f; }
+        .answer-box { background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; }
+        .hint-box code, .answer-box code { background: rgba(0,0,0,0.08); padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code',monospace; font-size: 0.85em; }
+        .level-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 3rem; padding: 1.5rem; background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); }
+        .level-nav a { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; }
+        .nav-prev { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
+        .nav-prev:hover { background: var(--border); }
+        .nav-next { background: var(--primary); color: white; }
+        .nav-next:hover { background: var(--primary-dark); }
+        @media (max-width: 900px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+<header>
+    <a href="learn.html" class="back-btn"><i class="fas fa-arrow-left"></i> Learning Path</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <span class="level-badge"><i class="fas fa-fire"></i> Advanced</span>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-section-title">Sections</div>
+    <a href="#s1" class="nav-item"><i class="fas fa-fingerprint"></i> Self Details</a>
+    <a href="#s2" class="nav-item"><i class="fas fa-sitemap"></i> Relations</a>
+    <a href="#s3" class="nav-item"><i class="fas fa-list-ol"></i> Index / Position</a>
+    <a href="#s4" class="nav-item"><i class="fas fa-eye"></i> Visual Relations</a>
+    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);">
+        <div class="sidebar-section-title">Level</div>
+        <div style="font-size:0.82rem;color:var(--text-light);line-height:1.8;">
+            <div>13 exercises</div>
+            <div><a href="intermediate.html" style="color:var(--primary);text-decoration:none;font-weight:600">← Intermediate</a></div>
+            <div><a href="expert.html" style="color:var(--primary);text-decoration:none;font-weight:600">Expert →</a></div>
+        </div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-fire" style="color:#9d174d"></i> Advanced — Locator Practice</h1>
+        <p>Multi-predicate logic, compound CSS, XPath functions, and DOM-scoped queries. Write selectors and click <strong>Check</strong>.</p>
+    </div>
+
+    <!-- SECTION 1 — SELF DETAILS -->
+    <div class="section-intro" id="s1">
+        <h3><i class="fas fa-fingerprint"></i> Section 1 — Self Details</h3>
+        <p>Combine multiple attribute predicates on a single element using <strong>AND logic</strong> in both CSS and XPath, and use <strong>NOT</strong> to exclude elements.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> CSS chaining (<code>input[type="text"][name="q"]</code>) is implicit AND. XPath uses multiple predicates: <code>[...][...]</code> or explicit <code>and</code> within a single predicate. CSS <code>:not()</code> and XPath <code>not()</code> handle negation.</div>
+    </div>
+
+    <!-- Ex 27 — AND: two attributes -->
+    <div class="challenge-card" id="ex27">
+        <div class="ch-header"><span class="ch-num">Exercise 27</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">AND — Two Attribute Predicates</div>
+            <div class="ch-desc">A table has rows with <code>data-role</code> and <code>data-status</code>. Select <strong>rows where role is "editor" AND status is "active"</strong> — there is 1.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex27">
+                    <table>
+                        <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr data-role="admin"   data-status="active"><td>Alice</td><td>Admin</td><td><span class="chip chip-active">Active</span></td></tr>
+                            <tr data-role="editor"  data-status="inactive"><td>Bob</td><td>Editor</td><td><span class="chip chip-warning">Inactive</span></td></tr>
+                            <tr data-role="editor"  data-status="active"><td>Carol</td><td>Editor</td><td><span class="chip chip-active">Active</span></td></tr>
+                            <tr data-role="viewer"  data-status="active"><td>Dave</td><td>Viewer</td><td><span class="chip chip-active">Active</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex27-css" type="text" placeholder='e.g. tr[data-role="editor"][data-status="active"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex27','css')">
+                        <button class="check-btn" onclick="checkLocator('ex27','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex27-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex27-xpath" type="text" placeholder='e.g. //tr[@data-role="editor" and @data-status="active"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex27','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex27','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex27-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex27-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex27-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex27-hint">CSS: chain multiple <code>[attr=val]</code> on the same selector — no space between them. XPath: use <code>and</code> inside a single predicate: <code>[@a="x" and @b="y"]</code>.</div>
+            <div class="answer-box" id="ex27-answer">CSS:&nbsp;&nbsp;<code>tr[data-role="editor"][data-status="active"]</code><br>XPath: <code>//tr[@data-role="editor" and @data-status="active"]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 28 — NOT -->
+    <div class="challenge-card" id="ex28">
+        <div class="ch-header"><span class="ch-num">Exercise 28</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">NOT — Exclude a Class</div>
+            <div class="ch-desc">Five buttons are shown. Select <strong>all buttons that do NOT have the class "btn-danger"</strong> — there are 3.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 3 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex28">
+                    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                        <button class="sb-btn btn-primary">Save</button>
+                        <button class="sb-btn btn-danger">Delete</button>
+                        <button class="sb-btn btn-success">Confirm</button>
+                        <button class="sb-btn btn-danger">Remove</button>
+                        <button class="sb-btn btn-primary">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex28-css" type="text" placeholder='e.g. button:not(.btn-danger)' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex28','css')">
+                        <button class="check-btn" onclick="checkLocator('ex28','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex28-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex28-xpath" type="text" placeholder='e.g. //button[not(contains(@class,"btn-danger"))]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex28','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex28','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex28-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex28-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex28-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex28-hint">CSS: <code>:not(.btn-danger)</code> excludes elements with that class. XPath: <code>not(contains(@class,"btn-danger"))</code> inside a predicate.</div>
+            <div class="answer-box" id="ex28-answer">CSS:&nbsp;&nbsp;<code>button:not(.btn-danger)</code><br>XPath: <code>//button[not(contains(@class,"btn-danger"))]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 29 — OR -->
+    <div class="challenge-card" id="ex29">
+        <div class="ch-header"><span class="ch-num">Exercise 29</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">OR — Two Different Tag Types</div>
+            <div class="ch-desc">A form has buttons and links. Select <strong>all buttons AND all anchor links</strong> in one selector — there are 4 total.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 4 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex29">
+                    <div id="a29-wrap" style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+                        <button class="sb-btn btn-primary">Submit</button>
+                        <button class="sb-btn btn-success">Save Draft</button>
+                        <a href="#privacy" style="color:#2563eb;text-decoration:none;font-size:.875rem">Privacy Policy</a>
+                        <a href="#terms" style="color:#2563eb;text-decoration:none;font-size:.875rem">Terms &amp; Conditions</a>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex29-css" type="text" placeholder='e.g. button, a' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex29','css')">
+                        <button class="check-btn" onclick="checkLocator('ex29','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex29-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex29-xpath" type="text" placeholder='e.g. //*[self::button or self::a]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex29','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex29','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex29-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex29-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex29-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex29-hint">CSS: comma-separated selectors are OR. XPath: <code>or</code> keyword — but you need the same axis, so use <code>self::button or self::a</code> inside a wildcard selector, or use the union operator <code>|</code>: <code>//button | //a</code>.</div>
+            <div class="answer-box" id="ex29-answer">CSS:&nbsp;&nbsp;<code>button, a</code> (scoped to the sandbox)<br>XPath: <code>//*[@id="a29-wrap"]//button | //*[@id="a29-wrap"]//a</code></div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 — RELATIONS -->
+    <div class="section-intro" id="s2">
+        <h3><i class="fas fa-sitemap"></i> Section 2 — Relations</h3>
+        <p>Deep tree navigation: use <strong>preceding-sibling</strong>, combine <strong>ancestor + descendant</strong> in one expression, and select <strong>multiple axes</strong> in a single XPath.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> <code>preceding-sibling::</code> goes backward through siblings — useful for tables where a cell's sibling is the label column. <code>//ancestor::div//following-sibling::span</code> chains multiple axes in one path.</div>
+    </div>
+
+    <!-- Ex 30 — preceding-sibling -->
+    <div class="challenge-card" id="ex30">
+        <div class="ch-header"><span class="ch-num">Exercise 30</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Preceding Sibling — Cell Before the "Active" Status Cell</div>
+            <div class="ch-desc">A table row has Name and Status cells. Select <strong>the Name cell in the row where Status is "Active"</strong> — using preceding-sibling from the status cell.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex30">
+                    <table id="a30-table">
+                        <thead><tr><th>Name</th><th>Department</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr><td>Alice</td><td>Engineering</td><td><span class="chip chip-active">Active</span></td></tr>
+                            <tr><td>Bob</td><td>Marketing</td><td><span class="chip chip-danger">Suspended</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="na-block"><i class="fas fa-ban"></i> CSS N/A — CSS cannot traverse to a preceding sibling.</div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex30-xpath" type="text" placeholder='e.g. //td[.//span[contains(@class,"chip-active")]]/preceding-sibling::td[last()]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex30','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex30','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex30-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex30-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex30-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex30-hint">Start from the status <code>&lt;td&gt;</code> that contains the Active chip. Then use <code>/preceding-sibling::td[last()]</code> — in preceding-sibling, <code>[last()]</code> is the <em>furthest left</em> sibling (first in DOM order), which is the Name cell.</div>
+            <div class="answer-box" id="ex30-answer">XPath: <code>//td[.//span[contains(@class,"chip-active")]]/preceding-sibling::td[last()]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 31 — Ancestor + descendant chain -->
+    <div class="challenge-card" id="ex31">
+        <div class="ch-header"><span class="ch-num">Exercise 31</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Ancestor + Descendant Chain</div>
+            <div class="ch-desc">A modal contains a footer with two buttons. Select <strong>both buttons inside the modal footer</strong> — not buttons elsewhere on the page — using an ancestor-scoped path.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 2 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex31">
+                    <div id="a31-modal" class="modal-overlay" style="border:2px solid #e2e8f0;border-radius:12px;overflow:hidden;max-width:320px">
+                        <div class="modal-header" style="padding:.75rem 1rem;background:#f1f5f9;border-bottom:1px solid #e2e8f0;font-weight:700;font-size:.9rem">Confirm Action</div>
+                        <div class="modal-body" style="padding:1rem;font-size:.875rem;color:#475569">Are you sure you want to delete this record?</div>
+                        <div class="modal-footer" style="padding:.75rem 1rem;display:flex;gap:.5rem;justify-content:flex-end;background:#f8fafc;border-top:1px solid #e2e8f0">
+                            <button class="sb-btn btn-primary">Cancel</button>
+                            <button class="sb-btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                    <div style="margin-top:.75rem">
+                        <button class="sb-btn btn-success" style="font-size:.8rem">+ Add Record</button>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex31-css" type="text" placeholder='e.g. .modal-footer button' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex31','css')">
+                        <button class="check-btn" onclick="checkLocator('ex31','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex31-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex31-xpath" type="text" placeholder='e.g. //*[@id="a31-modal"]//div[contains(@class,"modal-footer")]//button' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex31','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex31','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex31-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex31-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex31-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex31-hint">Scope to the modal ID first, then descend to the footer, then to buttons. This prevents selecting the "+ Add Record" button outside the modal.</div>
+            <div class="answer-box" id="ex31-answer">CSS:&nbsp;&nbsp;<code>#a31-modal .modal-footer button</code><br>XPath: <code>//*[@id="a31-modal"]//*[contains(@class,"modal-footer")]//button</code></div>
+        </div>
+    </div>
+
+    <!-- SECTION 3 — INDEX -->
+    <div class="section-intro" id="s3">
+        <h3><i class="fas fa-list-ol"></i> Section 3 — Index / Position</h3>
+        <p>Complex positional logic: select a specific row in a filtered subset, pick a cell by column index, and combine position with attribute predicates.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> When XPath evaluates <code>//tr[@data-status="active"][2]</code> — the <code>[2]</code> applies AFTER the attribute filter, so it picks the 2nd active row. Order matters: <code>//tr[2][@data-status="active"]</code> means "only if row 2 is active" — a different question entirely.</div>
+    </div>
+
+    <!-- Ex 32 — Second filtered row -->
+    <div class="challenge-card" id="ex32">
+        <div class="ch-header"><span class="ch-num">Exercise 32</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Second Row in a Filtered Set</div>
+            <div class="ch-desc">A table has active and inactive rows. Select <strong>only the second "active" row</strong> — not the first one.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex32">
+                    <table id="a32-table">
+                        <thead><tr><th>Name</th><th>Score</th><th>Status</th></tr></thead>
+                        <tbody>
+                            <tr data-status="active"><td>Alice</td><td>92</td><td><span class="chip chip-active">Active</span></td></tr>
+                            <tr data-status="inactive"><td>Bob</td><td>67</td><td><span class="chip chip-warning">Inactive</span></td></tr>
+                            <tr data-status="active"><td>Carol</td><td>88</td><td><span class="chip chip-active">Active</span></td></tr>
+                            <tr data-status="active"><td>Dave</td><td>74</td><td><span class="chip chip-active">Active</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="na-block"><i class="fas fa-ban"></i> CSS N/A — CSS <code>:nth-child</code> counts position in ALL siblings, not within a filtered set.</div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex32-xpath" type="text" placeholder='e.g. //tr[@data-status="active"][2]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex32','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex32','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex32-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex32-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex32-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex32-hint">In XPath, when you write <code>//tr[@data-status="active"][2]</code>, the position predicate <code>[2]</code> indexes within the filtered node-set — so it picks the 2nd active row (Carol), not the 3rd overall row.</div>
+            <div class="answer-box" id="ex32-answer">XPath: <code>//tr[@data-status="active"][2]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 33 — Cell by column index -->
+    <div class="challenge-card" id="ex33">
+        <div class="ch-header"><span class="ch-num">Exercise 33</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Cell by Column Index</div>
+            <div class="ch-desc">A table has 4 columns. Select <strong>all cells in the third column</strong> (the "Score" column) — data cells only, not the header.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 3 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex33">
+                    <table id="a33-table">
+                        <thead><tr><th>ID</th><th>Name</th><th>Score</th><th>Grade</th></tr></thead>
+                        <tbody>
+                            <tr><td>001</td><td>Alice</td><td>92</td><td>A</td></tr>
+                            <tr><td>002</td><td>Bob</td><td>78</td><td>B</td></tr>
+                            <tr><td>003</td><td>Carol</td><td>85</td><td>B+</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex33-css" type="text" placeholder='e.g. tbody td:nth-child(3)' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex33','css')">
+                        <button class="check-btn" onclick="checkLocator('ex33','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex33-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex33-xpath" type="text" placeholder='e.g. //tbody/tr/td[3]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex33','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex33','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex33-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex33-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex33-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex33-hint">CSS: <code>td:nth-child(3)</code> inside the <code>tbody</code> rows. XPath: <code>//tbody/tr/td[3]</code> — the <code>[3]</code> applies per-row, selecting the 3rd <code>td</code> in each <code>tr</code>.</div>
+            <div class="answer-box" id="ex33-answer">CSS:&nbsp;&nbsp;<code>#a33-table tbody td:nth-child(3)</code><br>XPath: <code>//table[@id="a33-table"]//tbody/tr/td[3]</code></div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 — VISUAL RELATIONS -->
+    <div class="section-intro" id="s4">
+        <h3><i class="fas fa-eye"></i> Section 4 — Visual Relations</h3>
+        <p>Match elements by <strong>partial text</strong> (<code>contains(text(),...)</code>), find a row by a <strong>cell's visible content</strong>, and navigate from a <strong>heading text</strong> to a sibling input in deeply nested structures.</p>
+        <div class="note"><i class="fas fa-info-circle"></i> <code>contains(text(),"partial")</code> is one of the most-used patterns in real-world test automation because labels often change in exact wording but keep key words stable. Always prefer it over <code>text()="exact"</code> for resilience.</div>
+    </div>
+
+    <!-- Ex 34 — Partial text match -->
+    <div class="challenge-card" id="ex34">
+        <div class="ch-header"><span class="ch-num">Exercise 34</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Partial Text Match — contains(text())</div>
+            <div class="ch-desc">Four buttons are shown. Select <strong>all buttons whose visible text contains "Submit"</strong> — there are 2 (one says "Submit Form", one says "Submit &amp; Continue").</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 2 elements</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex34">
+                    <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+                        <button class="sb-btn btn-primary">Submit Form</button>
+                        <button class="sb-btn btn-success">Save Draft</button>
+                        <button class="sb-btn btn-primary">Submit &amp; Continue</button>
+                        <button class="sb-btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="na-block"><i class="fas fa-ban"></i> CSS N/A — CSS cannot match by visible text content.</div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex34-xpath" type="text" placeholder='e.g. //button[contains(text(),"Submit")]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex34','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex34','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex34-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex34-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex34-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex34-hint"><code>contains(text(),"Submit")</code> matches any button whose text node includes "Submit" anywhere. Note the difference from <code>text()="Submit"</code> which requires an exact match.</div>
+            <div class="answer-box" id="ex34-answer">XPath: <code>//button[contains(text(),"Submit")]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 35 — Row by cell text -->
+    <div class="challenge-card" id="ex35">
+        <div class="ch-header"><span class="ch-num">Exercise 35</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Table Row by Cell Value</div>
+            <div class="ch-desc">A table has user rows. Select <strong>the entire row where the Name cell contains "Carol"</strong>.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex35">
+                    <table id="a35-table">
+                        <thead><tr><th>Name</th><th>Email</th><th>Role</th></tr></thead>
+                        <tbody>
+                            <tr><td>Alice</td><td>alice@test.io</td><td>Admin</td></tr>
+                            <tr><td>Bob</td><td>bob@test.io</td><td>User</td></tr>
+                            <tr><td>Carol</td><td>carol@test.io</td><td>Editor</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="na-block"><i class="fas fa-ban"></i> CSS N/A — CSS cannot select a row based on its cell's text content.</div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex35-xpath" type="text" placeholder='e.g. //tr[td[normalize-space(text())="Carol"]]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex35','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex35','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex35-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex35-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex35-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex35-hint">Use a predicate on <code>//tr</code> that checks a <code>td</code> child's text: <code>//tr[td[text()="Carol"]]</code>. The inner predicate selects the <code>&lt;tr&gt;</code> where at least one <code>&lt;td&gt;</code> child has text "Carol".</div>
+            <div class="answer-box" id="ex35-answer">XPath: <code>//tr[td[normalize-space(text())="Carol"]]</code>&nbsp; or &nbsp;<code>//tr[td[text()="Carol"]]</code></div>
+        </div>
+    </div>
+
+    <!-- Ex 36 — Edit button in same row as Carol -->
+    <div class="challenge-card" id="ex36">
+        <div class="ch-header"><span class="ch-num">Exercise 36</span><span class="badge advanced">Advanced</span></div>
+        <div class="ch-body">
+            <div class="ch-title">Action Button in the Same Row as a Named Cell</div>
+            <div class="ch-desc">Each table row has an Edit button in the last cell. Select <strong>the Edit button in the same row as "Bob"</strong> — not all edit buttons.</div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sb-ex36">
+                    <table id="a36-table">
+                        <thead><tr><th>Name</th><th>Role</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr><td>Alice</td><td>Admin</td><td><button class="sb-btn btn-primary" style="font-size:.75rem;padding:4px 10px">Edit</button></td></tr>
+                            <tr><td>Bob</td><td>User</td><td><button class="sb-btn btn-primary" style="font-size:.75rem;padding:4px 10px">Edit</button></td></tr>
+                            <tr><td>Carol</td><td>Editor</td><td><button class="sb-btn btn-primary" style="font-size:.75rem;padding:4px 10px">Edit</button></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="practice-area">
+                <div class="na-block"><i class="fas fa-ban"></i> CSS N/A — Cannot select based on sibling cell text.</div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="ex36-xpath" type="text" placeholder='e.g. //tr[td[text()="Bob"]]//button[text()="Edit"]' autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')checkLocator('ex36','xpath')">
+                        <button class="check-btn" onclick="checkLocator('ex36','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="ex36-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('ex36-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('ex36-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="ex36-hint">Two-step: first find the row by name cell (<code>//tr[td[text()="Bob"]]</code>), then descend into it to find the button (<code>//button</code> or <code>/td/button</code>). The outer predicate scopes the entire remaining path.</div>
+            <div class="answer-box" id="ex36-answer">XPath: <code>//tr[td[text()="Bob"]]//button[text()="Edit"]</code>&nbsp; or &nbsp;<code>//tr[td[text()="Bob"]]/td/button</code></div>
+        </div>
+    </div>
+
+    <div class="level-nav">
+        <a href="intermediate.html" class="nav-prev"><i class="fas fa-arrow-left"></i> Intermediate</a>
+        <a href="expert.html" class="nav-next">Expert <i class="fas fa-arrow-right"></i></a>
+    </div>
+</main>
+</div>
+
+<script>
+    const CHALLENGES = {
+        ex27: { sandboxId:'sb-ex27', refCSS:'tr[data-role="editor"][data-status="active"]' },
+        ex28: { sandboxId:'sb-ex28', refCSS:'button:not(.btn-danger)' },
+        ex29: { sandboxId:'sb-ex29', refCSS:'#a29-wrap button, #a29-wrap a' },
+        ex30: { sandboxId:'sb-ex30', refCSS:'#a30-table tbody tr:first-child td:first-child' },
+        ex31: { sandboxId:'sb-ex31', refCSS:'#a31-modal .modal-footer button' },
+        ex32: { sandboxId:'sb-ex32', refCSS:'#a32-table tbody tr[data-status="active"]:nth-child(3)' },
+        ex33: { sandboxId:'sb-ex33', refCSS:'#a33-table tbody td:nth-child(3)' },
+        ex34: { sandboxId:'sb-ex34', refCSS:null, xpathRef:'//button[contains(text(),"Submit")]', sbId:'sb-ex34' },
+        ex35: { sandboxId:'sb-ex35', refCSS:null, xpathRef:'//tr[td[normalize-space(text())="Carol"]]', sbId:'sb-ex35' },
+        ex36: { sandboxId:'sb-ex36', refCSS:null, xpathRef:'//tr[td[text()="Bob"]]//button[text()="Edit"]', sbId:'sb-ex36' },
+    };
+
+    function getExpected(cfg, sandbox) {
+        if (cfg.refCSS) return [...sandbox.querySelectorAll(cfg.refCSS)];
+        if (cfg.xpathRef) {
+            const xr = document.evaluate(cfg.xpathRef, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+            const res = [];
+            for (let i = 0; i < xr.snapshotLength; i++) { const n = xr.snapshotItem(i); if (sandbox.contains(n)) res.push(n); }
+            return res;
+        }
+        return [];
+    }
+
+    function checkLocator(id, type) {
+        const cfg=CHALLENGES[id], sandbox=document.getElementById(cfg.sandboxId);
+        const input=document.getElementById(`${id}-${type}`), result=document.getElementById(`${id}-${type}-result`);
+        const value=input.value.trim();
+        if(!value){showResult(result,'err','<i class="fas fa-exclamation-circle"></i> Enter a selector first.');return;}
+        const expected=getExpected(cfg, sandbox);
+        let matched=[],error=null;
+        if(type==='css'){try{matched=[...sandbox.querySelectorAll(value)];}catch(e){error=e.message;}}
+        else{try{const xr=document.evaluate(value,document,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null);for(let i=0;i<xr.snapshotLength;i++){const n=xr.snapshotItem(i);if(sandbox.contains(n))matched.push(n);}}catch(e){error=e.message;}}
+        if(error){clearHighlights(sandbox);showResult(result,'err',`<i class="fas fa-exclamation-triangle"></i> Syntax error: ${sanitize(error)}`);input.className='loc-input';return;}
+        clearHighlights(sandbox);matched.forEach(el=>el.classList.add('locator-match'));setTimeout(()=>clearHighlights(sandbox),3000);
+        const pass=matched.length===expected.length&&matched.every(el=>expected.includes(el));
+        if(pass){const n=matched.length;showResult(result,'pass',`<i class="fas fa-check-circle"></i> Correct! Matched ${n} element${n!==1?'s':''}.`);input.classList.add('pass');input.classList.remove('fail');}
+        else{const n=matched.length,e=expected.length;const msg=n===0?'No elements matched.':n!==e?`Found ${n}, expected ${e}.`:'Right count but wrong elements.';showResult(result,'fail',`<i class="fas fa-times-circle"></i> ${msg}`);input.classList.add('fail');input.classList.remove('pass');}
+    }
+    function clearHighlights(s){s.querySelectorAll('.locator-match').forEach(el=>el.classList.remove('locator-match'));}
+    function showResult(el,type,html){el.className=`result-msg ${type}`;el.innerHTML=html;}
+    function toggle(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+    function sanitize(str){return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

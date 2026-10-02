@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS, TS & Node.js for Testers - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/simple.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --vibe-blue: #1e40af;
+            --vibe-dark-blue: #1e3a8a;
+            --vibe-green: #22c55e;
+            --vibe-yellow: #fbbf24;
+            --vibe-orange: #f97316;
+            --vibe-light-bg: #f8fafc;
+            --js-yellow: #f7df1e;
+            --ts-blue: #3178c6;
+            --node-green: #339933;
+        }
+
+        .reveal {
+            background: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3 {
+            text-transform: none;
+            font-weight: 700;
+            color: var(--vibe-dark-blue);
+        }
+
+        .reveal h1 {
+            font-size: 1.8em;
+            margin-bottom: 0.2em;
+        }
+
+        .reveal h2 {
+            font-size: 1.4em;
+            margin-bottom: 0.3em;
+            color: var(--vibe-blue);
+        }
+
+        .reveal h3 {
+            font-size: 1.1em;
+            color: var(--vibe-green);
+            margin-bottom: 0.2em;
+        }
+
+        .reveal p,
+        .reveal li {
+            color: #334155;
+            line-height: 1.4;
+        }
+
+        .logo-corner {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            z-index: 100;
+        }
+
+        .logo-corner img {
+            width: 80px;
+            height: auto;
+        }
+
+        .title-slide {
+            background: #ffffff !important;
+        }
+
+        .title-slide .company-header {
+            max-width: 600px;
+            margin: 0 auto 15px;
+        }
+
+        .content-box {
+            background: var(--vibe-light-bg);
+            border-left: 4px solid var(--vibe-blue);
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .code-box {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.8em;
+            margin: 10px 0;
+            text-align: left;
+            border-left: 4px solid var(--vibe-orange);
+        }
+
+        .highlight-box {
+            background: #fef3c7;
+            border: 2px solid var(--vibe-yellow);
+            padding: 15px;
+            margin: 15px auto;
+            border-radius: 10px;
+            max-width: 90%;
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+
+        .reveal ul {
+            list-style: none;
+            margin: 10px 0;
+            padding: 0;
+        }
+
+        .reveal ul li {
+            margin: 8px 0;
+            padding-left: 35px;
+            position: relative;
+            text-align: left;
+            font-size: 0.9em;
+        }
+
+        .reveal ul li:before {
+            content: "\f058";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: var(--vibe-green);
+            position: absolute;
+            left: 0;
+            top: 2px;
+        }
+
+        .part-divider {
+            background: var(--vibe-dark-blue) !important;
+            color: white !important;
+        }
+
+        .part-divider h2 {
+            color: white !important;
+            font-size: 2.5em;
+        }
+
+        .part-divider p {
+            color: #cbd5e1 !important;
+            font-size: 1.2em;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--vibe-orange);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            margin: 5px;
+        }
+
+        .compact {
+            font-size: 0.8em;
+        }
+
+        .text-orange {
+            color: var(--vibe-orange) !important;
+        }
+
+        .text-blue {
+            color: var(--vibe-blue) !important;
+        }
+
+        .bold {
+            font-weight: 700;
+        }
+
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #e11d48;
+            font-family: monospace;
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1: Title Slide -->
+            <section class="title-slide">
+                <img src="https://vibetestq.com/assets/Title with logo and box.png" alt="VibeTestQ" class="company-header">
+                <h1>JavaScript, TypeScript & Node.js</h1>
+                <h2 style="color: var(--vibe-orange);">Mastery for Test Automation</h2>
+                <p class="tagline">The complete guide for modern QA Engineers</p>
+                <div style="margin-top: 20px;">
+                    <span class="badge"><i class="fas fa-book-open mr-2"></i> Practical Learning</span>
+                    <span class="badge"><i class="fas fa-robot mr-2"></i> AI-Native Approach</span>
+                </div>
+            </section>
+
+            <!-- Slide 2: Why this matters? -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>Why JS/TS for Testers?</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Industry Standard</h3>
+                        <p class="compact">Playwright, Cypress, and WebdriverIO are built on JS/TS. It is the language
+                            of the web.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>Full Stack Vision</h3>
+                        <p class="compact">Align with developers. Understand the application code better. Boost
+                            collaboration.</p>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <p class="bold text-orange">"You don't need to be a developer, but you MUST think like one."</p>
+                </div>
+            </section>
+
+            <!-- Part 1 Divider -->
+            <section class="part-divider">
+                <h2>PART 1</h2>
+                <p>Core JavaScript Essentials</p>
+                <div style="font-size: 4em; color: var(--js-yellow);"><i class="fab fa-js"></i></div>
+            </section>
+
+            <!-- Slide 3: Variables -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>1. Variables & Data Types</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Variable Declarations</h3>
+                        <ul>
+                            <li><code>const</code>: For values that NEVER change (Default choice)</li>
+                            <li><code>let</code>: For values that MAY change (Loops, counters)</li>
+                            <li><code>var</code>: <span class="text-orange">Old way</span> (Avoid due to scope issues)
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>Primitive Types</h3>
+                        <ul class="compact">
+                            <li><code>String</code>: "Hello World"</li>
+                            <li><code>Number</code>: 10, 3.14</li>
+                            <li><code>Boolean</code>: true / false</li>
+                            <li><code>Null/Undefined</code>: Empty values</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 4: Operators -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>2. Operators & Decisions</h2>
+                <div class="content-box">
+                    <h3>Logical Comparison</h3>
+                    <div class="two-col">
+                        <ul class="compact">
+                            <li><code>===</code> : Strict equality (Checks value AND type)</li>
+                            <li><code>&&</code> : AND (Both must be true)</li>
+                            <li><code>||</code> : OR (At least one must be true)</li>
+                        </ul>
+                        <div class="code-box">
+                            // The Ternary Operator<br>
+                            const status =<br>
+                            &nbsp;&nbsp;age >= 18 ? "Pass" : "Fail";
+                        </div>
+                    </div>
+                </div>
+                <p class="compact text-blue">Always use <code>===</code> to avoid unexpected bugs in assertions.</p>
+            </section>
+
+            <!-- Slide 5: Control Flow -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>3. Control Flow & Decisions</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>If vs Switch</h3>
+                        <p class="compact"><b>If/Else:</b> Best for complex logic, ranges (e.g., age > 18), or multiple
+                            different variables.</p>
+                        <p class="compact"><b>Switch:</b> Best for choosing from many <u>fixed values</u> of a single
+                            variable (e.g., Status: PENDING, PASS, FAIL).</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>The 3 Essential Loops</h3>
+                        <ul class="compact" style="font-size: 0.8em;">
+                            <li><b>Index Based:</b> <code>for(i=0; i&lt;n; i++)</code> - Exact control over iteration.
+                            </li>
+                            <li><b>Array Based:</b> <code>for...of</code> - Best for UI Lists or results.</li>
+                            <li><b>Object Based:</b> <code>for...in</code> - Iterating over property keys.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-box" style="font-size: 0.7em;">
+                    // Object based loop example<br>
+                    for (const key in config) { console.log(config[key]); }
+                </div>
+            </section>
+
+            <!-- Slide 6: Functions -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>4. Functions: When to use what?</h2>
+                <div class="content-box">
+                    <div class="two-col">
+                        <div>
+                            <h3 class="text-blue">Standard Function</h3>
+                            <p class="compact">Best for <b>Methods in Classes</b> or when you need <code>this</code>
+                                context.</p>
+                            <div class="code-box" style="font-size: 0.65em;">
+                                function login() { ... }
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-orange">Arrow Function</h3>
+                            <p class="compact">Best for <b>Anonymous callbacks</b> (e.g. within map/filter) or simple
+                                logic.</p>
+                            <div class="code-box" style="font-size: 0.65em;">
+                                const login = () => { ... }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 7: Arrays & Objects -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>5. Arrays & Objects</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Arrays (Lists)</h3>
+                        <p class="compact">Store test data or locator results.</p>
+                        <ul class="compact" style="font-size: 0.75em;">
+                            <li><code>map()</code>: Transform items</li>
+                            <li><code>filter()</code>: Select specific items</li>
+                            <li><code>find()</code>: Get one item</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>Objects (Data)</h3>
+                        <p class="compact">Key-value pairs for configuration.</p>
+                        <div class="code-box" style="font-size: 0.65em;">
+                            const config = {<br>
+                            &nbsp;&nbsp;env: 'QA',<br>
+                            &nbsp;&nbsp;headless: true<br>
+                            };
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: Destructuring -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>6. Modern Syntaxes</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Destructuring</h3>
+                        <p class="compact">Extract values easily from objects/arrays.</p>
+                        <div class="code-box" style="font-size: 0.7em;">
+                            const { username, pwd } = userData;
+                        </div>
+                    </div>
+                    <div class="content-box">
+                        <h3>Template Strings</h3>
+                        <p class="compact">Embed variables inside strings using backticks.</p>
+                        <div class="code-box" style="font-size: 0.7em;">
+                            console.log(`Testing on ${env}`);
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 9: Async - Callbacks -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>7. Asynchronous JS (Callbacks)</h2>
+                <div class="content-box">
+                    <h3>The Foundation</h3>
+                    <p class="compact">A callback is a function passed as an argument to be executed later.</p>
+                    <ul class="compact">
+                        <li>Used extensively in older Node.js libraries.</li>
+                        <li>Can lead to "Callback Hell" if nesting is too deep.</li>
+                        <li class="text-orange">Know it to recognize it, but use Promises instead.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 10: Async - Promises -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>8. Promises</h2>
+                <p class="text-blue bold">Represents a value available in the future.</p>
+                <div style="display: flex; justify-content: space-around; margin: 15px 0;">
+                    <span class="badge" style="background: grey;">Pending</span>
+                    <span class="badge" style="background: green;">Fulfilled</span>
+                    <span class="badge" style="background: red;">Rejected</span>
+                </div>
+                <div class="content-box">
+                    <ul class="compact">
+                        <li><code>.then()</code> : Runs on success</li>
+                        <li><code>.catch()</code> : Runs on failure</li>
+                        <li><code>.finally()</code> : Runs always (Cleanup)</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 11: Async - async/await -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>9. async / await</h2>
+                <div class="highlight-box">
+                    <p class="bold">The Gold Standard for Modern Automation</p>
+                </div>
+                <div class="code-box">
+                    async function test() {<br>
+                    &nbsp;&nbsp;try {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;await page.goto(url);<br>
+                    &nbsp;&nbsp;} catch (err) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;console.error(err);<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+                <p class="compact">Pauses execution until the Promise settles. Makes code look synchronous!</p>
+            </section>
+
+            <!-- Slide 12: Modules & Classes -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>10. Modules & Classes</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Modules</h3>
+                        <p class="compact"><code>import</code> and <code>export</code> to share code across files (Page
+                            Objects, Utils).</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>Classes</h3>
+                        <p class="compact">The blueprint for Page Objects. Use <code>this</code> to refer to properties.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Part 2 Divider -->
+            <section class="part-divider">
+                <h2>PART 2</h2>
+                <p>TypeScript: The Safety Shield</p>
+                <div style="font-size: 4em; color: var(--ts-blue);"><i class="fas fa-code"></i></div>
+            </section>
+
+            <!-- Slide 13: TS Intro -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>Why TypeScript?</h2>
+                <div class="highlight-box">
+                    <p class="bold">JS + Type Safety = Robust Tests</p>
+                </div>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Bug Prevention</h3>
+                        <p class="compact">Detect errors like "passing string to number" while writing code.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>Intellisense</h3>
+                        <p class="compact">Get perfect auto-complete suggestions for your custom framework functions.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 14: TS Types -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>11. TS Types & Interfaces</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Basic Types</h3>
+                        <ul class="compact">
+                            <li><code>string</code>, <code>number</code></li>
+                            <li><code>boolean</code>, <code>void</code></li>
+                            <li><code>unknown</code> (Safer than <code>any</code>)</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>Interfaces</h3>
+                        <p class="compact">Define the "Shape" of test data objects.</p>
+                        <div class="code-box" style="font-size: 0.6em;">
+                            interface User {<br>
+                            &nbsp;&nbsp;id: number;<br>
+                            &nbsp;&nbsp;name: string;<br>
+                            &nbsp;&nbsp;email?: string; // Optional<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 15: Union & Enums -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>12. Union Types & Enums</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Union Types</h3>
+                        <p class="compact">A variable can be one of many types.</p>
+                        <code>type Status = 'pass' | 'fail';</code>
+                    </div>
+                    <div class="content-box">
+                        <h3>Enums</h3>
+                        <p class="compact">Fixed set of named constants.</p>
+                        <div class="code-box" style="font-size: 0.6em;">
+                            enum Env { QA, DEV, PROD }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 16: Generics & Utility -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>13. Advanced TS Basics</h2>
+                <div class="two-col">
+                    <div class="content-box">
+                        <h3>Generics</h3>
+                        <p class="compact">Reusable code that works with different types dynamically.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3>Utility Types</h3>
+                        <ul class="compact">
+                            <li><code>Partial&lt;T&gt;</code>: All fields optional</li>
+                            <li><code>Pick&lt;T, K&gt;</code>: Select specific fields</li>
+                            <li><code>Omit&lt;T, K&gt;</code>: Remove fields</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Part 3 Divider -->
+            <section class="part-divider">
+                <h2>PART 3</h2>
+                <p>Node.js & Project Setup</p>
+                <div style="font-size: 4em; color: var(--node-green);"><i class="fab fa-node"></i></div>
+            </section>
+
+            <!-- Slide 17: Project Anatomy -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>14. Project Structure</h2>
+                <div class="two-col">
+                    <div class="content-box" style="font-size: 0.8em;">
+                        <h3>Structure</h3>
+                        <ul class="compact">
+                            <li>?? <code>node_modules</code> (Ext libraries)</li>
+                            <li>?? <code>package.json</code> (The Heart)</li>
+                            <li>?? <code>playwright.config.ts</code></li>
+                            <li>?? <code>tests</code> (Logic)</li>
+                        </ul>
+                    </div>
+                    <div class="content-box">
+                        <h3>package.json</h3>
+                        <ul class="compact">
+                            <li>Define Meta-data</li>
+                            <li>Manage Dependencies</li>
+                            <li>Create custom scripts</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 18: npm Basics -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>15. npm: The Package Manager</h2>
+                <div class="content-box">
+                    <h3>Essential Commands</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <ul class="compact">
+                            <li><code>npm init -y</code>: Fast setup</li>
+                            <li><code>npm install</code>: Get all libs</li>
+                            <li><code>npm run test</code>: Execute</li>
+                        </ul>
+                        <ul class="compact">
+                            <li><code>npm install -D</code>: Dev tools</li>
+                            <li><code>npm list</code>: Check versions</li>
+                            <li><code>npm uninstall</code>: Cleanup</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 19: Core Modules -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>16. Node.js Core Modules</h2>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div class="content-box">
+                        <h3 style="font-size: 0.9em;"><code>process</code></h3>
+                        <p class="compact">Env variables, platform info.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3 style="font-size: 0.9em;"><code>path</code></h3>
+                        <p class="compact">Cross-OS file path handling.</p>
+                    </div>
+                    <div class="content-box">
+                        <h3 style="font-size: 0.9em;"><code>fs</code> (File System)</h3>
+                        <p class="compact">Read/Write test data files (JSON/CSV).</p>
+                    </div>
+                    <div class="content-box">
+                        <h3 style="font-size: 0.9em;"><code>os</code></h3>
+                        <p class="compact">System memory & CPU details.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 20: Exception Handling -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>17. Exception Handling</h2>
+                <div class="highlight-box">
+                    <p class="bold">Don't let your tests crash silently!</p>
+                </div>
+                <div class="two-col">
+                    <div class="code-box" style="font-size: 0.6em;">
+                        try {<br>
+                        &nbsp;&nbsp;// Perform Action<br>
+                        } catch (error) {<br>
+                        &nbsp;&nbsp;// Take Screenshot / Log<br>
+                        } finally {<br>
+                        &nbsp;&nbsp;// Close DB/Cleanup<br>
+                        }
+                    </div>
+                    <div class="content-box">
+                        <ul class="compact">
+                            <li>Prevents build failures on minor errors.</li>
+                            <li>Enables meaningful error messages.</li>
+                            <li>Ensures cleanup happens always.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 21: Final Message -->
+            <section>
+                <div class="logo-corner"><img src="https://vibetestq.com/assets/White-Logo.png" alt="VibeTestQ"></div>
+                <h2>Message to Learners</h2>
+                <div class="highlight-box" style="padding: 30px;">
+                    <p class="bold text-orange" style="font-size: 1.2em;">"You don't need to master everything."</p>
+                    <p style="margin-top: 15px;">Focus on what helps you write <b>Clear, Safe, and Maintainable</b>
+                        automation code.</p>
+                </div>
+                <p class="bold text-blue" style="margin-top: 20px;">Consistency > Intensity</p>
+                <p class="compact">- QtpSudhakar</p>
+            </section>
+
+            <!-- Slide 22: Logo Slide -->
+            <section>
+                <img src="https://vibetestq.com/assets/Title with logo and box.png" alt="VibeTestQ" style="max-width: 500px;">
+                <h2 style="margin-top: 40px;">Ready to Transform?</h2>
+                <div class="highlight-box">
+                    <p>Building the next generation of Test Leaders.</p>
+                </div>
+                <p class="compact">Contact: trainings@vibetestq.com</p>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            if (typeof Reveal !== 'undefined') {
+                Reveal.initialize({
+                    hash: true,
+                    transition: 'slide',
+                    transitionSpeed: 'default',
+                    slideNumber: true,
+                    controls: true,
+                    progress: true,
+                    center: true,
+                    width: 1280,
+                    height: 720,
+                    margin: 0.04
+                });
+            } else {
+                console.error('Reveal.js failed to load');
+            }
+        });
+    </script>
+</body>
+
+</html>

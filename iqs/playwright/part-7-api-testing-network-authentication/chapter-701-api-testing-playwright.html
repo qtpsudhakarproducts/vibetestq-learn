@@ -1,0 +1,816 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">👁️ Part 7 &nbsp;·&nbsp; Chapter 701 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">API</span> <span class="w2">Testing</span> <span class="w3">with</span> <span class="w4">Playwright</span></h1>
+    <p class="sn-title-sub">API &amp; Network — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's built-in API testing capability through <code class="sn-ic">APIRequestContext</code> and the <code class="sn-ic">request</code> fixture. Interviewers ask these questions to judge whether candidates understand that Playwright is more than a browser tool — it has a first-class HTTP client that enables pure API tests, hybrid UI+API tests, and fast test data setup without touching the browser. Questions at senior level focus on the UI+API hybrid pattern and the architectural decision of when to test at which layer.</span>
+  </div>
+
+
+  <!-- Q701.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.1</span>
+      <h2 class="sn-q-text">What is the request fixture in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <code class="sn-ic">request</code> fixture is a built-in Playwright fixture that provides an <code class="sn-ic">APIRequestContext</code> — an HTTP client for making REST API calls without opening a browser. It is injected automatically like <code class="sn-ic">page</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'API is reachable'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/health'</span>);
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">APIRequestContext</code> supports all HTTP methods, reads <code class="sn-ic">baseURL</code> from <code class="sn-ic">playwright.config.ts</code>, handles cookies and redirects automatically, and parses JSON responses. No external libraries (Axios, node-fetch, Supertest) are needed — the HTTP client is built into Playwright.</p>
+    </div>
+  </div>
+
+  <!-- Q701.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.2</span>
+      <h2 class="sn-q-text">Why use Playwright for API testing instead of a dedicated tool?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Four reasons to keep API tests inside the Playwright framework:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Same infrastructure.</strong> No context switching between Playwright (E2E) and a separate tool (Jest+Axios, Supertest, Postman). Fixtures, config, reporters, and CI setup are shared.</p>
+<p class="sn-para"><strong class="k-green">Hybrid tests.</strong> The <code class="sn-ic">request</code> fixture and the <code class="sn-ic">page</code> fixture can be used in the same test. API setup → UI verification → API assertion is the most powerful pattern in the framework.</p>
+<p class="sn-para"><strong class="k-green">Unified reporting.</strong> All test results — API and UI — appear in one HTML report. One CI pipeline. One failure format.</p>
+<p class="sn-para"><strong class="k-green">Shared auth context.</strong> A <code class="sn-ic">page.request</code> context shares cookies with the browser page it belongs to. Logging in via the browser automatically authenticates <code class="sn-ic">page.request</code> calls for the same session.</p>
+    </div>
+  </div>
+
+  <!-- Q701.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.3</span>
+      <h2 class="sn-q-text">How do you make GET, POST, PUT, and DELETE requests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Users API'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'GET returns a list'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users'</span>);
+    <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+    <span class="tc-kw">const</span> users = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+    <span class="tc-kw">expect</span>(Array.<span class="tc-fn">isArray</span>(users)).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'POST creates a user'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users'</span>, {
+      data: {
+        name:  <span class="tc-str">'Test User'</span>,
+        email: <span class="tc-str">`test-${Date.now()}@example.com`</span>,
+        role:  <span class="tc-str">'user'</span>,
+      },
+    });
+    <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">201</span>);
+    <span class="tc-kw">const</span> created = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+    <span class="tc-kw">expect</span>(created.id).<span class="tc-fn">toBeDefined</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'PUT updates a user'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">put</span>(<span class="tc-str">'/api/users/1'</span>, {
+      data: { name: <span class="tc-str">'Updated Name'</span> },
+    });
+    <span class="tc-kw">expect</span>(response.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'DELETE removes a user'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">'/api/users/1'</span>);
+    <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">204</span>);
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">data</code> option automatically serialises as JSON and sets <code class="sn-ic">Content-Type: application/json</code>. For form data use <code class="sn-ic">form:</code>. For multipart file upload use <code class="sn-ic">multipart:</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q701.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.4</span>
+      <h2 class="sn-q-text">How do you send query parameters and custom headers?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Query parameters — appended to URL automatically</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/products'</span>, {
+  params: { category: <span class="tc-str">'electronics'</span>, limit: <span class="tc-num">20</span>, sort: <span class="tc-str">'price_asc'</span> },
+  <span class="tc-cm">// Becomes: /api/products?category=electronics&amp;amp;limit=20&amp;amp;sort=price_asc</span>
+});
+
+<span class="tc-cm">// Custom headers</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/admin/users'</span>, {
+  headers: {
+    <span class="tc-str">'Authorization'</span>: <span class="tc-str">`Bearer ${authToken}`</span>,
+    <span class="tc-str">'X-Api-Version'</span>:  <span class="tc-str">'2'</span>,
+    <span class="tc-str">'Accept'</span>:         <span class="tc-str">'application/json'</span>,
+  },
+});
+
+<span class="tc-cm">// Both together</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/data'</span>, {
+  params:  { page: <span class="tc-num">1</span> },
+  headers: { <span class="tc-str">'Authorization'</span>: <span class="tc-str">`Bearer ${token}`</span> },
+});</div>
+      </div>
+<p class="sn-para">For requests that always need the same headers (auth tokens, tenant IDs), create a pre-configured <code class="sn-ic">APIRequestContext</code> with <code class="sn-ic">request.newContext()</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> authRequest = <span class="tc-kw">await</span> request.<span class="tc-fn">newContext</span>({
+  baseURL: process.env.API_BASE_URL,
+  extraHTTPHeaders: {
+    <span class="tc-str">'Authorization'</span>: <span class="tc-str">`Bearer ${token}`</span>,
+    <span class="tc-str">'X-Tenant-ID'</span>:   process.env.TENANT_ID,
+  },
+});
+<span class="tc-cm">// All requests from authRequest include these headers automatically</span>
+<span class="tc-kw">await</span> authRequest.<span class="tc-fn">dispose</span>(); <span class="tc-cm">// clean up in afterAll</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q701.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.5</span>
+      <h2 class="sn-q-text">How do you assert API responses?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright provides several assertion methods on the <code class="sn-ic">APIResponse</code> object:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'comprehensive response assertions'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users/1'</span>);
+
+  <span class="tc-cm">// Status assertions</span>
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);         <span class="tc-cm">// true for 200–299 range</span>
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">statusText</span>()).<span class="tc-fn">toBe</span>(<span class="tc-str">'OK'</span>);
+
+  <span class="tc-cm">// Header assertions</span>
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">headers</span>()[<span class="tc-str">'content-type'</span>]).<span class="tc-fn">toContain</span>(<span class="tc-str">'application/json'</span>);
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">headers</span>()[<span class="tc-str">'x-request-id'</span>]).<span class="tc-fn">toBeDefined</span>();
+
+  <span class="tc-cm">// Body assertions</span>
+  <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();       <span class="tc-cm">// parse as JSON</span>
+  <span class="tc-kw">expect</span>(body).<span class="tc-fn">toHaveProperty</span>(<span class="tc-str">'id'</span>, <span class="tc-num">1</span>);
+  <span class="tc-kw">expect</span>(body).<span class="tc-fn">toHaveProperty</span>(<span class="tc-str">'email'</span>);
+
+  <span class="tc-cm">// Partial match — other fields are acceptable</span>
+  <span class="tc-kw">expect</span>(body).<span class="tc-fn">toMatchObject</span>({
+    id:    <span class="tc-num">1</span>,
+    email: <span class="tc-str">'user@example.com'</span>,
+  });
+
+  <span class="tc-cm">// Array response</span>
+  <span class="tc-kw">const</span> list = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users'</span>);
+  <span class="tc-kw">const</span> users = <span class="tc-kw">await</span> list.<span class="tc-fn">json</span>();
+  <span class="tc-kw">expect</span>(users).<span class="tc-fn">toHaveLength</span>(<span class="tc-num">10</span>);
+  <span class="tc-kw">expect</span>(users[<span class="tc-num">0</span>]).<span class="tc-fn">toHaveProperty</span>(<span class="tc-str">'id'</span>);
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">response.ok()</code> is the most common assertion — it passes for any status in the 200–299 range. Use <code class="sn-ic">response.status()</code> when you need a specific code (201 for creation, 204 for deletion).</p>
+    </div>
+  </div>
+
+  <!-- Q701.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.6</span>
+      <h2 class="sn-q-text">What is the difference between page.request and the request fixture?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both provide an <code class="sn-ic">APIRequestContext</code>, but they differ in scope:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink"><code class="sn-ic">request</code> fixture</strong> — a standalone HTTP client created per test file. It does not share cookies or auth state with the browser. Use it for pure API tests and <code class="sn-ic">beforeAll</code>/<code class="sn-ic">afterAll</code> setup/cleanup that is independent of any browser session.</p>
+<p class="sn-para"><strong class="k-pink"><code class="sn-ic">page.request</code></strong> — the HTTP client attached to a specific <code class="sn-ic">page</code>. It shares the browser context's cookies and auth state. When a user logs in via the browser, <code class="sn-ic">page.request</code> calls are automatically authenticated with the same session cookies.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'page.request shares auth with the browser'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Log in via browser</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin@example.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'pass123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// page.request is now authenticated — same cookies as the browser</span>
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> page.request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/user/me'</span>);
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);   <span class="tc-cm">// not 401</span>
+  <span class="tc-kw">const</span> user = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+  <span class="tc-kw">expect</span>(user.email).<span class="tc-fn">toBe</span>(<span class="tc-str">'admin@example.com'</span>);
+});</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">request</code> (standalone) for independent API tests and setup. Use <code class="sn-ic">page.request</code> when you need the browser's auth session.</p>
+    </div>
+  </div>
+
+  <!-- Q701.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.7</span>
+      <h2 class="sn-q-text">What is the UI+API hybrid test pattern and why is it valuable?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The hybrid pattern combines three layers in one test:</p>
+      </div>
+<ol class="sn-olist">
+<li><strong class="k-red">API setup</strong> — create preconditions fast without browser interaction</li>
+<li><strong class="k-red">UI test</strong> — the actual scenario under test</li>
+<li><strong class="k-red">API verify/cleanup</strong> — check data was saved correctly, then clean up</li>
+</ol>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'order placed via UI is saved in the database'</span>, <span class="tc-kw">async</span> ({ page, request }) =&gt; {
+
+  <span class="tc-cm">// SETUP via API (fast — no browser navigation needed)</span>
+  <span class="tc-kw">const</span> userRes = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/test/users'</span>, {
+    data: { email: <span class="tc-str">`shopper-${Date.now()}@test.com`</span>, password: <span class="tc-str">'pass123'</span> },
+  });
+  <span class="tc-kw">const</span> { userId } = <span class="tc-kw">await</span> userRes.<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// UI TEST (the scenario)</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">`shopper-${Date.now()}@test.com`</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'pass123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Add to Cart'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Place Order'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'**/order-confirmation/**'</span>);
+
+  <span class="tc-kw">const</span> orderIdText = <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-number'</span>).<span class="tc-fn">textContent</span>();
+  <span class="tc-kw">const</span> orderId = orderIdText!.<span class="tc-fn">trim</span>();
+
+  <span class="tc-cm">// VERIFY via API (independent of UI rendering)</span>
+  <span class="tc-kw">const</span> orderRes = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/orders/${orderId}`</span>);
+  <span class="tc-kw">expect</span>(orderRes.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+  <span class="tc-kw">const</span> order = <span class="tc-kw">await</span> orderRes.<span class="tc-fn">json</span>();
+  <span class="tc-kw">expect</span>(order.status).<span class="tc-fn">toBe</span>(<span class="tc-str">'confirmed'</span>);
+
+  <span class="tc-cm">// CLEANUP via API</span>
+  <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/test/orders/${orderId}`</span>);
+  <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/test/users/${userId}`</span>);
+});</div>
+      </div>
+<p class="sn-para">The two-layer assertion is the key value: a UI bug could show wrong data even if the backend stores the right value, or a backend bug could store wrong data even if the UI displays what was sent. Testing both catches both.</p>
+    </div>
+  </div>
+
+  <!-- Q701.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.8</span>
+      <h2 class="sn-q-text">How do you build a reusable API client as a fixture?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Wrapping <code class="sn-ic">APIRequestContext</code> in a typed client class and exposing it as a fixture keeps test bodies clean and ensures consistent error handling:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/ApiClient.ts</span>
+<span class="tc-kw">import</span> { APIRequestContext } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> ApiClient {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> request: APIRequestContext) {}
+
+  <span class="tc-kw">async</span> <span class="tc-fn">getUsers</span>() {
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users'</span>);
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+    <span class="tc-kw">return</span> res.<span class="tc-fn">json</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">createUser</span>(data: { name: <span class="tc-kw">string</span>; email: <span class="tc-kw">string</span> }) {
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users'</span>, { data });
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">201</span>);
+    <span class="tc-kw">return</span> res.<span class="tc-fn">json</span>() as Promise&lt;{ id: <span class="tc-kw">string</span>; name: <span class="tc-kw">string</span> }&gt;;
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">deleteUser</span>(id: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${id}`</span>);
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">204</span>);
+  }
+}
+
+<span class="tc-cm">// fixtures/index.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ api: ApiClient }&gt;({
+  api: <span class="tc-kw">async</span> ({ request }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> ApiClient(request));
+  },
+});
+
+<span class="tc-cm">// test file</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'create and delete user'</span>, <span class="tc-kw">async</span> ({ api }) =&gt; {
+  <span class="tc-kw">const</span> user = <span class="tc-kw">await</span> api.<span class="tc-fn">createUser</span>({ name: <span class="tc-str">'Alice'</span>, email: <span class="tc-str">'alice@test.com'</span> });
+  <span class="tc-kw">await</span> api.<span class="tc-fn">deleteUser</span>(user.id);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q701.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.9</span>
+      <h2 class="sn-q-text">How do you use the API to set up test preconditions quickly?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">API setup in <code class="sn-ic">beforeAll</code> is the fastest way to create test preconditions. It avoids the browser entirely and runs in seconds instead of minutes:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'User Search'</span>, () =&gt; {
+  <span class="tc-kw">let</span> userId: <span class="tc-kw">string</span>;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-cm">// Create a known user via API</span>
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users'</span>, {
+      data: { name: <span class="tc-str">'Known User'</span>, email: <span class="tc-str">`known-${Date.now()}@test.com`</span> },
+    });
+    <span class="tc-kw">const</span> user = <span class="tc-kw">await</span> res.<span class="tc-fn">json</span>();
+    userId = user.id;
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">if</span> (userId) <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${userId}`</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'user appears in search results'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/admin/users'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Search users'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Known User'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Known User'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+});</div>
+      </div>
+<p class="sn-para">Compared to creating the user via UI (navigate → fill form → submit → wait for confirmation), API setup is typically 5–10× faster and eliminates a potential point of flakiness.</p>
+    </div>
+  </div>
+
+  <!-- Q701.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.10</span>
+      <h2 class="sn-q-text">How does CORS behave differently for the request fixture vs page.request?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">CORS is a browser security feature — it only applies to requests made from within a browser page.</p>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">request</code> fixture</strong> runs in Node.js, not in a browser. There is no <code class="sn-ic">Origin</code> header restriction. CORS does not apply. Any API endpoint is reachable regardless of CORS configuration.</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">page.request</code></strong> runs in the browser context. CORS applies because the browser enforces origin restrictions. If the API does not include the correct <code class="sn-ic">Access-Control-Allow-Origin</code> header, the browser blocks the request.</p>
+<p class="sn-para">This distinction matters for testing CORS itself:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Testing that CORS is configured correctly — needs page.request (browser)</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'API allows our origin'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> page.request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/data'</span>);
+  <span class="tc-cm">// If CORS is broken, this fails even though the API works fine from Node.js</span>
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+});</div>
+      </div>
+<p class="sn-para">Use the <code class="sn-ic">request</code> fixture (no CORS) for all setup, teardown, and pure API tests. Use <code class="sn-ic">page.request</code> only when testing that your CORS configuration is correct from a browser origin.</p>
+    </div>
+  </div>
+
+  <!-- Q701.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.11</span>
+      <h2 class="sn-q-text">How do you handle multipart file uploads in API tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'upload a profile image via API'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> imageBuffer = Buffer.<span class="tc-kw">from</span>(
+    <span class="tc-kw">await</span> <span class="tc-fn">readFile</span>(path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'fixtures/test-image.png'</span>))
+  );
+
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users/1/avatar'</span>, {
+    multipart: {
+      file: {
+        name:     <span class="tc-str">'avatar.png'</span>,
+        mimeType: <span class="tc-str">'image/png'</span>,
+        buffer:   imageBuffer,
+      },
+      userId: <span class="tc-str">'1'</span>,
+    },
+  });
+
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+  <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+  <span class="tc-kw">expect</span>(body.avatarUrl).<span class="tc-fn">toMatch</span>(/\.png$/);
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">multipart</code> option sends <code class="sn-ic">Content-Type: multipart/form-data</code> automatically. The <code class="sn-ic">form</code> option sends <code class="sn-ic">Content-Type: application/x-www-form-urlencoded</code>. The <code class="sn-ic">data</code> option (default) sends <code class="sn-ic">Content-Type: application/json</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q701.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.12</span>
+      <h2 class="sn-q-text">How did you use the API testing layer in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, we use API calls in three places.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">beforeAll</code> setup</strong> — every test that needs an employee record creates one via <code class="sn-ic">EmployeeApi.create()</code>. The entire employee creation takes under 200ms via API. Creating the same employee through the UI takes 8–12 seconds.</p>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">afterAll</code> cleanup</strong> — API cleanup is guarded: <code class="sn-ic">if (empNumber) await employeeApi.delete(empNumber)</code>. This prevents double-delete failures when a test itself fails before the employee number is assigned.</p>
+<p class="sn-para"><strong class="k-orange">Cross-layer verification</strong> — for a test that verifies the PIM module saves employee data correctly, we fill the UI form, click Save, then immediately call the API to read the saved record. This catches bugs where the UI shows a success toast but the backend silently discarded a field — a failure mode that a pure UI assertion would miss.</p>
+<p class="sn-para">Our <code class="sn-ic">ApiClient</code> class wraps <code class="sn-ic">request.newContext()</code> with Basic Auth headers pre-configured. The fixture system injects it at both <code class="sn-ic">beforeAll</code> scope (worker-level for shared data) and test scope (for data unique to one test).</p>
+    </div>
+  </div>
+
+  <!-- Q701.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.13</span>
+      <h2 class="sn-q-text">How do you write schema validation for API responses?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright does not include a JSON schema library, but you can integrate one easily:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Using Zod for schema validation</span>
+<span class="tc-kw">import</span> { z } <span class="tc-kw">from</span> <span class="tc-str">'zod'</span>;
+
+<span class="tc-kw">const</span> UserSchema = z.<span class="tc-fn">object</span>({
+  id:    z.<span class="tc-kw">number</span>(),
+  name:  z.<span class="tc-kw">string</span>().<span class="tc-fn">min</span>(<span class="tc-num">1</span>),
+  email: z.<span class="tc-kw">string</span>().<span class="tc-fn">email</span>(),
+  role:  z.<span class="tc-kw">enum</span>([<span class="tc-str">'admin'</span>, <span class="tc-str">'user'</span>, <span class="tc-str">'viewer'</span>]),
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'GET /api/users/:id response matches schema'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users/1'</span>);
+  <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// Schema validation — throws a descriptive error if structure is wrong</span>
+  <span class="tc-kw">const</span> result = UserSchema.<span class="tc-fn">safeParse</span>(body);
+  <span class="tc-kw">expect</span>(result.success).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+  <span class="tc-kw">if</span> (!result.success) {
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'Schema errors:'</span>, result.error.issues);
+  }
+});</div>
+      </div>
+<p class="sn-para">Schema validation catches API contract breakage — when the backend changes a field name, removes a required field, or changes a type. A <code class="sn-ic">toHaveProperty</code> assertion on a specific value misses structural regressions. Schema validation catches them.</p>
+    </div>
+  </div>
+
+  <!-- Q701.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.14</span>
+      <h2 class="sn-q-text">What is the test pyramid and how does it apply to Playwright API testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The test pyramid says: many fast unit tests at the bottom, fewer integration tests in the middle, fewest UI tests at the top. Playwright spans two layers:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">API tests (middle layer):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>No browser → runs in milliseconds</span></li>
+<li><span class="icon">💡</span><span>No UI rendering → no flakiness from CSS, layout, or animation</span></li>
+<li><span class="icon">⚡</span><span>Tests the contract between frontend and backend</span></li>
+<li><span class="icon">🎯</span><span>Good for: CRUD validation, error codes, schema, authentication</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">UI tests (top layer):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Requires browser → slower (seconds per test)</span></li>
+<li><span class="icon">🔑</span><span>Validates the complete user-facing flow</span></li>
+<li><span class="icon">🚀</span><span>Good for: critical paths, visual output, user-facing error messages</span></li>
+</ul>
+<p class="sn-para">In practice, I run API tests on every commit (fast, cheap) and UI tests on pull requests (slower but essential). The hybrid pattern sits between — it uses API setup to get to the interesting state fast, then validates the UI renders it correctly. This gives the coverage of UI tests at closer to API test speed for the setup phase.</p>
+    </div>
+  </div>
+
+  <!-- Q701.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.15</span>
+      <h2 class="sn-q-text">How do you verify that a UI action triggered the correct API request?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'cart update sends the correct API request'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/products/laptop-pro'</span>);
+
+  <span class="tc-cm">// Start capturing BEFORE the click</span>
+  <span class="tc-kw">const</span> requestPromise = page.<span class="tc-fn">waitForRequest</span>(
+    req =&gt; req.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/cart'</span>) &amp;&amp; req.<span class="tc-fn">method</span>() === <span class="tc-str">'POST'</span>
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Add to Cart'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">const</span> req = <span class="tc-kw">await</span> requestPromise;
+
+  <span class="tc-cm">// Verify the request payload</span>
+  <span class="tc-kw">const</span> payload = req.<span class="tc-fn">postDataJSON</span>();
+  <span class="tc-kw">expect</span>(payload).<span class="tc-fn">toMatchObject</span>({
+    productId: <span class="tc-str">'laptop-pro'</span>,
+    quantity:  <span class="tc-num">1</span>,
+  });
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.waitForRequest()</code> captures the outgoing request before it leaves the browser. <code class="sn-ic">page.waitForResponse()</code> captures the response after it arrives. Both must be started before the action that triggers them — use <code class="sn-ic">Promise.all</code> or declare the promise before the click to avoid missing fast responses.</p>
+    </div>
+  </div>
+
+  <!-- Q701.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.16</span>
+      <h2 class="sn-q-text">Write a complete API test for creating and deleting a user with cleanup.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'User Management API'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> userId: <span class="tc-kw">string</span>;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-cm">// Safety net — delete even if the test itself fails partway through</span>
+    <span class="tc-kw">if</span> (userId) {
+      <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${userId}`</span>);
+    }
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'POST creates user and DELETE removes it'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+
+    <span class="tc-cm">// CREATE</span>
+    <span class="tc-kw">const</span> createRes = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users'</span>, {
+      data: {
+        name:  <span class="tc-str">'Temp User'</span>,
+        email: <span class="tc-str">`temp-${Date.now()}@test.com`</span>,
+        role:  <span class="tc-str">'viewer'</span>,
+      },
+    });
+    <span class="tc-kw">expect</span>(createRes.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">201</span>);
+    <span class="tc-kw">const</span> user = <span class="tc-kw">await</span> createRes.<span class="tc-fn">json</span>();
+    userId = user.id;
+    <span class="tc-kw">expect</span>(userId).<span class="tc-fn">toBeDefined</span>();
+
+    <span class="tc-cm">// VERIFY EXISTS</span>
+    <span class="tc-kw">const</span> getRes = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/users/${userId}`</span>);
+    <span class="tc-kw">expect</span>(getRes.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+    <span class="tc-kw">const</span> fetched = <span class="tc-kw">await</span> getRes.<span class="tc-fn">json</span>();
+    <span class="tc-kw">expect</span>(fetched.name).<span class="tc-fn">toBe</span>(<span class="tc-str">'Temp User'</span>);
+
+    <span class="tc-cm">// DELETE</span>
+    <span class="tc-kw">const</span> deleteRes = <span class="tc-kw">await</span> request.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/users/${userId}`</span>);
+    <span class="tc-kw">expect</span>(deleteRes.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">204</span>);
+
+    <span class="tc-cm">// VERIFY GONE</span>
+    <span class="tc-kw">const</span> goneRes = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/users/${userId}`</span>);
+    <span class="tc-kw">expect</span>(goneRes.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">404</span>);
+
+    <span class="tc-cm">// Clear the safety net — already deleted</span>
+    userId = <span class="tc-str">''</span>;
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">afterAll</code> guard ensures cleanup happens even if the test fails before the delete step. Setting <code class="sn-ic">userId = ''</code> after successful deletion prevents the <code class="sn-ic">afterAll</code> from attempting a double-delete on a 404 endpoint.</p>
+    </div>
+  </div>
+
+  <!-- Q701.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.17</span>
+      <h2 class="sn-q-text">How do you handle API tests for endpoints that require authentication?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three approaches, from simplest to most robust:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Option 1 — Inline headers:</strong> Add <code class="sn-ic">Authorization</code> to every call. Simple but repetitive.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> token = process.env.API_TOKEN!;
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users'</span>, {
+  headers: { <span class="tc-str">'Authorization'</span>: <span class="tc-str">`Bearer ${token}`</span> },
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Option 2 — Pre-configured context:</strong> Create an <code class="sn-ic">APIRequestContext</code> with <code class="sn-ic">extraHTTPHeaders</code> set once; every call from that context is authenticated.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> authCtx = <span class="tc-kw">await</span> request.<span class="tc-fn">newContext</span>({
+  extraHTTPHeaders: { <span class="tc-str">'Authorization'</span>: <span class="tc-str">`Bearer ${process.env.API_TOKEN}`</span> },
+});
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> authCtx.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users'</span>);
+<span class="tc-kw">await</span> authCtx.<span class="tc-fn">dispose</span>();</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Option 3 — Login and use cookies:</strong> Call the login endpoint, let Playwright save the session cookie in the context, then use the same context for subsequent calls.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'authenticated API calls'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-cm">// Login to get session cookies</span>
+  <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+    data: { email: <span class="tc-str">'admin@test.com'</span>, password: <span class="tc-str">'pass123'</span> },
+  });
+  <span class="tc-cm">// Session cookie is now stored in the request context</span>
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/admin/users'</span>);
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q701.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q701.18</span>
+      <h2 class="sn-q-text">In your project, when did you need API testing and what value did it provide?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, API testing provided value in three distinct scenarios.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Speed.</strong> Before adding API setup, the suite's <code class="sn-ic">beforeEach</code> created an employee via UI for each test. Login, navigate, fill form, submit — 15 seconds per test. With 40 tests in the PIM suite, that was 10 minutes of setup. Moving to <code class="sn-ic">EmployeeApi.create()</code> in <code class="sn-ic">beforeAll</code> cut setup to under 2 seconds for the whole suite.</p>
+<p class="sn-para"><strong class="k-green">Reliability.</strong> Leave module tests were failing intermittently because the leave request form's date picker was slow to render. The test was spending half its time fighting the date picker just to set up a precondition. Moving leave request creation to <code class="sn-ic">LeaveApi.createRequest()</code> eliminated those failures entirely — the test starts directly at the assertion.</p>
+<p class="sn-para"><strong class="k-green">Cross-layer verification.</strong> When the OrangeHRM demo site had a bug where the UI showed "Successfully Saved" but the employee record was not persisted, our hybrid tests caught it: the UI assertion passed but the immediate API read returned 404. Without the API layer, we would have had a green test suite against a broken backend.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>The <code class="sn-ic">request</code> fixture provides an <code class="sn-ic">APIRequestContext</code> — a Node.js HTTP client with Playwright conveniences (baseURL, cookies, JSON parsing).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">request</code> (standalone) has no browser cookies. <code class="sn-ic">page.request</code> shares cookies with the browser session it belongs to.</span></li>
+            <li><span class="icon">⭐</span><span>CORS does not apply to <code class="sn-ic">request</code> (Node.js); it does apply to <code class="sn-ic">page.request</code> (browser context).</span></li>
+            <li><span class="icon">⭐</span><span>The UI+API hybrid pattern — API setup → UI test → API assertion — is the most valuable pattern: fast precondition creation, UI coverage, and cross-layer data verification.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">response.ok()</code> is true for any 200–299 status. <code class="sn-ic">response.status()</code> gives the exact code.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">data:</code> sends JSON; <code class="sn-ic">form:</code> sends URL-encoded; <code class="sn-ic">multipart:</code> sends multipart form data.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">page.waitForRequest()</code> or <code class="sn-ic">page.waitForResponse()</code> to capture and assert on network traffic triggered by UI actions.</span></li>
+            <li><span class="icon">⭐</span><span>API setup in <code class="sn-ic">beforeAll</code> is typically 5–10× faster than equivalent UI setup for creating test preconditions.</span></li>
+            <li><span class="icon">⭐</span><span>Schema validation with Zod or similar catches API contract breakage that <code class="sn-ic">toHaveProperty</code> assertions miss.</span></li>
+            <li><span class="icon">⭐</span><span>Cleanup in <code class="sn-ic">afterAll</code> should be guarded: <code class="sn-ic">if (id) await api.delete(id)</code> prevents double-delete failures when the test fails before the ID is assigned.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

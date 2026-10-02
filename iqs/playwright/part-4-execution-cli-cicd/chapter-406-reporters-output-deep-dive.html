@@ -1,0 +1,290 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🔄 Part 4 &nbsp;·&nbsp; Chapter 406 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Reporters</span> <span class="w2">&amp;</span> <span class="w3">Output</span> <span class="w4">—</span> <span class="w5">Deep</span> <span class="w6">Dive</span></h1>
+    <p class="sn-title-sub">Execution &amp; CI/CD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers reporters in Playwright. Interviewers ask these questions to evaluate your ability to set up custom output structures, merge test results, and publish pipeline statuses.</span>
+  </div>
+
+
+  <!-- Q406.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.1</span>
+      <h2 class="sn-q-text">What is the Playwright HTML report and what does it contain?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <strong class="k-blue">HTML Report</strong> is a standalone web page showing all test suites. For each test, it lists execution steps, duration, browser types, and attaches screenshots, traces, or videos if errors occurred.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.2</span>
+      <h2 class="sn-q-text">How do you open the HTML report after a test run?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use the command line:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-report</div>
+      </div>
+<p class="sn-para">This launches a local web server displaying the report at <code class="sn-ic">http://localhost:9323</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q406.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.3</span>
+      <h2 class="sn-q-text">When do you use JSON reporter vs HTML reporter vs blob reporter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-purple">HTML</strong>: For humans reading test failures locally or in build artifacts.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-purple">JSON</strong>: For machine parsing (e.g. updating dashboard databases).</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-purple">Blob</strong>: For parallelized builds where reports from multiple shards must be merged into one.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q406.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.4</span>
+      <h2 class="sn-q-text">How does your team consume test reports in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Our CI runs the tests, uploads the HTML report folder as a build artifact, and merges shard outputs. If tests fail, a Slack notification sends a direct link to the published HTML report.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.5</span>
+      <h2 class="sn-q-text">What is the difference between list, dot, and line reporters for terminal output?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-teal">list</strong>: Prints every test name as it starts and finishes. Very verbose.</span></li>
+<li><span class="icon" style="color:var(--sn-blue)">💡</span><span><strong class="k-teal">dot</strong>: Prints a dot for each test (green for pass, red for fail). Best for large suites.</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-teal">line</strong>: Prints a single line showing live execution progress.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q406.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.6</span>
+      <h2 class="sn-q-text">What is the blob reporter and how does it work with sharding?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <strong class="k-pink">Blob reporter</strong> produces a zip file containing raw test results and attachments. In sharded builds, each worker container outputs one blob file, which can then be combined using the merge CLI tool.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.7</span>
+      <h2 class="sn-q-text">How do you merge blob reports from multiple shards?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Run:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright merge-reports ./blob-report-directory</div>
+      </div>
+<p class="sn-para">This merges all zip blobs into a single unified HTML report.</p>
+    </div>
+  </div>
+
+  <!-- Q406.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.8</span>
+      <h2 class="sn-q-text">What information does the HTML report show for a failed test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">It shows the <strong class="k-yellow">assertion error message, source code callstack highlighting the broken line, console warnings, network logs, screenshots, and visual trace steps</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.9</span>
+      <h2 class="sn-q-text">What is the difference between the HTML report and Allure for enterprise reporting?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-blue">HTML</strong>: Native, lightweight, single-page, ideal for quick developer checks.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-blue">Allure</strong>: A full dashboard supporting history tracking, categorization, trend lines, and graphs.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q406.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.10</span>
+      <h2 class="sn-q-text">When should you build a custom reporter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Build a custom reporter when you need to send execution payloads directly to internal APIs, format console logs in specific corporate patterns, or pipe live results into Slack/Teams channels.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.11</span>
+      <h2 class="sn-q-text">What is wrong with using only the dot reporter in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The dot reporter gives no terminal stacktraces or failures in the standard output logs. Developers have to download the artifact zip to see <em>why</em> the build broke instead of viewing the logs instantly.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.12</span>
+      <h2 class="sn-q-text">How does the Playwright HTML report compare to Cypress's dashboard?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-orange">Cypress Dashboard</strong> is a cloud service that handles orchestration and historical storage.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-orange">Playwright HTML Report</strong> is a local-first static folder, requiring self-hosting in CI.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q406.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.13</span>
+      <h2 class="sn-q-text">Write a playwright.config.ts that uses multiple reporters simultaneously</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { defineConfig } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  reporter: [
+    [<span class="tc-str">'list'</span>],
+    [<span class="tc-str">'json'</span>, { outputFile: <span class="tc-str">'results.json'</span> }],
+    [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'never'</span> }]
+  ],
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.14</span>
+      <h2 class="sn-q-text">Write a custom reporter that outputs test results as a Slack message payload</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { Reporter, TestCase, TestResult } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test/reporter'</span>;
+
+<span class="tc-kw">class</span> SlackReporter <span class="tc-kw">implements</span> Reporter {
+  <span class="tc-fn">onTestEnd</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult) {
+    <span class="tc-kw">if</span> (result.status !== <span class="tc-str">'passed'</span>) {
+      console.<span class="tc-fn">log</span>(<span class="tc-str">`Slack alert payload: Test ${test.title} failed in ${result.duration}ms.`</span>);
+    }
+  }
+}
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> SlackReporter;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q406.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q406.15</span>
+      <h2 class="sn-q-text">Describe how your team shares test results with stakeholders</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">We host the unified HTML report on an internal web server (e.g. AWS S3 or GitHub Pages) and update a Slack channel with high-level stats (pass rate, runtime, links to failure traces).</p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+</div>
+</div>

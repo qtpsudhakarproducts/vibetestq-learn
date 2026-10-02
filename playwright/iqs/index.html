@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Interview Questions | Playwright Mastery</title>
+    <meta name="description"
+        content="240+ Playwright interview questions covering JavaScript, async programming, Playwright core, test framework, POM, CI/CD, API testing, visual testing, and AI-native automation. Plain English answers.">
+    <link rel="canonical" href="https://vibetestq.com/docs/playwright/iqs/" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Prism.js -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/docs/playwright/shared/sketchnote-styles.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #eff6ff;
+            --secondary: #6366f1;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 300px;
+            --header-height: 70px;
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; color: var(--text); margin-bottom: 1rem; margin-top: 2rem; }
+        h1 { font-size: 2.5rem; color: var(--primary-dark); }
+        h2 { font-size: 1.8rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; margin-top: 3rem; }
+        h3 { font-size: 1.4rem; color: var(--secondary); }
+        p { margin-bottom: 1.2rem; }
+
+        code {
+            background: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            color: #d946ef;
+            font-variant-ligatures: none;
+            font-feature-settings: "calt" 0;
+        }
+
+        pre[class*="language-"] {
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow);
+            font-size: 0.9rem;
+        }
+
+        /* Layout */
+        .app-container { display: flex; min-height: 100vh; }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0; right: 0; left: 0;
+            height: var(--header-height);
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.5rem; color: var(--primary-dark); }
+        .logo img { height: 40px; }
+
+        /* Sidebar */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            padding-top: var(--header-height);
+            overflow-y: auto;
+            z-index: 900;
+        }
+
+        .sidebar-content { padding: 2rem 1.5rem; }
+        .nav-section { margin-bottom: 2rem; }
+        .nav-section h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            margin-top: 0;
+        }
+
+        .nav-list { list-style: none; }
+        .nav-item { margin-bottom: 0.5rem; }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: var(--text);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .nav-link:hover { background-color: var(--primary-light); color: var(--primary); }
+        .nav-link.active { background-color: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .nav-link i { font-size: 1rem; opacity: 0.8; width: 20px; text-align: center; }
+
+        /* Main Content */
+        main { flex: 1; margin-left: var(--sidebar-width); padding-top: var(--header-height); min-height: 100vh; max-width: 100%; }
+        .content-area { max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+
+        section { display: none; animation: fadeIn 0.4s ease-out; }
+        section.active { display: block; }
+
+        /* Markdown Styling */
+        section ul, section ol { margin-left: 1.5rem; margin-bottom: 1.5rem; }
+        section li { margin-bottom: 0.5rem; }
+        section blockquote {
+            padding: 1rem 1.5rem;
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--primary-dark);
+        }
+        section blockquote p { margin-bottom: 0; }
+        section table { width: 100%; border-collapse: collapse; margin: 2rem 0; background: white; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        section th, section td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        section th { background-color: var(--primary-light); color: var(--primary-dark); font-weight: 600; }
+        section img { max-width: 100%; border-radius: 12px; margin: 1.5rem 0; box-shadow: var(--shadow); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Alerts */
+        .alert { padding: 1rem 1.5rem; border-radius: 12px; margin: 1.5rem 0; display: flex; gap: 15px; border-left: 5px solid; }
+        .alert-info { background: #eff6ff; border-color: #3b82f6; color: #1e40af; }
+        .alert-success { background: #f0fdf4; border-color: #22c55e; color: #166534; }
+
+        /* Footer */
+        footer { margin-top: 5rem; padding: 2rem; text-align: center; border-top: 1px solid var(--border); color: var(--text-light); font-size: 0.9rem; }
+
+        /* Nav buttons */
+        .btn-group { display: flex; justify-content: space-between; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+        .btn-nav { padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+        .btn-prev,
+        .btn-prev:visited,
+        .btn-prev:hover,
+        .btn-prev:focus { color: #ffffff; background: var(--primary-dark); }
+        .btn-next { background: var(--primary); color: white; }
+
+        /* Intro overview table */
+        .overview-table { width: 100%; border-collapse: collapse; margin: 2rem 0; }
+        .overview-table th { background: var(--primary); color: white; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 0.9rem; }
+        .overview-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .overview-table tr:nth-child(even) td { background: #f8fafc; }
+        .overview-table tfoot td { font-weight: 700; border-top: 2px solid var(--border); }
+        .q-pill { display: inline-block; background: var(--primary-light); color: var(--primary-dark); border-radius: 9999px; padding: 2px 10px; font-weight: 600; font-size: 0.82rem; }
+
+        /* Hub back link */
+        .hub-link {
+            display: flex; align-items: center; gap: 6px;
+            padding: 6px 14px; border-radius: 8px;
+            font-size: .82rem; font-weight: 700;
+            background: #eff6ff; color: #1d4ed8;
+            border: 1.5px solid #bfdbfe;
+            transition: background .15s, transform .15s;
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        .hub-link:hover { background: #dbeafe; transform: translateX(-2px); }
+        .hub-link i { font-size: .75rem; }
+
+        /* Copy Button */
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1; padding: 4px 8px; border-radius: 4px;
+            font-size: 0.7rem; cursor: pointer; transition: all 0.2s;
+            font-family: 'Inter', sans-serif; z-index: 10; opacity: 0;
+        }
+        pre:hover .copy-btn { opacity: 1; }
+        .copy-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+        .copy-btn i { margin-right: 4px; }
+        pre[class*="language-"] { position: relative; }
+
+        .btn-group.top-nav { margin-top: 0; margin-bottom: 3rem; padding-top: 0; padding-bottom: 2rem; border-top: none; border-bottom: 1px solid var(--border); }
+
+        /* Mobile */
+        .mobile-menu-btn { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 850; backdrop-filter: blur(4px); }
+        .sidebar-overlay.active { display: block; }
+
+        .desktop-logo { display: flex; align-items: center; gap: 12px; }
+        .desktop-logo img { height: 36px; width: auto; }
+        .mobile-logo { display: none; height: 40px; }
+        .mobile-logo img { height: 100%; }
+
+        @media (max-width: 1024px) {
+            aside { transform: translateX(-100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
+            aside.open { transform: translateX(0); }
+            main { margin-left: 0; }
+            .mobile-menu-btn { display: block !important; }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-logo img { display: none !important; }
+            .mobile-logo { display: block !important; order: 3; }
+            header { padding: 0 1rem; justify-content: space-between; gap: 10px; }
+            .logo { flex: 1; text-align: left; }
+            .logo span { font-size: 0.9rem; display: block !important; }
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <header>
+        <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo">
+            <div class="desktop-logo">
+                <img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo">
+                <span>Interview Questions</span>
+            </div>
+        </div>
+        <div class="mobile-logo">
+            <img src="/assets/White-Logo.png" alt="VibeTestQ Mobile Logo">
+        </div>
+        <a href="/docs/playwright" class="hub-link"><i class="fas fa-th-large"></i> Playwright Hub</a>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-content">
+
+                <div class="nav-section">
+                    <h4>Overview</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#intro" class="nav-link active" onclick="showSection('intro')">
+                                <i class="fas fa-home"></i> Introduction
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Part 1 &middot; JavaScript &amp; TypeScript</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#js-fundamentals" class="nav-link" onclick="showSection('js-fundamentals')">
+                                <i class="fas fa-code"></i> JS Fundamentals
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#functions-arrays" class="nav-link" onclick="showSection('functions-arrays')">
+                                <i class="fas fa-list-ol"></i> Functions &amp; Arrays
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#async-javascript" class="nav-link" onclick="showSection('async-javascript')">
+                                <i class="fas fa-clock"></i> Async JavaScript
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Parts 2&ndash;3 &middot; Playwright Core &amp; Tests</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#playwright-core" class="nav-link" onclick="showSection('playwright-core')">
+                                <i class="fas fa-play-circle"></i> Playwright Core
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#playwright-test" class="nav-link" onclick="showSection('playwright-test')">
+                                <i class="fas fa-vial"></i> Test Framework
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Parts 4&ndash;5 &middot; POM &amp; Execution</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#pom-framework" class="nav-link" onclick="showSection('pom-framework')">
+                                <i class="fas fa-layer-group"></i> POM Framework Design
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#execution-cicd" class="nav-link" onclick="showSection('execution-cicd')">
+                                <i class="fas fa-terminal"></i> Execution, CLI &amp; CI/CD
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Part 6 &middot; API, Network &amp; Auth</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#api-network-auth" class="nav-link" onclick="showSection('api-network-auth')">
+                                <i class="fas fa-plug"></i> API, Network &amp; Auth
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Part 7 &middot; Visual &amp; Accessibility</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#visual-accessibility" class="nav-link" onclick="showSection('visual-accessibility')">
+                                <i class="fas fa-eye"></i> Visual &amp; Accessibility
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Part 8 &middot; AI-Native Automation</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a href="#ai-native" class="nav-link" onclick="showSection('ai-native')">
+                                <i class="fas fa-robot"></i> AI-Native Automation
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </aside>
+
+        <main>
+            <div class="content-area">
+                <div class="btn-group top-nav" id="nav-btns-top" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <section id="intro" class="active">
+                    <h1>Playwright Interview Questions</h1>
+                    <p class="lead" style="font-size: 1.2rem; color: var(--text-light); margin-bottom: 2rem;">
+                        240+ questions across 10 modules with plain English answers and no experience-level gatekeeping.
+                    </p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>How to use:</strong> Pick a module from the left sidebar. Read the question, think
+                            about your answer, then read the explanation. Questions cover the full 8-part
+                            Playwright Mastery curriculum.
+                        </div>
+                    </div>
+
+                    <h2>Module Overview</h2>
+                    <table class="overview-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Module</th>
+                                <th>Key Topics</th>
+                                <th>Questions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>01</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('js-fundamentals')" style="color:var(--primary);font-weight:600;">JS Fundamentals</a></td>
+                                <td>Primitives, coercion, hoisting, TDZ, var/let/const, null vs undefined</td>
+                                <td><span class="q-pill">15</span></td>
+                            </tr>
+                            <tr>
+                                <td>02</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('functions-arrays')" style="color:var(--primary);font-weight:600;">Functions &amp; Arrays</a></td>
+                                <td>Closures, callbacks, arrow functions, this keyword, map/filter/reduce</td>
+                                <td><span class="q-pill">10</span></td>
+                            </tr>
+                            <tr>
+                                <td>03</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('async-javascript')" style="color:var(--primary);font-weight:600;">Async JavaScript</a></td>
+                                <td>Promises, event loop, async/await, floating promises, Promise.all</td>
+                                <td><span class="q-pill">10</span></td>
+                            </tr>
+                            <tr>
+                                <td>04</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('playwright-core')" style="color:var(--primary);font-weight:600;">Playwright Core</a></td>
+                                <td>Browser hierarchy, auto-waiting, locators, interactions, iframes, dialogs</td>
+                                <td><span class="q-pill">40</span></td>
+                            </tr>
+                            <tr>
+                                <td>05</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('playwright-test')" style="color:var(--primary);font-weight:600;">Playwright Test Framework</a></td>
+                                <td>Fixtures, hooks, assertions, steps, config, projects, reporters</td>
+                                <td><span class="q-pill">40</span></td>
+                            </tr>
+                            <tr>
+                                <td>06</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('pom-framework')" style="color:var(--primary);font-weight:600;">POM Framework Design</a></td>
+                                <td>Page objects, BasePage, components, data factories, test independence</td>
+                                <td><span class="q-pill">35</span></td>
+                            </tr>
+                            <tr>
+                                <td>07</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('execution-cicd')" style="color:var(--primary);font-weight:600;">Execution, CLI &amp; CI/CD</a></td>
+                                <td>CLI flags, workers, sharding, retries, GitHub Actions, Docker</td>
+                                <td><span class="q-pill">30</span></td>
+                            </tr>
+                            <tr>
+                                <td>08</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('api-network-auth')" style="color:var(--primary);font-weight:600;">API, Network &amp; Auth</a></td>
+                                <td>APIRequestContext, route mocking, storageState, JWT, OAuth, MFA</td>
+                                <td><span class="q-pill">25</span></td>
+                            </tr>
+                            <tr>
+                                <td>09</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('visual-accessibility')" style="color:var(--primary);font-weight:600;">Visual &amp; Accessibility</a></td>
+                                <td>toHaveScreenshot, baselines, masking, WCAG, ARIA, axe-core</td>
+                                <td><span class="q-pill">15</span></td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td><a href="javascript:void(0)" onclick="showSection('ai-native')" style="color:var(--primary);font-weight:600;">AI-Native Automation</a></td>
+                                <td>GenAI, prompt engineering, RAG, AI agents, MCP, self-healing, risks</td>
+                                <td><span class="q-pill">20</span></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" style="font-weight:700;">Total</td>
+                                <td><span class="q-pill" style="background:var(--primary);color:white;font-size:.9rem;">240</span></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="btn-group" style="border-top: none; padding-top: 0; margin-top: 2rem;">
+                        <div></div>
+                        <a href="javascript:void(0)" class="btn-nav btn-next" onclick="showSection('js-fundamentals')">
+                            Start: JS Fundamentals <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </section>
+
+                <div id="docs-content"></div>
+
+                <div class="btn-group" id="nav-btns-bottom" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <footer>&copy; 2026 VibeTestQ. All rights reserved.</footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/docs/playwright/shared/sketchnote-renderer.js"></script>
+
+    <script>
+        const sectionOrder = [
+            'intro',
+            'js-fundamentals', 'functions-arrays', 'async-javascript',
+            'playwright-core', 'playwright-test',
+            'pom-framework', 'execution-cicd',
+            'api-network-auth',
+            'visual-accessibility',
+            'ai-native'
+        ];
+
+        const sections = {
+            'js-fundamentals':   '01-javascript-fundamentals.md',
+            'functions-arrays':  '02-functions-and-arrays.md',
+            'async-javascript':  '03-async-javascript.md',
+            'playwright-core':   '04-playwright-core.md',
+            'playwright-test':   '05-playwright-test-framework.md',
+            'pom-framework':     '06-pom-framework.md',
+            'execution-cicd':    '07-execution-cli-cicd.md',
+            'api-network-auth':  '08-api-network-auth.md',
+            'visual-accessibility': '09-visual-accessibility.md',
+            'ai-native':         '10-ai-native-automation.md'
+        };
+
+        const loadedSections = {};
+
+        async function loadSection(id) {
+            if (id === 'intro' || loadedSections[id]) return;
+            const filename = sections[id];
+            if (!filename) return;
+            try {
+                const url = window.SketchnoteRenderer && typeof window.SketchnoteRenderer.resolveDocUrl === 'function'
+                    ? window.SketchnoteRenderer.resolveDocUrl(filename, window.location)
+                    : filename;
+                let text;
+                if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.fetchMarkdown === 'function') {
+                    text = await window.SketchnoteRenderer.fetchMarkdown(url, { cache: 'no-store' });
+                } else {
+                    const response = await fetch(url, { cache: 'no-store' });
+                    if (!response.ok) throw new Error('File not found');
+                    text = await response.text();
+                }
+
+                const section = document.createElement('section');
+                section.id = id;
+                section.innerHTML = marked.parse(
+                    window.SketchnoteRenderer && typeof window.SketchnoteRenderer.normalizeMarkdown === 'function'
+                        ? window.SketchnoteRenderer.normalizeMarkdown(text)
+                        : text
+                );
+                section.querySelectorAll('pre code').forEach(block => {
+                    if (!block.className) block.className = 'language-javascript';
+                });
+                document.getElementById('docs-content').appendChild(section);
+                loadedSections[id] = true;
+                if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.postProcess === 'function') {
+                    window.SketchnoteRenderer.postProcess(section);
+                }
+                if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.addCopyButtons === 'function') {
+                    window.SketchnoteRenderer.addCopyButtons(section);
+                } else {
+                    addCopyButtons(section);
+                }
+                Prism.highlightAllUnder(section);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function addCopyButtons(root) {
+            root.querySelectorAll('pre').forEach(pre => {
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                button.onclick = () => copyCode(button);
+                pre.appendChild(button);
+            });
+        }
+
+        async function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').innerText;
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => { button.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+            }
+        }
+
+        async function showSection(id) {
+            if (id !== 'intro') await loadSection(id);
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            const link = document.querySelector(`a[href="#${id}"]`);
+            if (link) link.classList.add('active');
+            updateNavButtons(id);
+            history.pushState(null, null, `#${id}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function updateNavButtons(currentId) {
+            const index = sectionOrder.indexOf(currentId);
+            const topNav = document.getElementById('nav-btns-top');
+            const bottomNav = document.getElementById('nav-btns-bottom');
+            if (index === 0) { topNav.style.display = 'none'; bottomNav.style.display = 'none'; return; }
+            topNav.style.display = 'flex';
+            bottomNav.style.display = 'flex';
+            [topNav, bottomNav].forEach(nav => {
+                const prevBtn = nav.querySelector('.prev-btn');
+                const nextBtn = nav.querySelector('.next-btn');
+                if (index > 0) {
+                    prevBtn.style.visibility = 'visible';
+                    prevBtn.onclick = () => showSection(sectionOrder[index - 1]);
+                    prevBtn.innerHTML = `<i class="fas fa-arrow-left"></i> ${getSectionName(sectionOrder[index - 1])}`;
+                } else {
+                    prevBtn.style.visibility = 'hidden';
+                }
+                if (index < sectionOrder.length - 1) {
+                    nextBtn.style.visibility = 'visible';
+                    nextBtn.onclick = () => showSection(sectionOrder[index + 1]);
+                    nextBtn.innerHTML = `${getSectionName(sectionOrder[index + 1])} <i class="fas fa-arrow-right"></i>`;
+                } else {
+                    nextBtn.style.visibility = 'hidden';
+                }
+            });
+        }
+
+        function getSectionName(id) {
+            const link = document.querySelector(`a[href="#${id}"]`);
+            return link ? link.innerText.trim() : 'Next';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        window.addEventListener('load', async () => {
+            const hash = window.location.hash.slice(1) || 'intro';
+            await showSection(hash);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,868 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🌐 Part 6 &nbsp;·&nbsp; Chapter 602 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Gherkin</span> <span class="w2">Feature</span> <span class="w3">Files</span> <span class="w4">&amp;</span> <span class="w5">Cucumber</span> <span class="w6">Profiles</span></h1>
+    <p class="sn-title-sub">Cucumber BDD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers writing Gherkin feature files and organising Cucumber runs with profiles. Interviewers ask these questions because feature files are the public face of a BDD framework — they judge whether you can write Gherkin that is genuinely readable to the business, not just test code dressed in Given/When/Then. Questions progress from Gherkin syntax through feature file structure, tag strategy, and the multi-profile pattern from the OrangeHRM BDD project.</span>
+  </div>
+
+
+  <!-- Q602.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.1</span>
+      <h2 class="sn-q-text">What is a feature file and what does it contain?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A feature file is a plain-text file with a <code class="sn-ic">.feature</code> extension that describes the behaviour of one part of your application. It is written in Gherkin — a structured language that uses keywords to give format to plain English sentences.</p>
+      </div>
+<p class="sn-para">Every feature file contains:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>One <code class="sn-ic">Feature</code> keyword at the top with a name and optional description</span></li>
+<li><span class="icon">💡</span><span>One or more <code class="sn-ic">Scenario</code> or <code class="sn-ic">Scenario Outline</code> blocks</span></li>
+<li><span class="icon">⚡</span><span>Optionally, a <code class="sn-ic">Background</code> block that runs before each scenario</span></li>
+<li><span class="icon">🎯</span><span>Optionally, tags (<code class="sn-ic">@tagName</code>) above <code class="sn-ic">Feature</code> or <code class="sn-ic">Scenario</code></span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">@login
+Feature: OrangeHRM Login
+
+  Background:
+    Given the user navigates to OrangeHRM login page
+
+  Scenario: Successful login with valid credentials
+    When the user enters username &quot;testadmin&quot;
+    And the user enters password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+    And the user clicks the login button
+    Then the user should be redirected to the dashboard
+    And the dashboard header should be visible</div>
+      </div>
+<p class="sn-para">Feature files live in the <code class="sn-ic">features/</code> folder. They are the contract between the business and the automation team — if the behaviour changes, the feature file changes too.</p>
+    </div>
+  </div>
+
+  <!-- Q602.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.2</span>
+      <h2 class="sn-q-text">What are the Gherkin step keywords and what is each for?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Gherkin has five step keywords. Each represents a different role in the scenario.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Given</strong> sets up the starting state before anything happens. It describes what is already true when the scenario begins. Example: <code class="sn-ic">Given the user is logged in as &quot;testadmin&quot;</code>.</p>
+<p class="sn-para"><strong class="k-green">When</strong> describes the action the user takes — the trigger for the behaviour being tested. Example: <code class="sn-ic">When the user clicks the login button</code>.</p>
+<p class="sn-para"><strong class="k-green">Then</strong> describes the expected result after the action. This is where assertions happen. Example: <code class="sn-ic">Then the user should be redirected to the dashboard</code>.</p>
+<p class="sn-para"><strong class="k-green">And</strong> and <strong class="k-green">But</strong> are continuation keywords. They replace repeating the same keyword on consecutive steps. <code class="sn-ic">And</code> continues in the same direction; <code class="sn-ic">But</code> introduces a contrast.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario: Failed login with invalid credentials
+  When the user enters username &quot;invalid_user&quot;     <span class="tc-cm"># action</span>
+  And the user enters password &quot;wrong_password&quot;    <span class="tc-cm"># And = another When</span>
+  And the user clicks the login button             <span class="tc-cm"># And = another When</span>
+  Then an error message should be displayed        <span class="tc-cm"># assertion</span></div>
+      </div>
+<p class="sn-para">The keyword itself does not affect what Cucumber runs — <code class="sn-ic">Given</code>, <code class="sn-ic">When</code>, <code class="sn-ic">Then</code>, <code class="sn-ic">And</code>, <code class="sn-ic">But</code> all map to step definitions the same way. The keywords exist for human readability only.</p>
+    </div>
+  </div>
+
+  <!-- Q602.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.3</span>
+      <h2 class="sn-q-text">What is a Background block and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">Background</code> is a set of steps that run before every <code class="sn-ic">Scenario</code> in the same feature file. It is Gherkin's equivalent of <code class="sn-ic">beforeEach</code>, but written in plain English and visible in the feature file.</p>
+      </div>
+<p class="sn-para">In the OrangeHRM employee management feature, every scenario requires the user to be logged in and on the PIM module:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Feature: OrangeHRM Employee Management
+
+  Background:
+    Given the user is logged <span class="tc-kw">in</span> as &quot;testadmin&quot; with password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+    And the user navigates to PIM <span class="tc-kw">module</span>
+
+  Scenario: Add a <span class="tc-kw">new</span> employee with mandatory fields
+    When the user clicks on Add Employee button
+    And the user enters first name &quot;John&quot;
+    And the user enters last name &quot;Doe&quot;
+    And the user saves the <span class="tc-kw">new</span> employee
+    Then the employee profile page should be displayed
+
+  Scenario: Search <span class="tc-kw">for</span> an existing employee by name
+    When the user is on the Employee List page
+    And the user enters search name &quot;John&quot;
+    ...</div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">Background</code>, the login steps would be repeated at the start of every scenario — six scenarios means six copies of the same two setup steps.</p>
+<p class="sn-para"><strong class="k-purple">When to use Background:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Setup steps are the same for every scenario in the file</span></li>
+<li><span class="icon">💡</span><span>The setup is part of the business context (visible in the report)</span></li>
+<li><span class="icon">⚡</span><span>The file has three or more scenarios that all need the same starting state</span></li>
+</ul>
+<p class="sn-para"><strong class="k-purple">When NOT to use Background:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Only one or two scenarios need the setup</span></li>
+<li><span class="icon">📌</span><span>Different scenarios need different starting states</span></li>
+<li><span class="icon">🔑</span><span>The setup is purely technical (opening a browser — use a <code class="sn-ic">Before</code> hook instead)</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q602.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.4</span>
+      <h2 class="sn-q-text">How did you structure feature files in your OrangeHRM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we created one feature file per module: <code class="sn-ic">login.feature</code>, <code class="sn-ic">employee-management.feature</code>, and <code class="sn-ic">user-management.feature</code>. This keeps each file focused on one area of the application and matches how the team organised their work.</p>
+      </div>
+<p class="sn-para">The <code class="sn-ic">login.feature</code> used <code class="sn-ic">Background</code> because every login scenario starts on the same page — the login page. The background step navigates there so each scenario can immediately start the action.</p>
+<p class="sn-para">The <code class="sn-ic">employee-management.feature</code> used <code class="sn-ic">Background</code> for the login and PIM navigation steps, because every employee scenario assumes the user is already logged in and on the employee list. This saved repeating those two steps across six scenarios.</p>
+<p class="sn-para">We placed a <code class="sn-ic">@login</code>, <code class="sn-ic">@employee</code>, or <code class="sn-ic">@user-management</code> tag on each <code class="sn-ic">Feature</code>. This let us run a single module with <code class="sn-ic">npm run test:login</code> or <code class="sn-ic">npm run test:employee</code> from <code class="sn-ic">package.json</code>, without needing to comment out files or change any code.</p>
+<p class="sn-para">The feature files were the first thing we showed business stakeholders. They could read the scenarios and confirm whether they matched the requirements — before we wrote a single line of step definition code.</p>
+    </div>
+  </div>
+
+  <!-- Q602.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.5</span>
+      <h2 class="sn-q-text">What is a Scenario Outline and how does it differ from a regular Scenario?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <code class="sn-ic">Scenario</code> runs once with fixed values written directly in the steps. A <code class="sn-ic">Scenario Outline</code> is a template — it uses placeholders in angle brackets and runs once for each row in its <code class="sn-ic">Examples</code> table.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario: Add a <span class="tc-kw">new</span> employee with mandatory fields
+  When the user clicks on Add Employee button
+  And the user enters first name &quot;John&quot;
+  And the user enters last name &quot;Doe&quot;
+  And the user saves the <span class="tc-kw">new</span> employee
+  Then the employee profile page should be displayed
+
+Scenario Outline: Add multiple employees
+  When the user clicks on Add Employee button
+  And the user enters first name &quot;&lt;firstName&gt;&quot;
+  And the user enters last name &quot;&lt;lastName&gt;&quot;
+  And the user saves the <span class="tc-kw">new</span> employee
+  Then the employee profile page should be displayed
+
+  Examples:
+    | firstName | lastName  |
+    | Alice     | Johnson   |
+    | Bob       | Williams  |
+    | Carol     | Brown     |</div>
+      </div>
+<p class="sn-para">Cucumber replaces <code class="sn-ic">&lt;firstName&gt;</code> with <code class="sn-ic">Alice</code>, <code class="sn-ic">Bob</code>, <code class="sn-ic">Carol</code> in successive runs. The step definition receives the actual value as a string — it never sees the placeholder name.</p>
+<p class="sn-para"><strong class="k-teal">Use Scenario Outline when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The same workflow needs testing with multiple data combinations</span></li>
+<li><span class="icon">💡</span><span>You want to test boundary values (valid input, invalid input, empty input)</span></li>
+<li><span class="icon">⚡</span><span>You need to create multiple test records with different field values</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Use regular Scenario when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>The test is unique — the specific data is part of what makes the test meaningful</span></li>
+<li><span class="icon">📌</span><span>The scenario is testing a one-off edge case</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q602.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.6</span>
+      <h2 class="sn-q-text">How does the Examples table work with step definitions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <code class="sn-ic">Examples</code> table maps column headers to <code class="sn-ic">{string}</code> parameters in step definitions. Cucumber reads each row, substitutes the placeholders, then finds and runs the matching step definition.</p>
+      </div>
+<p class="sn-para">Feature file:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario Outline: Add multiple employees
+  And the user enters first name &quot;&lt;firstName&gt;&quot;
+  And the user enters last name &quot;&lt;lastName&gt;&quot;
+
+  Examples:
+    | firstName | lastName |
+    | Alice     | Johnson  |
+    | Bob       | Williams |</div>
+      </div>
+<p class="sn-para">Step definition:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">When(<span class="tc-str">'the user enters first name {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, firstName: <span class="tc-kw">string</span>) {
+    <span class="tc-cm">// firstName = &amp;quot;Alice&amp;quot; on first run, &amp;quot;Bob&amp;quot; on second run</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;firstName&amp;quot;]'</span>).<span class="tc-fn">fill</span>(firstName);
+  }
+);</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">{string}</code> expression in the step definition matches text in double quotes in the feature file. When Cucumber runs the <code class="sn-ic">Scenario Outline</code>, it runs the full scenario twice — first with <code class="sn-ic">firstName=&quot;Alice&quot;</code> and <code class="sn-ic">lastName=&quot;Johnson&quot;</code>, then with <code class="sn-ic">firstName=&quot;Bob&quot;</code> and <code class="sn-ic">lastName=&quot;Williams&quot;</code>.</p>
+<p class="sn-para">Each run is a separate test in the report. If Alice's run passes and Bob's fails, the report shows one pass and one failure.</p>
+    </div>
+  </div>
+
+  <!-- Q602.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.7</span>
+      <h2 class="sn-q-text">What are tags in Cucumber and how do you use them for selective execution?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tags are labels you add to a <code class="sn-ic">Feature</code>, <code class="sn-ic">Scenario</code>, or <code class="sn-ic">Scenario Outline</code> using <code class="sn-ic">@</code> prefix. They do not change how the test runs — they add metadata that Cucumber uses for filtering.</p>
+      </div>
+<p class="sn-para">From the OrangeHRM project:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">@login
+Feature: OrangeHRM Login
+  ...
+
+@employee
+Feature: OrangeHRM Employee Management
+  ...
+
+@user-management
+Feature: OrangeHRM User Management
+  ...</div>
+      </div>
+<p class="sn-para">You run tests by tag with <code class="sn-ic">--tags</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx cucumber-js --tags &quot;@login&quot;
+
+npx cucumber-js --tags &quot;@login or @employee&quot;
+
+npx cucumber-js --tags &quot;@employee and not @slow&quot;</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">package.json</code>, each tag maps to a named script:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;scripts&quot;: {
+    &quot;test&quot;:         &quot;cucumber-js --config cucumber.js&quot;,
+    &quot;test:login&quot;:   &quot;cucumber-js --config cucumber.js --tags \&quot;@login\&quot;&quot;,
+    &quot;test:employee&quot;:&quot;cucumber-js --config cucumber.js --tags \&quot;@employee\&quot;&quot;,
+    &quot;test:user&quot;:    &quot;cucumber-js --config cucumber.js --tags \&quot;@user-management\&quot;&quot;
+  }
+}</div>
+      </div>
+<p class="sn-para">Tags can also control hooks — you can make a <code class="sn-ic">Before</code> hook run only for <code class="sn-ic">@employee</code> scenarios:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">Before({ tags: <span class="tc-str">'@employee'</span> }, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-cm">// Only runs before @employee scenarios</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q602.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.8</span>
+      <h2 class="sn-q-text">What is wrong with this feature file step design?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario: Create a <span class="tc-kw">new</span> Admin user
+  When the user clicks the button with <span class="tc-kw">class</span> &quot;oxd-button--secondary&quot;
+  And the user fills input[name=&quot;username&quot;] with &quot;john.admin&quot;
+  And the user selects .oxd-select-wrapper option &quot;Admin&quot;
+  Then the .oxd-toast--success element should be visible</div>
+      </div>
+<p class="sn-para">This breaks the purpose of BDD. The steps expose CSS selectors and technical details — a business stakeholder reading this learns nothing about what the system should do. It is also fragile: if a class name changes, the Gherkin breaks.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario: Create a <span class="tc-kw">new</span> Admin user
+  When the user clicks on Add User button
+  And the user selects user role &quot;Admin&quot;
+  And the user enters <span class="tc-kw">new</span> username &quot;john.doe.admin&quot;
+  And the user selects status &quot;Enabled&quot;
+  And the user enters user password &quot;Admin@<span class="tc-num">1234</span>&quot;
+  And the user confirms the password &quot;Admin@<span class="tc-num">1234</span>&quot;
+  And the user saves the <span class="tc-kw">new</span> user
+  Then a success toast message should be visible
+  And the user list page should be displayed</div>
+      </div>
+<p class="sn-para">The technical details (CSS selectors, element types) belong in step definitions and page objects — not in feature files. Gherkin describes <em>what</em> the user does and <em>what</em> should happen, never <em>how</em> the code finds an element.</p>
+    </div>
+  </div>
+
+  <!-- Q602.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.9</span>
+      <h2 class="sn-q-text">What is a Cucumber profile and why would you have more than one?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A Cucumber profile is a named configuration block in <code class="sn-ic">cucumber.js</code>. Each profile tells Cucumber which support files, step definitions, and formatters to use for that run. You select a profile at runtime with <code class="sn-ic">--profile</code>.</p>
+      </div>
+<p class="sn-para">The OrangeHRM project defines two profiles in <code class="sn-ic">cucumber.js</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    <span class="tc-kw">require</span>: [<span class="tc-str">'support/hooks.ts'</span>, <span class="tc-str">'support/world.ts'</span>, <span class="tc-str">'step-definitions S0 *.ts'</span>],
+    features: [<span class="tc-str">'features S1 *.feature'</span>],
+    <span class="tc-cm">// ...</span>
+  },
+  pom: {
+    <span class="tc-kw">require</span>: [<span class="tc-str">'support/pom-hooks.ts'</span>, <span class="tc-str">'support/pom-world.ts'</span>, <span class="tc-str">'step-definitions-pom S3 *.ts'</span>],
+    features: [<span class="tc-str">'features S4 *.feature'</span>],
+    <span class="tc-cm">// ...</span>
+  },
+};</div>
+      </div>
+<p class="sn-para">Both profiles run the same feature files — the Gherkin never changes. What changes is the implementation: <code class="sn-ic">default</code> uses direct Playwright locators in step definitions; <code class="sn-ic">pom</code> delegates everything to page objects.</p>
+<p class="sn-para">You run them with:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm test               # default profile
+npm run test:pom       # pom profile</div>
+      </div>
+<p class="sn-para">You would have multiple profiles when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Teaching — one profile shows the simple approach, one shows the production approach</span></li>
+<li><span class="icon">💡</span><span>Environments — a <code class="sn-ic">local</code> profile runs headed, a <code class="sn-ic">ci</code> profile runs headless with more retries</span></li>
+<li><span class="icon">⚡</span><span>Scope — a <code class="sn-ic">smoke</code> profile runs <code class="sn-ic">@smoke</code> tagged tests; a <code class="sn-ic">regression</code> profile runs everything</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q602.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.10</span>
+      <h2 class="sn-q-text">What is the difference between <code class="sn-ic">default</code> and <code class="sn-ic">pom</code> profiles in this project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both profiles share the same feature files. The difference is in what handles each step.</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">default</code> profile</th><th class="sn-th-green"><code class="sn-ic">pom</code> profile</th></tr></thead>
+          <tbody>
+          <tr><td>World</td><td><code class="sn-ic">OrangeHRMWorld</code></td><td><code class="sn-ic">POMWorld</code></td></tr>
+          <tr><td>Hooks</td><td><code class="sn-ic">support/hooks.ts</code></td><td><code class="sn-ic">support/pom-hooks.ts</code></td></tr>
+          <tr><td>Step definitions</td><td><code class="sn-ic">step-definitions/</code></td><td><code class="sn-ic">step-definitions-pom/</code></td></tr>
+          <tr><td>Locators live in</td><td>Step definition functions</td><td>Page object classes</td></tr>
+          <tr><td>Page objects used</td><td>No</td><td>Yes</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">In <code class="sn-ic">default</code>, a step definition interacts directly with the page:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions/login.steps.ts</span>
+When(<span class="tc-str">'the user enters username {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, username: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;username&amp;quot;]'</span>).<span class="tc-fn">fill</span>(username);  <span class="tc-cm">// locator here</span>
+});</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">pom</code>, the step definition delegates to a page object:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions-pom/login.steps.ts</span>
+When(<span class="tc-str">'the user enters username {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, username: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">enterUsername</span>(username);  <span class="tc-cm">// no locator here</span>
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">pom</code> profile is the production pattern. The <code class="sn-ic">default</code> profile exists as a learning baseline — it is easier to read when you are new to BDD because everything is in one place.</p>
+    </div>
+  </div>
+
+  <!-- Q602.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.11</span>
+      <h2 class="sn-q-text">How does <code class="sn-ic">worldParameters</code> in cucumber.js centralise configuration?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">worldParameters</code> is a key in the Cucumber profile config. Whatever you put there is passed to every World instance as <code class="sn-ic">options.parameters</code>. This is how you avoid hard-coding URLs, credentials, and settings inside step definitions.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// cucumber.js</span>
+<span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    <span class="tc-cm">// ...</span>
+    worldParameters: {
+      baseUrl: 'https:<span class="tc-cm">//vibetestq-osondemand.orangehrm.com/auth/login',</span>
+      headless: <span class="tc-kw">false</span>,
+      slowMo: <span class="tc-num">100</span>,
+    },
+  },
+};</div>
+      </div>
+<p class="sn-para">In the World class, you read these parameters in the constructor:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> OrangeHRMWorld <span class="tc-kw">extends</span> World {
+  <span class="tc-kw">readonly</span> baseUrl: <span class="tc-kw">string</span>;
+  <span class="tc-kw">readonly</span> headless: <span class="tc-kw">boolean</span>;
+  <span class="tc-kw">readonly</span> slowMo: <span class="tc-kw">number</span>;
+
+  <span class="tc-fn">constructor</span>(options: OrangeHRMWorldOptions) {
+    <span class="tc-fn">super</span>(options);
+    <span class="tc-kw">this</span>.baseUrl  = options.parameters?.baseUrl  ?? <span class="tc-str">''</span>;
+    <span class="tc-kw">this</span>.headless = options.parameters?.headless ?? <span class="tc-kw">false</span>;
+    <span class="tc-kw">this</span>.slowMo   = options.parameters?.slowMo   ?? <span class="tc-num">0</span>;
+  }
+}</div>
+      </div>
+<p class="sn-para">Step definitions never reference a URL. They call <code class="sn-ic">this.navigateTo('/')</code>, which uses <code class="sn-ic">this.baseUrl</code> internally. To switch from local to staging, you change one line in <code class="sn-ic">cucumber.js</code> — nothing else changes.</p>
+<p class="sn-para">You can also override <code class="sn-ic">worldParameters</code> at runtime with environment variables for CI:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">cross-env HEADLESS=true cucumber-js --config cucumber.js</div>
+      </div>
+<p class="sn-para">In the World constructor, check the environment variable as a fallback:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">this</span>.headless = process.env.HEADLESS === <span class="tc-str">'true'</span> || (options.parameters?.headless ?? <span class="tc-kw">false</span>);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q602.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.12</span>
+      <h2 class="sn-q-text">How does this Gherkin setup compare to Playwright Test's native approach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In Playwright Test (<code class="sn-ic">@playwright/test</code>), test parameters live in <code class="sn-ic">playwright.config.ts</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  use: {
+    baseURL: process.env.BASE_URL ?? 'https:<span class="tc-cm">//localhost:3000',</span>
+  },
+});</div>
+      </div>
+<p class="sn-para">In Cucumber, they live in <code class="sn-ic">cucumber.js</code> as <code class="sn-ic">worldParameters</code>. Both achieve the same thing — centralised, environment-aware configuration — but the mechanism is different.</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Cucumber + <code class="sn-ic">worldParameters</code></th><th class="sn-th-green">Playwright Test config</th></tr></thead>
+          <tbody>
+          <tr><td>Config file</td><td><code class="sn-ic">cucumber.js</code></td><td><code class="sn-ic">playwright.config.ts</code></td></tr>
+          <tr><td>Access in tests</td><td><code class="sn-ic">this.baseUrl</code> (via World)</td><td><code class="sn-ic">baseURL</code> (via <code class="sn-ic">use</code> config or fixture)</td></tr>
+          <tr><td>Multi-profile support</td><td>Named profiles in <code class="sn-ic">module.exports</code></td><td>Named projects in <code class="sn-ic">projects</code> array</td></tr>
+          <tr><td>Runtime override</td><td><code class="sn-ic">cross-env</code> + <code class="sn-ic">process.env</code></td><td><code class="sn-ic">process.env</code> in config</td></tr>
+          <tr><td>Feature files</td><td>Gherkin <code class="sn-ic">.feature</code> files</td><td>TypeScript <code class="sn-ic">test()</code> functions</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The key difference is that Playwright Test's config is injected automatically through the fixture system — you just use <code class="sn-ic">{ page }</code> and <code class="sn-ic">baseURL</code> is already applied. In Cucumber, you wire everything yourself through the World class.</p>
+    </div>
+  </div>
+
+  <!-- Q602.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.13</span>
+      <h2 class="sn-q-text">Write a feature file for a search scenario with reset functionality</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">@user-management
+Feature: OrangeHRM User Management
+
+  Background:
+    Given the user is logged <span class="tc-kw">in</span> as &quot;testadmin&quot; with password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+    And the user navigates to Admin <span class="tc-kw">module</span>
+
+  Scenario: Search user by username
+    When the user is on the User Management page
+    And the user enters username to search &quot;john.doe.admin&quot;
+    And the user clicks the search button
+    Then the user list should display results
+    And the username &quot;john.doe.admin&quot; should appear <span class="tc-kw">in</span> the results
+
+  Scenario: Search user by user role
+    When the user is on the User Management page
+    And the user selects user role filter &quot;Admin&quot;
+    And the user clicks the search button
+    Then the user list should display results
+    And all displayed users should have role &quot;Admin&quot;
+
+  Scenario: Search user returns no results
+    When the user is on the User Management page
+    And the user enters username to search &quot;zzz_nonexistent_user_999&quot;
+    And the user clicks the search button
+    Then the no records found message should be displayed
+
+  Scenario: Reset user search filters
+    When the user is on the User Management page
+    And the user enters username to search &quot;someuser&quot;
+    And the user clicks the reset button
+    Then the search filters should be cleared</div>
+      </div>
+<p class="sn-para">Key design decisions: the <code class="sn-ic">Background</code> handles login and navigation — every user management scenario starts from the same place. Each <code class="sn-ic">Scenario</code> covers one specific behaviour. The reset scenario verifies the Reset button clears the filter — this is tested separately because it is a distinct user action with a distinct expected outcome.</p>
+    </div>
+  </div>
+
+  <!-- Q602.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.14</span>
+      <h2 class="sn-q-text">How do you run a specific feature file or scenario by name?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three ways to target specific tests:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">By tag</strong> (most common):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx cucumber-js --tags &quot;@login&quot;
+npx cucumber-js --profile pom --tags &quot;@employee&quot;</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">By feature file path</strong>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx cucumber-js features/login.feature
+npx cucumber-js features/employee-management.feature</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">By scenario name</strong> (using <code class="sn-ic">--name</code> with a regex):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx cucumber-js --name &quot;Add a new employee&quot;
+
+npx cucumber-js --name &quot;.*invalid.*&quot;</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">By line number</strong> (run one specific scenario):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx cucumber-js features/login.feature:12</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">package.json</code>, the OrangeHRM project uses tag-based scripts as the standard approach:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;test:login&quot;:    &quot;cucumber-js --config cucumber.js --tags \&quot;@login\&quot;&quot;,
+  &quot;test:employee&quot;: &quot;cucumber-js --config cucumber.js --tags \&quot;@employee\&quot;&quot;,
+  &quot;test:user&quot;:     &quot;cucumber-js --config cucumber.js --tags \&quot;@user-management\&quot;&quot;
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q602.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q602.15</span>
+      <h2 class="sn-q-text">How do you write a Scenario Outline step definition for multiple employees?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Feature file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario Outline: Add multiple employees
+  When the user clicks on Add Employee button
+  And the user enters first name &quot;&lt;firstName&gt;&quot;
+  And the user enters last name &quot;&lt;lastName&gt;&quot;
+  And the user saves the <span class="tc-kw">new</span> employee
+  Then the employee profile page should be displayed
+
+  Examples:
+    | firstName | lastName  |
+    | Alice     | Johnson   |
+    | Bob       | Williams  |
+    | Carol     | Brown     |</div>
+      </div>
+<p class="sn-para">POM step definitions (from <code class="sn-ic">step-definitions-pom/employee.steps.ts</code>):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { When, Then } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { POMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/pom-world'</span>;
+
+When(<span class="tc-str">'the user clicks on Add Employee button'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.employeeListPage.<span class="tc-fn">clickAddEmployee</span>();
+    <span class="tc-cm">// navigates to /pim/addEmployee and waits for networkidle</span>
+  }
+);
+
+When(<span class="tc-str">'the user enters first name {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, firstName: <span class="tc-kw">string</span>) {
+    <span class="tc-cm">// firstName receives &amp;quot;Alice&amp;quot;, &amp;quot;Bob&amp;quot;, &amp;quot;Carol&amp;quot; in successive runs</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addEmployeePage.<span class="tc-fn">enterFirstName</span>(firstName);
+  }
+);
+
+When(<span class="tc-str">'the user enters last name {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, lastName: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addEmployeePage.<span class="tc-fn">enterLastName</span>(lastName);
+  }
+);
+
+When(<span class="tc-str">'the user saves the new employee'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addEmployeePage.<span class="tc-fn">saveEmployee</span>();
+  }
+);
+
+Then(<span class="tc-str">'the employee profile page should be displayed'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addEmployeePage.<span class="tc-fn">verifyEmployeeProfileDisplayed</span>();
+    <span class="tc-cm">// waits for URL to match **/pim/viewPersonalDetails**</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">Cucumber runs this block three times. Each run gets a fresh World — a fresh browser context — because <code class="sn-ic">Before</code> opens the browser and <code class="sn-ic">After</code> closes it per scenario. There is no state leak between Alice's run and Bob's run.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>A feature file has one Feature, an optional Background, and multiple Scenarios. Tags at Feature or Scenario level enable selective execution.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Background</code> runs before every Scenario in the same file — use it when setup steps are part of the business context, not for browser launch (that is a <code class="sn-ic">Before</code> hook).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Scenario Outline</code> + <code class="sn-ic">Examples</code> runs a template scenario once per data row — use it for data-driven tests. Each run is a separate test in the report.</span></li>
+            <li><span class="icon">⭐</span><span>Tags (<code class="sn-ic">@login</code>, <code class="sn-ic">@employee</code>, <code class="sn-ic">@smoke</code>) let you run subsets with <code class="sn-ic">--tags</code>. Boolean operators (<code class="sn-ic">and</code>, <code class="sn-ic">or</code>, <code class="sn-ic">not</code>) compose tag expressions.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Cucumber profiles in <code class="sn-ic">cucumber.js</code> let you switch between implementation approaches (direct vs POM) or environments (local vs CI) without changing feature files.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">worldParameters</code> in <code class="sn-ic">cucumber.js</code> centralises <code class="sn-ic">baseUrl</code>, <code class="sn-ic">headless</code>, and <code class="sn-ic">slowMo</code> — step definitions never hard-code URLs or settings.</span></li>
+            <li><span class="icon">⭐</span><span>Keep Gherkin at business language level — no CSS selectors, no class names, no element types in feature files.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

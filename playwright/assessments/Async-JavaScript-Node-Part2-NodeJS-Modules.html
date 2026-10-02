@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: Node.js & Modules - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --secondary: #22c55e;
+    --accent: #f97316;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.logo img {
+    height: 50px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.assessment-title {
+    text-align: right;
+}
+
+.assessment-title h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.assessment-title p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.question-number {
+    color: var(--primary);
+    min-width: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background-color: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.option input {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.option.correct {
+    border-color: var(--secondary);
+    background-color: #ecfdf5;
+}
+
+.option.incorrect {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.question.unanswered {
+    border: 2px solid var(--danger) !important;
+    background-color: #fef2f2 !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.result-section {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.name-input-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.name-input-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.name-input-section input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: none;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary);
+}
+
+@media print {
+
+    .btn,
+    .name-input-section {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .explanation,
+    .result-section {
+        display: block !important;
+    }
+
+    #printed-name {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+}
+
+#printed-name {
+    display: none;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #e11d48;
+    font-family: monospace;
+}
+
+pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo"></div>
+            <a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i> Back to Assessments Home</a>
+            <div class="assessment-title">
+                <h1>Assessment</h1>
+                <p>Loading topics...</p>
+            </div>
+        </header>
+
+        <div id="result-container" class="card result-section">
+            <div id="printed-name"></div>
+            <h2>Assessment Completed!</h2>
+            <div id="score-display" class="score-display">0 / 0</div>
+            <p id="feedback-text" class="feedback-text"></p>
+            <div class="name-input-section">
+                <label for="student-name">Enter your name for the report:</label>
+                <input type="text" id="student-name" placeholder="Your Full Name"><br>
+                <button class="btn btn-success" onclick="preparePrint()"><i class="fas fa-print"></i> Print
+                    Result</button>
+            </div>
+        </div>
+
+        <div id="quiz-container">
+            <div class="card">
+                <form id="quiz-form"></form>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-light); font-size: 0.8rem;">
+            &copy; 2026 VibeTestQ. All rights reserved.
+        </footer>
+    </div>
+
+    <script type="text/plain" id="assessment-markdown">
+# Assessment: Node.js & Modules - Part 2
+
+**Total Questions:** 20
+**Time:** 20 minutes
+**Pass Mark:** 60%
+**Topics:** Node.js Fundamentals, Modules (CommonJS & ES6), File System Operations, npm Package Management, Environment Variables
+
+---
+
+## Questions
+
+### Question 1
+What is Node.js?
+
+A) A web browser
+B) A JavaScript runtime built on Chrome's V8 engine
+C) A database management system
+D) A CSS framework
+
+**Answer: B) A JavaScript runtime built on Chrome's V8 engine**
+
+**Explanation:** Node.js allows JavaScript to run outside the browser, enabling server-side development.
+
+---
+
+### Question 2
+Which global object in Node.js provides information about the current process?
+
+A) window
+B) document
+C) process
+D) global
+
+**Answer: C) process**
+
+**Explanation:** The `process` object provides info about the current Node.js process, including environment variables and command-line arguments.
+
+---
+
+### Question 3
+How do you access command-line arguments in Node.js?
+
+A) process.args
+B) process.argv
+C) command.args
+D) node.arguments
+
+**Answer: B) process.argv**
+
+**Explanation:** `process.argv` is an array containing command-line arguments passed when launching the Node.js process.
+
+---
+
+### Question 4
+What does `__dirname` return in Node.js?
+
+A) The current file name
+B) The directory path of the current module
+C) The working directory
+D) The home directory
+
+**Answer: B) The directory path of the current module**
+
+**Explanation:** `__dirname` returns the absolute path of the directory containing the currently executing file.
+
+---
+
+### Question 5
+In CommonJS, how do you export a function?
+
+A) export function myFunc() {}
+B) module.exports = myFunc
+C) exports.default = myFunc
+D) return myFunc
+
+**Answer: B) module.exports = myFunc**
+
+**Explanation:** In CommonJS, use `module.exports` to export values from a module.
+
+---
+
+### Question 6
+How do you import a module in CommonJS?
+
+A) import module from './module'
+B) require('./module')
+C) include('./module')
+D) load('./module')
+
+**Answer: B) require('./module')**
+
+**Explanation:** The `require()` function is used to import modules in CommonJS.
+
+---
+
+### Question 7
+In ES6 modules, which keyword is used to export values?
+
+A) require
+B) module.exports
+C) export
+D) public
+
+**Answer: C) export**
+
+**Explanation:** ES6 modules use the `export` keyword for named exports and `export default` for default exports.
+
+---
+
+### Question 8
+How do you enable ES6 modules in a Node.js project?
+
+A) Set "type": "module" in package.json
+B) Use .cjs file extension
+C) Add "esm": true to tsconfig.json
+D) Install the esm package only
+
+**Answer: A) Set "type": "module" in package.json**
+
+**Explanation:** Setting `"type": "module"` in package.json enables ES6 module syntax in .js files.
+
+---
+
+### Question 9
+Which module is used for file system operations in Node.js?
+
+A) file
+B) fs
+C) io
+D) path
+
+**Answer: B) fs**
+
+**Explanation:** The `fs` (file system) module provides APIs for interacting with the file system.
+
+---
+
+### Question 10
+What is the recommended way to read files asynchronously in modern Node.js?
+
+A) fs.readFileSync()
+B) fs.readFile() with callback
+C) fs/promises with async/await
+D) fs.read()
+
+**Answer: C) fs/promises with async/await**
+
+**Explanation:** Using `fs/promises` with async/await provides clean, non-blocking file operations.
+
+---
+
+### Question 11
+What does `fs.mkdir({ recursive: true })` do?
+
+A) Creates only the final directory
+B) Creates the directory and all parent directories if they don't exist
+C) Deletes the directory recursively
+D) Lists files recursively
+
+**Answer: B) Creates the directory and all parent directories if they don't exist**
+
+**Explanation:** The `recursive: true` option creates nested directories in a single operation.
+
+---
+
+### Question 12
+What is the purpose of package.json?
+
+A) To store JavaScript code
+B) To define project metadata, dependencies, and scripts
+C) To configure the web server
+D) To store environment variables
+
+**Answer: B) To define project metadata, dependencies, and scripts**
+
+**Explanation:** package.json contains project information, dependencies, and npm scripts.
+
+---
+
+### Question 13
+What is the difference between dependencies and devDependencies?
+
+A) No difference
+B) dependencies are for production, devDependencies are for development only
+C) devDependencies are faster
+D) dependencies are optional
+
+**Answer: B) dependencies are for production, devDependencies are for development only**
+
+**Explanation:** devDependencies are not installed in production (`npm install --production`).
+
+---
+
+### Question 14
+Which command installs a package as a dev dependency?
+
+A) npm install package
+B) npm install --save package
+C) npm install --save-dev package
+D) npm install --dev package
+
+**Answer: C) npm install --save-dev package**
+
+**Explanation:** The `--save-dev` or `-D` flag installs packages as devDependencies.
+
+---
+
+### Question 15
+What does `npm ci` do?
+
+A) Creates a new project
+B) Clean installs dependencies from package-lock.json
+C) Checks for updates
+D) Initializes git
+
+**Answer: B) Clean installs dependencies from package-lock.json**
+
+**Explanation:** `npm ci` performs a clean install using exact versions from package-lock.json, ideal for CI/CD.
+
+---
+
+### Question 16
+What is the purpose of the .env file?
+
+A) To store JavaScript code
+B) To store environment-specific configuration variables
+C) To configure npm
+D) To store test results
+
+**Answer: B) To store environment-specific configuration variables**
+
+**Explanation:** .env files store environment variables like API keys and database credentials.
+
+---
+
+### Question 17
+Which package is commonly used to load .env files in Node.js?
+
+A) env-loader
+B) dotenv
+C) config
+D) environment
+
+**Answer: B) dotenv**
+
+**Explanation:** The `dotenv` package loads environment variables from .env files into `process.env`.
+
+---
+
+### Question 18
+How do you access environment variables in Node.js?
+
+A) env.VARIABLE_NAME
+B) process.env.VARIABLE_NAME
+C) global.env.VARIABLE_NAME
+D) config.VARIABLE_NAME
+
+**Answer: B) process.env.VARIABLE_NAME**
+
+**Explanation:** Environment variables are accessed through the `process.env` object.
+
+---
+
+### Question 19
+Should you commit .env files to version control?
+
+A) Yes, always
+B) No, they often contain sensitive data
+C) Only in production
+D) Only for public projects
+
+**Answer: B) No, they often contain sensitive data**
+
+**Explanation:** .env files typically contain secrets and should be added to .gitignore.
+
+---
+
+### Question 20
+What is the purpose of package-lock.json?
+
+A) To store source code
+B) To lock exact dependency versions for reproducible builds
+C) To configure npm
+D) To store test configuration
+
+**Answer: B) To lock exact dependency versions for reproducible builds**
+
+**Explanation:** package-lock.json ensures the same dependency versions are installed across environments.
+
+---
+
+</script>
+    <script>
+(() => {
+    const markdownNode = document.getElementById('assessment-markdown');
+    if (!markdownNode) {
+        return;
+    }
+
+    const markdown = markdownNode.textContent.trim();
+    const form = document.getElementById('quiz-form');
+    const titleElement = document.querySelector('.assessment-title h1');
+    const subtitleElement = document.querySelector('.assessment-title p');
+    const scoreDisplay = document.getElementById('score-display');
+
+    const assessmentData = parseAssessmentMarkdown(markdown);
+    renderAssessment(assessmentData);
+
+    function parseAssessmentMarkdown(raw) {
+        const lines = raw.replace(/\r\n/g, '\n').split('\n');
+        const titleLine = lines.find((line) => line.trim().startsWith('# ')) || '';
+        const rawTitle = titleLine.replace(/^#\s*/, '').trim();
+        const cleanedTitle = rawTitle
+            .replace(/^Assessment\s*\d*\s*:?\s*/i, '')
+            .replace(/\bMCQ\b/i, '')
+            .trim();
+
+        let topics = '';
+        const topicsLine =
+            lines.find((line) => /^\*\*Topics/i.test(line)) ||
+            lines.find((line) => /^\*\*Topics Covered/i.test(line));
+        if (topicsLine) {
+            const parts = topicsLine.split(':');
+            topics = parts.length > 1 ? parts.slice(1).join(':').replace(/\*\*/g, '').trim() : '';
+        }
+
+        if (!topics) {
+            const subtitleLine = lines.find((line) => line.trim().startsWith('## '));
+            if (subtitleLine) {
+                topics = subtitleLine.replace(/^##\s*/, '').trim();
+            }
+        }
+
+        const questionBlocks = [];
+        const hasQuestionsHeading = lines.some((line) => /^##\s*Questions/i.test(line.trim()));
+        let inQuestions = !hasQuestionsHeading;
+        let stopQuestions = false;
+        let current = null;
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (/^##\s*Questions/i.test(trimmed)) {
+                inQuestions = true;
+                continue;
+            }
+
+            if (inQuestions && /^##\s+/i.test(trimmed) && !/^##\s*Questions/i.test(trimmed)) {
+                stopQuestions = true;
+                if (current) {
+                    questionBlocks.push(current);
+                    current = null;
+                }
+                continue;
+            }
+
+            if (!inQuestions || stopQuestions) {
+                continue;
+            }
+
+            if (/^###\s*Question\s*\d+/i.test(trimmed)) {
+                if (current) {
+                    questionBlocks.push(current);
+                }
+                current = [];
+                continue;
+            }
+
+            if (current) {
+                current.push(line);
+            }
+        }
+
+        if (current) {
+            questionBlocks.push(current);
+        }
+
+        const questions = questionBlocks
+            .map((block) => parseQuestionBlock(block))
+            .filter((question) => question.options.length > 0);
+
+        return {
+            title: cleanedTitle || rawTitle || 'Assessment',
+            topics,
+            questions
+        };
+    }
+
+    function parseQuestionBlock(lines) {
+        const questionLines = [];
+        const options = [];
+        let answer = '';
+        const explanationLines = [];
+        let capturingExplanation = false;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (/^\*\*Answer:/i.test(trimmed)) {
+                const match = trimmed.match(/Answer:\s*([A-D])/i);
+                if (match) {
+                    answer = match[1].toLowerCase();
+                }
+                capturingExplanation = false;
+                return;
+            }
+
+            if (/^\*\*Explanation:/i.test(trimmed)) {
+                capturingExplanation = true;
+                const expText = trimmed.replace(/^\*\*Explanation:\s*/i, '').replace(/\*\*/g, '');
+                if (expText) {
+                    explanationLines.push(expText);
+                }
+                return;
+            }
+
+            if (capturingExplanation) {
+                if (trimmed && !trimmed.startsWith('---')) {
+                    explanationLines.push(trimmed);
+                } else {
+                    capturingExplanation = false;
+                }
+                return;
+            }
+
+            const optMatch = trimmed.match(/^([A-D])\)\s*(.+)$/);
+            if (optMatch) {
+                const optLetter = optMatch[1].toLowerCase();
+                const optText = optMatch[2].trim();
+                options.push({ id: optLetter, text: optText });
+                return;
+            }
+
+            if (trimmed && !trimmed.startsWith('---') && !trimmed.startsWith('**')) {
+                questionLines.push(trimmed);
+            }
+        });
+
+        return {
+            question: questionLines.join(' ').trim(),
+            options,
+            answer,
+            explanation: explanationLines.join(' ').trim()
+        };
+    }
+
+    function renderAssessment(data) {
+        titleElement.textContent = data.title;
+        subtitleElement.textContent = data.topics || 'Professional Automation Training';
+
+        let html = '';
+        data.questions.forEach((q, idx) => {
+            html += '<div class="question" data-question="' + idx + '">';
+            html += '<div class="question-text">';
+            html += '<span class="question-number">Q' + (idx + 1) + '.</span>';
+            html += '<span>' + q.question + '</span>';
+            html += '</div>';
+            html += '<div class="options">';
+            q.options.forEach((opt) => {
+                html += '<label class="option">';
+                html +=
+                    '<input type="radio" name="q' +
+                    idx +
+                    '" value="' +
+                    opt.id +
+                    '" data-question="' +
+                    idx +
+                    '">';
+                html += '<span>' + opt.id.toUpperCase() + ') ' + opt.text + '</span>';
+                html += '</label>';
+            });
+            html += '</div>';
+            if (q.explanation) {
+                html += '<div class="explanation">' + q.explanation + '</div>';
+            }
+            html += '</div>';
+        });
+
+        form.innerHTML = html;
+
+        const submitBtn = document.createElement('div');
+        submitBtn.style.textAlign = 'center';
+        submitBtn.style.marginTop = '30px';
+        submitBtn.innerHTML =
+            '<button type="button" class="btn btn-primary" onclick="submitQuiz()"><i class="fas fa-paper-plane"></i> Submit Assessment</button>';
+        form.appendChild(submitBtn);
+
+        window.assessmentData = data;
+    }
+
+    window.submitQuiz = function () {
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        let unanswered = [];
+
+        questions.forEach((q, idx) => {
+            q.classList.remove('unanswered');
+            const selected = q.querySelector('input[type="radio"]:checked');
+            const correctAnswer = window.assessmentData.questions[idx].answer;
+
+            if (!selected) {
+                unanswered.push(idx + 1);
+                q.classList.add('unanswered');
+                return;
+            }
+
+            const options = q.querySelectorAll('.option');
+            options.forEach((opt) => {
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (selected && radio === selected && radio.value !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected.value === correctAnswer) {
+                score += 1;
+            }
+
+            const explanation = q.querySelector('.explanation');
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+        });
+
+        if (unanswered.length > 0) {
+            alert('Please answer all questions before submitting. Unanswered: Q' + unanswered.join(', Q'));
+            return;
+        }
+
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('score-display').innerText = score + ' / ' + window.assessmentData.questions.length;
+
+        const percentage = (score / window.assessmentData.questions.length) * 100;
+        let feedback = '';
+        if (percentage === 100) feedback = 'Perfect Score! Outstanding work!';
+        else if (percentage >= 80) feedback = 'Excellent! You have a strong understanding.';
+        else if (percentage >= 60) feedback = 'Good job! You passed the assessment.';
+        else feedback = 'Keep practicing. Review the topics and try again.';
+
+        document.getElementById('feedback-text').innerText = feedback;
+    };
+
+    window.preparePrint = function () {
+        const name = document.getElementById('student-name').value.trim();
+        if (!name) {
+            alert('Please enter your name before printing.');
+            return;
+        }
+        document.getElementById('printed-name').textContent = 'Student: ' + name;
+        window.print();
+    };
+})();
+    </script>
+</body>
+
+</html>

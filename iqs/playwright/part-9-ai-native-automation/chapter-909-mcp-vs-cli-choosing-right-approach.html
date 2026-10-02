@@ -1,0 +1,415 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 909 &nbsp;·&nbsp; 12 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">MCP</span> <span class="w2">vs</span> <span class="w3">CLI</span> <span class="w4">—</span> <span class="w5">Choosing</span> <span class="w6">the</span> <span class="w7">Right</span> <span class="w8">Approach</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">Playwright MCP server and Playwright CLI agents are both AI-powered tools for test automation — but they solve different problems. This chapter gives you the decision framework, the trade-off table, the hybrid strategy, and the contexts where each tool clearly wins.</span>
+  </div>
+
+
+  <!-- Q909.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.1</span>
+      <h2 class="sn-q-text">What is the core difference between Playwright MCP and Playwright CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Playwright MCP:</strong> An AI agent with a live browser. The agent navigates, observes, and interacts with real pages. It sees the accessibility tree, can click buttons, fill forms, and take screenshots — in real time.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Playwright CLI agent:</strong> An AI agent with a codebase. The agent reads files, writes code, runs tests, and reads results — in a code-generation loop.</p>
+<p class="sn-para">The simplest mental model:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>MCP = AI that does things in a browser</span></li>
+<li><span class="icon">💡</span><span>CLI = AI that writes Playwright code</span></li>
+</ul>
+<p class="sn-para">They are complementary. The best workflows use both.</p>
+    </div>
+  </div>
+
+  <!-- Q909.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.2</span>
+      <h2 class="sn-q-text">When does MCP clearly win over CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Scenario 1 — Locator discovery on a live page.</strong> You need the correct locator for a complex widget — a date picker, a rich text editor, a custom dropdown. You cannot easily infer the locator from reading HTML source.</p>
+      </div>
+<p class="sn-para">MCP: Agent navigates to the page, reads the accessibility tree, and identifies the correct <code class="sn-ic">getByRole</code> or <code class="sn-ic">getByLabel</code> locator from the live element.</p>
+<p class="sn-para">CLI: Would require you to paste the HTML into context — less reliable because the HTML may not accurately represent the rendered accessibility tree.</p>
+<p class="sn-para"><strong class="k-green">MCP wins.</strong></p>
+<p class="sn-para"><strong class="k-green">Scenario 2 — Debugging a UI flow that fails intermittently.</strong> A test fails 20% of the time. You need to observe the page state when it fails.</p>
+<p class="sn-para">MCP: Agent can navigate the flow, observe each step, read console messages and network requests, and identify the timing or state issue.</p>
+<p class="sn-para">CLI: Can read test output and error logs, but cannot observe the live page state.</p>
+<p class="sn-para"><strong class="k-green">MCP wins.</strong></p>
+<p class="sn-para"><strong class="k-green">Scenario 3 — Exploring a feature you have never tested before.</strong> You need to understand how a new feature works before writing tests for it.</p>
+<p class="sn-para">MCP: Agent navigates the feature, describes what it finds, and generates a flow description and list of test scenarios.</p>
+<p class="sn-para">CLI: Requires you to describe the feature first — it cannot discover it.</p>
+<p class="sn-para"><strong class="k-green">MCP wins.</strong></p>
+    </div>
+  </div>
+
+  <!-- Q909.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.3</span>
+      <h2 class="sn-q-text">When does CLI clearly win over MCP?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Scenario 1 — Bulk test generation for known features.</strong> You need to generate 20 test files for a well-documented set of features with existing page objects.</p>
+      </div>
+<p class="sn-para">CLI: Agent reads your SKILL, existing page objects, and user stories. Generates all 20 files, runs them, and fixes failures. Total context cost: SKILL (400 tokens) + page objects (~800 tokens each) + task description.</p>
+<p class="sn-para">MCP: Would navigate to each page for every test generation — 20× browser sessions, 20× snapshot reads, 30+ tool schemas in context every call. Far more expensive and slower for this task.</p>
+<p class="sn-para"><strong class="k-purple">CLI wins.</strong></p>
+<p class="sn-para"><strong class="k-purple">Scenario 2 — Locator repair after a UI redesign.</strong> 50 tests have broken locators after a redesign. You know the pattern of what changed.</p>
+<p class="sn-para">CLI: Agent reads failing tests, understands the pattern (e.g., all CSS ID selectors are now getByTestId), applies the fix across all files in one pass.</p>
+<p class="sn-para">MCP: Would need to navigate to each affected page to verify each locator — tedious and slow for a known pattern change.</p>
+<p class="sn-para"><strong class="k-purple">CLI wins.</strong></p>
+<p class="sn-para"><strong class="k-purple">Scenario 3 — Framework maintenance and refactoring.</strong> Renaming a base class method, updating import paths across all test files, converting all hardcoded strings to use the test data factory.</p>
+<p class="sn-para">CLI: Agent reads all affected files, applies transformations, runs tests to verify. This is a codebase task, not a browser task.</p>
+<p class="sn-para">MCP: Has no role here — this task never requires a browser.</p>
+<p class="sn-para"><strong class="k-purple">CLI wins.</strong></p>
+    </div>
+  </div>
+
+  <!-- Q909.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.4</span>
+      <h2 class="sn-q-text">How do token costs compare between MCP and CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Token cost drives both speed and API expense. For a single test generation call:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">MCP session context:
+  30 tool schemas × 250 tokens    = 7,500  tokens (just for schemas)
+  Conversation + snapshots         = 2,000+ tokens
+  Total per generation call        = 9,500+ tokens
+
+CLI session context:
+  SKILL file                       = 400    tokens
+  Page object (task-specific)      = 800    tokens
+  Fixture                          = 300    tokens
+  Example test                     = 600    tokens
+  Task description                 = 200    tokens
+  Total per generation call        = 2,300  tokens</div>
+      </div>
+<p class="sn-para">For 50 test generation calls in one session:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">MCP:  50 × 9,500  = 475,000 tokens
+CLI:  50 × 2,300  =  115,000 tokens
+      (SKILL read once, page objects vary per task)</div>
+      </div>
+<p class="sn-para">CLI is approximately 4× cheaper for bulk generation tasks.</p>
+    </div>
+  </div>
+
+  <!-- Q909.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.5</span>
+      <h2 class="sn-q-text">What is the hybrid workflow that uses both tools?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The highest-quality test authoring workflow uses each tool in its strength zone:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Phase 1 — Discovery (MCP):</strong> For each new feature area:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Connect Playwright MCP in Cursor</span></li>
+<li><span class="icon">💡</span><span>Navigate to the feature pages</span></li>
+<li><span class="icon">⚡</span><span>Read accessibility trees with <code class="sn-ic">browser_snapshot</code></span></li>
+<li><span class="icon">🎯</span><span>Walk through all feature flows</span></li>
+<li><span class="icon">📌</span><span>Output: locator reference table + flow description document</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Phase 2 — Generation (CLI):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>Disconnect MCP (release context window tokens)</span></li>
+<li><span class="icon">🚀</span><span>Provide locator table + flow description as context</span></li>
+<li><span class="icon">🌟</span><span>Add SKILL file</span></li>
+<li><span class="icon">📦</span><span>Ask agent to generate page object + test file</span></li>
+<li><span class="icon">🔶</span><span>Agent runs tests, fixes failures, reports completion</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Phase 3 — Maintenance (CLI):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎪</span><span>When tests break, CLI agent reads failures and applies fixes</span></li>
+<li><span class="icon">🔹</span><span>Use MCP only when the failure requires live page observation</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q909.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.6</span>
+      <h2 class="sn-q-text">How do you choose between MCP and CLI for a given task?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Decision flowchart:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Does the task require observing a live browser?
+  Yes → Use MCP
+  No  →
+    Does the task require writing or editing code files?
+      Yes → Use CLI
+      No  →
+        Does the task require both browser and code?
+          Yes → Use MCP first, then CLI</div>
+      </div>
+<p class="sn-para">Quick reference:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Task</th><th class="sn-th-blue">Use</th></tr></thead>
+          <tbody>
+          <tr><td>Discover locators on a live page</td><td>MCP</td></tr>
+          <tr><td>Debug a failing test on the live app</td><td>MCP</td></tr>
+          <tr><td>Explore a feature you haven't seen</td><td>MCP</td></tr>
+          <tr><td>Generate tests from a spec</td><td>CLI</td></tr>
+          <tr><td>Fix broken locators (known pattern)</td><td>CLI</td></tr>
+          <tr><td>Refactor framework code</td><td>CLI</td></tr>
+          <tr><td>Generate 20+ test files</td><td>CLI</td></tr>
+          <tr><td>New feature: first-time test authoring</td><td>MCP → CLI</td></tr>
+          <tr><td>Post-redesign repair</td><td>CLI (+ MCP if needed)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q909.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.7</span>
+      <h2 class="sn-q-text">How does context window impact affect the MCP vs CLI decision?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The context window is a shared resource. Every token used by MCP tool schemas is a token not available for source files, conversation history, and generated code.</p>
+      </div>
+<p class="sn-para">For agents working on large codebases:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Claude Sonnet 4.6 context: 200,000 tokens
+
+MCP session reserves:
+  30 tool schemas:      7,500  tokens
+  Available for code:  192,500 tokens
+
+CLI session reserves:
+  SKILL file:            400  tokens
+  Available for code:  199,600 tokens</div>
+      </div>
+<p class="sn-para">For most codebases the difference is negligible in absolute terms — 7,100 tokens is small relative to 200,000.</p>
+<p class="sn-para">However, for agents that hold many source files in context simultaneously (large framework refactoring, generating tests for 20 pages at once), the 7,500 overhead from MCP tool schemas can displace meaningful source file content. CLI is the better choice when you need maximum context for source files.</p>
+    </div>
+  </div>
+
+  <!-- Q909.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.8</span>
+      <h2 class="sn-q-text">What are the latency differences between MCP and CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">MCP latency sources:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Browser launch: 500ms–2s for Chromium to start</span></li>
+<li><span class="icon">💡</span><span>Each tool call: 100–500ms for browser to execute and return</span></li>
+<li><span class="icon">⚡</span><span>For a 10-step flow: 1–5 seconds of browser execution time</span></li>
+<li><span class="icon">🎯</span><span>Plus LLM inference time for each step</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">CLI latency sources:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>File reads: ~10ms (nearly instant)</span></li>
+<li><span class="icon">🔑</span><span>LLM inference: 1–5s per generation call</span></li>
+<li><span class="icon">🚀</span><span>Test run: 5–60s depending on suite size</span></li>
+</ul>
+<p class="sn-para">For interactive sessions (a developer exploring), MCP latency is acceptable. For automated pipelines generating many tests, CLI is faster.</p>
+    </div>
+  </div>
+
+  <!-- Q909.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.9</span>
+      <h2 class="sn-q-text">Can MCP and CLI run simultaneously in the same agent session?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes. Cursor and some other AI IDEs allow multiple MCP servers to be connected simultaneously. An agent can use the Playwright MCP server for browser interaction AND file system operations for code writing in the same session.</p>
+      </div>
+<p class="sn-para">The agent decides which tool to call at each step based on the task:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Step 1: browser_navigate('/employees')  [MCP browser tool]
+Step 2: browser_snapshot()              [MCP browser tool]
+Step 3: [reads snapshot] → generates locator
+Step 4: write_file('tests/pages/employee.page.ts')  [file tool]
+Step 5: run_command('npx playwright test')  [CLI tool]
+Step 6: read_file('playwright-report/results.json')  [file tool]</div>
+      </div>
+<p class="sn-para">The combined session uses more context window but enables seamless browser-to-code workflows in a single agent conversation.</p>
+    </div>
+  </div>
+
+  <!-- Q909.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.10</span>
+      <h2 class="sn-q-text">What are the security trade-offs between MCP and CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">MCP security considerations:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Agent has live browser control: can submit forms, click buttons, read data</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>If pointed at a production environment, agent can take destructive actions</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Accessibility tree can contain sensitive data the agent reads</span></li>
+<li><span class="icon">🎯</span><span>Prompt injection: malicious page content could influence agent actions</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">CLI security considerations:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Agent reads and writes code files: can modify tests, configs, even framework code</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>If given broad file permissions, agent can change anything in the repository</span></li>
+<li><span class="icon">🚀</span><span>Less environmental risk (no live browser actions)</span></li>
+<li><span class="icon">🌟</span><span>Risk is in what gets committed and deployed</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Mitigation for both:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📦</span><span>Scope MCP to test environments only — never production</span></li>
+<li><span class="icon">🔶</span><span>Scope CLI agent file permissions to <code class="sn-ic">tests/</code> directory only</span></li>
+<li><span class="icon">🎪</span><span>Review all agent-generated changes before committing</span></li>
+<li><span class="icon">🔹</span><span>Set maximum tool call budgets to prevent runaway agent loops</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q909.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.11</span>
+      <h2 class="sn-q-text">How do you pitch MCP vs CLI to a team new to AI testing tools?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The clearest explanation for a team new to both tools:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use MCP when you are exploring.</strong> You do not know what the page looks like, what the locators are, or how the feature works. MCP is your exploration partner — it navigates, describes, and discovers.</p>
+<p class="sn-para"><strong class="k-purple">Use CLI when you are building.</strong> You know what the tests should do and you have the page objects ready. CLI is your code generation partner — it writes, runs, and fixes.</p>
+<p class="sn-para"><strong class="k-purple">Most real projects need both.</strong> Explore with MCP, then build with CLI. Use MCP again only when something breaks and you need to observe the live page to understand why.</p>
+    </div>
+  </div>
+
+  <!-- Q909.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q909.12</span>
+      <h2 class="sn-q-text">In your project, how do you balance MCP and CLI usage?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we split usage roughly 20% MCP, 80% CLI.</p>
+      </div>
+<p class="sn-para">MCP is used at the start of each sprint when new features are delivered. One engineer runs a 30-minute MCP exploration session per new feature area: navigate all pages, read snapshots, capture locator references in a markdown file. This locator file becomes the input for the CLI generation phase.</p>
+<p class="sn-para">CLI is used for all ongoing test generation, maintenance, and refactoring. Claude Code with our CLAUDE.md SKILL handles most test writing automatically.</p>
+<p class="sn-para">The MCP investment at sprint start pays off in better CLI output quality. When the CLI agent has accurate locator references as context, the first-run pass rate on generated tests goes from 74% to 88%.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>MCP = AI agent with a live browser. CLI = AI agent with a codebase. They are complementary.</span></li>
+            <li><span class="icon">⭐</span><span>MCP wins for: locator discovery, debugging live failures, feature exploration, new pages.</span></li>
+            <li><span class="icon">⭐</span><span>CLI wins for: bulk test generation, locator repair from known patterns, framework refactoring.</span></li>
+            <li><span class="icon">⭐</span><span>Token cost: MCP ~9,500 tokens per generation call. CLI ~2,300 tokens. CLI is ~4x cheaper for code generation.</span></li>
+            <li><span class="icon">⭐</span><span>Hybrid workflow: MCP for exploration (locator discovery, flow description), CLI for generation (write, run, fix).</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Decision rule: does the task need a live browser? Yes → MCP. No → CLI. Both? → MCP then CLI.</span></li>
+            <li><span class="icon">⭐</span><span>Context window: MCP uses 7,500 tokens on tool schemas. For large-codebase agents needing maximum source file context, CLI is better.</span></li>
+            <li><span class="icon">⭐</span><span>Security: MCP risk is live browser actions on wrong environments. CLI risk is code changes to the repository. Both need scoped permissions and human review.</span></li>
+            <li><span class="icon">⭐</span><span>Practical split: most teams use ~20% MCP (exploration) and ~80% CLI (generation/maintenance).</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

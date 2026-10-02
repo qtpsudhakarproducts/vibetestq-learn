@@ -1,0 +1,737 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 509 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">CI/CD</span> <span class="w2">Integration</span> <span class="w3">&amp;</span> <span class="w4">Execution</span> <span class="w5">Strategy</span> <span class="w6">(L8)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the three GitHub Actions workflows that automate the framework — a PR quality gate, a nightly regression with Allure history, and a manual targeted run. Interviewers ask about CI integration to separate engineers who can set up a working pipeline from those who understand execution strategy: why 2 workers, why 2 retries, why <code class="sn-ic">continue-on-error</code> on the test step, and how Allure history accumulates across runs. These details distinguish a candidate who has shipped a real CI pipeline from one who has only read about it.</span>
+  </div>
+
+
+  <!-- Q509.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.1</span>
+      <h2 class="sn-q-text">What problem does Level 8 solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">After Level 7 the framework produces clean, structured reports with tagged tests and grouped summaries. All of this happens locally, triggered manually, visible only to the person who ran the suite.</p>
+      </div>
+<p class="sn-para">The team does not automatically know if the suite is passing. A developer can merge a pull request without running any tests. A regression introduced on Tuesday is not discovered until someone runs the suite manually on Friday. There is no cross-run history — no way to know whether last week's pass rate was better or worse than this week's.</p>
+<p class="sn-para">Level 8 makes test results a team resource by wiring three workflows into GitHub Actions:</p>
+<ol class="sn-olist">
+<li><strong class="k-blue">PR check</strong> — smoke suite on every pull request; failed smoke = blocked merge</li>
+<li><strong class="k-blue">Nightly regression</strong> — full suite at midnight; results published to GitHub Pages</li>
+<li><strong class="k-blue">Manual run</strong> — any team member triggers a targeted run from the Actions tab</li>
+</ol>
+    </div>
+  </div>
+
+  <!-- Q509.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.2</span>
+      <h2 class="sn-q-text">What are the three workflows and when does each run?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">PR check (<code class="sn-ic">pr-check.yml</code>):</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Trigger: every pull request targeting <code class="sn-ic">main</code></span></li>
+<li><span class="icon">💡</span><span>Runs: <code class="sn-ic">@smoke</code> tests only (~2 minutes)</span></li>
+<li><span class="icon">⚡</span><span>Result: GitHub check status — green = merge allowed; red = merge blocked</span></li>
+<li><span class="icon">🎯</span><span>Artefacts: HTML report uploaded only on failure (7-day retention)</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Nightly regression (<code class="sn-ic">nightly-regression.yml</code>):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Trigger: <code class="sn-ic">cron: '0 0 * * *'</code> (midnight UTC) + <code class="sn-ic">workflow_dispatch</code> for manual trigger</span></li>
+<li><span class="icon">🔑</span><span>Runs: <code class="sn-ic">@regression</code> tests (full suite)</span></li>
+<li><span class="icon">🚀</span><span>Result: Allure report generated and published to GitHub Pages</span></li>
+<li><span class="icon">🌟</span><span>Artefacts: allure-results (30-day), playwright-report (14-day)</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Manual run (<code class="sn-ic">manual-run.yml</code>):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📦</span><span>Trigger: <code class="sn-ic">workflow_dispatch</code> with user inputs</span></li>
+<li><span class="icon">🔶</span><span>Inputs: tag choice (<code class="sn-ic">@smoke</code>, <code class="sn-ic">@regression</code>, <code class="sn-ic">@pim</code>, <code class="sn-ic">@admin</code>, <code class="sn-ic">@leave</code>, <code class="sn-ic">@critical</code>)</span></li>
+</ul>
+<p class="sn-para">          and environment choice (<code class="sn-ic">dev</code>, <code class="sn-ic">staging</code>)</p>
+<ul class="sn-list">
+<li><span class="icon">🎪</span><span>Runs: whichever tag and environment the user selects</span></li>
+<li><span class="icon">🔹</span><span>Artefacts: HTML report (7-day)</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q509.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.3</span>
+      <h2 class="sn-q-text">What does the PR check workflow look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: PR Check — Smoke Suite
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  smoke:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: <span class="tc-num">15</span>
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: <span class="tc-str">'20'</span>
+          cache: <span class="tc-str">'npm'</span>
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Create environment file
+        run: |
+          mkdir -p <span class="tc-kw">test</span>-data
+          cat &gt; <span class="tc-kw">test</span>-data/.env.dev &lt;&lt; EOF
+          BASE_URL=${{ secrets.BASE_URL }}
+          ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+          ESS_USERNAME=${{ secrets.ESS_USERNAME }}
+          ESS_PASSWORD=${{ secrets.ESS_PASSWORD }}
+          EOF
+
+      - name: Run smoke suite
+        run: npx playwright <span class="tc-kw">test</span> --grep @smoke
+        env:
+          CI: <span class="tc-kw">true</span>
+          TEST_ENV: dev
+
+      - name: Upload report on failure
+        <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-pr-${{ github.run_number }}
+          path: playwright-report/
+          retention-days: <span class="tc-num">7</span></div>
+      </div>
+<p class="sn-para">The report upload step uses <code class="sn-ic">if: failure()</code> — not <code class="sn-ic">if: always()</code>. On a PR check, you only need the report when something went wrong. Uploading on every green run wastes storage and CI minutes.</p>
+    </div>
+  </div>
+
+  <!-- Q509.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.4</span>
+      <h2 class="sn-q-text">Why use npm ci instead of npm install in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Install dependencies
+  run: npm ci  <span class="tc-cm"># not npm install</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">npm ci</code> (Clean Install):</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Reads exact versions from <code class="sn-ic">package-lock.json</code> — no version resolution</span></li>
+<li><span class="icon">💡</span><span>Deletes <code class="sn-ic">node_modules</code> entirely before installing — reproducible clean state</span></li>
+<li><span class="icon">⚡</span><span>Fails if <code class="sn-ic">package-lock.json</code> and <code class="sn-ic">package.json</code> are out of sync</span></li>
+<li><span class="icon">🎯</span><span>Faster than <code class="sn-ic">npm install</code> on CI because it skips dependency resolution</span></li>
+</ul>
+<p class="sn-para"><code class="sn-ic">npm install</code>:</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Resolves version ranges — may install a newer patch version than last run</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Does not always delete existing <code class="sn-ic">node_modules</code></span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Silent upgrades can cause flaky CI failures when a new version has a bug</span></li>
+</ul>
+<p class="sn-para">In CI, reproducibility is more important than convenience. <code class="sn-ic">npm ci</code> guarantees every run uses exactly the same packages.</p>
+    </div>
+  </div>
+
+  <!-- Q509.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.5</span>
+      <h2 class="sn-q-text">Why install only Chromium in CI workflows?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Install Playwright browsers
+  run: npx playwright install --with-deps chromium</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">--with-deps</code> installs OS-level system libraries required by the browser (fonts, libglib, libnss, libX11). These are not bundled with Playwright. Fresh CI runners have none of them. Without <code class="sn-ic">--with-deps</code>, the browser binary is present but fails to launch.</p>
+<p class="sn-para"><code class="sn-ic">chromium</code> only (not <code class="sn-ic">firefox</code> or <code class="sn-ic">webkit</code>):</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The OrangeHRM test suite uses only Chrome (as configured in <code class="sn-ic">playwright.config.ts</code>)</span></li>
+<li><span class="icon">💡</span><span>Installing three browsers takes ~3× longer and uses ~3× storage</span></li>
+<li><span class="icon">⚡</span><span>CI runners are time-limited — install only what you need</span></li>
+</ul>
+<p class="sn-para">If cross-browser testing is required, add a separate job for each browser:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">strategy:
+  matrix:
+    browser: [chromium, firefox, webkit]
+steps:
+  - run: npx playwright install --with-deps ${{ matrix.browser }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q509.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.6</span>
+      <h2 class="sn-q-text">How are secrets handled in the environment file step?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">.env.dev</code> contains credentials — never committed to the repository. In CI, the file is written at runtime from GitHub Secrets:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Create environment file
+  run: |
+    mkdir -p <span class="tc-kw">test</span>-data
+    cat &gt; <span class="tc-kw">test</span>-data/.env.dev &lt;&lt; EOF
+    BASE_URL=${{ secrets.BASE_URL }}
+    ADMIN_USERNAME=${{ secrets.ADMIN_USERNAME }}
+    ADMIN_PASSWORD=${{ secrets.ADMIN_PASSWORD }}
+    ESS_USERNAME=${{ secrets.ESS_USERNAME }}
+    ESS_PASSWORD=${{ secrets.ESS_PASSWORD }}
+    EOF</div>
+      </div>
+<p class="sn-para">Secrets are configured in the repository: **Settings → Secrets and variables → Actions → New repository secret**. They are injected into the workflow at runtime. GitHub masks them in logs — they never appear in plaintext in any output, even if a step fails.</p>
+<p class="sn-para">The <code class="sn-ic">readEnv()</code> function reads this file exactly as it would locally — the test code does not know or care whether the file was committed or written by a CI step. The secret injection is transparent to the framework.</p>
+    </div>
+  </div>
+
+  <!-- Q509.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.7</span>
+      <h2 class="sn-q-text">What does the nightly regression workflow do and why does the test step have continue-on-error?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Run full regression suite
+  run: npx playwright <span class="tc-kw">test</span> --grep @regression
+  env:
+    CI: <span class="tc-kw">true</span>
+    TEST_ENV: dev
+  <span class="tc-kw">continue</span>-on-error: <span class="tc-kw">true</span>  <span class="tc-cm"># ← critical</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">continue-on-error: true</code> on the test step prevents a test failure from stopping the workflow. Without it, GitHub Actions marks the job as failed when any <code class="sn-ic">run</code> step exits with a non-zero code — and Playwright exits non-zero when tests fail.</p>
+<p class="sn-para">If the test step exits the job, the Allure report generation and GitHub Pages publish steps never run. The run fails silently with no report.</p>
+<p class="sn-para">With <code class="sn-ic">continue-on-error: true</code>, the workflow continues through all steps regardless of whether tests passed. The Allure report is generated, history is preserved, and the report is published — even when failures occurred. The final job status reflects the overall outcome.</p>
+<p class="sn-para">The subsequent Allure and publish steps use <code class="sn-ic">if: always()</code> for the same reason:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Generate Allure report
+  run: npx allure generate allure-results --clean -o allure-report
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+
+- name: Publish Allure report to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q509.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.8</span>
+      <h2 class="sn-q-text">How does Allure history accumulate across nightly runs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Allure history (trend graphs, flakiness tracking, pass rate over time) requires copying the previous report's <code class="sn-ic">history/</code> folder into the current <code class="sn-ic">allure-results/</code> before generating the new report:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Download previous Allure report
+  uses: actions/checkout@v4
+  with:
+    ref: gh-pages
+    path: gh-pages-previous
+  <span class="tc-kw">continue</span>-on-error: <span class="tc-kw">true</span>  <span class="tc-cm"># first run has no history — don't fail</span>
+
+- name: Copy Allure history
+  run: |
+    <span class="tc-kw">if</span> [ -d &quot;gh-pages-previous/history&quot; ]; then
+      cp -r gh-pages-previous/history allure-results/history
+      echo &quot;✅ History copied&quot;
+    <span class="tc-kw">else</span>
+      echo &quot;ℹ️  No history — first run&quot;
+    fi
+  <span class="tc-kw">continue</span>-on-error: <span class="tc-kw">true</span>
+
+- name: Generate Allure report
+  run: npx allure generate allure-results --clean -o allure-report
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+
+- name: Publish to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}
+    publish_dir:  ./allure-report</div>
+      </div>
+<p class="sn-para">Without this pattern, each run starts fresh — no trend lines, no flakiness tracking, no pass rate history. The <code class="sn-ic">history/</code> folder is what Allure uses to draw its trend graphs. Copy it forward on every run.</p>
+    </div>
+  </div>
+
+  <!-- Q509.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.9</span>
+      <h2 class="sn-q-text">How does the manual workflow use workflow_dispatch inputs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: <span class="tc-str">'Test tag to run'</span>
+        required: <span class="tc-kw">true</span>
+        <span class="tc-kw">default</span>: <span class="tc-str">'@smoke'</span>
+        <span class="tc-kw">type</span>: choice
+        options: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@regression'</span>, <span class="tc-str">'@sanity'</span>, <span class="tc-str">'@pim'</span>, <span class="tc-str">'@admin'</span>, <span class="tc-str">'@leave'</span>, <span class="tc-str">'@critical'</span>]
+      environment:
+        description: <span class="tc-str">'Target environment'</span>
+        required: <span class="tc-kw">true</span>
+        <span class="tc-kw">default</span>: <span class="tc-str">'dev'</span>
+        <span class="tc-kw">type</span>: choice
+        options: [dev, staging]
+
+jobs:
+  manual:
+    name: Manual — ${{ github.event.inputs.tag }} on ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    steps:
+      <span class="tc-cm"># ... setup steps ...</span>
+      - name: Run selected tests
+        run: npx playwright <span class="tc-kw">test</span> --grep &quot;${{ github.event.inputs.tag }}&quot;
+        env:
+          CI: <span class="tc-kw">true</span>
+          TEST_ENV: ${{ github.event.inputs.environment }}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">workflow_dispatch</code> with <code class="sn-ic">type: choice</code> produces a dropdown in the GitHub Actions UI. Any team member can go to Actions → Manual Run → Run workflow, pick a tag and environment from dropdowns, and trigger a targeted run without any local setup or CLI knowledge.</p>
+<p class="sn-para">The staging environment step conditionally writes <code class="sn-ic">test-data/.env.staging</code> from staging-specific secrets (<code class="sn-ic">STAGING_BASE_URL</code>, <code class="sn-ic">STAGING_ADMIN_USERNAME</code>, etc.) and passes <code class="sn-ic">TEST_ENV: staging</code> to <code class="sn-ic">readEnv()</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q509.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.10</span>
+      <h2 class="sn-q-text">Why is workers: 2 the right number for the shared OrangeHRM demo site?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+workers: isCI ? <span class="tc-num">2</span> : <span class="tc-num">1</span>,</div>
+      </div>
+<p class="sn-para">The OrangeHRM demo site is shared — it serves many concurrent users and has no guaranteed capacity.</p>
+<p class="sn-para"><strong class="k-green">Too many workers (4+) on the shared site:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Two tests creating employees simultaneously may trigger rate limiting</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Concurrent requests to the same OrangeHRM session can cause data conflicts</span></li>
+<li><span class="icon">⚡</span><span>The demo site may throttle or time out under heavy concurrent load</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">2 workers:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Safe for the shared site — two tests run concurrently</span></li>
+<li><span class="icon">📌</span><span>Meaningful speed improvement over sequential (1 worker)</span></li>
+<li><span class="icon">🔑</span><span>Tested and stable at this level</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">1 worker locally:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Sequential — easier to debug, no interference between tests</span></li>
+<li><span class="icon">🌟</span><span>A failing test is clearly visible without parallel noise</span></li>
+</ul>
+<p class="sn-para">If you move to a dedicated OrangeHRM instance you can raise workers to 4+. The bottleneck then becomes CPU and network, not server capacity.</p>
+<p class="sn-para"><strong class="k-green">Why test independence (Level 4) is a prerequisite:</strong> Tests generate unique data via API in <code class="sn-ic">beforeAll</code> — no two tests create the same employee name or username. 2 workers running 2 tests simultaneously have no shared state to conflict over. Without test independence, parallel execution would cause data conflicts.</p>
+    </div>
+  </div>
+
+  <!-- Q509.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.11</span>
+      <h2 class="sn-q-text">What is the CI environment detection pattern and what does it affect?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">const</span> isCI = !!process.env.CI;
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  retries: isCI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,
+  workers: isCI ? <span class="tc-num">2</span> : <span class="tc-num">1</span>,
+  use: {
+    trace: isCI ? <span class="tc-str">'on-first-retry'</span> : <span class="tc-str">'off'</span>,
+    <span class="tc-cm">// ...allure reporter also only active in CI</span>
+  },
+  reporter: [
+    <span class="tc-cm">// ...</span>
+    ...(isCI ? [[<span class="tc-str">'allure-playwright'</span>, { outputFolder: <span class="tc-str">'allure-results'</span> }] as <span class="tc-kw">const</span>] : []),
+  ],
+});</div>
+      </div>
+<p class="sn-para">GitHub Actions sets <code class="sn-ic">CI=true</code> automatically. The workflows also set it explicitly: <code class="sn-ic">env: CI: true</code>.</p>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">retries: isCI ? 2 : 0</code></strong> — transient network issues on the demo site are retried in CI. Locally, failures should be investigated immediately, not silently retried.</p>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">workers: isCI ? 2 : 1</code></strong> — parallel in CI, sequential locally for easier debugging.</p>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">trace: isCI ? 'on-first-retry' : 'off'</code></strong> — trace recording has overhead. In CI it is worth it because you cannot re-run a CI test interactively. Locally you can re-run and observe directly.</p>
+<p class="sn-para"><strong class="k-purple">Allure reporter</strong> — only in CI. No overhead during local development. Local runs use HTML and list reporters which are faster.</p>
+    </div>
+  </div>
+
+  <!-- Q509.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.12</span>
+      <h2 class="sn-q-text">What are the package.json scripts at Level 8?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;scripts&quot;: {
+    &quot;test&quot;:            &quot;playwright test&quot;,
+    &quot;test:smoke&quot;:      &quot;playwright test --grep @smoke&quot;,
+    &quot;test:regression&quot;: &quot;playwright test --grep @regression&quot;,
+    &quot;test:sanity&quot;:     &quot;playwright test --grep @sanity&quot;,
+
+    &quot;test:pim&quot;:        &quot;playwright test --grep @pim&quot;,
+    &quot;test:admin&quot;:      &quot;playwright test --grep @admin&quot;,
+    &quot;test:leave&quot;:      &quot;playwright test --grep @leave&quot;,
+    &quot;test:login&quot;:      &quot;playwright test --grep @login&quot;,
+
+    &quot;test:critical&quot;:   &quot;playwright test --grep @critical&quot;,
+    &quot;test:ci&quot;:         &quot;CI=true playwright test --grep @regression&quot;,
+
+    &quot;report&quot;:          &quot;playwright show-report&quot;,
+    &quot;report:allure&quot;:   &quot;allure generate allure-results --clean -o allure-report &amp;&amp; allure open allure-report&quot;,
+    &quot;report:clean&quot;:    &quot;rm -rf allure-results allure-report playwright-report test-results&quot;
+  }
+}</div>
+      </div>
+<p class="sn-para">Developers run <code class="sn-ic">npm run test:smoke</code> before pushing. No <code class="sn-ic">--grep</code> syntax to remember. <code class="sn-ic">report:clean</code> removes all generated artefacts before a clean run. <code class="sn-ic">test:ci</code> simulates the CI environment locally with <code class="sn-ic">CI=true</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q509.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.13</span>
+      <h2 class="sn-q-text">What does Allure provide beyond the built-in HTML reporter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The built-in <code class="sn-ic">html</code> reporter is excellent for single-run investigation. Allure adds cross-run value:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Trend graphs</strong> — pass rate over time. Immediately visible whether the suite is getting more or less stable across weeks.</p>
+<p class="sn-para"><strong class="k-teal">Flakiness tracking</strong> — Allure distinguishes <code class="sn-ic">passed</code>, <code class="sn-ic">failed</code>, and <code class="sn-ic">flaky</code> (passed on retry) across runs. A test that is flaky 3 times per week shows as a known problem in the trends view.</p>
+<p class="sn-para"><strong class="k-teal">Failure categorisation</strong> — Allure can categorise failures as "product defects" (test failure), "test defects" (assertion error in test code), or "broken tests" (infrastructure failure). This helps QA leads quickly separate genuine regressions from framework issues.</p>
+<p class="sn-para"><strong class="k-teal">History per test</strong> — click any test to see its pass/fail history across the last N runs. Instantly identifies when a test started failing.</p>
+<p class="sn-para"><strong class="k-teal">Timeline</strong> — shows when each test ran and how long it took across workers. Useful for identifying which tests consistently take the longest.</p>
+<p class="sn-para">The built-in reporter is for today's run. Allure is for the last 30 days of runs.</p>
+    </div>
+  </div>
+
+  <!-- Q509.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.14</span>
+      <h2 class="sn-q-text">How is GitHub Pages set up for Allure report publishing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">One-time setup before the first nightly run:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Step 1 — Enable Pages in repository settings:</strong> Settings → Pages → Source → Deploy from a branch Branch: <code class="sn-ic">gh-pages</code>, Folder: <code class="sn-ic">/ (root)</code>. Save.</p>
+<p class="sn-para"><strong class="k-pink">Step 2 — Create an empty gh-pages branch:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">git checkout --orphan gh-pages  # new branch with no history
+git rm -rf .
+echo &quot;Allure reports will appear here after the first run.&quot; &gt; index.html
+git add index.html
+git commit -m &quot;initialise gh-pages branch&quot;
+git push origin gh-pages
+git checkout main</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Step 3 — Grant workflow write permission:</strong> Settings → Actions → General → Workflow permissions → Read and write permissions.</p>
+<p class="sn-para"><strong class="k-pink">What the nightly workflow does:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Publish Allure report to GitHub Pages
+  uses: peaceiris/actions-gh-pages@v3
+  with:
+    github_token: ${{ secrets.GITHUB_TOKEN }}  <span class="tc-cm"># automatic — no manual secret</span>
+    publish_dir:  ./allure-report</div>
+      </div>
+<p class="sn-para">After the first run, the report is live at <code class="sn-ic">https://&lt;org&gt;.github.io/&lt;repo&gt;/</code>. The workflow overwrites the previous report on each run but preserves the <code class="sn-ic">history/</code> folder inside the report.</p>
+    </div>
+  </div>
+
+  <!-- Q509.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.15</span>
+      <h2 class="sn-q-text">Why does the nightly workflow use permissions: contents: write?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">jobs:
+  regression:
+    permissions:
+      contents: write  <span class="tc-cm"># required for peaceiris/actions-gh-pages</span></div>
+      </div>
+<p class="sn-para">By default GitHub Actions workflows have read-only permissions on the repository. The <code class="sn-ic">peaceiris/actions-gh-pages</code> action needs to push commits to the <code class="sn-ic">gh-pages</code> branch — which requires write permission on repository contents.</p>
+<p class="sn-para">Without this, the publish step fails with a 403 authentication error.</p>
+<p class="sn-para"><code class="sn-ic">GITHUB_TOKEN</code> is provided automatically to every workflow — no manual secret is needed. The <code class="sn-ic">permissions</code> block tells GitHub what level of access to grant the token for this specific job.</p>
+    </div>
+  </div>
+
+  <!-- Q509.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.16</span>
+      <h2 class="sn-q-text">What is the retry strategy and how does it distinguish flakiness from failure?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">retries: isCI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,</div>
+      </div>
+<p class="sn-para">With 2 retries, a test must fail 3 consecutive times to be marked <code class="sn-ic">failed</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Attempt 1: FAIL
+Attempt 2: FAIL (retry 1)
+Attempt 3: PASS → status = 'flaky'
+
+Attempt 1: FAIL
+Attempt 2: FAIL (retry 1)
+Attempt 3: FAIL (retry 2) → status = 'failed'</div>
+      </div>
+<p class="sn-para">A network timeout on the shared demo site is not a genuine test failure. 2 retries absorbs transient infrastructure issues without masking real application regressions — a genuine regression fails consistently.</p>
+<p class="sn-para">The SummaryReporter (Level 7) lists <code class="sn-ic">flaky</code> tests separately. Over multiple nightly runs, Allure's trend view shows which tests are consistently flaky. These are candidates for stabilisation — either the test needs better waits, or the feature has genuine intermittent behaviour worth investigating.</p>
+    </div>
+  </div>
+
+  <!-- Q509.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.17</span>
+      <h2 class="sn-q-text">What are the artefact retention policies and why do they differ?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Upload report on failure
+  with:
+    retention-days: <span class="tc-num">7</span>
+
+- name: Upload Allure results
+  with:
+    retention-days: <span class="tc-num">30</span>
+
+- name: Upload Playwright report
+  with:
+    retention-days: <span class="tc-num">14</span></div>
+      </div>
+<p class="sn-para"><strong class="k-blue">7 days for PR reports</strong> — you only need the report until the PR is resolved. After a week, the PR is either merged, closed, or the issue is fixed. Storage is reclaimed quickly.</p>
+<p class="sn-para"><strong class="k-blue">30 days for allure-results</strong> — raw Allure results are small JSON files. Keeping 30 days allows manual regeneration of historical reports if needed.</p>
+<p class="sn-para"><strong class="k-blue">14 days for nightly playwright reports</strong> — the interactive HTML report. Useful for investigating failures in the past two weeks. Beyond that, Allure history (published to GitHub Pages) provides the trend view.</p>
+    </div>
+  </div>
+
+  <!-- Q509.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q509.18</span>
+      <h2 class="sn-q-text">What does Level 8 not solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 8 automates the framework. The remaining problem:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Test creation still requires manual effort.</strong> Every test in the suite was written manually by an engineer who understood the page objects, fixtures, helpers, and conventions established across Levels 1 through 8. When a new feature is added to OrangeHRM, someone must write the page objects, fixtures, and test cases — applying the same patterns, following the same conventions, matching the same quality standards.</p>
+<p class="sn-para">Level 9 addresses this with an AI agent that reads the codebase, derives the team's standards from the existing test files, and generates new tests that are indistinguishable from what the team would write manually. The agent reads <code class="sn-ic">AddEmployeePage.ts</code>, <code class="sn-ic">employee.spec.ts</code>, <code class="sn-ic">fixtures/index.ts</code>, and <code class="sn-ic">generate.ts</code> — then writes the equivalent for a new feature without being told how.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Level 8 makes test results a team resource: PR gate blocks merges on failure; nightly runs publish to GitHub Pages; manual runs require no local setup.</span></li>
+            <li><span class="icon">⭐</span><span>Three workflows: <code class="sn-ic">pr-check.yml</code> (smoke on PRs), <code class="sn-ic">nightly-regression.yml</code> (full suite nightly + Allure history), <code class="sn-ic">manual-run.yml</code> (team-triggered targeted run).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npm ci</code> not <code class="sn-ic">npm install</code> in CI: reproducible exact-version installs, fails if lock file is out of sync.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npx playwright install --with-deps chromium</code>: installs OS-level system libraries; install only the browsers the config uses.</span></li>
+            <li><span class="icon">⭐</span><span>Credentials injected via <code class="sn-ic">cat &gt; .env.dev &lt;&lt; EOF ... EOF</code> using GitHub Secrets — transparent to <code class="sn-ic">readEnv()</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">continue-on-error: true</code> on the test step: prevents Playwright's non-zero exit from stopping the workflow before Allure generates and publishes the report.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">if: always()</code> on Allure generate and publish steps: runs even when earlier steps failed.</span></li>
+            <li><span class="icon">⭐</span><span>Allure history: copy <code class="sn-ic">gh-pages-previous/history</code> into <code class="sn-ic">allure-results/history</code> before generating; without this, each run starts fresh with no trend data.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">workers: isCI ? 2 : 1</code>: 2 in CI for speed without overloading the shared demo site; 1 locally for easy debugging. Safe because tests are fully independent (Level 4).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">retries: isCI ? 2 : 0</code>: absorbs transient demo site issues in CI; locally, failures are investigated immediately.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">trace: isCI ? 'on-first-retry' : 'off'</code>: trace overhead only in CI where you cannot re-run interactively.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">isCI = !!process.env.CI</code>: GitHub Actions sets <code class="sn-ic">CI=true</code> automatically; workflows also set it explicitly.</span></li>
+            <li><span class="icon">⭐</span><span>Allure provides cross-run value: trend graphs, flakiness tracking, failure categorisation, per-test history — things the single-run HTML reporter cannot.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">permissions: contents: write</code> required for the <code class="sn-ic">peaceiris/actions-gh-pages</code> action to push to the <code class="sn-ic">gh-pages</code> branch.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">workflow_dispatch</code> with <code class="sn-ic">type: choice</code> inputs creates dropdown menus in the Actions UI — team members trigger targeted runs without CLI knowledge.</span></li>
+            <li><span class="icon">⭐</span><span>Level 8 solves automation; it leaves test authoring speed (Level 9: AI-assisted test generation) for the next level.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

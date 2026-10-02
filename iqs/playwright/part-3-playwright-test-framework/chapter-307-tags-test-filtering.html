@@ -1,0 +1,863 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 307 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Tags</span> <span class="w2">&amp;</span> <span class="w3">Test</span> <span class="w4">Filtering</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's tag system — how to define tags, how to filter tests by tag from the CLI and config, and how to design a tag taxonomy that gives your team granular control over every execution scenario. Interviewers ask about tags to test pipeline design thinking: a candidate who knows tags well can answer "how do you run only critical tests before a deployment?" with a precise, confident answer.</span>
+  </div>
+
+
+  <!-- Q307.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.1</span>
+      <h2 class="sn-q-text">What are tags in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tags are labels you attach to tests for filtering purposes. A test can have one tag, multiple tags, or no tags. Tags have no effect on how a test runs — they are purely for selecting which tests to include or exclude.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Tag in the details object (recommended)</span>
+<span class="tc-kw">test</span>(
+  <span class="tc-str">'valid credentials redirect to dashboard'</span>,
+  { tag: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@auth'</span>] },
+  <span class="tc-kw">async</span> ({ loginPage }) =&gt; { ... }
+);
+
+<span class="tc-cm">// Tag in the test title (simpler, but can clutter titles)</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'valid credentials redirect to dashboard @smoke @auth'</span>, <span class="tc-kw">async</span> ({ loginPage }) =&gt; { ... });</div>
+      </div>
+<p class="sn-para">Both syntaxes are equivalent for filtering. The CLI flag <code class="sn-ic">--grep @smoke</code> matches against the full test title — which includes tags whether they are in the title or the details object.</p>
+    </div>
+  </div>
+
+  <!-- Q307.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.2</span>
+      <h2 class="sn-q-text">What is the @ convention and why does it matter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <code class="sn-ic">@</code> prefix is a convention, not a requirement. Playwright does not enforce it. It matters in practice for three reasons:</p>
+      </div>
+<ol class="sn-olist">
+<li><strong class="k-green">Visual clarity</strong> — tags are instantly distinct from the rest of the title</li>
+</ol>
+<p class="sn-para">   when you scan a list of test names</p>
+<ol class="sn-olist">
+<li><strong class="k-green">Grep safety</strong> — <code class="sn-ic">--grep @smoke</code> is far less likely to accidentally match</li>
+</ol>
+<p class="sn-para">   test titles than <code class="sn-ic">--grep smoke</code> (which would match "employee smoke detection    test" as a false positive)</p>
+<ol class="sn-olist">
+<li><strong class="k-green">Team consistency</strong> — <code class="sn-ic">@smoke</code> is immediately recognisable to anyone</li>
+</ol>
+<p class="sn-para">   familiar with Playwright</p>
+<p class="sn-para">Always use <code class="sn-ic">@</code> as a prefix. Never use raw words like <code class="sn-ic">smoke</code> as tag values.</p>
+    </div>
+  </div>
+
+  <!-- Q307.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.3</span>
+      <h2 class="sn-q-text">How do you attach tags to a describe block?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tags on a <code class="sn-ic">describe</code> block apply to all tests inside it. Individual tests inside the describe can add their own tags on top.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login Module'</span>, () =&gt; {
+  <span class="tc-cm">// Tests in this describe also get @auth — declared per-test</span>
+
+  <span class="tc-kw">test</span>(
+    <span class="tc-str">'valid credentials redirect to dashboard'</span>,
+    { tag: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@auth'</span>] },
+    <span class="tc-kw">async</span> ({ loginPage }) =&gt; { ... }
+  );
+
+  <span class="tc-kw">test</span>(
+    <span class="tc-str">'invalid password shows error message'</span>,
+    { tag: [<span class="tc-str">'@regression'</span>, <span class="tc-str">'@auth'</span>] },
+    <span class="tc-kw">async</span> ({ loginPage }) =&gt; { ... }
+  );
+});</div>
+      </div>
+<p class="sn-para">In this pattern, the module tag (<code class="sn-ic">@auth</code>) is repeated on each test. An alternative: use a file-level describe name and let engineers know the tag belongs to all tests in the file — some teams document this in a README rather than repeating the tag on every test.</p>
+    </div>
+  </div>
+
+  <!-- Q307.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.4</span>
+      <h2 class="sn-q-text">What is the two-layer tag system and how do you design one?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A well-designed tag system has two independent dimensions:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Layer 1 — Execution tier (when should this test run?):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">@smoke</code> — the single most critical test per feature. Verifies the primary</span></li>
+</ul>
+<p class="sn-para">  happy path. Should pass before every deployment. Target: full <code class="sn-ic">@smoke</code> suite   runs in under 5 minutes.</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span><code class="sn-ic">@regression</code> — the full coverage set: validations, edge cases, error paths,</span></li>
+</ul>
+<p class="sn-para">  boundary conditions. Runs before releases and nightly.</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span><code class="sn-ic">@e2e</code> — full end-to-end user journeys spanning multiple pages or roles.</span></li>
+</ul>
+<p class="sn-para">  These are slow and expensive. Runs nightly or before major releases.</p>
+<p class="sn-para"><strong class="k-orange">Layer 2 — Module (which part of the system?):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span><code class="sn-ic">@auth</code> — login, logout, session, SSO, password reset</span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">@pim</code> — employee management: add, edit, delete, search</span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">@leave</code> — leave application, approval, balances</span></li>
+<li><span class="icon">🚀</span><span><code class="sn-ic">@time</code> — attendance, timesheets, overtime</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">@payroll</code> — salary, deductions, payslips</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">@admin</code> — system configuration, user management</span></li>
+</ul>
+<p class="sn-para">Every test should have exactly one tier tag and at least one module tag:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// @smoke + @auth</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'valid credentials redirect to dashboard'</span>, { tag: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@auth'</span>] }, ...)
+
+<span class="tc-cm">// @regression + @leave</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'past date is rejected for leave application'</span>, { tag: [<span class="tc-str">'@regression'</span>, <span class="tc-str">'@leave'</span>] }, ...)
+
+<span class="tc-cm">// @e2e + @pim + @leave (spans two modules)</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'new employee applies for leave on first day'</span>, { tag: [<span class="tc-str">'@e2e'</span>, <span class="tc-str">'@pim'</span>, <span class="tc-str">'@leave'</span>] }, ...)</div>
+      </div>
+<p class="sn-para">Two dimensions give you independent filtering on two axes: run all smoke tests regardless of module, or run all PIM tests regardless of tier, or run only PIM smoke tests.</p>
+    </div>
+  </div>
+
+  <!-- Q307.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.5</span>
+      <h2 class="sn-q-text">How do you run tests by tag from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--grep</code> matches against the full test title using a regex pattern:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep @smoke
+
+npx playwright test --grep @regression
+
+npx playwright test --grep @pim
+
+npx playwright test --grep @smoke --project=chromium</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">--grep-invert</code> excludes tests matching the pattern:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep-invert @e2e
+
+npx playwright test --grep @regression --grep-invert @slow</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q307.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.6</span>
+      <h2 class="sn-q-text">How do you filter for OR logic, AND logic, and NOT logic?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--grep</code> is a regex, so regex operators apply:</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">OR logic</strong> — use the pipe <code class="sn-ic">|</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;@smoke|@regression&quot;
+
+npx playwright test --grep &quot;@pim|@leave&quot;</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">AND logic</strong> — use lookahead regex:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;(?=.*@smoke)(?=.*@pim)&quot;
+
+npx playwright test --grep &quot;(?=.*@regression)(?=.*@auth)&quot;</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">NOT logic</strong> — use <code class="sn-ic">--grep-invert</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep-invert @e2e</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Combined OR + NOT:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;@smoke|@regression&quot; --grep-invert @slow</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q307.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.7</span>
+      <h2 class="sn-q-text">How do you set default tag filters in playwright.config.ts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Set <code class="sn-ic">grep</code> and <code class="sn-ic">grepInvert</code> at the config level to avoid typing <code class="sn-ic">--grep</code> on every command:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  <span class="tc-cm">// By default, only run smoke and regression tests</span>
+  <span class="tc-cm">// E2E tests require an explicit --grep @e2e to include</span>
+  grep: /@smoke|@regression/,
+
+  <span class="tc-cm">// Never run @wip (work in progress) tests by default</span>
+  grepInvert: /@wip/,
+});</div>
+      </div>
+<p class="sn-para">With this config, <code class="sn-ic">npx playwright test</code> runs <code class="sn-ic">@smoke</code> and <code class="sn-ic">@regression</code>. To include <code class="sn-ic">@e2e</code>, override explicitly: <code class="sn-ic">npx playwright test --grep @e2e</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q307.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.8</span>
+      <h2 class="sn-q-text">How do you configure project-level tag filters?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Different Playwright projects can have different default tag filters. This creates named execution profiles in a single config file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  projects: [
+    {
+      name: <span class="tc-str">'smoke-check'</span>,
+      grep: /@smoke/,
+      use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+    },
+    {
+      name: <span class="tc-str">'full-regression'</span>,
+      grep: /@regression|@smoke/,
+      use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+    },
+    {
+      name: <span class="tc-str">'cross-browser-smoke'</span>,
+      grep: /@smoke/,
+      use: { ...devices[<span class="tc-str">'Desktop Firefox'</span>] },
+    },
+    {
+      name: <span class="tc-str">'nightly'</span>,
+      grep: /@smoke|@regression|@e2e/,
+      use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+    },
+  ],
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --project=smoke-check       # 5-minute pre-deploy check
+npx playwright test --project=full-regression   # pre-release regression
+npx playwright test --project=nightly           # full nightly suite</div>
+      </div>
+<p class="sn-para">One config, multiple execution profiles. Engineers pick the profile for their context rather than constructing <code class="sn-ic">--grep</code> patterns manually.</p>
+    </div>
+  </div>
+
+  <!-- Q307.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.9</span>
+      <h2 class="sn-q-text">How do you list tests matching a tag without running them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">--list</code> combined with <code class="sn-ic">--grep</code>. This lets you verify tag coverage before committing to a run:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --list --grep @smoke</div>
+      </div>
+<p class="sn-para">Output:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Listing tests:
+  [chromium] › auth/login.spec.ts:8 › Login › valid credentials redirect to dashboard
+  [chromium] › pim/employee-list.spec.ts:12 › Employee List › shows employees by default
+  [chromium] › leave/apply-leave.spec.ts:11 › Apply Leave › application submits successfully
+  3 tests total</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">--list</code> to:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Verify a new test was tagged correctly before running it</span></li>
+<li><span class="icon">💡</span><span>Estimate how many tests a <code class="sn-ic">--grep</code> run will execute</span></li>
+<li><span class="icon">⚡</span><span>Audit which tests are missing tier or module tags</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --list | grep -v &quot;@smoke\|@regression\|@e2e&quot;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q307.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.10</span>
+      <h2 class="sn-q-text">How do tags appear in report output?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">HTML Report:</strong> Tags appear as clickable labels next to each test title. Clicking a tag in the report filters the view to show only tests with that tag — useful when sharing reports with managers who want to see only <code class="sn-ic">@smoke</code> or only <code class="sn-ic">@pim</code> results.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">JSON Report:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;title&quot;: &quot;valid credentials redirect to dashboard&quot;,
+  &quot;tags&quot;: [&quot;@smoke&quot;, &quot;@auth&quot;],
+  &quot;status&quot;: &quot;passed&quot;,
+  &quot;duration&quot;: 1340
+}</div>
+      </div>
+<p class="sn-para">This enables programmatic dashboards that aggregate by tag — "smoke test pass rate over the last 30 days" or "PIM regression failures this week."</p>
+<p class="sn-para"><strong class="k-green">JUnit XML:</strong> Tags flow through as test suite or test case properties, consumable by Azure DevOps, Jenkins, and other CI tools that parse JUnit.</p>
+    </div>
+  </div>
+
+  <!-- Q307.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.11</span>
+      <h2 class="sn-q-text">What is the difference between tags and annotations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both attach metadata to tests. They serve different purposes:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Tags</th><th class="sn-th-green">Annotations</th></tr></thead>
+          <tbody>
+          <tr><td>Syntax</td><td><code class="sn-ic">{ tag: '@smoke' }</code></td><td><code class="sn-ic">{ annotation: { type, description } }</code></td></tr>
+          <tr><td>Purpose</td><td>Control which tests run</td><td>Add context visible in reports</td></tr>
+          <tr><td>CLI use</td><td><code class="sn-ic">--grep @smoke</code> — filters execution</td><td>Cannot filter by annotation from CLI</td></tr>
+          <tr><td>Values</td><td>Single <code class="sn-ic">@label</code> strings</td><td>Structured <code class="sn-ic">type</code> + <code class="sn-ic">description</code> pairs</td></tr>
+          <tr><td>Best for</td><td>Tier and module selection</td><td>Issue links, owner, priority</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use tags for execution control:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">{ tag: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@pim'</span>] }  <span class="tc-cm">// CLI: npx playwright test --grep @pim</span></div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use annotations for traceability:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">{ annotation: [
+  { <span class="tc-kw">type</span>: <span class="tc-str">'issue'</span>, description: <span class="tc-str">'https: S0 
+  { type: '</span>owner<span class="tc-str">', description: '</span>pim-team' },
+]}</div>
+      </div>
+<p class="sn-para">In practice, use both together:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(
+  <span class="tc-str">'add employee saves with required fields'</span>,
+  {
+    tag: [<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@pim'</span>],                                    <span class="tc-cm">// execution control</span>
+    annotation: { <span class="tc-kw">type</span>: <span class="tc-str">'owner'</span>, description: <span class="tc-str">'pim-team'</span> },    <span class="tc-cm">// report context</span>
+  },
+  <span class="tc-kw">async</span> ({ addEmployeePage }) =&gt; { ... }
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q307.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.12</span>
+      <h2 class="sn-q-text">How do tags work in parameterised tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tags work inside parameterised loops. You can include the tag in the data row when different cases in the same loop need different tags:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> cases = [
+  {
+    description: <span class="tc-str">'valid login redirects to dashboard'</span>,
+    tag: <span class="tc-str">'@smoke'</span>,
+    username: <span class="tc-str">'Admin'</span>,
+    password: <span class="tc-str">'admin123'</span>,
+    expectSuccess: <span class="tc-kw">true</span>,
+  },
+  {
+    description: <span class="tc-str">'invalid password shows error message'</span>,
+    tag: <span class="tc-str">'@regression'</span>,
+    username: <span class="tc-str">'Admin'</span>,
+    password: <span class="tc-str">'wrongpassword'</span>,
+    expectSuccess: <span class="tc-kw">false</span>,
+  },
+  {
+    description: <span class="tc-str">'empty username shows Required'</span>,
+    tag: <span class="tc-str">'@regression'</span>,
+    username: <span class="tc-str">''</span>,
+    password: <span class="tc-str">'admin123'</span>,
+    expectSuccess: <span class="tc-kw">false</span>,
+  },
+];
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> tc <span class="tc-kw">of</span> cases) {
+  <span class="tc-kw">test</span>(
+    tc.description,
+    { tag: [tc.tag, <span class="tc-str">'@auth'</span>] }, <span class="tc-cm">// per-row tier tag + fixed module tag</span>
+    <span class="tc-kw">async</span> ({ loginPage }) =&gt; {
+      <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+      <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(tc.username, tc.password);
+      <span class="tc-kw">if</span> (tc.expectSuccess) {
+        <span class="tc-kw">await</span> loginPage.<span class="tc-fn">expectDashboard</span>();
+      } <span class="tc-kw">else</span> {
+        <span class="tc-kw">await</span> loginPage.<span class="tc-fn">expectError</span>();
+      }
+    }
+  );
+}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">npx playwright test --grep @smoke</code> runs only the first case. <code class="sn-ic">npx playwright test --grep @auth</code> runs all three. <code class="sn-ic">npx playwright test --grep @regression</code> runs the last two.</p>
+    </div>
+  </div>
+
+  <!-- Q307.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.13</span>
+      <h2 class="sn-q-text">What are the most common tag system mistakes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Mistake 1 — Ad hoc tags, no taxonomy:</strong> Different engineers use <code class="sn-ic">@critical</code>, <code class="sn-ic">@important</code>, <code class="sn-ic">@key</code>, and <code class="sn-ic">@smoke</code> interchangeably. None of them can be relied on. Define the taxonomy once, document it, enforce it in PR review.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Mistake 2 — Too many tier levels:</strong> <code class="sn-ic">@smoke</code>, <code class="sn-ic">@sanity</code>, <code class="sn-ic">@critical</code>, <code class="sn-ic">@priority1</code> — if you cannot explain the difference instantly, you have too many tiers. Three tiers (<code class="sn-ic">@smoke</code>, <code class="sn-ic">@regression</code>, <code class="sn-ic">@e2e</code>) cover almost every scenario.</p>
+<p class="sn-para"><strong class="k-teal">Mistake 3 — Overusing @smoke:</strong> If 80 tests are tagged <code class="sn-ic">@smoke</code>, the pre-deploy check takes 40 minutes and the tag means nothing. <code class="sn-ic">@smoke</code> should be the single most critical test per feature — the one that tells you the feature works at all.</p>
+<p class="sn-para"><strong class="k-teal">Mistake 4 — No module tags:</strong> Without module tags, you cannot run "all PIM tests" or "all auth tests" — you can only run all smoke tests or all regression tests. Module tags give you the second filtering dimension.</p>
+<p class="sn-para"><strong class="k-teal">Mistake 5 — Forgetting to tag new tests:</strong> Add tag verification to your PR checklist. Use <code class="sn-ic">--list</code> to audit:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --list | grep -v &quot;@smoke\|@regression\|@e2e&quot;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q307.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.14</span>
+      <h2 class="sn-q-text">How did your project structure the tag system for a pre-deployment gate?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we have a hard rule: the pre-deployment CI gate runs only <code class="sn-ic">@smoke</code> tests. If any <code class="sn-ic">@smoke</code> test fails, the deployment is blocked.</p>
+      </div>
+<p class="sn-para">The gate command:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep @smoke --project=chromium --workers=4</div>
+      </div>
+<p class="sn-para">With 200+ tests in the suite, we have exactly 18 tests tagged <code class="sn-ic">@smoke</code> — one per major feature area. The full <code class="sn-ic">@smoke</code> run completes in under 4 minutes.</p>
+<p class="sn-para">We enforce the tagging rule in code review. Every <code class="sn-ic">test()</code> call must have a tier tag. New smoke tests require a team lead to approve — <code class="sn-ic">@smoke</code> is deliberately guarded to prevent scope creep.</p>
+<p class="sn-para">The <code class="sn-ic">@regression</code> suite runs in a nightly CI job with 8 workers. Both tier and module tags are required on every test, verified in CI with a lint step that parses the <code class="sn-ic">--list</code> output.</p>
+    </div>
+  </div>
+
+  <!-- Q307.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.15</span>
+      <h2 class="sn-q-text">How do you map tag-based runs to a CI pipeline?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Playwright Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: <span class="tc-str">'0 2 * * *'</span>  <span class="tc-cm"># Nightly at 2am</span>
+
+jobs:
+  smoke:
+    name: Smoke Tests (PR gate)
+    runs-on: ubuntu-latest
+    <span class="tc-kw">if</span>: github.event_name == <span class="tc-str">'pull_request'</span>
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright <span class="tc-kw">test</span> --grep @smoke --project=chromium
+
+  regression:
+    name: Regression Tests (merge gate)
+    runs-on: ubuntu-latest
+    <span class="tc-kw">if</span>: github.event_name == <span class="tc-str">'push'</span>
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright <span class="tc-kw">test</span> --grep &quot;@smoke|@regression&quot; --workers=<span class="tc-num">4</span>
+
+  nightly:
+    name: Full Suite (nightly)
+    runs-on: ubuntu-latest
+    <span class="tc-kw">if</span>: github.event_name == <span class="tc-str">'schedule'</span>
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright <span class="tc-kw">test</span> --grep &quot;@smoke|@regression|@e2e&quot; --workers=<span class="tc-num">8</span></div>
+      </div>
+<p class="sn-para">PRs trigger only <code class="sn-ic">@smoke</code>. Merges to <code class="sn-ic">main</code> run smoke + regression. Nightly runs the full suite including <code class="sn-ic">@e2e</code>. The tag system drives the entire pipeline strategy — one taxonomy, three execution profiles.</p>
+    </div>
+  </div>
+
+  <!-- Q307.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.16</span>
+      <h2 class="sn-q-text">Can you configure grep at the project level for cross-browser runs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes. Project-level <code class="sn-ic">grep</code> restricts which tests run for each project. This is useful for running only smoke tests on non-Chromium browsers — keeping cross-browser runs fast while still getting Chromium-wide regression coverage:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  projects: [
+    <span class="tc-cm">// Chromium: full smoke + regression</span>
+    {
+      name: <span class="tc-str">'chromium'</span>,
+      grep: /@smoke|@regression/,
+      use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+    },
+    <span class="tc-cm">// Firefox: smoke only — cross-browser validation of critical paths</span>
+    {
+      name: <span class="tc-str">'firefox'</span>,
+      grep: /@smoke/,
+      use: { ...devices[<span class="tc-str">'Desktop Firefox'</span>] },
+    },
+    <span class="tc-cm">// WebKit: smoke only — same reason</span>
+    {
+      name: <span class="tc-str">'webkit'</span>,
+      grep: /@smoke/,
+      use: { ...devices[<span class="tc-str">'Desktop Safari'</span>] },
+    },
+  ],
+});</div>
+      </div>
+<p class="sn-para">Running <code class="sn-ic">npx playwright test</code> executes the full regression on Chromium and smoke-only on Firefox and WebKit. This balances thorough coverage with reasonable cross-browser run time.</p>
+    </div>
+  </div>
+
+  <!-- Q307.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.17</span>
+      <h2 class="sn-q-text">How do you include data in tags dynamically for parameterised tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When parameterised tests cover data-specific scenarios, embedding the data identifier in the tag itself is not recommended — it makes <code class="sn-ic">--grep</code> patterns unpredictable. Instead, use the test title to carry data-specific context, and keep tags for tier and module:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> leaveTypes = [<span class="tc-str">'Annual'</span>, <span class="tc-str">'Sick'</span>, <span class="tc-str">'Casual'</span>, <span class="tc-str">'Maternity'</span>];
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> <span class="tc-kw">type</span> <span class="tc-kw">of</span> leaveTypes) {
+  <span class="tc-kw">test</span>(
+    <span class="tc-str">`${type} leave type displays correct configuration @regression`</span>,
+    { tag: [<span class="tc-str">'@regression'</span>, <span class="tc-str">'@leave'</span>] }, <span class="tc-cm">// tags: tier + module only</span>
+    <span class="tc-kw">async</span> ({ adminPage }) =&gt; {
+      <span class="tc-kw">await</span> adminPage.<span class="tc-fn">openLeaveTypes</span>();
+      <span class="tc-kw">const</span> row = adminPage.<span class="tc-fn">getLeaveTypeRow</span>(<span class="tc-kw">type</span>);
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(row).<span class="tc-fn">toBeVisible</span>();
+    }
+  );
+}</div>
+      </div>
+<p class="sn-para">The data (<code class="sn-ic">Annual</code>, <code class="sn-ic">Sick</code>) lives in the test title — visible in reports. The tags (<code class="sn-ic">@regression</code>, <code class="sn-ic">@leave</code>) are stable and filterable. This keeps <code class="sn-ic">--grep @leave</code> reliably matching all leave tests regardless of which data variant they cover.</p>
+    </div>
+  </div>
+
+  <!-- Q307.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q307.18</span>
+      <h2 class="sn-q-text">What was the biggest tag-related problem your team solved?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The biggest problem we solved was tag drift — over six months, engineers had added tests with inconsistent tags. We had <code class="sn-ic">@smoke</code>, <code class="sn-ic">@critical</code>, <code class="sn-ic">@important</code>, and <code class="sn-ic">@sanity</code> all meaning roughly the same thing. The pre-deploy check that was supposed to run 15 smoke tests was running 67.</p>
+      </div>
+<p class="sn-para">The fix had two parts:</p>
+<p class="sn-para">First, we ran an audit:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --list | sort | uniq</div>
+      </div>
+<p class="sn-para">We identified every unique tag in use and mapped each to the canonical tag it should be.</p>
+<p class="sn-para">Second, we added a CI lint step — a Node.js script that parses <code class="sn-ic">--list</code> output and fails the build if any test uses an undeclared tag:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// scripts/lint-tags.ts</span>
+<span class="tc-kw">const</span> ALLOWED_TAGS = <span class="tc-kw">new</span> Set([<span class="tc-str">'@smoke'</span>, <span class="tc-str">'@regression'</span>, <span class="tc-str">'@e2e'</span>,
+  <span class="tc-str">'@auth'</span>, <span class="tc-str">'@pim'</span>, <span class="tc-str">'@leave'</span>, <span class="tc-str">'@time'</span>, <span class="tc-str">'@payroll'</span>, <span class="tc-str">'@admin'</span>, <span class="tc-str">'@reports'</span>]);
+
+<span class="tc-cm">// Parse playwright test --list output and check each tag</span></div>
+      </div>
+<p class="sn-para">After the migration, the <code class="sn-ic">@smoke</code> suite was back to 18 tests and ran in 3.5 minutes. The <code class="sn-ic">--grep</code> patterns in CI became reliable and the team trusted the pre-deploy gate again.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Tags are <code class="sn-ic">@</code>-prefixed labels for filtering — they do not change how tests run.</span></li>
+            <li><span class="icon">⭐</span><span>Two syntax options: <code class="sn-ic">{ tag: ['@smoke', '@pim'] }</code> in details object (recommended), or in the title string.</span></li>
+            <li><span class="icon">⭐</span><span>Design a two-layer system: tier tags (<code class="sn-ic">@smoke</code>, <code class="sn-ic">@regression</code>, <code class="sn-ic">@e2e</code>) + module tags (<code class="sn-ic">@auth</code>, <code class="sn-ic">@pim</code>, <code class="sn-ic">@leave</code>).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--grep @smoke</code> — simple match. <code class="sn-ic">--grep &quot;@a|@b&quot;</code> — OR. <code class="sn-ic">--grep &quot;(?=.*@a)(?=.*@b)&quot;</code> — AND. <code class="sn-ic">--grep-invert @e2e</code> — NOT.</span></li>
+            <li><span class="icon">⭐</span><span>Set <code class="sn-ic">grep</code> / <code class="sn-ic">grepInvert</code> in <code class="sn-ic">playwright.config.ts</code> for project-level defaults. Different projects can have different filters.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--list --grep @smoke</code> previews which tests match before running. Use for auditing tag coverage.</span></li>
+            <li><span class="icon">⭐</span><span>Tags flow through HTML report (filterable), JSON output (parseable), and JUnit XML.</span></li>
+            <li><span class="icon">⭐</span><span>Tags vs annotations: tags control execution; annotations add context to reports. Use both.</span></li>
+            <li><span class="icon">⭐</span><span>Common mistakes: no taxonomy, overusing <code class="sn-ic">@smoke</code>, no module tags, forgetting to tag new tests.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

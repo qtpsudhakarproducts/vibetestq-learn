@@ -1,0 +1,956 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 505 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Test</span> <span class="w2">Independence</span> <span class="w3">&amp;</span> <span class="w4">State</span> <span class="w5">Setup</span> <span class="w6">(L4)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the practices and patterns that make every test fully independent — creating its own preconditions, running in any order, and leaving no shared state for other tests to depend on. Interviewers ask about test independence to separate engineers who understand isolation from those who have only written sequential, order-dependent suites. The ability to explain <code class="sn-ic">beforeAll</code> vs <code class="sn-ic">beforeEach</code>, the role of API state setup, and the <code class="sn-ic">ApiClient</code> pattern are strong differentiators at the senior level.</span>
+  </div>
+
+
+  <!-- Q505.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.1</span>
+      <h2 class="sn-q-text">What is the test dependency problem?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Test dependency means a test requires another test to have run first in order to pass. This creates a cascading failure pattern:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Morning scenario on a shared demo site:
+09:00 — employee.spec.ts  PASS ✅  Alice Johnson created
+09:00 — user.spec.ts      FAIL ❌  Employee &quot;Alice Johnson&quot; not found
+09:00 — leave.spec.ts     FAIL ❌  No ESS user to apply leave with</div>
+      </div>
+<p class="sn-para">The user test fails not because user creation is broken — it fails because its precondition (an employee existing) was not met. The demo site reset overnight; Alice Johnson no longer exists. One root cause produces three red tests and a misleading failure report.</p>
+<p class="sn-para">This pattern has three consequences:</p>
+<ol class="sn-olist">
+<li><strong class="k-blue">False failures</strong> — tests fail for reasons unrelated to what they test</li>
+<li><strong class="k-blue">Unreliable CI</strong> — the suite is only reliable if tests always run in</li>
+</ol>
+<p class="sn-para">   the exact same order, which breaks down with sharding and parallel runs</p>
+<ol class="sn-olist">
+<li><strong class="k-blue">Wasted debugging time</strong> — engineers investigate three failures when</li>
+</ol>
+<p class="sn-para">   there is only one real problem</p>
+<p class="sn-para">Level 4 fixes this by making every test responsible for creating its own preconditions.</p>
+    </div>
+  </div>
+
+  <!-- Q505.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.2</span>
+      <h2 class="sn-q-text">What does a fully independent test look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A fully independent test has three characteristics:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Creates everything it needs</strong> — if the test needs an employee to exist, it creates that employee before the scenario runs.</p>
+<p class="sn-para"><strong class="k-green">Runs in any order</strong> — independent of whether other tests ran before it, after it, or at all. Safe to shuffle, parallelise, or execute in isolation.</p>
+<p class="sn-para"><strong class="k-green">Cleans up after itself</strong> — removes the data it created when it finishes, leaving a clean state for subsequent tests.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin — User Management'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> empNumber: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> employee:  ReturnType&lt;<span class="tc-kw">typeof</span> generateEmployee&gt;;
+
+  <span class="tc-cm">// Creates its own employee — no dependency on employee.spec.ts</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    employee  = <span class="tc-fn">generateEmployee</span>();
+    empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);
+  });
+
+  <span class="tc-cm">// Removes its employee when done — does not pollute shared state</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-kw">if</span> (empNumber) <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">delete</span>(empNumber);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can add a user linked to the employee'</span>, <span class="tc-kw">async</span> ({ addUserPage }) =&gt; {
+    <span class="tc-cm">// employee is guaranteed to exist — no cross-file assumption</span>
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(<span class="tc-fn">generateUser</span>(employee));
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertUserSavedSuccessfully</span>();
+  });
+
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q505.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.3</span>
+      <h2 class="sn-q-text">What is the difference between beforeEach and beforeAll for state setup?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// beforeEach — runs before EVERY test in the block</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+  <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();
+  <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);  <span class="tc-cm">// creates a new employee before EACH test</span>
+  <span class="tc-cm">// 5 tests × 1 employee = 5 API calls = 5 employees created</span>
+});
+
+<span class="tc-cm">// beforeAll — runs ONCE before ALL tests in the block</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+  <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();
+  <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);  <span class="tc-cm">// creates ONE employee shared by all tests</span>
+  <span class="tc-cm">// 5 tests × 1 employee = 1 API call = 1 employee shared</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">For state setup (creating prerequisites): use <code class="sn-ic">beforeAll</code>.</strong> All tests in the block that need the employee can use the same one. Creating a new employee before every test is wasteful and slow.</p>
+<p class="sn-para"><strong class="k-purple">When would <code class="sn-ic">beforeEach</code> be appropriate for state?</strong> When each test needs a completely fresh, isolated record — for example, leave applications where creating two leave requests for the same employee on the same date might conflict. Most precondition setup belongs in <code class="sn-ic">beforeAll</code>.</p>
+<p class="sn-para">The pairing is: <code class="sn-ic">beforeAll</code> + <code class="sn-ic">afterAll</code> for shared state; <code class="sn-ic">beforeEach</code> + <code class="sn-ic">afterEach</code> for per-test state.</p>
+    </div>
+  </div>
+
+  <!-- Q505.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.4</span>
+      <h2 class="sn-q-text">What are the two approaches to test state setup?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">Approach 1 — <code class="sn-ic">beforeAll</code> UI setup:</strong> Drive the browser UI once at the start of a describe block:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+    storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,
+  });
+  <span class="tc-kw">const</span> page            = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+  <span class="tc-kw">const</span> addEmployeePage = <span class="tc-kw">new</span> AddEmployeePage(page);
+
+  employee = <span class="tc-fn">generateEmployee</span>();
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(employee);
+  <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();
+});</div>
+      </div>
+<p class="sn-para">Use when: the application has no API, or the needed endpoints are not exposed.</p>
+<p class="sn-para"><strong class="k-orange">Approach 2 — API state setup:</strong> Create preconditions via HTTP before the browser opens:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+  employee  = <span class="tc-fn">generateEmployee</span>();
+  empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);
+});</div>
+      </div>
+<p class="sn-para">Use when: the application exposes REST endpoints for the entities you need.</p>
+<p class="sn-para"><strong class="k-orange">The comparison:</strong></p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Criterion</th><th class="sn-th-blue">beforeAll UI</th><th class="sn-th-green">API setup</th></tr></thead>
+          <tbody>
+          <tr><td>Speed</td><td>3–5 seconds</td><td>200–500ms</td></tr>
+          <tr><td>Reliability</td><td>Medium (UI flakiness)</td><td>High</td></tr>
+          <tr><td>Dependency</td><td>Requires browser</td><td>No browser needed</td></tr>
+          <tr><td>Availability</td><td>Always possible</td><td>Requires API endpoints</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q505.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.5</span>
+      <h2 class="sn-q-text">What is the ApiClient class and what does it do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">ApiClient</code> is a thin HTTP wrapper around Playwright's <code class="sn-ic">APIRequestContext</code>. It handles the base URL, admin authentication header, and response validation in one place — all API modules use it and never construct HTTP requests directly:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// api/ApiClient.ts</span>
+<span class="tc-kw">import</span> { APIRequestContext, request } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> ApiClient {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> context:    APIRequestContext;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> baseURL:    <span class="tc-kw">string</span>;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> authHeader: <span class="tc-kw">string</span>;
+
+  <span class="tc-kw">private</span> <span class="tc-fn">constructor</span>(context: APIRequestContext, baseURL: <span class="tc-kw">string</span>, authHeader: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">this</span>.context    = context;
+    <span class="tc-kw">this</span>.baseURL    = baseURL;
+    <span class="tc-kw">this</span>.authHeader = authHeader;
+  }
+
+  <span class="tc-cm">// Factory method — creates a client with admin credentials</span>
+  <span class="tc-kw">static</span> <span class="tc-kw">async</span> <span class="tc-fn">create</span>(baseURL: <span class="tc-kw">string</span>, username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;ApiClient&gt; {
+    <span class="tc-kw">const</span> context     = <span class="tc-kw">await</span> request.<span class="tc-fn">newContext</span>({ baseURL });
+    <span class="tc-kw">const</span> credentials = Buffer.<span class="tc-kw">from</span>(<span class="tc-str">`${username}:${password}`</span>).<span class="tc-fn">toString</span>(<span class="tc-str">'base64'</span>);
+    <span class="tc-kw">return</span> <span class="tc-kw">new</span> ApiClient(context, baseURL, <span class="tc-str">`Basic ${credentials}`</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">get</span>(path: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">unknown</span>&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.<span class="tc-fn">get</span>(path, {
+      headers: { Authorization: <span class="tc-kw">this</span>.authHeader },
+    });
+    <span class="tc-kw">return</span> <span class="tc-kw">this</span>.<span class="tc-fn">handleResponse</span>(response, <span class="tc-str">`GET ${path}`</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">post</span>(path: <span class="tc-kw">string</span>, body: <span class="tc-kw">unknown</span>): Promise&lt;<span class="tc-kw">unknown</span>&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.<span class="tc-fn">post</span>(path, {
+      headers: { Authorization: <span class="tc-kw">this</span>.authHeader, <span class="tc-str">'Content-Type'</span>: <span class="tc-str">'application/json'</span> },
+      data: body,
+    });
+    <span class="tc-kw">return</span> <span class="tc-kw">this</span>.<span class="tc-fn">handleResponse</span>(response, <span class="tc-str">`POST ${path}`</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">delete</span>(path: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.<span class="tc-fn">delete</span>(path, {
+      headers: { Authorization: <span class="tc-kw">this</span>.authHeader },
+    });
+    <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) {
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`DELETE ${path} failed: ${response.status()}`</span>);
+    }
+  }
+
+  <span class="tc-kw">private</span> <span class="tc-kw">async</span> <span class="tc-fn">handleResponse</span>(response: <span class="tc-kw">any</span>, operation: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">unknown</span>&gt; {
+    <span class="tc-kw">if</span> (!response.<span class="tc-fn">ok</span>()) {
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(
+        <span class="tc-str">`API ${operation} failed.\nStatus: ${response.status()}\n`</span> +
+        <span class="tc-str">`Response: ${await response.text()}`</span>
+      );
+    }
+    <span class="tc-kw">return</span> response.<span class="tc-fn">json</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">dispose</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.<span class="tc-fn">dispose</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para">Why a static <code class="sn-ic">create()</code> factory method rather than a regular constructor? The factory is <code class="sn-ic">async</code> — it calls <code class="sn-ic">request.newContext()</code> which is async. TypeScript constructors cannot be async. The factory pattern is the standard workaround.</p>
+    </div>
+  </div>
+
+  <!-- Q505.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.6</span>
+      <h2 class="sn-q-text">What does EmployeeApi look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// api/EmployeeApi.ts</span>
+<span class="tc-kw">import</span> { ApiClient }    <span class="tc-kw">from</span> <span class="tc-str">'./ApiClient'</span>;
+<span class="tc-kw">import</span> { EmployeeData } <span class="tc-kw">from</span> <span class="tc-str">'../data/types'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> EmployeeApi {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> client: ApiClient;
+
+  <span class="tc-fn">constructor</span>(client: ApiClient) {
+    <span class="tc-kw">this</span>.client = client;
+  }
+
+  <span class="tc-cm">// Creates an employee, returns the empNumber assigned by OrangeHRM</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">create</span>(employee: EmployeeData): Promise&lt;<span class="tc-kw">string</span>&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.client.<span class="tc-fn">post</span>(<span class="tc-str">'/api/v2/pim/employees'</span>, {
+      firstName:  employee.firstName,
+      lastName:   employee.lastName,
+      employeeId: employee.employeeId,
+    }) as { data: { empNumber: <span class="tc-kw">string</span> } };
+
+    <span class="tc-kw">return</span> response.data.empNumber;
+  }
+
+  <span class="tc-cm">// Deletes an employee — used in afterAll cleanup</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">delete</span>(empNumber: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.client.<span class="tc-fn">delete</span>(<span class="tc-str">`/api/v2/pim/employees/${empNumber}`</span>);
+  }
+
+  <span class="tc-cm">// Finds an employee by name — useful when empNumber was not captured at creation</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">getEmpNumberByName</span>(fullName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">string</span> | <span class="tc-kw">null</span>&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.client.<span class="tc-fn">get</span>(
+      <span class="tc-str">`/api/v2/pim/employees?nameOrId=${encodeURIComponent(fullName)}`</span>
+    ) as { data: Array&lt;{ empNumber: <span class="tc-kw">string</span>; firstName: <span class="tc-kw">string</span>; lastName: <span class="tc-kw">string</span> }&gt; };
+
+    <span class="tc-kw">const</span> match = response.data.<span class="tc-fn">find</span>(
+      emp =&gt; <span class="tc-str">`${emp.firstName} ${emp.lastName}`</span> === fullName
+    );
+    <span class="tc-kw">return</span> match?.empNumber ?? <span class="tc-kw">null</span>;
+  }
+}</div>
+      </div>
+<p class="sn-para">The return value from <code class="sn-ic">create()</code> is the employee number — not the employee data itself. The employee number is OrangeHRM's internal identifier used to link users to employees and submit leave requests. Capturing it at creation time and storing it in <code class="sn-ic">beforeAll</code> scope makes it available to all tests in the block and to <code class="sn-ic">afterAll</code> for cleanup.</p>
+    </div>
+  </div>
+
+  <!-- Q505.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.7</span>
+      <h2 class="sn-q-text">What does the API fixture integration look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">API fixtures are added alongside page object fixtures in <code class="sn-ic">fixtures/index.ts</code>. They create and dispose their <code class="sn-ic">ApiClient</code> around each test:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/index.ts — API fixture additions</span>
+<span class="tc-kw">import</span> { ApiClient, EmployeeApi, UserApi, LeaveApi } <span class="tc-kw">from</span> <span class="tc-str">'../api'</span>;
+
+<span class="tc-kw">type</span> ApiFixtures = {
+  employeeApi: EmployeeApi;
+  userApi:     UserApi;
+  leaveApi:    LeaveApi;
+};
+
+<span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;OrangeHRMFixtures &amp; ApiFixtures&gt;({
+
+  <span class="tc-cm">// ...existing page object fixtures...</span>
+
+  employeeApi: <span class="tc-kw">async</span> ({}, use) =&gt; {
+    <span class="tc-kw">const</span> client = <span class="tc-kw">await</span> ApiClient.<span class="tc-fn">create</span>(
+      process.env.BASE_URL ?? <span class="tc-str">'https: S2 
+      process.env.ADMIN_USER ?? '</span>Admin<span class="tc-str">',
+      process.env.ADMIN_PASS ?? '</span>admin123<span class="tc-str">'
+    );
+    await use(new EmployeeApi(client));
+    await client.dispose();   S3 
+  },
+
+  userApi: async ({}, use) =&amp;gt; {
+    const client = await ApiClient.create(
+      process.env.BASE_URL ?? '</span>https:<span class="tc-cm">//opensource-demo.orangehrmlive.com',</span>
+      process.env.ADMIN_USER ?? <span class="tc-str">'Admin'</span>,
+      process.env.ADMIN_PASS ?? <span class="tc-str">'admin123'</span>
+    );
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> UserApi(client));
+    <span class="tc-kw">await</span> client.<span class="tc-fn">dispose</span>();
+  },
+
+  leaveApi: <span class="tc-kw">async</span> ({}, use) =&gt; {
+    <span class="tc-kw">const</span> client = <span class="tc-kw">await</span> ApiClient.<span class="tc-fn">create</span>(
+      process.env.BASE_URL ?? <span class="tc-str">'https: S5 
+      process.env.ADMIN_USER ?? '</span>Admin<span class="tc-str">',
+      process.env.ADMIN_PASS ?? '</span>admin123'
+    );
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LeaveApi(client));
+    <span class="tc-kw">await</span> client.<span class="tc-fn">dispose</span>();
+  },
+
+});</div>
+      </div>
+<p class="sn-para">Notice the API fixtures receive <code class="sn-ic">{}</code> (empty destructure) — they do not depend on <code class="sn-ic">page</code>. API calls are completely independent of the browser.</p>
+    </div>
+  </div>
+
+  <!-- Q505.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.8</span>
+      <h2 class="sn-q-text">How do the rewritten user tests look with API setup?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/admin/user.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> }                  <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures'</span>;
+<span class="tc-kw">import</span> { generateEmployee, generateUser } <span class="tc-kw">from</span> <span class="tc-str">'../../data/generate'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin — User Management'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> empNumber: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> employee:  ReturnType&lt;<span class="tc-kw">typeof</span> generateEmployee&gt;;
+  <span class="tc-kw">let</span> user:      ReturnType&lt;<span class="tc-kw">typeof</span> generateUser&gt;;
+
+  <span class="tc-cm">// Create employee via API once — no dependency on employee.spec.ts</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    employee  = <span class="tc-fn">generateEmployee</span>();
+    empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);
+    user      = <span class="tc-fn">generateUser</span>(employee);
+  });
+
+  <span class="tc-cm">// Always runs — removes test data regardless of test pass/fail</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-kw">if</span> (empNumber) <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">delete</span>(empNumber);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can add a new system user'</span>, <span class="tc-kw">async</span> ({ userManagementPage, addUserPage }) =&gt; {
+    <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">clickAddUser</span>();
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(user);
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertUserSavedSuccessfully</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'user appears in management list'</span>, <span class="tc-kw">async</span> ({ userManagementPage }) =&gt; {
+    <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">searchByUsername</span>(user.username);
+    <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">assertUserExistsInList</span>(user.username);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'search with non-existent name shows no records'</span>, <span class="tc-kw">async</span> ({ userManagementPage }) =&gt; {
+    <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">searchByUsername</span>(<span class="tc-str">'ZZZNOTEXIST999'</span>);
+    <span class="tc-kw">await</span> userManagementPage.<span class="tc-fn">assertNoRecordsFound</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">This test file now passes whether or not <code class="sn-ic">employee.spec.ts</code> ran. It creates its own employee in <code class="sn-ic">beforeAll</code>, verifies user creation in the test body, and deletes the employee in <code class="sn-ic">afterAll</code>. The dependency chain is broken.</p>
+    </div>
+  </div>
+
+  <!-- Q505.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.9</span>
+      <h2 class="sn-q-text">Why is afterAll cleanup important and what happens without it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without cleanup, each test run leaves data in the application:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Run 1: Creates employee &quot;Alice-20260309&quot;
+Run 2: Creates employee &quot;Alice-20260310&quot;
+Run 3: Creates employee &quot;Alice-20260311&quot;
+...
+After 100 runs: 100 test employees in the system</div>
+      </div>
+<p class="sn-para">Problems this causes:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-blue">Search tests break</strong> — searching for "Alice" returns 100 results instead</span></li>
+</ul>
+<p class="sn-para">  of the expected 1 — <code class="sn-ic">assertEmployeeExistsInList</code> finds the right record   but <code class="sn-ic">toHaveCount(1)</code> assertions fail</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span><strong class="k-blue">Demo site quotas</strong> — shared demo sites often have record limits</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-blue">Visual noise</strong> — the application becomes cluttered with test artefacts</span></li>
+</ul>
+<p class="sn-para">  that make manual testing harder</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Always clean up with afterAll</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+  <span class="tc-kw">if</span> (empNumber) <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">delete</span>(empNumber);
+  <span class="tc-cm">// The `if` guard prevents errors when beforeAll itself failed</span>
+  <span class="tc-cm">// and empNumber was never set</span>
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">if (empNumber)</code> guard is essential. If <code class="sn-ic">beforeAll</code> fails before <code class="sn-ic">empNumber</code> is assigned, <code class="sn-ic">afterAll</code> runs with <code class="sn-ic">empNumber</code> undefined. Without the guard, <code class="sn-ic">employeeApi.delete(undefined)</code> throws — and you have a cleanup failure in addition to the original setup failure.</p>
+    </div>
+  </div>
+
+  <!-- Q505.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.10</span>
+      <h2 class="sn-q-text">How do you split a describe block to make leave tests independent?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The leave workflow has two roles: ESS user applies, Admin approves. At Level 3 they were in one describe block with an ordering dependency. At Level 4 they are split into two independent describe blocks:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/leave/leave.spec.ts</span>
+
+<span class="tc-cm">// Apply tests — ESS user, no API preconditions needed</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave — Apply Workflow (ESS)'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'ESS user can apply for leave via UI'</span>, <span class="tc-kw">async</span> ({ applyLeavePage }) =&gt; {
+    <span class="tc-kw">const</span> leave = <span class="tc-fn">generateLeave</span>();
+    <span class="tc-kw">await</span> applyLeavePage.<span class="tc-fn">applyForLeave</span>(leave);
+    <span class="tc-kw">await</span> applyLeavePage.<span class="tc-fn">assertLeaveApplicationSubmitted</span>();
+  });
+
+});
+
+<span class="tc-cm">// Approval tests — Admin, uses API to create the leave request</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave — Approve Workflow (Admin)'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> empNumber: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> leaveId:   <span class="tc-kw">number</span>;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi, leaveApi }) =&gt; {
+    <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();
+    empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);
+    <span class="tc-kw">const</span> leave = <span class="tc-fn">generateLeave</span>();
+    leaveId   = <span class="tc-kw">await</span> leaveApi.<span class="tc-fn">createRequest</span>(leave, empNumber);
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-kw">if</span> (empNumber) <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">delete</span>(empNumber);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can see pending leave request'</span>, <span class="tc-kw">async</span> ({ leaveListPage }) =&gt; {
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">assertLeaveRequestVisible</span>(leaveId.<span class="tc-fn">toString</span>());
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">assertLeaveRequestStatus</span>(leaveId.<span class="tc-fn">toString</span>(), <span class="tc-str">'Pending'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can approve leave request'</span>, <span class="tc-kw">async</span> ({ leaveListPage }) =&gt; {
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">approveLeaveRequest</span>(leaveId.<span class="tc-fn">toString</span>());
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">assertLeaveApproved</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The approval tests no longer depend on the apply test having run. They create their own leave request via API in <code class="sn-ic">beforeAll</code>. The apply tests have no dependency at all — each creates its own leave application inline.</p>
+    </div>
+  </div>
+
+  <!-- Q505.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.11</span>
+      <h2 class="sn-q-text">What is the APIRequestContext and how does it differ from page.request?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright provides two ways to make HTTP requests:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">page.request</code></strong> — bound to a browser page; shares cookies and session state with that page. Useful when you need API calls that are authenticated via the same session as the browser test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Same session as the page — shares cookies</span>
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> page.request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/v2/pim/employees'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">request.newContext()</code></strong> — completely independent of any browser page. A standalone HTTP client that can make authenticated API calls without a browser being open:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Independent of any page — used in fixtures and beforeAll blocks</span>
+<span class="tc-kw">const</span> context  = <span class="tc-kw">await</span> request.<span class="tc-fn">newContext</span>({ baseURL });
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> context.<span class="tc-fn">get</span>(<span class="tc-str">'/api/v2/pim/employees'</span>, {
+  headers: { Authorization: <span class="tc-str">'Basic ...'</span> },
+});
+<span class="tc-kw">await</span> context.<span class="tc-fn">dispose</span>(); <span class="tc-cm">// clean up when done</span></div>
+      </div>
+<p class="sn-para">For test state setup in <code class="sn-ic">beforeAll</code> and fixtures, <code class="sn-ic">request.newContext()</code> is always the right choice — it does not depend on a browser page being open and can be used in <code class="sn-ic">worker</code>-scoped fixtures or global setup.</p>
+    </div>
+  </div>
+
+  <!-- Q505.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.12</span>
+      <h2 class="sn-q-text">What is the beforeAll UI approach for teams without API access?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When the application has no API, use a separate browser context in <code class="sn-ic">beforeAll</code> to drive the UI for setup:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin — User Management'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> employee: ReturnType&lt;<span class="tc-kw">typeof</span> generateEmployee&gt;;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ browser }) =&gt; {
+    <span class="tc-cm">// Create a dedicated context for setup — separate from test browser contexts</span>
+    <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+      storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,  <span class="tc-cm">// load admin session</span>
+    });
+    <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+    <span class="tc-kw">const</span> addEmployeePage = <span class="tc-kw">new</span> AddEmployeePage(page);
+
+    employee = <span class="tc-fn">generateEmployee</span>();
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(employee);
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+
+    <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();  <span class="tc-cm">// close setup context — does not affect test contexts</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can add a user linked to the employee'</span>, <span class="tc-kw">async</span> ({ addUserPage }) =&gt; {
+    <span class="tc-cm">// employee was created in beforeAll — available to all tests in this block</span>
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(<span class="tc-fn">generateUser</span>(employee));
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertUserSavedSuccessfully</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The setup context is created and closed independently of the test contexts. The <code class="sn-ic">storageState</code> loaded in <code class="sn-ic">beforeAll</code> does not affect the authentication state of the test contexts — each test still gets its own <code class="sn-ic">page</code> with its own auth state from the project configuration.</p>
+    </div>
+  </div>
+
+  <!-- Q505.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.13</span>
+      <h2 class="sn-q-text">What project structure changes at Level 4?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">api/                     ← NEW — HTTP API client layer
+  ApiClient.ts           ← HTTP wrapper, authentication, error handling
+  EmployeeApi.ts         ← create, delete, getByName
+  UserApi.ts             ← create, delete
+  LeaveApi.ts            ← createRequest, getPendingByEmployee
+  index.ts               ← barrel exports
+
+fixtures/
+  index.ts               ← UPDATED — employeeApi, userApi, leaveApi fixtures added
+
+tests/
+  pim/employee.spec.ts   ← UPDATED — self-contained, generates its own data
+  admin/user.spec.ts     ← UPDATED — beforeAll API setup + afterAll cleanup
+  leave/leave.spec.ts    ← UPDATED — split into two independent describe blocks
+
+pages/**                 ← NO CHANGES
+playwright.config.ts     ← NO CHANGES</div>
+      </div>
+<p class="sn-para">The API layer is a new vertical slice — completely separate from page objects and helpers. Page objects interact with the UI; API modules interact with the HTTP layer. They never call each other.</p>
+    </div>
+  </div>
+
+  <!-- Q505.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.14</span>
+      <h2 class="sn-q-text">What is the LeaveApi and why does it resolve leave type names to IDs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// api/LeaveApi.ts</span>
+<span class="tc-kw">async</span> <span class="tc-fn">createRequest</span>(leave: LeaveData, empNumber: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">number</span>&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.client.<span class="tc-fn">post</span>(<span class="tc-str">'/api/v2/leave/leaveRequests'</span>, {
+    <span class="tc-kw">type</span>:     { id: <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">getLeaveTypeId</span>(leave.leaveType) },  <span class="tc-cm">// ← name → ID</span>
+    fromDate: leave.fromDate,
+    toDate:   leave.toDate,
+    comment:  leave.comment,
+    empNumber,
+  }) as { data: { id: <span class="tc-kw">number</span> } };
+  <span class="tc-kw">return</span> response.data.id;
+}
+
+<span class="tc-cm">// OrangeHRM stores leave types with numeric IDs — the API requires the ID</span>
+<span class="tc-cm">// Tests pass a human-readable name; LeaveApi resolves it to an ID</span>
+<span class="tc-kw">private</span> <span class="tc-kw">async</span> <span class="tc-fn">getLeaveTypeId</span>(leaveTypeName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">number</span>&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.client.<span class="tc-fn">get</span>(<span class="tc-str">'/api/v2/leave/leaveTypes?limit=50'</span>) as {
+    data: Array&lt;{ id: <span class="tc-kw">number</span>; name: <span class="tc-kw">string</span> }&gt;;
+  };
+  <span class="tc-kw">const</span> match = response.data.<span class="tc-fn">find</span>(lt =&gt; lt.name === leaveTypeName);
+  <span class="tc-kw">if</span> (!match) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(
+      <span class="tc-str">`LeaveApi: leave type &amp;quot;${leaveTypeName}&amp;quot; not found.\n`</span> +
+      <span class="tc-str">`Available types: ${response.data.map(lt =&amp;gt; lt.name).join(', ')}`</span>
+    );
+  }
+  <span class="tc-kw">return</span> match.id;
+}</div>
+      </div>
+<p class="sn-para">The test calls <code class="sn-ic">leaveApi.createRequest({ leaveType: 'Annual Leave' }, empNumber)</code>. The API requires the numeric ID for Annual Leave — which might be <code class="sn-ic">1</code> on one server and <code class="sn-ic">3</code> on another. <code class="sn-ic">getLeaveTypeId()</code> looks it up at runtime so the test never hardcodes the internal ID. If the leave type does not exist, the error message lists the available types — making misconfiguration immediately diagnosable.</p>
+    </div>
+  </div>
+
+  <!-- Q505.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.15</span>
+      <h2 class="sn-q-text">How do you handle test data in beforeAll scope that multiple tests need?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Declare the variables at <code class="sn-ic">describe</code> scope so all tests and lifecycle hooks can access them:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Admin — User Management'</span>, () =&gt; {
+
+  <span class="tc-cm">// Declared at describe scope — accessible by beforeAll, afterAll, and all tests</span>
+  <span class="tc-kw">let</span> empNumber: <span class="tc-kw">string</span>;
+  <span class="tc-kw">let</span> employee:  ReturnType&lt;<span class="tc-kw">typeof</span> generateEmployee&gt;;
+  <span class="tc-kw">let</span> user:      ReturnType&lt;<span class="tc-kw">typeof</span> generateUser&gt;;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-cm">// ASSIGN here — not declare</span>
+    employee  = <span class="tc-fn">generateEmployee</span>();
+    empNumber = <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">create</span>(employee);
+    user      = <span class="tc-fn">generateUser</span>(employee);
+    <span class="tc-cm">// All tests can now read: employee, empNumber, user</span>
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> ({ employeeApi }) =&gt; {
+    <span class="tc-kw">if</span> (empNumber) <span class="tc-kw">await</span> employeeApi.<span class="tc-fn">delete</span>(empNumber);
+    <span class="tc-cm">// Uses empNumber set in beforeAll</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'user creation works'</span>, <span class="tc-kw">async</span> ({ addUserPage }) =&gt; {
+    <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(user);  <span class="tc-cm">// accesses user from beforeAll scope</span>
+  });
+
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-red">TypeScript note:</strong> The variables are declared with <code class="sn-ic">let</code> (not <code class="sn-ic">const</code>) because they are assigned inside <code class="sn-ic">beforeAll</code>, not at declaration time. TypeScript's <code class="sn-ic">strict</code> mode (which the framework uses) requires that <code class="sn-ic">let</code> variables be assigned before use — <code class="sn-ic">beforeAll</code> guarantees the assignment happens before any test runs.</p>
+    </div>
+  </div>
+
+  <!-- Q505.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.16</span>
+      <h2 class="sn-q-text">When should you use API setup vs UI setup for test preconditions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Use API setup when:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The application has REST endpoints for creating the entities you need</span></li>
+<li><span class="icon">💡</span><span>Setup speed matters (100+ tests, CI time sensitive)</span></li>
+<li><span class="icon">⚡</span><span>Setup reliability matters (unstable UI, shared demo site)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The setup data is not what the test is testing</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Use beforeAll UI setup when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The application has no API or relevant endpoints are not exposed</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Setting up via API is not possible (e.g., a file upload that must go</span></li>
+</ul>
+<p class="sn-para">  through UI processing)</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The team is not yet ready to add HTTP infrastructure</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Never use beforeEach for preconditions</strong> unless each test genuinely needs a fresh record:</p>
+<ul class="sn-list">
+<li><span class="icon">🌟</span><span><code class="sn-ic">beforeEach</code> creates N records for N tests — wasteful</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">beforeAll</code> creates 1 record shared by all tests in the block — efficient</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">The boundary:</strong> API setup creates state. The browser test verifies the UI for that state. They are separate concerns. Using the API for setup does not compromise the browser test — the UI still renders the data created by the API and the test still validates the UI.</p>
+    </div>
+  </div>
+
+  <!-- Q505.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.17</span>
+      <h2 class="sn-q-text">What changed from Level 3 to Level 4 in the test files?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Level 3 employee test:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee appears in employee list'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+  <span class="tc-cm">// Assumes employee.spec.ts ran and created Bob Williams in the same run</span>
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByEmployeeName</span>(<span class="tc-str">'Bob'</span>);
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">assertEmployeeExistsInList</span>(<span class="tc-str">'Bob Williams'</span>);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Level 4 employee test:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee appears in list after creation'</span>, <span class="tc-kw">async</span> ({ addEmployeePage, employeeListPage }) =&gt; {
+  <span class="tc-kw">const</span> employee = <span class="tc-fn">generateEmployee</span>();  <span class="tc-cm">// creates unique data for this test run</span>
+
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(employee);
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+
+  <span class="tc-cm">// Navigate to list and verify — no cross-test assumption</span>
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByEmployeeName</span>(employee.firstName);
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">assertEmployeeExistsInList</span>(employee.fullName);
+});</div>
+      </div>
+<p class="sn-para">The Level 4 test generates its own employee, creates it, and verifies it in the list — all in one test. No other test needs to have run. No shared state assumption. Any parallelisation is safe.</p>
+    </div>
+  </div>
+
+  <!-- Q505.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q505.18</span>
+      <h2 class="sn-q-text">What does Level 4 not solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 4 makes tests independent. The remaining problems:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Hardcoded data in test files:</strong> employee names, leave dates, and passwords are still string literals or simple generated values inline in each test file. There is no centralised data layer, no Faker integration, no file-based dataset support, and no environment-specific credential management.</p>
+<p class="sn-para">Level 5 introduces the full test data layer — <code class="sn-ic">generate.ts</code> with Faker for realistic, unique data per run; <code class="sn-ic">readers.ts</code> for CSV/JSON/Excel/env file datasets; type definitions that span the entire framework.</p>
+<p class="sn-para"><strong class="k-green">Duplicated UI interaction patterns:</strong> date pickers, autocomplete, and dropdown components still have their own implementation in each page object. Level 6 extracts these into shared web action helpers.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Test dependency: a test that requires another test to have run first; causes cascading failures and misleading reports.</span></li>
+            <li><span class="icon">⭐</span><span>A fully independent test creates its own preconditions, runs in any order, and cleans up its own data.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeAll</code> — runs once before all tests in a describe block; the right hook for creating shared preconditions.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">afterAll</code> — runs once after all tests; always guard the cleanup with <code class="sn-ic">if (id)</code> to handle beforeAll failures gracefully.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeEach</code> for preconditions is wasteful — creates N records for N tests; use <code class="sn-ic">beforeAll</code> unless each test truly needs an isolated record.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">ApiClient</code> — wraps Playwright's <code class="sn-ic">request.newContext()</code> with auth, base URL, and response validation; created via static async factory method.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">EmployeeApi</code>, <code class="sn-ic">UserApi</code>, <code class="sn-ic">LeaveApi</code> — domain-specific modules that translate between data types and OrangeHRM API endpoints.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>API fixtures in <code class="sn-ic">fixtures/index.ts</code> use <code class="sn-ic">{}</code> (empty destructure) — they do not depend on <code class="sn-ic">page</code>; fully independent of the browser.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeAll</code> UI setup — creates a separate browser context with <code class="sn-ic">storageState</code>; closed after setup; does not affect test contexts.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">page.request</code> shares session with the browser; <code class="sn-ic">request.newContext()</code> is fully independent — prefer the latter for fixtures and beforeAll.</span></li>
+            <li><span class="icon">⭐</span><span>API vs UI setup tradeoff: API is 10–20× faster and more reliable; UI works when no API is available.</span></li>
+            <li><span class="icon">⭐</span><span>Declare <code class="sn-ic">let</code> variables at <code class="sn-ic">describe</code> scope for values assigned in <code class="sn-ic">beforeAll</code> and used across tests and <code class="sn-ic">afterAll</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Level 4 solves test ordering; it deliberately leaves centralised data management (Level 5) and duplicated UI patterns (Level 6).</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Workflows for the AI SDLC - VibeTestQ</title>
+    <meta name="description" content="Interactive documentation for AI-native QA workflows: foundations, workflow implementation, governance, and SDLC-type matching.">
+    <link rel="canonical" href="https://vibetestq.com/docs/workflows/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vibetestq.com/docs/workflows/">
+    <meta property="og:title" content="QA Workflows for the AI SDLC - VibeTestQ">
+    <meta property="og:description" content="Start with foundations, route by SDLC type, then implement the workflow that hurts most on your project.">
+    <meta property="og:image" content="https://vibetestq.com/assets/utitle.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --primary-soft: #dff5ef;
+            --secondary: #1d4ed8;
+            --secondary-soft: #dbeafe;
+            --accent: #f59e0b;
+            --accent-soft: #fff4d6;
+            --danger-soft: #fee2e2;
+            --bg: #f4f8f4;
+            --bg-deep: #edf4f2;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --glass: rgba(249, 252, 250, 0.85);
+            --text: #14252b;
+            --text-soft: #60727a;
+            --border: rgba(20, 37, 43, 0.12);
+            --sidebar-width: 320px;
+            --header-height: 70px;
+            --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+            --shadow-sm: 0 10px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 30%),
+                radial-gradient(circle at top right, rgba(29, 78, 216, 0.1), transparent 28%),
+                linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+            color: var(--text);
+            line-height: 1.72;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            width: 26rem;
+            height: 26rem;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::before {
+            top: -10rem;
+            left: -7rem;
+            background: rgba(15, 118, 110, 0.25);
+        }
+
+        body::after {
+            right: -10rem;
+            bottom: -10rem;
+            background: rgba(245, 158, 11, 0.18);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            letter-spacing: -0.02em;
+        }
+
+        h1 {
+            font-size: 2.6rem;
+            line-height: 1.08;
+        }
+
+        h2 {
+            font-size: 1.65rem;
+            padding-bottom: 0.55rem;
+            border-bottom: 1px solid var(--border);
+            margin-top: 2.7rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+
+        p {
+            margin-bottom: 1.15rem;
+        }
+
+        a {
+            color: var(--secondary);
+        }
+
+        code {
+            background: #eef4f8;
+            padding: 0.18rem 0.38rem;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.88em;
+            color: #0f4c81;
+            font-variant-ligatures: none;
+        }
+
+        pre[class*="language-"] {
+            border-radius: 14px;
+            margin: 1.45rem 0;
+            box-shadow: var(--shadow-sm);
+            font-size: 0.88rem;
+            position: relative;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: var(--header-height);
+            background: var(--glass);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.4rem;
+            gap: 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            min-width: 0;
+        }
+
+        .logo img {
+            height: 40px;
+            border-radius: 10px;
+            box-shadow: 0 8px 18px rgba(15, 118, 110, 0.15);
+        }
+
+        .logo-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.08rem;
+            color: var(--primary-dark);
+            line-height: 1.15;
+        }
+
+        .logo-sub {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+            margin-top: 0.12rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            text-decoration: none;
+            color: var(--text-soft);
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 0.45rem 0.85rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .back-link:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        aside {
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.82);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: var(--header-height);
+            overflow-y: auto;
+            z-index: 900;
+            backdrop-filter: blur(18px);
+        }
+
+        .sidebar-content {
+            padding: 1.35rem 1.05rem 3rem;
+        }
+
+        .nav-intro {
+            padding: 1rem 0.95rem 1.15rem;
+            margin-bottom: 1rem;
+            border-radius: 18px;
+            background: linear-gradient(160deg, rgba(15, 118, 110, 0.12), rgba(29, 78, 216, 0.08));
+            border: 1px solid rgba(15, 118, 110, 0.14);
+        }
+
+        .nav-intro h4 {
+            font-size: 0.95rem;
+            margin: 0 0 0.4rem;
+            color: var(--primary-dark);
+        }
+
+        .nav-intro p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--text-soft);
+            line-height: 1.55;
+        }
+
+        .nav-section {
+            margin-bottom: 1.7rem;
+        }
+
+        .nav-section h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-soft);
+            margin: 0 0 0.75rem;
+            padding: 0 0.8rem;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            text-decoration: none;
+            color: var(--text);
+            padding: 0.72rem 0.85rem;
+            border-radius: 14px;
+            transition: all 0.2s ease;
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--primary-dark);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 10px 20px rgba(15, 118, 110, 0.2);
+        }
+
+        .nav-link i {
+            width: 18px;
+            text-align: center;
+            opacity: 0.9;
+            flex-shrink: 0;
+        }
+
+        .nav-link .doc-num {
+            font-size: 0.7rem;
+            margin-left: auto;
+            opacity: 0.72;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.38);
+            backdrop-filter: blur(3px);
+            z-index: 850;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        main {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+            min-width: 0;
+        }
+
+        .content-area {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 2.35rem 2rem 5rem;
+            min-width: 0;
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        #docs-content section {
+            min-width: 0;
+            padding: 1.9rem 1.9rem 2.15rem;
+            border-radius: 26px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.82));
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        #docs-content section > :first-child {
+            margin-top: 0;
+        }
+
+        #docs-content section h1 {
+            margin-top: 0;
+            font-size: 2.18rem;
+            line-height: 1.12;
+        }
+
+        #docs-content section h2 {
+            margin-top: 2.15rem;
+        }
+
+        #docs-content section hr {
+            border: none;
+            height: 1px;
+            margin: 1.75rem 0;
+            background: linear-gradient(90deg, transparent, rgba(20, 37, 43, 0.18), transparent);
+        }
+
+        #docs-content section :not(pre) > code {
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
+        }
+
+        #docs-content section pre,
+        #docs-content section .table-scroll-wrapper {
+            max-width: 100%;
+            touch-action: pan-x pan-y;
+        }
+
+        #docs-content section pre code {
+            white-space: pre;
+        }
+
+        #docs-content section a {
+            text-decoration-thickness: 1px;
+            text-underline-offset: 0.18em;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-shell {
+            display: grid;
+            grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.95fr);
+            gap: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-card,
+        .sequence-card,
+        .panel-card,
+        .stat-card,
+        .workflow-card,
+        .track-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .hero-card {
+            position: relative;
+            padding: 2.1rem 2rem;
+            border-radius: 28px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at top right, rgba(245, 158, 11, 0.16), transparent 28%),
+                linear-gradient(145deg, rgba(15, 118, 110, 0.13), rgba(255, 255, 255, 0.93) 40%, rgba(29, 78, 216, 0.06));
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            right: -2rem;
+            top: -2.4rem;
+            width: 12rem;
+            height: 12rem;
+            border-radius: 36px;
+            transform: rotate(18deg);
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.16), rgba(29, 78, 216, 0.08));
+        }
+
+        .hero-card>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.42rem 0.78rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(15, 118, 110, 0.16);
+            color: var(--primary-dark);
+            font-size: 0.74rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero-lead {
+            font-size: 1.02rem;
+            color: var(--text-soft);
+            max-width: 54ch;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.85rem;
+            margin-top: 1.4rem;
+        }
+
+        .sequence-card {
+            border-radius: 24px;
+            padding: 1.55rem;
+            background: linear-gradient(180deg, rgba(20, 37, 43, 0.03), rgba(255, 255, 255, 0.9));
+        }
+
+        .sequence-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.35rem;
+        }
+
+        .sequence-card p {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            margin-bottom: 1rem;
+        }
+
+        .sequence-list {
+            list-style: none;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .sequence-item {
+            display: grid;
+            grid-template-columns: 2.2rem 1fr;
+            gap: 0.8rem;
+            align-items: flex-start;
+        }
+
+        .sequence-step {
+            width: 2.2rem;
+            height: 2.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 800;
+            font-size: 0.82rem;
+            box-shadow: 0 10px 20px rgba(29, 78, 216, 0.18);
+        }
+
+        .sequence-copy strong {
+            display: block;
+            font-size: 0.94rem;
+            color: var(--text);
+            margin-bottom: 0.15rem;
+        }
+
+        .sequence-copy span {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-soft);
+        }
+
+        .stat-grid,
+        .panel-grid,
+        .track-grid,
+        .workflow-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .stat-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-bottom: 1.35rem;
+        }
+
+        .stat-card {
+            padding: 1.1rem 1.15rem;
+            border-radius: 20px;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--text-soft);
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+        }
+
+        .stat-value {
+            display: block;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            line-height: 1;
+            margin-bottom: 0.35rem;
+            color: var(--primary-dark);
+        }
+
+        .stat-copy {
+            font-size: 0.82rem;
+            color: var(--text-soft);
+            margin: 0;
+        }
+
+        .alert {
+            padding: 1rem 1.2rem;
+            border-radius: 18px;
+            margin: 1.4rem 0;
+            display: flex;
+            gap: 0.9rem;
+            border: 1px solid transparent;
+            align-items: flex-start;
+        }
+
+        .alert-tip {
+            background: linear-gradient(135deg, var(--accent-soft), rgba(255, 255, 255, 0.9));
+            border-color: rgba(245, 158, 11, 0.22);
+            color: #915a03;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, var(--secondary-soft), rgba(255, 255, 255, 0.94));
+            border-color: rgba(29, 78, 216, 0.18);
+            color: #1d4ed8;
+        }
+
+        .panel-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-top: 1.6rem;
+        }
+
+        .panel-card {
+            padding: 1.15rem;
+            border-radius: 22px;
+        }
+
+        .panel-icon {
+            width: 2.35rem;
+            height: 2.35rem;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 10px 20px rgba(15, 23, 42, 0.1);
+        }
+
+        .panel-card h3 {
+            font-size: 1rem;
+            margin: 0 0 0.45rem;
+        }
+
+        .panel-card p {
+            font-size: 0.84rem;
+            color: var(--text-soft);
+            margin-bottom: 0.7rem;
+        }
+
+        .panel-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.74rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            background: rgba(15, 118, 110, 0.08);
+            border-radius: 999px;
+            padding: 0.32rem 0.62rem;
+        }
+
+        .track-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            margin-top: 1rem;
+        }
+
+        .track-card {
+            padding: 1.2rem 1.2rem 1.15rem;
+            border-radius: 22px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .track-card:hover,
+        .workflow-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 30px rgba(15, 23, 42, 0.1);
+            border-color: rgba(15, 118, 110, 0.22);
+        }
+
+        .track-kicker,
+        .workflow-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.26rem 0.58rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+            margin-bottom: 0.7rem;
+        }
+
+        .track-card h3,
+        .workflow-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.4rem;
+        }
+
+        .track-card p,
+        .workflow-card p {
+            color: var(--text-soft);
+            font-size: 0.84rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .track-link,
+        .workflow-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: var(--primary-dark);
+            font-size: 0.82rem;
+            font-weight: 800;
+        }
+
+        .workflow-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin-top: 1rem;
+        }
+
+        .workflow-card {
+            padding: 1.15rem;
+            border-radius: 20px;
+            text-decoration: none;
+            color: inherit;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+
+        .workflow-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 800;
+            font-size: 0.82rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.8rem;
+            margin-top: 3.3rem;
+            padding-top: 1.8rem;
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .btn-group.top-nav {
+            margin-top: 0;
+            margin-bottom: 2.3rem;
+            padding-top: 0;
+            padding-bottom: 1.6rem;
+            border-top: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .btn-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.78rem 1.1rem;
+            border-radius: 999px;
+            font-weight: 800;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 0.86rem;
+        }
+
+        .btn-prev {
+            color: var(--text-soft);
+            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        .btn-prev:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-next {
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 10px 22px rgba(15, 118, 110, 0.2);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 14px 24px rgba(15, 118, 110, 0.25);
+        }
+
+        section ul,
+        section ol {
+            margin-left: 1.4rem;
+            margin-bottom: 1.35rem;
+        }
+
+        section li {
+            margin-bottom: 0.45rem;
+        }
+
+        section blockquote {
+            padding: 1rem 1.2rem;
+            border-radius: 0 18px 18px 0;
+            background: rgba(15, 118, 110, 0.08);
+            border-left: 4px solid var(--primary);
+            color: var(--primary-dark);
+            margin: 1.4rem 0;
+        }
+
+        section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.6rem 0;
+            background: rgba(255, 255, 255, 0.94);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        section th,
+        section td {
+            padding: 0.85rem 0.95rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.88rem;
+        }
+
+        section th {
+            background: rgba(15, 118, 110, 0.08);
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+
+        section tr:last-child td {
+            border-bottom: none;
+        }
+
+        section strong {
+            color: var(--primary-dark);
+        }
+
+        section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        section p,
+        section li {
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .table-scroll-wrapper {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 1.6rem 0;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-scroll-wrapper table {
+            margin: 0;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #cbd5e1;
+            padding: 0.28rem 0.55rem;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Manrope', sans-serif;
+            z-index: 10;
+            opacity: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        @media (hover: hover) {
+            pre:hover .copy-btn {
+                opacity: 1;
+            }
+        }
+
+        @media (hover: none) {
+            .copy-btn {
+                opacity: 1;
+            }
+        }
+
+        .doc-footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-soft);
+            font-size: 0.84rem;
+        }
+
+        @media (max-width: 1180px) {
+            .panel-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .workflow-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1024px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.16);
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-shell,
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 1.7rem 1.1rem 4rem;
+            }
+
+            #docs-content section {
+                padding: 1.35rem 1.1rem 1.55rem;
+                border-radius: 20px;
+            }
+
+            #docs-content section h1 {
+                font-size: 1.82rem;
+                line-height: 1.16;
+            }
+
+            #docs-content section h2 {
+                font-size: 1.28rem;
+                margin-top: 1.9rem;
+            }
+
+            #docs-content section h3 {
+                font-size: 1.04rem;
+            }
+
+            #docs-content section ul,
+            #docs-content section ol {
+                margin-left: 1.15rem;
+            }
+
+            #docs-content section blockquote {
+                padding: 0.9rem 0.95rem;
+                border-radius: 0 14px 14px 0;
+            }
+
+            #docs-content section pre[class*="language-"],
+            #docs-content section .table-scroll-wrapper {
+                margin-left: -0.35rem;
+                margin-right: -0.35rem;
+                border-radius: 16px;
+            }
+
+            #docs-content section th,
+            #docs-content section td {
+                padding: 0.78rem 0.74rem;
+                font-size: 0.82rem;
+            }
+
+            #docs-content section pre code.language-markdown {
+                white-space: pre-wrap;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+            }
+
+            .hero-card,
+            .sequence-card {
+                padding: 1.4rem 1.2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .track-grid,
+            .workflow-grid,
+            .panel-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                align-items: stretch;
+            }
+
+            .btn-nav {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .alert {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 0 0.8rem;
+            }
+
+            .logo-title {
+                font-size: 0.95rem;
+            }
+
+            .logo-sub,
+            .back-link-text {
+                display: none;
+            }
+
+            h1 {
+                font-size: 1.72rem;
+            }
+
+            h2 {
+                font-size: 1.3rem;
+            }
+
+            .content-area {
+                padding: 1.2rem 0.85rem 3rem;
+            }
+
+            #docs-content section {
+                padding: 1.1rem 0.95rem 1.3rem;
+                border-radius: 18px;
+            }
+
+            #docs-content section h1 {
+                font-size: 1.56rem;
+            }
+
+            #docs-content section h2 {
+                font-size: 1.16rem;
+            }
+
+            #docs-content section h3 {
+                font-size: 0.98rem;
+            }
+
+            #docs-content section pre[class*="language-"],
+            #docs-content section .table-scroll-wrapper {
+                margin-left: -0.45rem;
+                margin-right: -0.45rem;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+            }
+
+            .sequence-item {
+                grid-template-columns: 1.9rem 1fr;
+                gap: 0.65rem;
+            }
+
+            .sequence-step {
+                width: 1.9rem;
+                height: 1.9rem;
+                border-radius: 12px;
+            }
+
+            .nav-link {
+                font-size: 0.82rem;
+            }
+
+            .btn-nav {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-actions">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle documentation menu">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <a href="../../index.html" class="logo">
+                <img src="../../assets/ulogo.jpg" alt="VibeTestQ Logo">
+                <div>
+                    <div class="logo-title">QA Workflows</div>
+                    <span class="logo-sub">AI SDLC Documentation</span>
+                </div>
+            </a>
+        </div>
+
+        <a href="../../index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            <span class="back-link-text">VibeTestQ Home</span>
+        </a>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-content">
+                <div class="nav-intro">
+                    <h4>Read in Order</h4>
+                    <p>Foundations first, route by SDLC type next, then implement one workflow at a time.</p>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Overview</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-section="intro" onclick="showSection('intro')">
+                                <i class="fas fa-home"></i>
+                                <span>Guide Overview</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Foundations</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="foundation-repo" onclick="showSection('foundation-repo')">
+                                <i class="fas fa-folder-tree"></i>
+                                <span>Project Repository Model</span>
+                                <span class="doc-num">F1</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="foundation-graph" onclick="showSection('foundation-graph')">
+                                <i class="fas fa-diagram-project"></i>
+                                <span>graph.json Setup</span>
+                                <span class="doc-num">F2</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="foundation-ide" onclick="showSection('foundation-ide')">
+                                <i class="fas fa-laptop-code"></i>
+                                <span>Choosing Your AI IDE</span>
+                                <span class="doc-num">F3</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="foundation-tools" onclick="showSection('foundation-tools')">
+                                <i class="fas fa-toolbox"></i>
+                                <span>Tool Landscape</span>
+                                <span class="doc-num">F4</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Routing</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="match" onclick="showSection('match')">
+                                <i class="fas fa-compass"></i>
+                                <span>Match to SDLC Type</span>
+                                <span class="doc-num">M1</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Workflows</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf1" onclick="showSection('wf1')">
+                                <i class="fas fa-file-lines"></i>
+                                <span>Requirements to Scenarios</span>
+                                <span class="doc-num">WF1</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf2" onclick="showSection('wf2')">
+                                <i class="fas fa-magnifying-glass"></i>
+                                <span>Exploratory Planning</span>
+                                <span class="doc-num">WF2</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf3" onclick="showSection('wf3')">
+                                <i class="fas fa-database"></i>
+                                <span>Test Data Design</span>
+                                <span class="doc-num">WF3</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf4" onclick="showSection('wf4')">
+                                <i class="fas fa-bug"></i>
+                                <span>Bug Triage Design</span>
+                                <span class="doc-num">WF4</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf5" onclick="showSection('wf5')">
+                                <i class="fas fa-gears"></i>
+                                <span>Automation Generation</span>
+                                <span class="doc-num">WF5</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf6" onclick="showSection('wf6')">
+                                <i class="fas fa-screwdriver-wrench"></i>
+                                <span>Test Maintenance</span>
+                                <span class="doc-num">WF6</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf7" onclick="showSection('wf7')">
+                                <i class="fas fa-heart-pulse"></i>
+                                <span>Self-Healing Tests</span>
+                                <span class="doc-num">WF7</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf8" onclick="showSection('wf8')">
+                                <i class="fas fa-chart-column"></i>
+                                <span>Coverage Audit</span>
+                                <span class="doc-num">WF8</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf9" onclick="showSection('wf9')">
+                                <i class="fas fa-clipboard-check"></i>
+                                <span>Feature Readiness Gate</span>
+                                <span class="doc-num">WF9</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf10" onclick="showSection('wf10')">
+                                <i class="fas fa-shield-halved"></i>
+                                <span>CI Quality Gate</span>
+                                <span class="doc-num">WF10</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="wf11" onclick="showSection('wf11')">
+                                <i class="fas fa-wave-square"></i>
+                                <span>Production Feedback Loop</span>
+                                <span class="doc-num">WF11</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Governance</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="governance-measurement" onclick="showSection('governance-measurement')">
+                                <i class="fas fa-ruler-combined"></i>
+                                <span>Measurement</span>
+                                <span class="doc-num">G1</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="governance-anti" onclick="showSection('governance-anti')">
+                                <i class="fas fa-triangle-exclamation"></i>
+                                <span>Anti-Patterns</span>
+                                <span class="doc-num">G2</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h4>Reference</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="appendix-glossary" onclick="showSection('appendix-glossary')">
+                                <i class="fas fa-book-open"></i>
+                                <span>Glossary</span>
+                                <span class="doc-num">R1</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-section="appendix-tools" onclick="showSection('appendix-tools')">
+                                <i class="fas fa-table-list"></i>
+                                <span>Tools Reference</span>
+                                <span class="doc-num">R2</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="content-area">
+                <div class="btn-group top-nav" id="nav-btns-top" style="display:none;">
+                    <a class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+                    <a class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <section id="intro" class="active">
+                    <div class="hero-shell">
+                        <div class="hero-card">
+                            <div class="eyebrow">
+                                <i class="fas fa-route"></i>
+                                Interactive Documentation
+                            </div>
+                            <h1>QA Workflows for the AI SDLC</h1>
+                            <p class="hero-lead">
+                                A practical implementation guide for teams moving from ad-hoc AI assistance to explicit,
+                                governed QA workflows. Start with the repo foundations, route by SDLC type, then implement
+                                the workflow that hurts most on your project right now.
+                            </p>
+
+                            <div class="hero-actions">
+                                <a class="btn-nav btn-next" data-section="foundation-repo" onclick="showSection('foundation-repo')">
+                                    Start with Foundations <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <a class="btn-nav btn-prev" data-section="match" onclick="showSection('match')">
+                                    Route by SDLC Type <i class="fas fa-compass"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="sequence-card">
+                            <h3>Implementation Order</h3>
+                            <p>The shortest route to a working system is linear. Skip the foundations and the rest turns into prompt theater.</p>
+                            <ol class="sequence-list">
+                                <li class="sequence-item">
+                                    <div class="sequence-step">01</div>
+                                    <div class="sequence-copy">
+                                        <strong>Build the project repository</strong>
+                                        <span>Store requirements, scenarios, tests, decisions, and evidence where AI can query them.</span>
+                                    </div>
+                                </li>
+                                <li class="sequence-item">
+                                    <div class="sequence-step">02</div>
+                                    <div class="sequence-copy">
+                                        <strong>Make traceability live</strong>
+                                        <span>Use <code>graph.json</code> as the dependency map between requirements, code, tests, and coverage.</span>
+                                    </div>
+                                </li>
+                                <li class="sequence-item">
+                                    <div class="sequence-step">03</div>
+                                    <div class="sequence-copy">
+                                        <strong>Pick one workflow</strong>
+                                        <span>Choose the workflow that removes the most friction first, not the flashiest one.</span>
+                                    </div>
+                                </li>
+                                <li class="sequence-item">
+                                    <div class="sequence-step">04</div>
+                                    <div class="sequence-copy">
+                                        <strong>Add governance after traction</strong>
+                                        <span>Measurement and anti-pattern detection matter once multiple workflows are actually running.</span>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="stat-grid">
+                        <article class="stat-card">
+                            <span class="stat-label">Prerequisites</span>
+                            <span class="stat-value">4</span>
+                            <p class="stat-copy">Foundation documents covering repo model, traceability, IDE choice, and tool categories.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span class="stat-label">Core Workflows</span>
+                            <span class="stat-value">11</span>
+                            <p class="stat-copy">From requirements-to-scenarios through production feedback and release controls.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span class="stat-label">SDLC Types</span>
+                            <span class="stat-value">5</span>
+                            <p class="stat-copy">A maturity model to decide which workflows fit your operating model now.</p>
+                        </article>
+                        <article class="stat-card">
+                            <span class="stat-label">Tool Categories</span>
+                            <span class="stat-value">7</span>
+                            <p class="stat-copy">Browser agents, MCPs, AI IDEs, platform AI, Playwright agents, cloud scale, runtime healing.</p>
+                        </article>
+                    </div>
+
+                    <div class="alert alert-tip">
+                        <i class="fas fa-lightbulb" style="font-size: 1.05rem; margin-top: 0.1rem;"></i>
+                        <div>
+                            <strong>How to use this guide</strong><br>
+                            Read the foundations in order. Use the SDLC matching section to avoid overreaching. Then implement a single workflow,
+                            prove it on a real project, and add governance only after three or four workflows are alive.
+                        </div>
+                    </div>
+
+                    <h2>Documentation Map</h2>
+                    <p>This documentation is split into focused layers so teams can move from setup to execution without losing the traceability model behind the workflows.</p>
+
+                    <div class="panel-grid">
+                        <article class="panel-card">
+                            <div class="panel-icon" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h3>Foundations</h3>
+                            <p>Mandatory setup for repository shape, living traceability, AI IDE choice, and tool composition.</p>
+                            <span class="panel-note"><i class="fas fa-check"></i> Read first</span>
+                        </article>
+                        <article class="panel-card">
+                            <div class="panel-icon" style="background: linear-gradient(135deg, #1d4ed8, #60a5fa);">
+                                <i class="fas fa-compass-drafting"></i>
+                            </div>
+                            <h3>Matching</h3>
+                            <p>Use the SDLC type guide to decide whether your team is AI-assisted, parallel-stream, agentic, or regulated.</p>
+                            <span class="panel-note"><i class="fas fa-route"></i> Choose your path</span>
+                        </article>
+                        <article class="panel-card">
+                            <div class="panel-icon" style="background: linear-gradient(135deg, #f59e0b, #f97316);">
+                                <i class="fas fa-gears"></i>
+                            </div>
+                            <h3>Workflow Library</h3>
+                            <p>Eleven workflows with the same internal structure so you always know where setup, prompts, success criteria, and pitfalls live.</p>
+                            <span class="panel-note"><i class="fas fa-layer-group"></i> 11 operational patterns</span>
+                        </article>
+                        <article class="panel-card">
+                            <div class="panel-icon" style="background: linear-gradient(135deg, #dc2626, #fb7185);">
+                                <i class="fas fa-gavel"></i>
+                            </div>
+                            <h3>Governance &amp; Reference</h3>
+                            <p>Measure whether the workflows are improving quality, detect failure modes early, then use the glossary and tool matrix as lookup support.</p>
+                            <span class="panel-note"><i class="fas fa-shield"></i> Add after traction</span>
+                        </article>
+                    </div>
+
+                    <h2>Quick Start Tracks</h2>
+                    <p>If you do not want to read all eleven workflows up front, start from the pain point that is costing your team the most right now.</p>
+
+                    <div class="track-grid">
+                        <a class="track-card" data-section="wf1" onclick="showSection('wf1')">
+                            <div class="track-kicker" style="background: rgba(15, 118, 110, 0.1); color: var(--primary-dark);">
+                                <i class="fas fa-file-signature"></i> Requirements pain
+                            </div>
+                            <h3>WF1 — Requirements to Scenarios</h3>
+                            <p>Use AI to surface ambiguity, draft testable scenarios, and create a clean hand-off into automation and review.</p>
+                            <span class="track-link">Open WF1 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="track-card" data-section="wf6" onclick="showSection('wf6')">
+                            <div class="track-kicker" style="background: rgba(29, 78, 216, 0.1); color: #1d4ed8;">
+                                <i class="fas fa-screwdriver-wrench"></i> Maintenance pain
+                            </div>
+                            <h3>WF6 — Test Maintenance</h3>
+                            <p>When code changes land, use traceability to identify impacted tests and propose only the updates that matter.</p>
+                            <span class="track-link">Open WF6 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="track-card" data-section="wf8" onclick="showSection('wf8')">
+                            <div class="track-kicker" style="background: rgba(245, 158, 11, 0.14); color: #9a6700;">
+                                <i class="fas fa-chart-column"></i> Coverage pain
+                            </div>
+                            <h3>WF8 — Coverage Audit</h3>
+                            <p>Move beyond line coverage and ask whether the changed behavior is actually covered by scenarios, assertions, and linked tests.</p>
+                            <span class="track-link">Open WF8 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="track-card" data-section="wf11" onclick="showSection('wf11')">
+                            <div class="track-kicker" style="background: rgba(220, 38, 38, 0.1); color: #b91c1c;">
+                                <i class="fas fa-wave-square"></i> Production pain
+                            </div>
+                            <h3>WF11 — Production Feedback Loop</h3>
+                            <p>Use production signals to generate focused regression scenarios, then feed the strongest failures back into future workflow runs.</p>
+                            <span class="track-link">Open WF11 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+
+                    <h2>Workflow Library</h2>
+                    <p>Every workflow document follows the same pattern: what it is, who owns it, tools needed, setup steps, prompts, success criteria, pitfalls, SDLC fit, and what to try next.</p>
+
+                    <div class="workflow-grid">
+                        <a class="workflow-card" data-section="wf1" onclick="showSection('wf1')">
+                            <div class="workflow-index">1</div>
+                            <div class="workflow-kicker" style="background: rgba(15, 118, 110, 0.1); color: var(--primary-dark);">Spec Intake</div>
+                            <h3>Requirements to Scenarios</h3>
+                            <p>Convert requirements into testable scenarios before development starts.</p>
+                            <span class="workflow-link">Read WF1 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf2" onclick="showSection('wf2')">
+                            <div class="workflow-index">2</div>
+                            <div class="workflow-kicker" style="background: rgba(29, 78, 216, 0.1); color: #1d4ed8;">Risk Discovery</div>
+                            <h3>Exploratory Planning</h3>
+                            <p>Use AI to amplify exploration strategy from diffs, evidence, and known weak spots.</p>
+                            <span class="workflow-link">Read WF2 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf3" onclick="showSection('wf3')">
+                            <div class="workflow-index">3</div>
+                            <div class="workflow-kicker" style="background: rgba(245, 158, 11, 0.14); color: #9a6700;">Data Quality</div>
+                            <h3>Test Data Design</h3>
+                            <p>Create synthetic data with realistic constraints, edge cases, and cleanup paths.</p>
+                            <span class="workflow-link">Read WF3 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf4" onclick="showSection('wf4')">
+                            <div class="workflow-index">4</div>
+                            <div class="workflow-kicker" style="background: rgba(220, 38, 38, 0.08); color: #b91c1c;">Defect Flow</div>
+                            <h3>Bug Triage Design</h3>
+                            <p>Correlate bugs to past issues, probable owners, traceability, and severity signals.</p>
+                            <span class="workflow-link">Read WF4 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf5" onclick="showSection('wf5')">
+                            <div class="workflow-index">5</div>
+                            <div class="workflow-kicker" style="background: rgba(15, 118, 110, 0.1); color: var(--primary-dark);">Execution Build</div>
+                            <h3>Automation Generation</h3>
+                            <p>Generate executable Playwright tests from approved scenarios and current code.</p>
+                            <span class="workflow-link">Read WF5 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf6" onclick="showSection('wf6')">
+                            <div class="workflow-index">6</div>
+                            <div class="workflow-kicker" style="background: rgba(29, 78, 216, 0.1); color: #1d4ed8;">Change Resilience</div>
+                            <h3>Test Maintenance</h3>
+                            <p>Review targeted updates when code changes threaten the validity of existing tests.</p>
+                            <span class="workflow-link">Read WF6 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf7" onclick="showSection('wf7')">
+                            <div class="workflow-index">7</div>
+                            <div class="workflow-kicker" style="background: rgba(220, 38, 38, 0.08); color: #b91c1c;">Runtime Recovery</div>
+                            <h3>Self-Healing Tests</h3>
+                            <p>Capture failures, propose fixes, retry safely, and log exactly what changed.</p>
+                            <span class="workflow-link">Read WF7 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf8" onclick="showSection('wf8')">
+                            <div class="workflow-index">8</div>
+                            <div class="workflow-kicker" style="background: rgba(245, 158, 11, 0.14); color: #9a6700;">Evidence Audit</div>
+                            <h3>Coverage Audit</h3>
+                            <p>Audit behavioral coverage after merges instead of relying on comforting vanity metrics.</p>
+                            <span class="workflow-link">Read WF8 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf9" onclick="showSection('wf9')">
+                            <div class="workflow-index">9</div>
+                            <div class="workflow-kicker" style="background: rgba(15, 118, 110, 0.1); color: var(--primary-dark);">Release Evidence</div>
+                            <h3>Feature Readiness Gate</h3>
+                            <p>Aggregate workflow outputs into a feature-level pass or fail readiness decision.</p>
+                            <span class="workflow-link">Read WF9 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf10" onclick="showSection('wf10')">
+                            <div class="workflow-index">10</div>
+                            <div class="workflow-kicker" style="background: rgba(29, 78, 216, 0.1); color: #1d4ed8;">Merge Control</div>
+                            <h3>CI Quality Gate</h3>
+                            <p>Block risky pull requests when traceability, coverage, or healing rules are violated.</p>
+                            <span class="workflow-link">Read WF10 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+
+                        <a class="workflow-card" data-section="wf11" onclick="showSection('wf11')">
+                            <div class="workflow-index">11</div>
+                            <div class="workflow-kicker" style="background: rgba(220, 38, 38, 0.08); color: #b91c1c;">Closed Loop</div>
+                            <h3>Production Feedback Loop</h3>
+                            <p>Turn production events into regression scenarios and future automation input.</p>
+                            <span class="workflow-link">Read WF11 <i class="fas fa-arrow-right"></i></span>
+                        </a>
+                    </div>
+
+                    <div class="btn-group" style="border-top: none; margin-top: 2.6rem; justify-content: center;">
+                        <a class="btn-nav btn-next" data-section="foundation-repo" onclick="showSection('foundation-repo')">
+                            Open the First Foundation <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </section>
+
+                <div id="docs-content"></div>
+
+                <div class="btn-group" id="nav-btns-bottom" style="display:none;">
+                    <a class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+                    <a class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <footer class="doc-footer">&copy; 2026 VibeTestQ. All rights reserved.</footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        const sectionMeta = {
+            'foundation-repo': {
+                label: 'Project Repository Model',
+                file: '00-foundations/01-project-repository.md'
+            },
+            'foundation-graph': {
+                label: 'graph.json Setup',
+                file: '00-foundations/02-graph-json-setup.md'
+            },
+            'foundation-ide': {
+                label: 'Choosing Your AI IDE',
+                file: '00-foundations/03-ai-ide-selection.md'
+            },
+            'foundation-tools': {
+                label: 'Tool Landscape',
+                file: '00-foundations/04-tool-landscape.md'
+            },
+            match: {
+                label: 'Match to SDLC Type',
+                file: '02-matching/workflow-to-sdlc-type.md'
+            },
+            wf1: {
+                label: 'Requirements to Scenarios',
+                file: '01-workflows/WF1-requirements-to-scenarios.md'
+            },
+            wf2: {
+                label: 'Exploratory Planning',
+                file: '01-workflows/WF2-exploratory-planning.md'
+            },
+            wf3: {
+                label: 'Test Data Design',
+                file: '01-workflows/WF3-test-data-design.md'
+            },
+            wf4: {
+                label: 'Bug Triage Design',
+                file: '01-workflows/WF4-bug-triage-design.md'
+            },
+            wf5: {
+                label: 'Automation Generation',
+                file: '01-workflows/WF5-automation-generation.md'
+            },
+            wf6: {
+                label: 'Test Maintenance',
+                file: '01-workflows/WF6-test-maintenance.md'
+            },
+            wf7: {
+                label: 'Self-Healing Tests',
+                file: '01-workflows/WF7-self-healing-tests.md'
+            },
+            wf8: {
+                label: 'Coverage Audit',
+                file: '01-workflows/WF8-coverage-audit.md'
+            },
+            wf9: {
+                label: 'Feature Readiness Gate',
+                file: '01-workflows/WF9-feature-readiness-gate.md'
+            },
+            wf10: {
+                label: 'CI Quality Gate',
+                file: '01-workflows/WF10-ci-quality-gate.md'
+            },
+            wf11: {
+                label: 'Production Feedback Loop',
+                file: '01-workflows/WF11-production-feedback-loop.md'
+            },
+            'governance-measurement': {
+                label: 'Measurement',
+                file: '03-governance/measurement.md'
+            },
+            'governance-anti': {
+                label: 'Anti-Patterns',
+                file: '03-governance/anti-patterns.md'
+            },
+            'appendix-glossary': {
+                label: 'Glossary',
+                file: '04-appendix/glossary.md'
+            },
+            'appendix-tools': {
+                label: 'Tools Reference',
+                file: '04-appendix/tools-reference.md'
+            }
+        };
+
+        const sectionOrder = [
+            'intro',
+            'foundation-repo', 'foundation-graph', 'foundation-ide', 'foundation-tools',
+            'match',
+            'wf1', 'wf2', 'wf3', 'wf4', 'wf5', 'wf6', 'wf7', 'wf8', 'wf9', 'wf10', 'wf11',
+            'governance-measurement', 'governance-anti',
+            'appendix-glossary', 'appendix-tools'
+        ];
+
+        const loadedSections = {};
+        const pathToSectionId = Object.fromEntries(
+            Object.entries(sectionMeta).map(([id, meta]) => [meta.file, id])
+        );
+
+        async function loadSection(id) {
+            if (id === 'intro' || loadedSections[id]) {
+                return;
+            }
+
+            const meta = sectionMeta[id];
+            if (!meta) {
+                return;
+            }
+
+            try {
+                const response = await fetch(meta.file);
+                if (!response.ok) {
+                    throw new Error('Not found: ' + meta.file);
+                }
+
+                const markdown = await response.text();
+                const section = document.createElement('section');
+                section.id = id;
+                section.innerHTML = marked.parse(markdown);
+
+                section.querySelectorAll('pre code:not([class])').forEach(block => {
+                    block.className = 'language-markdown';
+                });
+
+                rewriteInternalLinks(section, meta.file);
+                document.getElementById('docs-content').appendChild(section);
+                loadedSections[id] = true;
+
+                addCopyButtons(section);
+                wrapTables(section);
+                Prism.highlightAllUnder(section);
+            } catch (error) {
+                const section = document.createElement('section');
+                section.id = id;
+                section.innerHTML = '<div class="alert alert-info"><i class="fas fa-circle-info"></i><div>Could not load this document. Serve the folder through a local web server so markdown files can be fetched relative to this page.</div></div>';
+                document.getElementById('docs-content').appendChild(section);
+                loadedSections[id] = true;
+            }
+        }
+
+        function rewriteInternalLinks(root, sourceFile) {
+            root.querySelectorAll('a[href]').forEach(anchor => {
+                const href = anchor.getAttribute('href');
+                if (!href || href.startsWith('#') || /^(https?:|mailto:|tel:)/i.test(href)) {
+                    return;
+                }
+
+                const targetPath = resolveDocPath(sourceFile, href);
+                const sectionId = pathToSectionId[targetPath];
+                if (!sectionId) {
+                    return;
+                }
+
+                anchor.setAttribute('href', '#' + sectionId);
+                anchor.addEventListener('click', event => {
+                    event.preventDefault();
+                    showSection(sectionId);
+                });
+            });
+        }
+
+        function resolveDocPath(sourceFile, href) {
+            try {
+                const resolved = new URL(href, 'https://docs.local/' + sourceFile);
+                return decodeURIComponent(resolved.pathname.replace(/^\//, ''));
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function wrapTables(root) {
+            root.querySelectorAll('table').forEach(table => {
+                if (table.parentElement.classList.contains('table-scroll-wrapper')) {
+                    return;
+                }
+
+                const wrapper = document.createElement('div');
+                wrapper.className = 'table-scroll-wrapper';
+                table.parentNode.insertBefore(wrapper, table);
+                wrapper.appendChild(table);
+            });
+        }
+
+        function addCopyButtons(root) {
+            root.querySelectorAll('pre').forEach(pre => {
+                const code = pre.querySelector('code');
+                if (!code) {
+                    return;
+                }
+
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                button.onclick = () => copyCode(button);
+                pre.appendChild(button);
+            });
+        }
+
+        async function copyCode(button) {
+            const code = button.parentElement.querySelector('code').innerText;
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="fas fa-check"></i> Copied';
+                setTimeout(() => {
+                    button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                }, 1800);
+            } catch (error) {
+                console.error('Copy failed', error);
+            }
+        }
+
+        async function showSection(id, updateHistory = true) {
+            const targetId = id === 'intro' || sectionMeta[id] ? id : 'intro';
+            await loadSection(targetId);
+
+            document.querySelectorAll('section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            const activeLink = document.querySelector('.nav-link[data-section="' + targetId + '"]');
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            updateNavButtons(targetId);
+
+            if (updateHistory && history.pushState) {
+                history.pushState(null, '', '#' + targetId);
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                document.getElementById('overlay').classList.remove('active');
+            }
+        }
+
+        function updateNavButtons(currentId) {
+            const index = sectionOrder.indexOf(currentId);
+            const topNav = document.getElementById('nav-btns-top');
+            const bottomNav = document.getElementById('nav-btns-bottom');
+
+            if (index <= 0) {
+                topNav.style.display = 'none';
+                bottomNav.style.display = 'none';
+                return;
+            }
+
+            topNav.style.display = 'flex';
+            bottomNav.style.display = 'flex';
+
+            [topNav, bottomNav].forEach(nav => {
+                const prev = nav.querySelector('.prev-btn');
+                const next = nav.querySelector('.next-btn');
+
+                if (index > 0) {
+                    const prevId = sectionOrder[index - 1];
+                    prev.style.visibility = 'visible';
+                    prev.href = '#' + prevId;
+                    prev.onclick = () => showSection(prevId);
+                    prev.innerHTML = '<i class="fas fa-arrow-left"></i> ' + getSectionLabel(prevId);
+                } else {
+                    prev.style.visibility = 'hidden';
+                    prev.removeAttribute('href');
+                }
+
+                if (index < sectionOrder.length - 1) {
+                    const nextId = sectionOrder[index + 1];
+                    next.style.visibility = 'visible';
+                    next.href = '#' + nextId;
+                    next.onclick = () => showSection(nextId);
+                    next.innerHTML = getSectionLabel(nextId) + ' <i class="fas fa-arrow-right"></i>';
+                } else {
+                    next.style.visibility = 'hidden';
+                    next.removeAttribute('href');
+                }
+            });
+        }
+
+        function getSectionLabel(id) {
+            if (id === 'intro') {
+                return 'Guide Overview';
+            }
+
+            return sectionMeta[id]?.label || 'Overview';
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        function setSectionLinks() {
+            document.querySelectorAll('[data-section]').forEach(element => {
+                if (element.tagName === 'A' && !element.getAttribute('href')) {
+                    element.setAttribute('href', '#' + element.dataset.section);
+                }
+            });
+        }
+
+        window.onpopstate = () => {
+            const id = location.hash.replace('#', '') || 'intro';
+            showSection(id, false);
+        };
+
+        setSectionLinks();
+        const initialId = location.hash.replace('#', '') || 'intro';
+        showSection(initialId, false);
+    </script>
+</body>
+
+</html>

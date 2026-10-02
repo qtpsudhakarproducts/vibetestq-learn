@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright BDD / Cucumber Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive BDD/Cucumber MCQ challenges for Playwright. Master Gherkin syntax, Scenario Outline, hooks, tags, World objects, and step definitions with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #16a34a;
+            --primary-dark: #14532d;
+            --primary-light: #f0fdf4;
+            --accent: #22c55e;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #86efac; transition: all 0.3s; }
+        .score-pill.bump { background: #dcfce7; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #16a34a, #22c55e); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #f0fdf4; color: #15803d; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #15803d; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #86efac; background: #dcfce7; color: #14532d; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #86efac; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #f0fdf4; border: 1px solid #86efac; color: #14532d; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">BDD / Cucumber Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Given / When / Then roles</span>  <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. Scenario Outline + Examples</span> <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. Background keyword</span>          <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. @Before hook</span>                <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. Tags and filtering</span>          <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. World object</span>                <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. Step regex parameters</span>       <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Data Tables</span>                 <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. Feature file location</span>       <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. Cucumber vs native PW</span>      <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. Step reuse across scenarios</span><div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. And / But keywords</span>         <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-list-check"></i> BDD / Cucumber</h1>
+        <p>12 challenges covering Gherkin syntax, Scenario Outline, hooks, tags, World objects, step definitions, and when to use BDD.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">Gherkin</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What do Given, When, and Then represent?</div>
+            <div class="ch-desc">In a Gherkin scenario, each keyword has a specific semantic role. Match each keyword to its role.</div>
+            <div class="code-block"><pre><code class="language-gherkin">Scenario: User logs in successfully
+  Given the user is on the login page
+  When  the user enters valid credentials
+  Then  the dashboard should be displayed</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> Given = action, When = precondition, Then = setup</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> Given = precondition (context), When = action (event), Then = assertion (outcome)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> Given = assertion, When = precondition, Then = action</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> All three are interchangeable — the order doesn't matter semantically</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — Given=context, When=action, Then=outcome</strong><br>The three-part Gherkin structure maps directly to test structure: <strong>Given</strong> sets up the initial state (precondition) — the system is in a known state. <strong>When</strong> describes the actor's action that triggers the behavior being tested. <strong>Then</strong> describes the expected observable outcome that should result. This structure forces testers to think clearly about state, trigger, and expected result — making scenarios precise and readable by non-technical stakeholders.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint">Given = Arrange (state). When = Act (trigger). Then = Assert (outcome). Same as the classic Arrange-Act-Assert pattern, just in business language.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Gherkin</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the purpose of Scenario Outline with Examples?</div>
+            <div class="ch-desc">You want to run the same login scenario with 5 different username/password combinations. What Gherkin feature handles this?</div>
+            <div class="code-block"><pre><code class="language-gherkin">Scenario Outline: Login with different roles
+  Given I am on the login page
+  When  I login as "&lt;username&gt;" with "&lt;password&gt;"
+  Then  I should see "&lt;expectedPage&gt;"
+
+  Examples:
+    | username | password | expectedPage |
+    | admin    | admin123 | /dashboard   |
+    | viewer   | view456  | /reports     |</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> Runs a single scenario and iterates the data inside the step definition</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> Generates one separate scenario execution per row in the Examples table</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> Creates parameterized functions that can be called from multiple feature files</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> Runs scenarios in parallel, one per table row simultaneously</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: B — one execution per Examples row</strong><br>Scenario Outline is Gherkin's parameterization mechanism. Each row in the <code>Examples</code> table produces a completely independent scenario run. With 2 rows, you get 2 test executions. The <code>&lt;placeholder&gt;</code> syntax in the scenario steps is replaced with actual values from each row at runtime. This avoids duplicating near-identical scenarios — you write the structure once and vary only the data.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint">N rows in Examples = N scenario executions. Each run is independent. Use <code>&lt;columnName&gt;</code> in steps to reference table values.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge beginner">Beginner</span><span class="topic-badge">Gherkin</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does the Background keyword do?</div>
+            <div class="ch-desc">You have a feature file where every scenario starts with the same 2 steps: <code>Given I am logged in</code> and <code>Given I am on the home page</code>. How do you avoid repeating them?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> Create a @Before hook that runs those steps automatically</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> Use Background: to define steps that run before every scenario in the feature file</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> Use a Scenario Outline to combine all scenarios with shared setup</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> Create a shared feature file that all other features import</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — Background runs before every scenario in the file</strong><br><code>Background:</code> is a section at the top of a feature file, after the feature description and before any scenarios. Steps listed under <code>Background:</code> run automatically before EVERY scenario in that feature file. It's like a <code>beforeEach</code> but written in Gherkin. Keep Background steps short — only include truly universal preconditions. If only some scenarios share setup, use separate Given steps instead.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint"><code>Background:</code> = implicit Given for all scenarios in the feature. Place it after the Feature: line, before your first Scenario:.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Hooks</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does a @Before hook do in Cucumber?</div>
+            <div class="ch-desc">When does a <code>@Before</code> hook run in Cucumber-Playwright, and how does it differ from Gherkin's <code>Background:</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> @Before runs once before the entire feature file; Background runs before each scenario</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> @Before is a code hook (TypeScript) that runs before each scenario; Background is Gherkin steps visible in reports</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> @Before only runs for scenarios tagged with @Before</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> They are identical — Background is just the Gherkin syntax for @Before</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — @Before is a code hook; Background is Gherkin</strong><br><code>@Before</code> hooks are written in TypeScript/JavaScript and run before each scenario's steps execute. They are used for technical setup: launching browsers, setting up page state, seeding test data. <code>Background:</code> runs Gherkin steps visible in test reports, good for business-readable preconditions. Key difference: <code>@Before</code> can be tagged: <code>@Before({ tags: '@smoke' })</code> — runs only for @smoke scenarios. Background always runs for all scenarios in its feature file.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint"><code>@Before</code> = code (invisible in report). <code>Background:</code> = Gherkin (visible in report). @Before can be scoped with <code>{ tags: '@tagname' }</code>.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge beginner">Beginner</span><span class="topic-badge">Tags</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you run only @smoke scenarios?</div>
+            <div class="ch-desc">Your feature files have scenarios tagged with <code>@smoke</code> and <code>@regression</code>. You want to run only <code>@smoke</code> scenarios. What CLI command works?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> npx cucumber-js --filter "@smoke"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> npx cucumber-js --tags "@smoke"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> npx cucumber-js --grep "@smoke"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> npx cucumber-js --scenario "@smoke"</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: B — --tags "@smoke"</strong><br>The <code>--tags</code> flag filters scenarios by their Gherkin tags. Tag expressions support logic: <code>--tags "@smoke and not @slow"</code> runs smoke but excludes slow scenarios. <code>--tags "@smoke or @sanity"</code> runs either. Tags can be placed on individual scenarios, on Scenario Outlines (applies to all examples), or on an entire Feature (tags all scenarios in the file). Use tags to organize tests by priority, environment, or feature area.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint"><code>--tags "@smoke"</code> is the correct flag. Supports boolean: <code>"@smoke and not @wip"</code>. Tags in Gherkin start with <code>@</code> on the line before Scenario/Feature.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">World</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the World object in Cucumber?</div>
+            <div class="ch-desc">Multiple step definitions in the same scenario need to share data (like a logged-in user's name). How does Cucumber enable this without global variables?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> A global singleton object shared across all scenarios and feature files</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> A per-scenario context object (this) that step definitions share within the same scenario</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> The Playwright Page object automatically available in all steps</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> A JSON file that persists test state between scenario runs</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — per-scenario shared context (this)</strong><br>The World is an object instance that Cucumber creates fresh for each scenario. All step definitions bound to that scenario share the same World via <code>this</code>: <code>Given('I logged in as {string}', function(username) { this.loggedInUser = username; }); Then('I should see my name', function() { expect(this.page).toContain(this.loggedInUser); })</code>. Custom World classes can hold page objects: <code>class CustomWorld { page!: Page; }</code>. Each scenario gets a new World — no state leaks between scenarios.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint">World = per-scenario <code>this</code>. Share data between steps: <code>this.userName = 'Alice'</code> in Given, read in Then. New World = new scenario = no leakage.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Step Defs</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do step definitions extract parameters from step text?</div>
+            <div class="ch-desc">Your Gherkin step is <code>When I login as "admin" with password "secret"</code>. How does the step definition capture "admin" and "secret"?</div>
+            <div class="code-block"><pre><code class="language-typescript">When('I login as {string} with password {string}',
+  async function(username: string, password: string) {
+    await this.page.getByLabel('Username').fill(username);
+    await this.page.getByLabel('Password').fill(password);
+  }
+);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> Using regex named groups: (?&lt;username&gt;.*) in the pattern</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> Using Cucumber Expressions like {string}, {int}, {float} which auto-extract and type-convert values</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> The parameters must be declared in the Examples table even for regular Scenarios</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> Using string.split() on the step text inside the function body</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: B — Cucumber Expressions like {string}, {int}</strong><br>Cucumber Expressions are the modern way to capture parameters. <code>{string}</code> matches a quoted string (removes quotes). <code>{int}</code> matches an integer. <code>{float}</code> matches a decimal. <code>{word}</code> matches a single word. They are passed as typed arguments to the function. You can also use regex: <code>When(/I login as "(.*)" with "(.*)"/, async function(u, p) {...})</code> — the capture groups become arguments. Cucumber Expressions are cleaner and more readable than regex.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint">Cucumber Expressions: <code>{string}</code> = quoted value, <code>{int}</code> = integer, <code>{word}</code> = single word. Each capture becomes a function parameter in order.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge advanced">Advanced</span><span class="topic-badge">Data Tables</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you use a Data Table in a step definition?</div>
+            <div class="ch-desc">Your step has an inline table. How does the step definition access the table data?</div>
+            <div class="code-block"><pre><code class="language-gherkin">When I fill the registration form:
+  | field     | value           |
+  | firstName | Alice           |
+  | email     | alice@test.com  |</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> The table is passed as a JSON string — use JSON.parse() to access it</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> A DataTable object is passed as the last argument; use table.hashes() for array of row objects</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> Use table.rows() — it returns an array of string arrays including the header row</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> Data Tables are only supported in Scenario Outline, not regular scenarios</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: B — DataTable last argument, use table.hashes()</strong><br>When a step has an attached table, Cucumber passes a <code>DataTable</code> object as the last parameter. Key methods: <code>table.hashes()</code> — returns <code>[{field:'firstName',value:'Alice'},{field:'email',value:'alice@test.com'}]</code> (header row becomes keys). <code>table.rows()</code> — returns all rows as string arrays, EXCLUDING the header. <code>table.raw()</code> — all rows INCLUDING header. For key-value style tables, <code>table.rowsHash()</code> converts to a single object: <code>{firstName: 'Alice', email: 'alice@test.com'}</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint"><code>table.hashes()</code> = rows as objects with headers as keys. <code>table.rowsHash()</code> = col1 as key, col2 as value (good for field/value tables).</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge beginner">Beginner</span><span class="topic-badge">Structure</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Where should feature files be located in a project?</div>
+            <div class="ch-desc">Your team is setting up a new Cucumber-Playwright project. What is the recommended convention for organizing feature files?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> Co-located next to their step definition files — one .feature per .steps.ts file</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> In a separate features/ directory, organized by business domain — one .feature per user story or capability</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> Inside the src/ folder alongside production code so business logic and tests stay together</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> All features in a single features/all.feature file to minimize file count</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — separate features/ directory by business domain</strong><br>Convention: keep feature files in a top-level <code>features/</code> directory (or <code>tests/features/</code>) organized by business domain: <code>features/authentication/</code>, <code>features/checkout/</code>, <code>features/reporting/</code>. Step definitions go in <code>features/step-definitions/</code> or <code>steps/</code>. One feature file per user story or functional area — not one gigantic file. Feature files are written by product/QA and should be readable without technical knowledge, which is why they stay separate from implementation code.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">Separate <code>features/</code> directory, one .feature per business domain. Step definitions in <code>steps/</code> or <code>features/step-definitions/</code>.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge advanced">Advanced</span><span class="topic-badge">Trade-offs</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the main overhead of Cucumber vs native Playwright tests?</div>
+            <div class="ch-desc">A team is deciding whether to use Cucumber-Playwright vs plain Playwright tests. What is the primary trade-off?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> Cucumber is slower because it uses a different browser automation protocol</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> Cucumber adds a translation layer (Gherkin → steps) and requires non-technical stakeholders to actually read/write feature files to justify the cost</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> Cucumber cannot use Playwright's built-in assertions like toBeVisible()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> Cucumber doesn't support parallel test execution</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — the translation layer only pays off with active stakeholder collaboration</strong><br>Cucumber's value proposition is living documentation — feature files written in Gherkin are readable by product owners, business analysts, and QA. But this requires: (1) stakeholders actually reading/writing feature files; (2) maintaining the Gherkin-to-code mapping; (3) learning Cucumber-specific concepts (World, hooks, step binding). If only developers write and read tests, plain Playwright is simpler and more powerful. Cucumber adds real value when BDD collaboration is genuinely practiced.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">Cucumber overhead = justified only if non-technical people actively engage with feature files. Otherwise, native Playwright tests are cleaner and faster to maintain.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge beginner">Beginner</span><span class="topic-badge">Step Defs</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How are step definitions reused across different scenarios?</div>
+            <div class="ch-desc">The step <code>Given I am logged in as "admin"</code> appears in 20 scenarios across 5 feature files. Do you need to define the step implementation 20 times?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> Yes — each feature file needs its own copy of the step definition</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> No — one step definition matches any scenario that uses that step text, regardless of feature file</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> No — but you must import the step file in each feature file that uses it</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> Steps are only reusable within the same feature file</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — one definition matches globally</strong><br>Cucumber loads all step definition files at startup and creates a global registry of pattern → function mappings. When any scenario across any feature file contains <code>Given I am logged in as "admin"</code>, Cucumber finds the matching step definition and executes it. This is the core reuse mechanism — write the step implementation once, use it everywhere. Duplicate step definitions (same pattern defined twice) cause an ambiguity error at runtime.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint">Step definitions are globally registered. Same step text in any feature file = same implementation called. Define once, reuse everywhere.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge beginner">Beginner</span><span class="topic-badge">Gherkin</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What are And and But keywords in Gherkin?</div>
+            <div class="ch-desc">You have multiple consecutive Given or When steps. What is the purpose of <code>And</code> and <code>But</code>?</div>
+            <div class="code-block"><pre><code class="language-gherkin">Given I am on the checkout page
+And   my cart has 3 items
+And   I have entered my address
+When  I click "Place Order"
+Then  I should see the confirmation page
+But   I should not see any error message</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> And runs in parallel with the previous step; But runs after a delay</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> And and But are syntactic sugar — they inherit the role (Given/When/Then) of the preceding keyword for readability</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> And introduces positive assertions; But introduces negative assertions</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> And and But have unique step definition registrations separate from Given/When/Then</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — syntactic sugar for the preceding keyword</strong><br><code>And</code> and <code>But</code> are purely for readability — they have no semantic difference from the previous keyword. In the example: the <code>And</code> steps after <code>Given</code> are treated as <code>Given</code> steps. <code>But</code> after <code>Then</code> is treated as <code>Then</code>. This allows natural English flow: "Given... And... And..." reads better than "Given... Given... Given...". Step definitions are registered with <code>Given()</code>, <code>When()</code>, or <code>Then()</code> — not <code>And()</code> or <code>But()</code> — because they inherit the previous step's type.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint"><code>And</code>/<code>But</code> inherit the previous keyword's type. No separate <code>And()</code> step registration — use <code>Given()</code>/<code>When()</code>/<code>Then()</code> to define steps matched by And/But.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const STORAGE_KEY = 'vtq-pw-bdd';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

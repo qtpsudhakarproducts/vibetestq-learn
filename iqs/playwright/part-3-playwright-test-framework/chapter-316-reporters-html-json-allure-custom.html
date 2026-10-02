@@ -1,0 +1,958 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 316 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Reporters</span> <span class="w2">—</span> <span class="w3">HTML,</span> <span class="w4">JSON,</span> <span class="w5">Allure</span> <span class="w6">&amp;</span> <span class="w7">Custom</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's reporter system — built-in reporters, how to configure multiple reporters simultaneously, custom reporter development, and CI integration patterns. Interviewers ask about reporters to assess operational thinking: a candidate who knows how test results flow from the runner into CI dashboards, PR annotations, and team notifications shows production-readiness thinking beyond just writing tests.</span>
+  </div>
+
+
+  <!-- Q316.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.1</span>
+      <h2 class="sn-q-text">What is a Playwright reporter and what does it do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A reporter is a plugin that subscribes to events from the Playwright test runner and produces output from them. Every time a test starts, passes, fails, retries, or finishes, the runner fires an event. Reporters receive those events and decide what to do with them — write an HTML file, print to the terminal, send an XML file, post to Slack.</p>
+      </div>
+<p class="sn-para">The key property: <strong class="k-blue">multiple reporters can run simultaneously.</strong> A single test run can generate an HTML report for debugging, a JUnit XML file for CI tools, a JSON file for dashboards, and live terminal output — all at once.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  reporter: [
+    [<span class="tc-str">'html'</span>,  { open: <span class="tc-str">'on-failure'</span> }],
+    [<span class="tc-str">'junit'</span>, { outputFile: <span class="tc-str">'results/junit.xml'</span> }],
+    [<span class="tc-str">'json'</span>,  { outputFile: <span class="tc-str">'results/report.json'</span> }],
+    [<span class="tc-str">'list'</span>],
+  ],
+});</div>
+      </div>
+<p class="sn-para">Each entry is <code class="sn-ic">[reporter-name, options?]</code>. Options are optional — most reporters work with defaults.</p>
+    </div>
+  </div>
+
+  <!-- Q316.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.2</span>
+      <h2 class="sn-q-text">What is the HTML reporter and what does it show?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The HTML reporter generates an interactive web-based report — the richest, most diagnostic output Playwright produces. It should be configured for every project.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [
+  [<span class="tc-str">'html'</span>, {
+    outputFolder: <span class="tc-str">'playwright-report'</span>, <span class="tc-cm">// where the report files are saved</span>
+    open: <span class="tc-str">'on-failure'</span>,                <span class="tc-cm">// when to open automatically</span>
+  }],
+],</div>
+      </div>
+<p class="sn-para"><strong class="k-green">What it shows per test:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Pass / fail / flaky / skipped status with duration</span></li>
+<li><span class="icon">💡</span><span>All retry attempts with individual results</span></li>
+<li><span class="icon">⚡</span><span>Full error message and stack trace</span></li>
+<li><span class="icon">🎯</span><span>Screenshot at the moment of failure</span></li>
+<li><span class="icon">📌</span><span>Video recording of the test run</span></li>
+<li><span class="icon">🔑</span><span>Embedded trace viewer link</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Tags and annotations</span></li>
+<li><span class="icon">🌟</span><span>Named test steps with timing</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">beforeEach</code> and <code class="sn-ic">afterEach</code> execution times</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Filtering in the report UI:</strong> by status (passed, failed, flaky, skipped), by project (chromium, firefox, webkit), by tag, by duration.</p>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">open</code> options:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-blue)">💡</span><span><code class="sn-ic">'on-failure'</code> — opens after the run only when tests fail (recommended locally)</span></li>
+<li><span class="icon">🎪</span><span><code class="sn-ic">'never'</code> — never opens automatically (required for CI — no GUI available)</span></li>
+<li><span class="icon">🔹</span><span><code class="sn-ic">'always'</code> — opens after every run</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-report              # open the report from last run
+npx playwright show-report playwright-report  # open from a specific folder</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q316.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.3</span>
+      <h2 class="sn-q-text">What is the trace viewer and how does it integrate with the HTML report?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The trace viewer is an interactive timeline embedded in the HTML report. When a trace was recorded for a test, clicking "Trace" on that test opens a full replay of the test execution.</p>
+      </div>
+<p class="sn-para">The trace contains:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A timeline of every action (click, fill, goto, etc.) with timestamps</span></li>
+<li><span class="icon">💡</span><span>A DOM snapshot of the page at each action — shows exactly what the browser</span></li>
+</ul>
+<p class="sn-para">  was displaying at every moment</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>Network requests and responses with timing</span></li>
+<li><span class="icon">🎯</span><span>Console logs from the page</span></li>
+<li><span class="icon">📌</span><span>Screenshots at each step</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-trace test-results/apply-leave-chromium/trace.zip</div>
+      </div>
+<p class="sn-para">You can scrub through the timeline, click any action, and see the DOM at that exact moment. When a test fails with "element not found," opening the trace shows whether the element was never there, appeared too late, or was obscured by another element.</p>
+<p class="sn-para">The standard CI configuration:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  trace: <span class="tc-str">'on-first-retry'</span>,  <span class="tc-cm">// recorded on the first retry — investigation mode</span>
+}</div>
+      </div>
+<p class="sn-para">No trace overhead for passing tests. When a test fails and retries, a full trace is captured so you can understand the failure.</p>
+    </div>
+  </div>
+
+  <!-- Q316.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.4</span>
+      <h2 class="sn-q-text">What are the list, dot, and line reporters and when do you use each?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">List reporter:</strong> Prints each test result to the terminal as it completes, with project name, file, title, duration, and status:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [[<span class="tc-str">'list'</span>]],</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">✅ [chromium] › leave/apply-leave.spec.ts:8 › Apply Leave › valid request (1.2s)
+❌ [firefox]  › pim/add-employee.spec.ts:15 › Add Employee › duplicate ID (30.0s)
+⚠️ [chromium] › pim/employee-list.spec.ts:8 › Employee List › search (2.1s) — passed on retry 1</div>
+      </div>
+<p class="sn-para">Use list locally. You see results as they come in and can spot failures before the full suite finishes.</p>
+<p class="sn-para"><strong class="k-orange">Dot reporter:</strong> Prints one character per test — <code class="sn-ic">.</code> for pass, <code class="sn-ic">F</code> for fail. Minimal noise until the summary:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [[<span class="tc-str">'dot'</span>]],</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">..........F.....F...F..........
+3 failed, 27 passed (45.2s)</div>
+      </div>
+<p class="sn-para">Use dot on CI where terminal log volume matters. The HTML report has the details — the terminal just needs a pass/fail signal.</p>
+<p class="sn-para"><strong class="k-orange">Line reporter:</strong> Similar to list but updates in place instead of scrolling. Useful when you want live progress without a wall of output.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [[<span class="tc-str">'line'</span>]],</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q316.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.5</span>
+      <h2 class="sn-q-text">What is the JUnit XML reporter and which CI tools consume it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The JUnit reporter generates a <code class="sn-ic">junit.xml</code> file in the standard JUnit format. Every major CI tool can parse this format and display test results natively:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [
+  [<span class="tc-str">'junit'</span>, { outputFile: <span class="tc-str">'results/junit.xml'</span> }],
+],</div>
+      </div>
+<p class="sn-para">CI tools that consume JUnit XML: Jenkins, Azure DevOps (Tests tab), GitLab CI (test reports), CircleCI, Bamboo, TeamCity.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">xml</span>
+        </div>
+        <div class="sn-terminal-code">&lt;?xml version=&quot;<span class="tc-num">1.0</span>&quot; encoding=&quot;UTF-<span class="tc-num">8</span>&quot;?&gt;
+&lt;testsuites&gt;
+  &lt;testsuite name=&quot;Apply Leave&quot; tests=&quot;<span class="tc-num">3</span>&quot; failures=&quot;<span class="tc-num">1</span>&quot; time=&quot;<span class="tc-num">4.2</span>&quot;&gt;
+    &lt;testcase name=&quot;valid request submits&quot; time=&quot;<span class="tc-num">1.2</span>&quot;
+              classname=&quot;leave/apply-leave.spec.ts&quot; /&gt;
+    &lt;testcase name=&quot;past date is rejected&quot;  time=&quot;<span class="tc-num">0.9</span>&quot;
+              classname=&quot;leave/apply-leave.spec.ts&quot; /&gt;
+    &lt;testcase name=&quot;overlapping request rejected&quot; time=&quot;<span class="tc-num">2.1</span>&quot;
+              classname=&quot;leave/apply-leave.spec.ts&quot;&gt;
+      &lt;failure message=&quot;Timeout 30000ms exceeded&quot;&gt;
+        Error: locator.click: Timeout 30000ms exceeded at apply-leave.spec.ts:<span class="tc-num">38</span>
+      &lt;/failure&gt;
+    &lt;/testcase&gt;
+  &lt;/testsuite&gt;
+&lt;/testsuites&gt;</div>
+      </div>
+<p class="sn-para">Annotations added with <code class="sn-ic">test.info().annotations.push({ type, description })</code> appear as <code class="sn-ic">&lt;properties&gt;</code> elements inside the <code class="sn-ic">&lt;testcase&gt;</code> — visible in Azure DevOps and Jenkins alongside the test result status.</p>
+    </div>
+  </div>
+
+  <!-- Q316.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.6</span>
+      <h2 class="sn-q-text">What is the JSON reporter and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The JSON reporter writes the complete test run data to a JSON file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [
+  [<span class="tc-str">'json'</span>, { outputFile: <span class="tc-str">'results/report.json'</span> }],
+],</div>
+      </div>
+<p class="sn-para">The output includes every test with its title, status, duration, retry count, tags, annotations, error details, and attachment metadata:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;stats&quot;: {
+    &quot;startTime&quot;: &quot;2026-03-05T08:00:00.000Z&quot;,
+    &quot;duration&quot;:  45200,
+    &quot;expected&quot;:  197,
+    &quot;unexpected&quot;: 3,
+    &quot;flaky&quot;:      1,
+    &quot;skipped&quot;:    2
+  },
+  &quot;suites&quot;: [ ... ]
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">When to use it:</strong> When you need to process results programmatically. A Node.js script can read <code class="sn-ic">report.json</code> and post failures to Slack, create Jira tickets for new failures, feed a metrics database, or track flakiness trends over time. The JSON reporter is the integration layer between Playwright and external tooling.</p>
+    </div>
+  </div>
+
+  <!-- Q316.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.7</span>
+      <h2 class="sn-q-text">What is the GitHub reporter and how does it create PR annotations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The GitHub reporter formats output specifically for GitHub Actions. When a test fails, it emits <code class="sn-ic">::error</code> annotations that GitHub Actions processes into inline comments on the pull request diff:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: [[<span class="tc-str">'github'</span>]],</div>
+      </div>
+<p class="sn-para">In the GitHub PR, reviewers see a failure annotation directly on the relevant line of code — without opening workflow logs. The annotation includes the error message and a link to the failing test.</p>
+<p class="sn-para"><strong class="k-red">Use only when running in GitHub Actions.</strong> The reporter detects the <code class="sn-ic">GITHUB_ACTIONS</code> environment variable — in other environments it produces no output. A common pattern:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: process.env.GITHUB_ACTIONS
+  ? [[<span class="tc-str">'github'</span>], [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'never'</span> }]]
+  : [[<span class="tc-str">'list'</span>],   [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'on-failure'</span> }]],</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q316.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.8</span>
+      <h2 class="sn-q-text">What is the blob reporter and when is it used?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The blob reporter outputs a binary file containing the full test run data. It is designed for large suites that run on multiple CI machines (shards) simultaneously — each shard produces a blob, and all blobs are merged into a single HTML report at the end:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts — used on each shard</span>
+reporter: [[<span class="tc-str">'blob'</span>, { outputDir: <span class="tc-str">'blob-report'</span> }]],</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright merge-reports --reporter html ./blob-reports</div>
+      </div>
+<p class="sn-para">The blob reporter is an advanced pattern for suites too large to run on a single machine in acceptable time. For suites finishing in under 30 minutes on one machine, sharding and blob merging add complexity without enough benefit.</p>
+    </div>
+  </div>
+
+  <!-- Q316.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.9</span>
+      <h2 class="sn-q-text">How do you configure reporters differently for local vs CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">process.env.CI</code> — automatically set by most CI platforms (GitHub Actions, GitLab CI, CircleCI, Azure DevOps):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: process.env.CI
+  ? [
+      [<span class="tc-str">'html'</span>,  { outputFolder: <span class="tc-str">'playwright-report'</span>, open: <span class="tc-str">'never'</span>  }],
+      [<span class="tc-str">'junit'</span>, { outputFile: <span class="tc-str">'results/junit.xml'</span> }],
+      [<span class="tc-str">'json'</span>,  { outputFile: <span class="tc-str">'results/report.json'</span> }],
+      process.env.GITHUB_ACTIONS ? [<span class="tc-str">'github'</span>] : [<span class="tc-str">'dot'</span>],
+    ]
+  : [
+      [<span class="tc-str">'html'</span>, { outputFolder: <span class="tc-str">'playwright-report'</span>, open: <span class="tc-str">'on-failure'</span> }],
+      [<span class="tc-str">'list'</span>],
+    ],</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Locally:</strong> HTML opens when something fails (immediate debugging feedback), list shows live progress during the run. No JUnit/JSON needed — no CI tool is waiting for them.</p>
+<p class="sn-para"><strong class="k-blue">On CI:</strong> HTML builds but never auto-opens (no GUI). JUnit for the CI tool's native test reporting. JSON for downstream integrations. GitHub or dot reporter for terminal output. The HTML report is uploaded as an artefact to be downloaded and viewed.</p>
+    </div>
+  </div>
+
+  <!-- Q316.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.10</span>
+      <h2 class="sn-q-text">How do you upload the HTML report as a CI artefact?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">GitHub Actions:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Run Playwright tests
+  run: npx playwright <span class="tc-kw">test</span>
+  env:
+    CI: <span class="tc-kw">true</span>
+
+- name: Upload HTML report
+  uses: actions/upload-artifact@v4
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()   <span class="tc-cm"># ← critical: upload even when tests fail</span>
+  with:
+    name: playwright-report
+    path: playwright-report/
+    retention-days: <span class="tc-num">30</span></div>
+      </div>
+<p class="sn-para"><strong class="k-green">The <code class="sn-ic">if: always()</code> is non-negotiable.</strong> Without it, GitHub Actions skips the upload step when the test step fails — you have no report at exactly the moment you need it most.</p>
+<p class="sn-para"><strong class="k-green">Azure DevOps:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- task: PublishTestResults@<span class="tc-num">2</span>
+  condition: <span class="tc-fn">always</span>()
+  inputs:
+    testResultsFormat: <span class="tc-str">'JUnit'</span>
+    testResultsFiles: <span class="tc-str">'results/junit.xml'</span>
+
+- task: PublishPipelineArtifact@<span class="tc-num">1</span>
+  condition: <span class="tc-fn">always</span>()
+  inputs:
+    targetPath: <span class="tc-str">'playwright-report'</span>
+    artifact:   <span class="tc-str">'playwright-report'</span></div>
+      </div>
+<p class="sn-para"><strong class="k-green">GitLab CI:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">playwright:
+  script:
+    - npx playwright <span class="tc-kw">test</span>
+  artifacts:
+    when: always   <span class="tc-cm"># ← critical: preserve even on failure</span>
+    paths:
+      - playwright-report/
+      - results/junit.xml
+    reports:
+      junit: results/junit.xml
+    expire_in: <span class="tc-num">30</span> days</div>
+      </div>
+<p class="sn-para">The pattern is the same across all three: always upload artefacts, regardless of test outcome.</p>
+    </div>
+  </div>
+
+  <!-- Q316.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.11</span>
+      <h2 class="sn-q-text">How do you write a custom reporter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A custom reporter is a TypeScript class implementing the <code class="sn-ic">Reporter</code> interface. You only implement the methods you need — everything else has an empty default:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// reporters/slack-reporter.ts</span>
+<span class="tc-kw">import</span> <span class="tc-kw">type</span> {
+  Reporter, FullConfig, Suite,
+  TestCase, TestResult, FullResult,
+} <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test/reporter'</span>;
+
+<span class="tc-kw">class</span> SlackReporter <span class="tc-kw">implements</span> Reporter {
+  <span class="tc-kw">private</span> failures: <span class="tc-kw">string</span>[] = [];
+
+  <span class="tc-fn">onBegin</span>(config: FullConfig, suite: Suite): <span class="tc-kw">void</span> {
+    <span class="tc-kw">const</span> total = suite.<span class="tc-fn">allTests</span>().length;
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`▶ Starting ${total} tests across ${config.projects.length} projects`</span>);
+  }
+
+  <span class="tc-fn">onTestEnd</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult): <span class="tc-kw">void</span> {
+    <span class="tc-kw">if</span> (result.status === <span class="tc-str">'failed'</span>) {
+      <span class="tc-kw">this</span>.failures.<span class="tc-fn">push</span>(
+        <span class="tc-str">`❌ ${test.titlePath().join(' › ')} — ${result.error?.message ?? 'unknown error'}`</span>
+      );
+    }
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">onEnd</span>(result: FullResult): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">if</span> (!process.env.SLACK_WEBHOOK_URL) <span class="tc-kw">return</span>;
+
+    <span class="tc-kw">const</span> message = <span class="tc-kw">this</span>.failures.length === <span class="tc-num">0</span>
+      ? <span class="tc-str">'✅ All Playwright tests passed'</span>
+      : [<span class="tc-str">`❌ ${this.failures.length} test(s) failed:`</span>, <span class="tc-str">''</span>, ...<span class="tc-kw">this</span>.failures].<span class="tc-fn">join</span>(<span class="tc-str">'\n'</span>);
+
+    <span class="tc-kw">await</span> <span class="tc-fn">fetch</span>(process.env.SLACK_WEBHOOK_URL, {
+      method: <span class="tc-str">'POST'</span>,
+      headers: { <span class="tc-str">'Content-Type'</span>: <span class="tc-str">'application/json'</span> },
+      body: JSON.<span class="tc-fn">stringify</span>({ text: message }),
+    });
+  }
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> SlackReporter;</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+reporter: [
+  [<span class="tc-str">'html'</span>],
+  [<span class="tc-str">'./reporters/slack-reporter.ts'</span>],  <span class="tc-cm">// path to custom reporter</span>
+],</div>
+      </div>
+<p class="sn-para">The reporter runs alongside the built-in reporters. On CI, the Slack message posts after the run whether it passes or fails.</p>
+    </div>
+  </div>
+
+  <!-- Q316.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.12</span>
+      <h2 class="sn-q-text">What are the key Reporter interface methods and when does each fire?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">interface</span> Reporter {
+  <span class="tc-fn">onBegin</span>(config: FullConfig, suite: Suite): <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires once at the very start — before any test runs</span>
+  <span class="tc-cm">// Use for: logging suite size, sending &amp;quot;run started&amp;quot; notifications</span>
+
+  <span class="tc-fn">onTestBegin</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult): <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires when each individual test starts</span>
+  <span class="tc-cm">// Use for: per-test logging, timing starts</span>
+
+  <span class="tc-fn">onStepBegin</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult, step: TestStep): <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires when each named test step starts (test.step())</span>
+  <span class="tc-cm">// Use for: granular step-level logging</span>
+
+  <span class="tc-fn">onStepEnd</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult, step: TestStep): <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires when each step ends with its result</span>
+  <span class="tc-cm">// Use for: step duration tracking</span>
+
+  <span class="tc-fn">onTestEnd</span>(<span class="tc-kw">test</span>: TestCase, result: TestResult): <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires when each test finishes — has access to final status, duration, attachments</span>
+  <span class="tc-cm">// Use for: per-test result logging, collecting failures, sending per-test notifications</span>
+
+  <span class="tc-fn">onEnd</span>(result: FullResult): Promise&lt;<span class="tc-kw">void</span>&gt; | <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires once at the end of the entire run</span>
+  <span class="tc-cm">// Use for: summary reporting, Slack messages, writing custom output files</span>
+
+  <span class="tc-fn">onError</span>(error: TestError): <span class="tc-kw">void</span>
+  <span class="tc-cm">// Fires when an error occurs outside a test (globalSetup failure, etc.)</span>
+  <span class="tc-cm">// Use for: alerting on infrastructure failures</span>
+}</div>
+      </div>
+<p class="sn-para">For most custom reporters, only <code class="sn-ic">onTestEnd</code> and <code class="sn-ic">onEnd</code> are needed: <code class="sn-ic">onTestEnd</code> collects data per test, <code class="sn-ic">onEnd</code> acts on the aggregate.</p>
+    </div>
+  </div>
+
+  <!-- Q316.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.13</span>
+      <h2 class="sn-q-text">How do annotations appear in different reporters?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Annotations added with <code class="sn-ic">test.info().annotations.push()</code> surface differently in each reporter:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'apply leave @smoke'</span>, <span class="tc-kw">async</span> ({ page, leavePage }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().annotations.<span class="tc-fn">push</span>({
+    <span class="tc-kw">type</span>: <span class="tc-str">'jira'</span>,
+    description: 'https:<span class="tc-cm">//jira.example.com/OHR-1234',</span>
+  });
+
+  <span class="tc-cm">// ... test body</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">HTML report:</strong> Shows annotations as labelled badges on the test result entry. The <code class="sn-ic">type</code> becomes the badge label; <code class="sn-ic">description</code> is the detail. Links in the description are clickable.</p>
+<p class="sn-para"><strong class="k-teal">JUnit XML:</strong> Annotations appear as <code class="sn-ic">&lt;properties&gt;</code> elements inside the <code class="sn-ic">&lt;testcase&gt;</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">xml</span>
+        </div>
+        <div class="sn-terminal-code">&lt;testcase name=&quot;apply leave&quot;&gt;
+  &lt;properties&gt;
+    &lt;property name=&quot;jira&quot; value=&quot;https:<span class="tc-cm">//jira.example.com/OHR-1234&amp;quot;/&amp;gt;</span>
+  &lt;/properties&gt;
+&lt;/testcase&gt;</div>
+      </div>
+<p class="sn-para">Azure DevOps and Jenkins display these in the test result detail view.</p>
+<p class="sn-para"><strong class="k-teal">JSON report:</strong> Annotations appear in the <code class="sn-ic">annotations</code> array of each test entry — directly parseable for automation.</p>
+<p class="sn-para"><strong class="k-teal">Custom reporters:</strong> Access annotations via <code class="sn-ic">test.annotations</code> in <code class="sn-ic">onTestEnd</code>. Use them to build Jira ticket links, filter notifications, or tag dashboard entries.</p>
+    </div>
+  </div>
+
+  <!-- Q316.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.14</span>
+      <h2 class="sn-q-text">How do screenshots, videos, and traces appear in the HTML report?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">They appear as attachments on each test entry, collected from <code class="sn-ic">use</code> settings:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  screenshot: <span class="tc-str">'only-on-failure'</span>,   <span class="tc-cm">// ← attached when a test fails</span>
+  video:      <span class="tc-str">'retain-on-failure'</span>, <span class="tc-cm">// ← attached when a test fails all retries</span>
+  trace:      <span class="tc-str">'on-first-retry'</span>,    <span class="tc-cm">// ← attached when a test fails and is retried</span>
+},</div>
+      </div>
+<p class="sn-para">In the HTML report, a failed test shows:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-pink">Screenshot</strong> — image thumbnail; click to view full size</span></li>
+<li><span class="icon">💡</span><span><strong class="k-pink">Video</strong> — inline video player showing the full test run</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-pink">Trace</strong> — "View trace" button that opens the trace viewer timeline</span></li>
+</ul>
+<p class="sn-para">For tests that fail and are retried, the report shows attachments per attempt — screenshot from attempt 1, screenshot from attempt 2, etc. — labelled by attempt number. Comparing screenshots across attempts shows whether the failure was consistent or changed between retries.</p>
+<p class="sn-para">Custom attachments added with <code class="sn-ic">test.info().attach()</code> also appear in the HTML report under the test's "Attachments" section.</p>
+    </div>
+  </div>
+
+  <!-- Q316.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.15</span>
+      <h2 class="sn-q-text">How do you track flakiness trends using the JSON reporter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The JSON reporter captures <code class="sn-ic">&quot;flaky&quot;</code> status for any test that passed on retry. Read <code class="sn-ic">report.json</code> after each CI run to extract and store the flakiness data:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// scripts/track-flakiness.ts</span>
+<span class="tc-kw">import</span> * as fs <span class="tc-kw">from</span> <span class="tc-str">'fs'</span>;
+
+<span class="tc-kw">interface</span> TestStat {
+  title: <span class="tc-kw">string</span>[];
+  status: <span class="tc-str">'passed'</span> | <span class="tc-str">'failed'</span> | <span class="tc-str">'flaky'</span> | <span class="tc-str">'skipped'</span>;
+  retry?: <span class="tc-kw">number</span>;
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">extractFlaky</span>(reportPath: <span class="tc-kw">string</span>): TestStat[] {
+  <span class="tc-kw">const</span> report = JSON.<span class="tc-fn">parse</span>(fs.<span class="tc-fn">readFileSync</span>(reportPath, <span class="tc-str">'utf-8'</span>));
+  <span class="tc-kw">const</span> flaky: TestStat[] = [];
+
+  <span class="tc-kw">function</span> <span class="tc-fn">walk</span>(suite: <span class="tc-kw">any</span>) {
+    <span class="tc-kw">for</span> (<span class="tc-kw">const</span> <span class="tc-kw">test</span> <span class="tc-kw">of</span> suite.tests ?? []) {
+      <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.status === <span class="tc-str">'flaky'</span>) {
+        flaky.<span class="tc-fn">push</span>({ title: <span class="tc-kw">test</span>.titlePath, status: <span class="tc-str">'flaky'</span> });
+      }
+    }
+    <span class="tc-kw">for</span> (<span class="tc-kw">const</span> child <span class="tc-kw">of</span> suite.suites ?? []) <span class="tc-fn">walk</span>(child);
+  }
+
+  <span class="tc-kw">for</span> (<span class="tc-kw">const</span> suite <span class="tc-kw">of</span> report.suites) <span class="tc-fn">walk</span>(suite);
+  <span class="tc-kw">return</span> flaky;
+}
+
+<span class="tc-kw">const</span> flaky = <span class="tc-fn">extractFlaky</span>(<span class="tc-str">'results/report.json'</span>);
+console.<span class="tc-fn">log</span>(<span class="tc-str">`Flaky tests this run: ${flaky.length}`</span>);
+flaky.<span class="tc-fn">forEach</span>(t =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">`  ⚠️  ${t.title.join(' › ')}`</span>));</div>
+      </div>
+<p class="sn-para">Run this script after each CI run and store the results. Over time you build a flakiness leaderboard: tests that appear most frequently in the flaky list are the highest-priority candidates for investigation and fixing.</p>
+    </div>
+  </div>
+
+  <!-- Q316.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.16</span>
+      <h2 class="sn-q-text">What is the complete reporter setup for a production OrangeHRM suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">import</span> { defineConfig, devices } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+
+  reporter: process.env.CI
+    ? [
+        <span class="tc-cm">// CI: generate all artefacts, never auto-open</span>
+        [<span class="tc-str">'html'</span>,  { outputFolder: <span class="tc-str">'playwright-report'</span>, open: <span class="tc-str">'never'</span> }],
+        [<span class="tc-str">'junit'</span>, { outputFile: <span class="tc-str">'results/junit.xml'</span> }],
+        [<span class="tc-str">'json'</span>,  { outputFile: <span class="tc-str">'results/report.json'</span> }],
+        <span class="tc-cm">// GitHub-specific annotations; dot for other CI platforms</span>
+        process.env.GITHUB_ACTIONS ? [<span class="tc-str">'github'</span>] : [<span class="tc-str">'dot'</span>],
+        <span class="tc-cm">// Custom Slack notification (see Q39.11)</span>
+        [<span class="tc-str">'./reporters/slack-reporter.ts'</span>],
+      ]
+    : [
+        <span class="tc-cm">// Local: live feedback + HTML report on failure only</span>
+        [<span class="tc-str">'html'</span>,  { outputFolder: <span class="tc-str">'playwright-report'</span>, open: <span class="tc-str">'on-failure'</span> }],
+        [<span class="tc-str">'list'</span>],
+      ],
+
+  use: {
+    screenshot: <span class="tc-str">'only-on-failure'</span>,
+    video:      <span class="tc-str">'retain-on-failure'</span>,
+    trace:      <span class="tc-str">'on-first-retry'</span>,
+  },
+
+  <span class="tc-cm">// ... projects, workers, retries, etc.</span>
+});</div>
+      </div>
+<p class="sn-para">And in GitHub Actions:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Run Playwright Tests
+  run: npx playwright <span class="tc-kw">test</span>
+  env:
+    CI: <span class="tc-kw">true</span>
+    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+- name: Upload HTML report
+  uses: actions/upload-artifact@v4
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+  with:
+    name: playwright-report
+    path: playwright-report/
+    retention-days: <span class="tc-num">30</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q316.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.17</span>
+      <h2 class="sn-q-text">How does the GitHub Actions reporter differ from JUnit for PR integration?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">JUnit reporter:</strong> Generates an XML file. GitHub Actions can parse JUnit XML natively with third-party actions (e.g., <code class="sn-ic">mikepenz/action-junit-report</code>) or the newer built-in test reporting features. The test results appear in the "Summary" tab of the workflow run, not inline on the PR diff.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">GitHub reporter:</strong> Uses GitHub Actions' annotation API directly, emitting <code class="sn-ic">::error file=...,line=...,col=...,title=...::message</code> commands that GitHub Actions interprets as PR inline comments. The failure annotation appears directly on the line of code in the PR diff view.</p>
+<p class="sn-para">In practice, use both:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">reporter: process.env.CI
+  ? [
+      [<span class="tc-str">'github'</span>],  <span class="tc-cm">// inline PR annotations</span>
+      [<span class="tc-str">'junit'</span>, { outputFile: <span class="tc-str">'results/junit.xml'</span> }],  <span class="tc-cm">// workflow summary</span>
+      [<span class="tc-str">'html'</span>,  { open: <span class="tc-str">'never'</span> }],  <span class="tc-cm">// downloadable artefact</span>
+    ]
+  : [[<span class="tc-str">'list'</span>], [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'on-failure'</span> }]],</div>
+      </div>
+<p class="sn-para">Reviewers get inline annotations without opening the workflow run. The team gets a full report as a downloadable artefact. The JUnit summary provides the test count overview in the workflow summary tab.</p>
+    </div>
+  </div>
+
+  <!-- Q316.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q316.18</span>
+      <h2 class="sn-q-text">What is the most impactful reporter change you have made in a project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The most impactful was adding the JSON reporter and a flakiness tracking script to a project that had been running with only the HTML reporter.</p>
+      </div>
+<p class="sn-para">Before: the team knew the suite had flaky tests — they could see "passed on retry" in the HTML report — but nobody knew which tests were flaky most often. The HTML report is human-readable but not machine-parseable for trends.</p>
+<p class="sn-para">After: the JSON reporter output <code class="sn-ic">report.json</code> on every CI run. A 30-line Node.js script read the file, extracted every test with <code class="sn-ic">status: 'flaky'</code>, and appended the data to a local <code class="sn-ic">flakiness-log.json</code>. After four weeks, the log showed:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">employee search › returns results:    flaky on 23 of 80 runs (29%)
+leave › apply leave › date picker:    flaky on 11 of 80 runs (14%)
+admin › user management › bulk edit:  flaky on  8 of 80 runs (10%)</div>
+      </div>
+<p class="sn-para">These three tests accounted for 80% of all retry overhead. Fixing them — the employee search needed <code class="sn-ic">waitForLoadState('networkidle')</code> before the assertion, the date picker had an animation race, the bulk edit had a parallel isolation issue — reduced CI run time by 6 minutes per run and eliminated almost all false-positive failures.</p>
+<p class="sn-para">The JSON reporter transformed an invisible problem (distributed flakiness across 80 CI runs) into a visible priority list. That is what good reporting does: it turns events into information that drives decisions.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>A reporter receives test runner events and produces output. Multiple reporters run simultaneously.</span></li>
+            <li><span class="icon">⭐</span><span>Configure with <code class="sn-ic">reporter: [[name, options?], ...]</code> in <code class="sn-ic">playwright.config.ts</code>.</span></li>
+            <li><span class="icon">⭐</span><span>HTML reporter — the richest debugging tool. Shows status, errors, screenshots, videos, traces, steps, annotations. Always configure it.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">open: 'on-failure'</code> locally; <code class="sn-ic">open: 'never'</code> on CI. Use <code class="sn-ic">npx playwright show-report</code> to open manually.</span></li>
+            <li><span class="icon">⭐</span><span>Trace viewer — embedded in HTML report. Interactive timeline of every action, DOM state, and network call. Open with <code class="sn-ic">npx playwright show-trace</code>.</span></li>
+            <li><span class="icon">⭐</span><span>List reporter — live terminal output as tests complete. Use locally.</span></li>
+            <li><span class="icon">⭐</span><span>Dot reporter — one character per test. Minimal noise for CI terminal logs.</span></li>
+            <li><span class="icon">⭐</span><span>JUnit reporter — standard XML format. Consumed by Jenkins, Azure DevOps, GitLab, CircleCI. Use on CI.</span></li>
+            <li><span class="icon">⭐</span><span>JSON reporter — complete run data as JSON. Use for custom dashboards, flakiness tracking, integrations.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>GitHub reporter — inline PR annotations via GitHub Actions annotation API. Use only in GitHub Actions.</span></li>
+            <li><span class="icon">⭐</span><span>Blob reporter — for sharded runs on multiple CI machines. Merge with <code class="sn-ic">npx playwright merge-reports</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">process.env.CI</code> pattern — switch reporter configuration between local and CI.</span></li>
+            <li><span class="icon">⭐</span><span>Always use <code class="sn-ic">if: always()</code> / <code class="sn-ic">condition: always()</code> when uploading report artefacts. Without it, failures suppress the report.</span></li>
+            <li><span class="icon">⭐</span><span>Custom reporters implement the <code class="sn-ic">Reporter</code> interface. <code class="sn-ic">onTestEnd</code> and <code class="sn-ic">onEnd</code> are the most commonly used methods.</span></li>
+            <li><span class="icon">⭐</span><span>Annotations appear in HTML report (badges), JUnit XML (<code class="sn-ic">&lt;properties&gt;</code>), JSON (array), and custom reporters (<code class="sn-ic">test.annotations</code>).</span></li>
+            <li><span class="icon">⭐</span><span>Screenshots, videos, and traces appear as attachments in the HTML report — per attempt for retried tests.</span></li>
+            <li><span class="icon">⭐</span><span>JSON reporter is the integration layer between Playwright and external tooling — dashboards, Slack, Jira, flakiness tracking.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

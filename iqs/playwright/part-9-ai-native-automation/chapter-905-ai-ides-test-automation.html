@@ -1,0 +1,546 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🤖 Part 9 &nbsp;·&nbsp; Chapter 905 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">AI</span> <span class="w2">IDEs</span> <span class="w3">for</span> <span class="w4">Test</span> <span class="w5">Automation</span></h1>
+    <p class="sn-title-sub">AI-Native Automation — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">AI-powered IDEs — GitHub Copilot, Cursor, Claude Code, and Windsurf — change how test automation engineers write code. This chapter covers how each tool works, their key features for Playwright, how to configure them for test automation, and how to choose between them. Interviewers at AI-forward engineering teams ask these questions to assess whether candidates are current with modern tooling.</span>
+  </div>
+
+
+  <!-- Q905.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.1</span>
+      <h2 class="sn-q-text">What are AI IDEs and how do they differ from regular IDEs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A regular IDE (VS Code, IntelliJ, WebStorm) provides syntax highlighting, autocomplete, refactoring, and debugging tools. It understands your code syntactically.</p>
+      </div>
+<p class="sn-para">An AI IDE adds a language model layer that understands your code semantically — what it does, not just what it says. It can:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Complete entire functions and test cases based on surrounding context</span></li>
+<li><span class="icon">💡</span><span>Answer questions about your codebase in natural language</span></li>
+<li><span class="icon">⚡</span><span>Make coordinated edits across multiple files based on a single instruction</span></li>
+<li><span class="icon">🎯</span><span>Suggest fixes for failing tests by reading error messages and code together</span></li>
+<li><span class="icon">📌</span><span>Generate entire test files from a brief description</span></li>
+</ul>
+<p class="sn-para">The practical difference for test automation: in a regular IDE, you write test code. In an AI IDE, you describe what you want to test and the AI writes the code — you review, adjust, and commit.</p>
+    </div>
+  </div>
+
+  <!-- Q905.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.2</span>
+      <h2 class="sn-q-text">What is GitHub Copilot and what are its key features for Playwright testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">GitHub Copilot is Microsoft's AI coding assistant, powered by OpenAI models. It is available as an extension in VS Code and other editors.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Ghost text (inline completion):</strong> As you type, Copilot suggests the next line, function, or test block. For Playwright, it reads your open page objects and suggests test steps that use your actual methods.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// You type:</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can create an employee'</span>, <span class="tc-kw">async</span> ({ employeePage }) =&gt; {
+  <span class="tc-cm">// Copilot suggests:</span>
+  <span class="tc-kw">const</span> data = testData.<span class="tc-fn">employee</span>();
+  <span class="tc-kw">await</span> employeePage.<span class="tc-fn">navigate</span>();
+  <span class="tc-kw">await</span> employeePage.<span class="tc-fn">fillFirstName</span>(data.firstName);
+  <span class="tc-kw">await</span> employeePage.<span class="tc-fn">fillLastName</span>(data.lastName);
+  <span class="tc-kw">await</span> employeePage.<span class="tc-fn">clickSave</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(employeePage.successMessage).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Inline chat:</strong> Highlight code and ask Copilot to fix, refactor, or explain it. <code class="sn-ic">Ctrl+I</code> → "Convert this test to use the Page Object Model"</p>
+<p class="sn-para"><strong class="k-green">Copilot Chat panel:</strong> A full chat interface where you can ask questions about your codebase. "Where is the EmployeePage class defined?" → shows the file and relevant methods.</p>
+<p class="sn-para"><strong class="k-green">Copilot in the terminal:</strong> Suggests CLI commands. Type <code class="sn-ic">playwright</code> and Copilot suggests the most relevant <code class="sn-ic">npx playwright</code> command based on what you were just doing.</p>
+    </div>
+  </div>
+
+  <!-- Q905.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.3</span>
+      <h2 class="sn-q-text">How do you configure GitHub Copilot for a Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Keep relevant files open.</strong> Copilot uses your open editor tabs as context. When writing a test, keep the page object, fixture file, and an example test open simultaneously. This dramatically improves suggestion quality.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use copilot-instructions.md:</strong> Create <code class="sn-ic">.github/copilot-instructions.md</code> in your repository. This file is automatically included in Copilot's context for every suggestion.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+
+<span class="tc-cm">### Playwright Framework Instructions</span>
+
+- Always <span class="tc-kw">import</span> <span class="tc-kw">test</span> <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/base.fixture'</span>, not <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>
+- Use getByRole <span class="tc-kw">for</span> buttons and links, getByLabel <span class="tc-kw">for</span> form fields
+- Never use page.<span class="tc-fn">waitForTimeout</span>() — use <span class="tc-kw">expect</span> assertions with toBeVisible/toBeEnabled
+- All <span class="tc-kw">test</span> data must use testData factory <span class="tc-kw">from</span> <span class="tc-str">'../data/test-data'</span>
+- Page objects extend BasePage <span class="tc-kw">from</span> <span class="tc-str">'../pages/base.page'</span>
+- Tests must be independent — create own data, <span class="tc-kw">do</span> not rely on other tests</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Copilot workspace:</strong> For VS Code, create a <code class="sn-ic">.vscode/settings.json</code> that enables workspace-specific Copilot features and points it to your framework documentation.</p>
+    </div>
+  </div>
+
+  <!-- Q905.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.4</span>
+      <h2 class="sn-q-text">What is Cursor and how does it differ from GitHub Copilot?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cursor is a VS Code fork that builds AI deeply into the editor at every layer. It uses a mix of Claude, GPT-4o, and its own models depending on the task.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">The key difference from Copilot:</strong> Copilot sits alongside VS Code. Cursor IS the IDE — the AI is the core product, not an add-on.</p>
+<p class="sn-para"><strong class="k-orange">Features Cursor has that Copilot does not (as of 2026):</strong></p>
+<p class="sn-para"><strong class="k-orange">Composer (multi-file editing):</strong> <code class="sn-ic">Cmd+I</code> → describe a change → Cursor edits multiple files simultaneously. "Refactor all tests to use the new fixture signature" → Cursor edits all relevant test files in one operation and shows a diff for review.</p>
+<p class="sn-para"><strong class="k-orange">Codebase indexing:</strong> Cursor indexes your entire project, builds a vector embedding of every file, and retrieves the most relevant files for every generation task. This gives much better context than manual tab management.</p>
+<p class="sn-para"><strong class="k-orange">Cursor Rules (<code class="sn-ic">.cursorrules</code>):</strong> A project-level instruction file loaded into every Cursor session:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+You are a Senior SDET working on the OrangeHRM Playwright <span class="tc-kw">test</span> automation framework.
+
+Framework rules:
+- TypeScript strict mode
+- Locators: getByRole &gt; getByLabel &gt; <span class="tc-fn">getByTestId</span> (<span class="tc-kw">never</span> CSS or XPath)
+- Test data: always use testData factory <span class="tc-kw">from</span> tests/data/<span class="tc-kw">test</span>-data.ts
+- Imports: always <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/base.fixture'</span>, <span class="tc-kw">never</span> <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>
+- Never use page.<span class="tc-fn">waitForTimeout</span>() — use <span class="tc-kw">expect</span> with appropriate assertions
+- Page objects extend BasePage
+- All page object methods <span class="tc-kw">return</span> Promise&lt;<span class="tc-kw">void</span>&gt;
+
+When generating tests, follow the pattern <span class="tc-kw">in</span> tests/specs/leave.spec.ts exactly.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q905.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.5</span>
+      <h2 class="sn-q-text">What is Claude Code and how is it used for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Claude Code is Anthropic's command-line AI agent. It operates in your terminal, reads and writes files, runs commands, and iterates until a task is complete.</p>
+      </div>
+<p class="sn-para">Unlike Copilot and Cursor (which suggest code you accept), Claude Code is an autonomous agent — it takes actions and reports results.</p>
+<p class="sn-para"><strong class="k-teal">Typical test automation workflow with Claude Code:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">claude-code &quot;Write a complete Playwright test suite for the Leave Application
+feature. Use the EmployeePage and LeaveApplicationPage page objects. Follow
+the patterns in tests/specs/employee.spec.ts.&quot;</div>
+      </div>
+<p class="sn-para">Claude Code will:</p>
+<ol class="sn-olist">
+<li>Read your existing page objects and tests for context</li>
+<li>Write the test file to <code class="sn-ic">tests/specs/leave-application.spec.ts</code></li>
+<li>Run <code class="sn-ic">npx playwright test tests/specs/leave-application.spec.ts</code></li>
+<li>Read the test output</li>
+<li>Fix any failures</li>
+<li>Repeat until all tests pass</li>
+<li>Report the final result</li>
+</ol>
+<p class="sn-para">This is the agent-mode workflow: you describe the goal, the agent works until it is done.</p>
+    </div>
+  </div>
+
+  <!-- Q905.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.6</span>
+      <h2 class="sn-q-text">What is Windsurf and how does it compare to Cursor?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Windsurf is an AI IDE from Codeium, positioned as a Cursor alternative. It uses its own Cascade AI architecture for multi-step agentic tasks.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Key similarities to Cursor:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>VS Code-based (familiar interface)</span></li>
+<li><span class="icon">💡</span><span>Full codebase indexing</span></li>
+<li><span class="icon">⚡</span><span>Multi-file editing</span></li>
+<li><span class="icon">🎯</span><span>Agent-mode tasks that run autonomously</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">Differences as of 2026:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Different underlying model (Codeium's own + external models)</span></li>
+<li><span class="icon">🔑</span><span>Different pricing (generous free tier compared to Cursor's subscription)</span></li>
+<li><span class="icon">🚀</span><span>Cascade's agentic loop is particularly strong at understanding dependencies</span></li>
+</ul>
+<p class="sn-para">  between files before making changes</p>
+<p class="sn-para"><strong class="k-pink">For Playwright specifically:</strong> Both Cursor and Windsurf produce similar quality Playwright code with a good <code class="sn-ic">.cursorrules</code> or Windsurf instructions file. The choice often comes down to team preference, pricing, and which handles your codebase size better.</p>
+    </div>
+  </div>
+
+  <!-- Q905.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.7</span>
+      <h2 class="sn-q-text">How do you set up an AI IDE for maximum effectiveness on a Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Step 1 — Create a project instructions file.</strong> For Cursor: <code class="sn-ic">.cursorrules</code> For Copilot: <code class="sn-ic">.github/copilot-instructions.md</code> For Windsurf: workspace instructions</p>
+      </div>
+<p class="sn-para">Content: 1–2 pages covering your framework's import patterns, locator strategy, test data approach, and anti-patterns. Include one complete example test.</p>
+<p class="sn-para"><strong class="k-red">Step 2 — Configure the framework SKILL as reference documentation.</strong> In Cursor: add your <code class="sn-ic">docs/skills/playwright-framework.skill.md</code> to Cursor's "Docs" section so it is always available as context.</p>
+<p class="sn-para"><strong class="k-red">Step 3 — Keep related files open.</strong> When generating tests, have these files open:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The page object for the page under test</span></li>
+<li><span class="icon">💡</span><span>Your fixture file</span></li>
+<li><span class="icon">⚡</span><span>One complete existing test as a pattern reference</span></li>
+</ul>
+<p class="sn-para"><strong class="k-red">Step 4 — Use agent mode for test generation, inline mode for small fixes.</strong> Agent mode (Cursor Composer, Claude Code) for generating full test files. Inline completion (ghost text) for filling in individual test steps. Inline chat for fixing specific assertions or locators.</p>
+<p class="sn-para"><strong class="k-red">Step 5 — Verify output before committing.</strong> Run <code class="sn-ic">npx playwright test [new-file]</code> on every AI-generated file before committing. Run <code class="sn-ic">tsc --noEmit</code> to catch type errors from hallucinated methods.</p>
+    </div>
+  </div>
+
+  <!-- Q905.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.8</span>
+      <h2 class="sn-q-text">What is the AI agent loop and how does it apply to test generation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The agent loop is the cycle an AI agent runs when given a task:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">1. PERCEIVE  — read current state (files, test output, errors)
+2. PLAN      — decide what to do next
+3. ACT       — take an action (write file, run command, edit code)
+4. OBSERVE   — read the result
+5. Repeat until task is done</div>
+      </div>
+<p class="sn-para">For test generation, the loop:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">1. PERCEIVE  — read page object, fixtures, example test, task description
+2. PLAN      — decide to write the test file first, then verify
+3. ACT       — write tests/specs/leave.spec.ts
+4. OBSERVE   — run the tests: 2 passed, 1 failed
+1. PERCEIVE  — read the failure: locator timeout on 'Apply' button
+2. PLAN      — fix the locator
+3. ACT       — update the locator in the test
+4. OBSERVE   — run again: all 3 passed
+5. DONE      — report completion</div>
+      </div>
+<p class="sn-para">The agent loop is what makes AI IDEs in agent mode qualitatively different from autocomplete — the tool does not just suggest, it works.</p>
+    </div>
+  </div>
+
+  <!-- Q905.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.9</span>
+      <h2 class="sn-q-text">How do you use Cursor Composer for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cursor Composer is Cursor's multi-file agent mode. It plans changes across files before making them, shows a diff for review, and applies the changes atomically.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Effective Composer workflows for test automation:</strong></p>
+<p class="sn-para"><strong class="k-blue">Workflow 1 — Generate a complete feature test suite:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Cmd+I → &quot;Create a complete test suite for the Leave Application feature.
+Use LeaveApplicationPage page object. Follow leave.spec.ts pattern.
+Create both the page object (if missing) and the test file.&quot;</div>
+      </div>
+<p class="sn-para">Composer will read your existing files, plan what to create, show you the diff of both files, and apply them when you confirm.</p>
+<p class="sn-para"><strong class="k-blue">Workflow 2 — Migrate tests to a new pattern:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Cmd+I → &quot;Update all tests in tests/specs/ to use the new
+testData.employee() factory instead of hardcoded strings.
+The factory is at tests/data/test-data.ts&quot;</div>
+      </div>
+<p class="sn-para">Composer will edit all relevant test files in one operation.</p>
+<p class="sn-para"><strong class="k-blue">Workflow 3 — Fix a failing test:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Paste error output
+Cmd+I → &quot;This test is failing with the above error. Diagnose and fix.&quot;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q905.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.10</span>
+      <h2 class="sn-q-text">What are the limitations of AI IDEs for test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Hallucination in complex interactions.</strong> AI IDEs can suggest code that looks correct but uses methods that do not exist or assertions that always pass. Always run generated tests against a real application to verify they can actually fail.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Context window limits.</strong> For very large frameworks (50+ page objects, 100+ test files), the AI cannot hold the entire codebase in context at once. It may generate code that conflicts with existing patterns it cannot see.</p>
+<p class="sn-para"><strong class="k-green">No understanding of application behaviour.</strong> The AI generates code based on your instructions and framework patterns — it does not know whether the test will actually catch bugs. A test can pass and still not test what you intend. Human review of test design is still required.</p>
+<p class="sn-para"><strong class="k-green">Outdated Playwright knowledge.</strong> Models have a training cutoff date. For Playwright APIs added in recent versions, the model may not know them or may suggest deprecated alternatives. Always verify generated code against the official Playwright documentation.</p>
+<p class="sn-para"><strong class="k-green">Cost and data privacy.</strong> Sending your entire codebase to an AI provider for indexing and context has both cost (API token usage) and privacy implications. Review your organisation's policy before using AI IDEs with proprietary framework code.</p>
+    </div>
+  </div>
+
+  <!-- Q905.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.11</span>
+      <h2 class="sn-q-text">How do you evaluate which AI IDE to use for your team?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Evaluate these dimensions:</strong></p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Output quality for your specific stack:</strong> Generate the same 5 test files using each tool, with the same instructions. Count: files that compile without errors, tests that pass on first run, locator strategy violations, and hallucinated methods.</p>
+<p class="sn-para"><strong class="k-purple">Team workflow fit:</strong> Does the team prefer chat-first (Copilot Chat), autonomous agent (Claude Code, Cursor Composer), or a blend? Tool fit with workflow matters as much as raw output quality.</p>
+<p class="sn-para"><strong class="k-purple">Integration with existing tooling:</strong> Does it work in your team's IDE? Does it support TypeScript? Does it integrate with your CI pipeline?</p>
+<p class="sn-para"><strong class="k-purple">Privacy and data handling:</strong> Where is your code sent for processing? Is there a zero-data-retention option? Does the AI provider train on submitted code?</p>
+<p class="sn-para"><strong class="k-purple">Pricing at scale:</strong> Per-seat pricing vs usage-based. Estimate monthly cost at team size.</p>
+    </div>
+  </div>
+
+  <!-- Q905.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.12</span>
+      <h2 class="sn-q-text">How do you write a copilot-instructions.md file for a Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">markdown</span>
+        </div>
+        <div class="sn-terminal-code">
+
+<span class="tc-cm">### Project Context</span>
+OrangeHRM <span class="tc-kw">test</span> automation framework. Playwright <span class="tc-num">1.50</span>, TypeScript <span class="tc-num">5.4</span>.
+
+
+<span class="tc-cm">### Import Rules</span>
+- Test functions: <span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/base.fixture'</span>
+- Types only: <span class="tc-kw">import</span> <span class="tc-kw">type</span> { Page, Locator } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>
+- Test data: <span class="tc-kw">import</span> { testData } <span class="tc-kw">from</span> <span class="tc-str">'../data/test-data'</span>
+
+
+<span class="tc-cm">### Locator Rules</span>
+Priority order:
+<span class="tc-num">1</span>. page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> })
+<span class="tc-num">2</span>. page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Employee Name'</span>)
+<span class="tc-num">3</span>. page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'employee-table'</span>)
+Never use: CSS <span class="tc-fn">selectors</span> (.<span class="tc-kw">class</span>, <span class="tc-cm">#id), XPath (//div[@id])</span>
+
+
+<span class="tc-cm">### Test Structure</span>
+- Import <span class="tc-kw">from</span> <span class="tc-fn">fixtures</span> (not <span class="tc-kw">from</span> @playwright/<span class="tc-kw">test</span> directly)
+- Use testData factory <span class="tc-kw">for</span> all <span class="tc-kw">test</span> data
+- Set up <span class="tc-kw">test</span> data <span class="tc-kw">in</span> <span class="tc-kw">beforeEach</span> using API calls when possible
+- Tests must pass individually with --workers=<span class="tc-num">1</span> AND <span class="tc-kw">in</span> parallel with --workers=<span class="tc-num">4</span>
+
+
+<span class="tc-cm">### Page Object Rules</span>
+- All page objects extend BasePage
+- Constructor takes a Page parameter
+- All interaction methods <span class="tc-kw">return</span> Promise&lt;<span class="tc-kw">void</span>&gt;
+- Locators are <span class="tc-kw">readonly</span> <span class="tc-kw">class</span> properties
+
+
+<span class="tc-cm">### Anti-Patterns (Never Suggest)</span>
+- page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">2000</span>) → use <span class="tc-kw">expect</span> assertions
+- <span class="tc-kw">await</span> page.<span class="tc-fn">click</span>(<span class="tc-str">' S7 
+- test data strings like '</span>John Smith' → use testData.<span class="tc-fn">employee</span>()</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q905.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.13</span>
+      <h2 class="sn-q-text">How does codebase indexing in Cursor and Windsurf work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both tools build a vector index of your entire codebase when you open a project. This means every file is embedded (converted to a vector that represents its meaning) and stored locally.</p>
+      </div>
+<p class="sn-para">When you make a request, the tool:</p>
+<ol class="sn-olist">
+<li>Embeds your query ("write a test for employee leave")</li>
+<li>Searches the vector index for the most similar files</li>
+<li>Retrieves those files and includes them in the context window</li>
+<li>Calls the LLM with the retrieved context plus your request</li>
+</ol>
+<p class="sn-para">This is automated RAG — the tool decides which files to include without you selecting them manually.</p>
+<p class="sn-para">The quality of retrieval depends on the quality of your codebase naming and comments. A file named <code class="sn-ic">ep.ts</code> with no comments retrieves less reliably than <code class="sn-ic">employee.page.ts</code> with a descriptive class docstring.</p>
+<p class="sn-para">Best practices for better retrieval:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Use descriptive file names that match the feature they test</span></li>
+<li><span class="icon">💡</span><span>Add a one-line docstring to each page object class</span></li>
+<li><span class="icon">⚡</span><span>Use consistent naming — <code class="sn-ic">EmployeePage</code>, <code class="sn-ic">employeePage</code>, <code class="sn-ic">employee.page.ts</code></span></li>
+</ul>
+<p class="sn-para">  all signal the same concept to the embedding model</p>
+    </div>
+  </div>
+
+  <!-- Q905.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.14</span>
+      <h2 class="sn-q-text">In your project, which AI IDE do you use and how?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we use GitHub Copilot as the team standard because it is already included in our GitHub Teams subscription and requires no additional tooling or security review.</p>
+      </div>
+<p class="sn-para">We have a <code class="sn-ic">.github/copilot-instructions.md</code> that encodes our locator strategy, import patterns, test data rules, and the complete BasePage API. Every engineer on the team has the same Copilot configuration, so AI-generated code follows the same patterns regardless of who generates it.</p>
+<p class="sn-para">For more complex generation tasks — writing an entire page object and test suite for a new feature — we supplement with Claude.ai chat, where we paste the RCIF-structured prompt with the relevant page HTML and get the first draft in one call.</p>
+<p class="sn-para">The combination works well: Copilot handles daily autocomplete and small fixes; Claude handles the initial large-scale generation; human engineers handle review, integration testing, and test design decisions that require application knowledge.</p>
+    </div>
+  </div>
+
+  <!-- Q905.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q905.15</span>
+      <h2 class="sn-q-text">What is the "AI pair programmer" workflow for Playwright test writing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The AI pair programmer workflow treats the AI as the developer and you as the reviewer — rather than you writing and the AI suggesting.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">The workflow:</strong></p>
+<ol class="sn-olist">
+<li><strong class="k-red">You describe</strong> the test scenario in a structured RCIF prompt or in your IDE</li>
+<li><strong class="k-red">AI generates</strong> the full test file in agent mode</li>
+<li><strong class="k-red">You run</strong> the tests: <code class="sn-ic">npx playwright test newtest.spec.ts</code></li>
+<li><strong class="k-red">You review</strong> the failures — are they real failures or test code errors?</li>
+<li><strong class="k-red">AI fixes</strong> the code errors (re-run agent mode on failures)</li>
+<li><strong class="k-red">You verify</strong> the final passing tests test what you intended</li>
+<li><strong class="k-red">You commit</strong> the tests that meet your standard</li>
+</ol>
+<p class="sn-para">The key insight: you are not a typist — you are a test designer and reviewer. Your value is knowing WHAT to test and verifying that the tests ACTUALLY test it. The AI handles the mechanics of writing syntactically correct Playwright code.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>AI IDEs add a semantic language model layer to the IDE. They understand what code does, not just what it says, enabling generation, multi-file editing, and autonomous agentic tasks.</span></li>
+            <li><span class="icon">⭐</span><span>GitHub Copilot: inline completion and chat, configured via <code class="sn-ic">.github/copilot-instructions.md</code>. Best for teams already on GitHub.</span></li>
+            <li><span class="icon">⭐</span><span>Cursor: VS Code fork with codebase indexing, Composer for multi-file agent tasks, <code class="sn-ic">.cursorrules</code> for project instructions. Best for heavy AI-first workflows.</span></li>
+            <li><span class="icon">⭐</span><span>Claude Code: command-line autonomous agent. Write a goal, agent writes, runs, and fixes tests in a loop. Best for generating entire test suites.</span></li>
+            <li><span class="icon">⭐</span><span>Windsurf: Cursor alternative with a strong agentic loop and a generous free tier. VS Code-based.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Configuration keys: keep relevant files open, set up a project instructions file (copilot-instructions.md or .cursorrules), include one complete example test.</span></li>
+            <li><span class="icon">⭐</span><span>The agent loop: Perceive → Plan → Act → Observe → repeat. Applied to test generation it enables fully autonomous write-run-fix cycles.</span></li>
+            <li><span class="icon">⭐</span><span>Limitations: hallucination in complex interactions, context limits for large codebases, no understanding of application behaviour, training cutoff date.</span></li>
+            <li><span class="icon">⭐</span><span>The AI pair programmer workflow: you describe and review; AI generates and fixes. Your value is test design and validation, not typing.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locator Learning Path - VibeTestQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #eff6ff;
+            --secondary: #6366f1;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+
+        header {
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky; top: 0; z-index: 100;
+        }
+        .header-content { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--primary-dark); font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.4rem; }
+        .back-btn { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: var(--primary-light); color: var(--primary); text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; transition: all 0.2s; }
+        .back-btn:hover { background: var(--primary); color: white; }
+
+        main { flex: 1; max-width: 1100px; margin: 0 auto; padding: 4rem 2rem; width: 100%; }
+
+        .hero { text-align: center; margin-bottom: 3.5rem; }
+        .hero h1 { font-family: 'Outfit', sans-serif; font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 1.1rem; color: var(--text-light); max-width: 650px; margin: 0 auto 1.5rem; }
+        .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+        .meta-pill { display: inline-flex; align-items: center; gap: 6px; background: var(--primary-light); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+
+        .path-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; }
+
+        .level-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            text-decoration: none;
+            color: inherit;
+            border: 2px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .level-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; transition: opacity 0.3s; }
+        .level-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); }
+
+        .level-icon { width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 2.2rem; transition: all 0.3s; }
+        .level-card h2 { font-family: 'Outfit', sans-serif; font-size: 1.6rem; margin-bottom: 0.5rem; }
+        .level-card .subtitle { font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 1rem; }
+        .section-list { list-style: none; margin-bottom: 1.5rem; text-align: left; width: 100%; }
+        .section-list li { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 0.88rem; color: var(--text-light); border-bottom: 1px solid var(--border); }
+        .section-list li:last-child { border-bottom: none; }
+        .section-list li i { font-size: 0.75rem; }
+        .ex-count { font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem; padding: 4px 12px; border-radius: 20px; }
+        .cta { margin-top: auto; display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.9rem; }
+        .cta i { transition: transform 0.2s; }
+        .level-card:hover .cta i { transform: translateX(5px); }
+
+        /* Beginner — green */
+        .card-beginner::before { background: linear-gradient(90deg, #22c55e, #16a34a); }
+        .card-beginner .level-icon { background: #f0fdf4; color: #16a34a; }
+        .card-beginner:hover .level-icon { background: #22c55e; color: white; }
+        .card-beginner .subtitle { color: #16a34a; }
+        .card-beginner .ex-count { background: #dcfce7; color: #15803d; }
+        .card-beginner .cta { color: #16a34a; }
+
+        /* Intermediate — blue */
+        .card-intermediate::before { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+        .card-intermediate .level-icon { background: #eff6ff; color: #2563eb; }
+        .card-intermediate:hover .level-icon { background: #3b82f6; color: white; }
+        .card-intermediate .subtitle { color: #2563eb; }
+        .card-intermediate .ex-count { background: #dbeafe; color: #1d4ed8; }
+        .card-intermediate .cta { color: #2563eb; }
+
+        /* Advanced — purple */
+        .card-advanced::before { background: linear-gradient(90deg, #a855f7, #7c3aed); }
+        .card-advanced .level-icon { background: #faf5ff; color: #7c3aed; }
+        .card-advanced:hover .level-icon { background: #a855f7; color: white; }
+        .card-advanced .subtitle { color: #7c3aed; }
+        .card-advanced .ex-count { background: #f3e8ff; color: #6d28d9; }
+        .card-advanced .cta { color: #7c3aed; }
+
+        /* Expert — crimson */
+        .card-expert::before { background: linear-gradient(90deg, #f43f5e, #be123c); }
+        .card-expert .level-icon { background: #fff1f2; color: #be123c; }
+        .card-expert:hover .level-icon { background: #f43f5e; color: white; }
+        .card-expert .subtitle { color: #be123c; }
+        .card-expert .ex-count { background: #ffe4e6; color: #9f1239; }
+        .card-expert .cta { color: #be123c; }
+
+        .path-connector { display: flex; justify-content: center; align-items: center; gap: 1rem; margin: 1rem 0; color: var(--text-light); font-size: 0.85rem; }
+        .path-connector i { color: var(--border); font-size: 1.2rem; }
+
+        footer { padding: 2.5rem 2rem; text-align: center; border-top: 1px solid var(--border); color: var(--text-light); font-size: 0.9rem; background: white; }
+
+        @media (max-width: 768px) { .hero h1 { font-size: 2.2rem; } main { padding: 2rem 1rem; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="header-content">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Locators Hub</a>
+        <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    </div>
+</header>
+
+<main>
+    <div class="hero">
+        <h1><i class="fas fa-route" style="font-size:2.5rem;display:block;margin-bottom:.5rem;-webkit-text-fill-color:#6366f1"></i>Locator Learning Path</h1>
+        <p>53 progressive exercises across 4 levels. Practice CSS selectors and XPath expressions against live HTML sandboxes — from first principles to expert-level patterns.</p>
+        <div class="hero-meta">
+            <span class="meta-pill"><i class="fas fa-layer-group"></i> 4 Levels</span>
+            <span class="meta-pill"><i class="fas fa-th-large"></i> 4 Sections per Level</span>
+            <span class="meta-pill"><i class="fas fa-dumbbell"></i> 53 Exercises</span>
+            <span class="meta-pill"><i class="fas fa-code"></i> CSS + XPath</span>
+        </div>
+    </div>
+
+    <div class="path-grid">
+
+        <!-- Beginner -->
+        <a href="beginner.html" class="level-card card-beginner">
+            <div class="level-icon"><i class="fas fa-seedling"></i></div>
+            <h2>Beginner</h2>
+            <div class="subtitle">Start here</div>
+            <ul class="section-list">
+                <li><i class="fas fa-circle"></i> Self Details — ID, Class, Type, Name</li>
+                <li><i class="fas fa-circle"></i> Relations — Descendant, Child, Sibling</li>
+                <li><i class="fas fa-circle"></i> Index — First, Last, nth-child</li>
+                <li><i class="fas fa-circle"></i> Visual — Label text, Section context</li>
+            </ul>
+            <span class="ex-count">13 exercises</span>
+            <div class="cta">Start Practicing <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Intermediate -->
+        <a href="intermediate.html" class="level-card card-intermediate">
+            <div class="level-icon"><i class="fas fa-layer-group"></i></div>
+            <h2>Intermediate</h2>
+            <div class="subtitle">Build fluency</div>
+            <ul class="section-list">
+                <li><i class="fas fa-circle"></i> Self Details — contains, starts-with, ends-with</li>
+                <li><i class="fas fa-circle"></i> Relations — General sibling, parent::, ancestor::</li>
+                <li><i class="fas fa-circle"></i> Index — last()-1, position()&gt;n, odd rows</li>
+                <li><i class="fas fa-circle"></i> Visual — Error spans, headings, checkboxes</li>
+            </ul>
+            <span class="ex-count">13 exercises</span>
+            <div class="cta">Start Practicing <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Advanced -->
+        <a href="advanced.html" class="level-card card-advanced">
+            <div class="level-icon"><i class="fas fa-brain"></i></div>
+            <h2>Advanced</h2>
+            <div class="subtitle">Multi-axis mastery</div>
+            <ul class="section-list">
+                <li><i class="fas fa-circle"></i> Self Details — AND predicates, :not(), normalize-space</li>
+                <li><i class="fas fa-circle"></i> Relations — preceding-sibling, ancestor chains</li>
+                <li><i class="fas fa-circle"></i> Index — Conditional position, nth-of-type</li>
+                <li><i class="fas fa-circle"></i> Visual — Tables, fieldsets, product cards</li>
+            </ul>
+            <span class="ex-count">13 exercises</span>
+            <div class="cta">Start Practicing <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+        <!-- Expert -->
+        <a href="expert.html" class="level-card card-expert">
+            <div class="level-icon"><i class="fas fa-trophy"></i></div>
+            <h2>Expert</h2>
+            <div class="subtitle">Real-world patterns</div>
+            <ul class="section-list">
+                <li><i class="fas fa-circle"></i> Self Details — aria-label, data-testid, normalize-space</li>
+                <li><i class="fas fa-circle"></i> Relations — Modal elements, deep multi-hop</li>
+                <li><i class="fas fa-circle"></i> Index — Last tab, row+column, conditional rows</li>
+                <li><i class="fas fa-circle"></i> Visual — Modals, multi-step forms, pricing</li>
+            </ul>
+            <span class="ex-count">14 exercises</span>
+            <div class="cta">Start Practicing <i class="fas fa-arrow-right"></i></div>
+        </a>
+
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2026 VibeTestQ. Master the Future of Test Automation.</p>
+</footer>
+
+</body>
+</html>

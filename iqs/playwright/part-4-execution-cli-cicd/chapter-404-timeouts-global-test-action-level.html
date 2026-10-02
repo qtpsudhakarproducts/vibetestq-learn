@@ -1,0 +1,949 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🔄 Part 4 &nbsp;·&nbsp; Chapter 404 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Timeouts</span> <span class="w2">—</span> <span class="w3">Global,</span> <span class="w4">Test</span> <span class="w5">&amp;</span> <span class="w6">Action</span> <span class="w7">Level</span></h1>
+    <p class="sn-title-sub">Execution &amp; CI/CD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's four-level timeout system — how each level works, what it protects, how they nest, and how to configure them correctly. Interviewers use timeout questions to test precision thinking: a candidate who can explain why a stuck navigation can block CI for 35 minutes, and configure all four levels to prevent it, understands the framework at depth.</span>
+  </div>
+
+
+  <!-- Q404.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.1</span>
+      <h2 class="sn-q-text">How many timeout levels does Playwright have and what does each protect?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright has four independent timeouts. Each operates at a different level of the execution hierarchy:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Timeout</th><th class="sn-th-blue">What it limits</th><th class="sn-th-green">Default</th><th class="sn-th-purple">Set in</th></tr></thead>
+          <tbody>
+          <tr><td>Test timeout</td><td>The entire test including all hooks</td><td>30 000 ms</td><td>Config <code class="sn-ic">timeout</code>, <code class="sn-ic">{ timeout: N }</code>, <code class="sn-ic">test.setTimeout()</code></td></tr>
+          <tr><td>Action timeout</td><td>One interaction — click, fill, hover</td><td>None (inherits test timeout)</td><td>Config <code class="sn-ic">use.actionTimeout</code>, per action</td></tr>
+          <tr><td>Navigation timeout</td><td>One navigation — goto, waitForURL, reload</td><td>None (inherits test timeout)</td><td>Config <code class="sn-ic">use.navigationTimeout</code>, per navigation</td></tr>
+          <tr><td>Expect timeout</td><td>One assertion retrying to pass</td><td>5 000 ms</td><td>Config <code class="sn-ic">expect.timeout</code>, per assertion</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Each is independent. A short test timeout does not set a short action timeout. You must configure each level deliberately.</p>
+    </div>
+  </div>
+
+  <!-- Q404.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.2</span>
+      <h2 class="sn-q-text">What is the test timeout and how do you override it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The test timeout is the outer boundary. It limits everything from when <code class="sn-ic">beforeEach</code> starts to when <code class="sn-ic">afterEach</code> finishes. The default is 30 seconds.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">In config:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  timeout: 30_000, <span class="tc-cm">// 30 seconds — the default</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Per-test in the details object:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(
+  <span class="tc-str">'annual leave report generates successfully'</span>,
+  { timeout: 90_000 },
+  <span class="tc-kw">async</span> ({ reportsPage }) =&gt; {
+    <span class="tc-kw">await</span> reportsPage.<span class="tc-fn">generateAnnualLeaveReport</span>();
+    <span class="tc-kw">await</span> reportsPage.<span class="tc-fn">expectReportReady</span>();
+  }
+);</div>
+      </div>
+<p class="sn-para"><strong class="k-green">At runtime with test.setTimeout():</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'bulk employee import @regression'</span>, <span class="tc-kw">async</span> ({ adminPage }) =&gt; {
+  <span class="tc-kw">const</span> rowCount = <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getImportRowCount</span>();
+
+  <span class="tc-cm">// Dynamically extend based on data size discovered at runtime</span>
+  <span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(30_000 + rowCount * <span class="tc-num">500</span>);
+
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">startBulkImport</span>();
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">expectImportComplete</span>();
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.setTimeout()</code> is useful when the required timeout cannot be known until the test starts running — for example, when it depends on how much data exists in the environment.</p>
+    </div>
+  </div>
+
+  <!-- Q404.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.3</span>
+      <h2 class="sn-q-text">What is test.slow() and when should you use it instead of a hardcoded timeout?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.slow()</code> multiplies the current test timeout by 3. It is a relative override — it adapts automatically when the global timeout changes:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'full employee onboarding end-to-end @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">slow</span>();
+  <span class="tc-cm">// Global: 30s → this test: 90s</span>
+  <span class="tc-cm">// If global is raised to 60s → this test automatically gets 180s</span>
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Create employee record'</span>, <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Assign to department'</span>,   <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Create login creds'</span>,     <span class="tc-kw">async</span> () =&gt; { ... });
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Verify employee login'</span>,  <span class="tc-kw">async</span> () =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">test.slow()</code> vs hardcoded <code class="sn-ic">{ timeout: 90_000 }</code>:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Hardcoded — does not adapt when global timeout changes</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'slow workflow'</span>, { timeout: 90_000 }, <span class="tc-kw">async</span> () =&gt; { ... });
+
+<span class="tc-cm">// ✅ Relative — always 3× the global timeout</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'slow workflow'</span>, <span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">slow</span>();
+});</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">test.slow()</code> when the test is genuinely slow by nature — multi-step workflows, file generation, email delivery. Do not use it to hide tests that are slow because of poor design or missing waits.</p>
+    </div>
+  </div>
+
+  <!-- Q404.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.4</span>
+      <h2 class="sn-q-text">What is the action timeout and why is it critical to configure it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The action timeout limits a single interaction — one <code class="sn-ic">click()</code>, one <code class="sn-ic">fill()</code>, one <code class="sn-ic">hover()</code>, one <code class="sn-ic">selectOption()</code>. If Playwright cannot find the element and interact with it within this time, the action throws immediately.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Without action timeout configured:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Global timeout: 30s — action timeout inherits it
+
+click('#add-employee')  → element not found → waits 30 seconds → fails
+Total test time: 30 seconds</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">With action timeout: 10s:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Global timeout: 30s — action timeout: 10s
+
+click('#add-employee') → element not found → waits 10 seconds → fails
+Total test time: 10.5 seconds</div>
+      </div>
+<p class="sn-para">Same failure, 20 seconds faster. Multiply across 200 tests where any test might hit a missing element, and fast failures save significant CI time.</p>
+<p class="sn-para"><strong class="k-orange">Configure globally:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  actionTimeout: 10_000, <span class="tc-cm">// 10 seconds per action</span>
+},</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Override per action:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'search employee @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// This dropdown has a slow animation — needs more time than the global</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Department'</span>).<span class="tc-fn">click</span>({ timeout: 15_000 });
+
+  <span class="tc-cm">// All other actions use the global 10s</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: <span class="tc-str">'Engineering'</span> }).<span class="tc-fn">click</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q404.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.5</span>
+      <h2 class="sn-q-text">What is the navigation timeout and what happens if you leave it unconfigured?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The navigation timeout limits a single navigation — <code class="sn-ic">page.goto()</code>, <code class="sn-ic">page.waitForURL()</code>, <code class="sn-ic">page.reload()</code>, <code class="sn-ic">page.goBack()</code>. Without it configured, navigations inherit the test timeout.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">The danger:</strong> If a page never fully loads — a misconfigured server, a third-party script hanging, a network issue in CI — the navigation waits for the test timeout. But worse: if the test timeout is also not set, Playwright waits until the operating system kills the connection. That can be minutes.</p>
+<p class="sn-para"><strong class="k-teal">Always configure navigationTimeout:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  navigationTimeout: 30_000, <span class="tc-cm">// 30 seconds per navigation</span>
+},</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">The opening scenario from the source material:</strong> A test ran for 35 minutes in CI because a navigation had no timeout. The page hung, the navigation kept waiting, nothing stopped it. With <code class="sn-ic">navigationTimeout: 30_000</code>, that test would have failed in 30 seconds.</p>
+<p class="sn-para"><strong class="k-teal">Override per navigation:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'reports page loads @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Reports page loads slowly — needs more than the global navigation timeout</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/reports/viewReports'</span>, { timeout: 60_000 });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Reports'</span> })).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q404.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.6</span>
+      <h2 class="sn-q-text">What is the expect timeout and when should you override it per-assertion?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The expect timeout controls how long Playwright retries an assertion before marking it as failed. Playwright assertions are not instant checks — they poll the condition repeatedly until it passes or the timeout expires.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink">Default: 5 seconds.</strong> Set globally:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">expect</span>: {
+  timeout: 5_000,
+},</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Override per assertion when the condition takes longer to appear:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'report generation completes @regression'</span>, <span class="tc-kw">async</span> ({ reportsPage }) =&gt; {
+  <span class="tc-kw">await</span> reportsPage.<span class="tc-fn">clickGenerateReport</span>();
+
+  <span class="tc-cm">// Report generation takes up to 30 seconds on large datasets</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(reportsPage.<span class="tc-fn">getDownloadButton</span>()).<span class="tc-fn">toBeVisible</span>({ timeout: 30_000 });
+
+  <span class="tc-cm">// Other assertions still use the global 5s</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(reportsPage.<span class="tc-fn">getReportTitle</span>()).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Annual Leave Summary'</span>);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Key guidance:</strong> Keep the global <code class="sn-ic">expect.timeout</code> low (5 seconds). Override specific assertions that legitimately need more time. Increasing the global expect timeout means all assertions wait longer before failing — you lose fast failure feedback for simple missing elements.</p>
+<p class="sn-para"><strong class="k-pink">When to override expect timeout vs navigation/action timeout:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Element slow to appear (animation, async update) → override expect timeout on that assertion</span></li>
+<li><span class="icon">💡</span><span>Page slow to load (server response) → override <code class="sn-ic">navigationTimeout</code> on that navigation</span></li>
+<li><span class="icon">⚡</span><span>Multi-step test that takes longer overall → use <code class="sn-ic">test.slow()</code> or <code class="sn-ic">{ timeout: N }</code> on the test</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q404.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.7</span>
+      <h2 class="sn-q-text">How do the four timeouts nest inside each other?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The test timeout is the outer container. All other operations run inside it:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test timeout (30s)
+├── beforeEach
+│   └── navigation inside beforeEach: uses navigationTimeout
+├── Test body
+│   ├── action (click, fill): uses actionTimeout
+│   ├── navigation (goto):    uses navigationTimeout
+│   └── assertion (expect):   uses expect timeout
+└── afterEach
+    └── screenshot action:    uses actionTimeout</div>
+      </div>
+<p class="sn-para">If the sum of all operations exceeds the test timeout, the test is killed — even if each individual operation was within its own timeout.</p>
+<p class="sn-para"><strong class="k-red">Worked example:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test timeout:      30s
+Action timeout:    10s
+Navigation timeout: 15s
+
+Navigation 1:  8s  ← within 15s ✅
+Action 1:      3s  ← within 10s ✅
+Navigation 2: 16s  ← exceeds 15s ❌ throws here at t=27s</div>
+      </div>
+<p class="sn-para">The test fails at 27 seconds (8 + 3 + 16), well within the 30s test timeout. The navigation timeout catches it first. This is the correct behaviour — navigation 2 failing at 16s is diagnostic information.</p>
+<p class="sn-para"><strong class="k-red">Counter-example — why not having action/navigation timeouts is dangerous:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test timeout: 30s — no action timeout — no navigation timeout
+
+Navigation 1:  8s  ✅
+Action 1:      3s  ✅
+Navigation 2: 30s  ← test timeout fires, not navigation timeout</div>
+      </div>
+<p class="sn-para">The test times out at 30 seconds with "Test timeout exceeded" — a generic error. With navigation timeout, it would fail with "page.goto: Timeout 15s exceeded" — a specific, diagnostic error that tells you exactly which navigation failed.</p>
+    </div>
+  </div>
+
+  <!-- Q404.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.8</span>
+      <h2 class="sn-q-text">What are the recommended timeout values for a typical HRMS suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  <span class="tc-cm">// Test timeout — outer boundary</span>
+  timeout: 30_000,
+
+  <span class="tc-cm">// Expect timeout — assertion retry window</span>
+  <span class="tc-kw">expect</span>: {
+    timeout: 5_000,
+  },
+
+  use: {
+    <span class="tc-cm">// Action timeout — per click, fill, hover</span>
+    actionTimeout: 10_000,
+
+    <span class="tc-cm">// Navigation timeout — per page.goto(), waitForURL()</span>
+    navigationTimeout: 30_000,
+  },
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Rationale:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-yellow">Test: 30s</strong> — most UI tests complete in under 10 seconds. 30s covers</span></li>
+</ul>
+<p class="sn-para">  genuinely slow operations. Use <code class="sn-ic">test.slow()</code> for exceptions.</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span><strong class="k-yellow">Expect: 5s</strong> — assertions for visible elements should pass quickly.</span></li>
+</ul>
+<p class="sn-para">  5 seconds is generous for most UI updates. Override slow ones individually.</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span><strong class="k-yellow">Action: 10s</strong> — most elements are found in under 1 second. 10 seconds</span></li>
+</ul>
+<p class="sn-para">  catches genuinely slow renders without consuming the whole test timeout.</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span><strong class="k-yellow">Navigation: 30s</strong> — full page loads in CI can be slow. 30s matches the</span></li>
+</ul>
+<p class="sn-para">  test timeout so a single hanging navigation fails the test, not silently   waits past it.</p>
+    </div>
+  </div>
+
+  <!-- Q404.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.9</span>
+      <h2 class="sn-q-text">What does each timeout error message tell you?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">"Test timeout of 30000ms exceeded"</strong></p>
+      </div>
+<p class="sn-para">The entire test took longer than 30 seconds. Possible causes:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>One action or navigation ran very slowly</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>A <code class="sn-ic">while</code> loop or polling that did not terminate</span></li>
+<li><span class="icon">⚡</span><span>Too many steps accumulated past the time limit</span></li>
+</ul>
+<p class="sn-para">Fix: Use <code class="sn-ic">test.step()</code> to pinpoint the slow step, then either fix the slowness, override that step's timeout, or use <code class="sn-ic">test.slow()</code> for the test.</p>
+<p class="sn-para"><strong class="k-blue">"locator.click: Timeout 10000ms exceeded"</strong></p>
+<p class="sn-para">An action timed out at 10 seconds. The element either:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Does not exist in the DOM</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Exists but is not visible</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Is visible but is disabled or covered by another element</span></li>
+</ul>
+<p class="sn-para">Fix: Check the selector, verify the page state before the action, add a <code class="sn-ic">toBeVisible()</code> assertion before the interaction.</p>
+<p class="sn-para"><strong class="k-blue">"page.goto: Timeout 30000ms exceeded"</strong></p>
+<p class="sn-para">A navigation timed out. The page either:</p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Never returned a response (wrong URL, server down)</span></li>
+<li><span class="icon">🌟</span><span>Returned but the load event never fired (third-party script hanging)</span></li>
+</ul>
+<p class="sn-para">Fix: Verify the URL is reachable, check the environment, consider <code class="sn-ic">{ waitUntil: 'domcontentloaded' }</code> for pages with slow third-party scripts.</p>
+<p class="sn-para"><strong class="k-blue">"expect(locator).toBeVisible: Timeout 5000ms exceeded"</strong></p>
+<p class="sn-para">The assertion retried for 5 seconds and the condition never became true:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>The element does not exist at all</span></li>
+<li><span class="icon">🔶</span><span>It exists but is hidden with <code class="sn-ic">display: none</code> or <code class="sn-ic">visibility: hidden</code></span></li>
+<li><span class="icon">🎪</span><span>It appeared with different text or attributes than the locator expects</span></li>
+</ul>
+<p class="sn-para">Fix: Verify the selector, check whether the element should actually appear after the triggering action, increase the assertion timeout if the update is legitimately slow.</p>
+    </div>
+  </div>
+
+  <!-- Q404.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.10</span>
+      <h2 class="sn-q-text">How does waitUntil affect navigation timeout behaviour?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.goto()</code> defaults to <code class="sn-ic">waitUntil: 'load'</code> — it waits for the browser's <code class="sn-ic">load</code> event, which fires after all resources (images, scripts, stylesheets) have loaded. This includes third-party scripts like analytics and chat widgets.</p>
+      </div>
+<p class="sn-para">If a third-party resource hangs, the <code class="sn-ic">load</code> event never fires, and the navigation keeps waiting until the timeout:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Default: waits for 'load' — all resources including third-party</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+<span class="tc-cm">// Faster: waits for DOM ready — skips third-party resource completion</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>, { waitUntil: <span class="tc-str">'domcontentloaded'</span> });
+
+<span class="tc-cm">// Minimal: just needs the first response bytes</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>, { waitUntil: <span class="tc-str">'commit'</span> });</div>
+      </div>
+<p class="sn-para">For tests in environments with unreliable third-party dependencies, <code class="sn-ic">waitUntil: 'domcontentloaded'</code> is a common fix for navigation timeouts that have no other obvious cause. Set it globally in the fixture or override per navigation for the affected pages.</p>
+    </div>
+  </div>
+
+  <!-- Q404.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.11</span>
+      <h2 class="sn-q-text">How do you debug a test that fails with "Test timeout exceeded" but the cause is unclear?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When the error is "Test timeout of 30000ms exceeded" with no inner error, it means the test hit the outer boundary without an individual operation reporting which step failed.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use test.step() to localise the slow step:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee onboarding @e2e'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Navigate to add employee'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/pim/addEmployee'</span>);
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Fill basic information'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Priya'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Last Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Sharma'</span>);
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Submit form'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-cm">// ← If this step is still running when the timeout fires,</span>
+    <span class="tc-cm">//   the error will name &amp;quot;Submit form&amp;quot; as the location</span>
+  });
+});</div>
+      </div>
+<p class="sn-para">With named steps in the report, you see which step was executing when the timeout fired — not just "test timed out."</p>
+<p class="sn-para"><strong class="k-purple">Check TestInfo for elapsed time context:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> () =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+  <span class="tc-kw">if</span> (info.status === <span class="tc-str">'timedOut'</span>) {
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Test duration before timeout: ${info.duration}ms`</span>);
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Configured timeout: ${info.timeout}ms`</span>);
+  }
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q404.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.12</span>
+      <h2 class="sn-q-text">Can you disable a timeout completely? Should you?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes. Setting any timeout to <code class="sn-ic">0</code> disables it:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'no timeout test'</span>, { timeout: <span class="tc-num">0</span> }, <span class="tc-kw">async</span> () =&gt; { ... });
+<span class="tc-cm">// or</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(<span class="tc-num">0</span>); <span class="tc-cm">// inside the test body</span></div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Should you?</strong> Almost never. Disabling a timeout means a stuck operation can hang forever — blocking a CI worker indefinitely. There is almost always a better solution: find the right timeout value rather than removing the safety net entirely.</p>
+<p class="sn-para">The one legitimate use case is a manual debugging session where you want to pause the test in the browser's developer tools and inspect state. In that scenario, <code class="sn-ic">--timeout=0</code> on the CLI is acceptable:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --timeout=0 --debug --grep &quot;specific test&quot;</div>
+      </div>
+<p class="sn-para">Even then, re-enable the timeout before committing any changes.</p>
+    </div>
+  </div>
+
+  <!-- Q404.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.13</span>
+      <h2 class="sn-q-text">How do timeout settings in playwright.config.ts interact with per-project settings?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">timeout</code> and <code class="sn-ic">expect.timeout</code> are top-level config properties — they apply globally to all projects. Action and navigation timeouts live in the <code class="sn-ic">use</code> block, which projects can override:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  timeout: 30_000,          <span class="tc-cm">// applies to all projects</span>
+  <span class="tc-kw">expect</span>: { timeout: 5_000 }, <span class="tc-cm">// applies to all projects</span>
+
+  use: {
+    actionTimeout:     10_000, <span class="tc-cm">// global default</span>
+    navigationTimeout: 30_000, <span class="tc-cm">// global default</span>
+  },
+
+  projects: [
+    {
+      name: <span class="tc-str">'chromium'</span>,
+      use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+      <span class="tc-cm">// inherits all timeout settings from global use</span>
+    },
+    {
+      name: <span class="tc-str">'mobile-chrome'</span>,
+      use: {
+        ...devices[<span class="tc-str">'Pixel 7'</span>],
+        actionTimeout:     15_000, <span class="tc-cm">// mobile interactions can be slower</span>
+        navigationTimeout: 45_000, <span class="tc-cm">// mobile networks can be slower</span>
+      },
+    },
+  ],
+});</div>
+      </div>
+<p class="sn-para">The mobile project gets longer timeouts because mobile-emulated environments can have slower interaction and navigation times, while the desktop project inherits the standard values.</p>
+    </div>
+  </div>
+
+  <!-- Q404.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.14</span>
+      <h2 class="sn-q-text">What is the relationship between retries and timeouts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a test is retried, the timeout resets for each attempt. Each attempt gets the full test timeout — not a fraction of the original.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test timeout: 30s — retries: 2
+
+Attempt 1: starts at t=0,  fails at t=28s (timeout fired — 28s used)
+Attempt 2: starts fresh,   fails at t=28s (new 30s window — 28s used)
+Attempt 3: starts fresh,   passes at t=4s (new 30s window)</div>
+      </div>
+<p class="sn-para">Total wall-clock time: ~60 seconds for a test that eventually passes on the second retry.</p>
+<p class="sn-para"><strong class="k-pink">Implication:</strong> A test with <code class="sn-ic">retries: 2</code> and <code class="sn-ic">timeout: 30s</code> can consume up to 90 seconds of CI time if it fails twice before passing. With <code class="sn-ic">retries: 2</code> on 200 tests where 10% are flaky, that is:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">20 flaky tests × 30s (one extra retry average) = 600 extra seconds per CI run</div>
+      </div>
+<p class="sn-para">This is one reason to fix flaky tests rather than simply adding retries.</p>
+    </div>
+  </div>
+
+  <!-- Q404.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.15</span>
+      <h2 class="sn-q-text">How do you configure timeouts differently for slow CI vs fast local machines?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">CI environments are often slower — shared resources, cold container start, variable network latency. Configure timeouts to account for this:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  timeout: process.env.CI ? 60_000 : 30_000, <span class="tc-cm">// 2× on CI</span>
+
+  <span class="tc-kw">expect</span>: {
+    timeout: process.env.CI ? 10_000 : 5_000, <span class="tc-cm">// 2× on CI</span>
+  },
+
+  use: {
+    actionTimeout:     process.env.CI ? 15_000 : 10_000,
+    navigationTimeout: process.env.CI ? 60_000 : 30_000,
+  },
+});</div>
+      </div>
+<p class="sn-para">This pattern prevents genuine CI slowness from causing false timeout failures while keeping local tests fast-failing so you get immediate feedback during development.</p>
+<p class="sn-para">An alternative approach: keep timeouts the same but fix the CI environment to be faster (dedicated runners, warmed containers). If CI regularly needs 2× the local timeout, the environment is the problem — not the timeouts.</p>
+    </div>
+  </div>
+
+  <!-- Q404.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.16</span>
+      <h2 class="sn-q-text">Write a complete timeout configuration for an OrangeHRM suite.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+
+  <span class="tc-cm">// Test timeout — outer boundary for each test</span>
+  timeout: 30_000,
+
+  <span class="tc-cm">// Expect timeout — assertion retry window</span>
+  <span class="tc-kw">expect</span>: {
+    timeout: 5_000,
+  },
+
+  use: {
+    baseURL: process.env.BASE_URL ?? 'https:<span class="tc-cm">//demo.orangehrmlive.com',</span>
+
+    <span class="tc-cm">// Action timeout — per click, fill, hover, selectOption</span>
+    actionTimeout: 10_000,
+
+    <span class="tc-cm">// Navigation timeout — per goto, waitForURL, reload</span>
+    navigationTimeout: 30_000,
+  },
+
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Usage examples in tests</span>
+
+<span class="tc-cm">// Slow test — use test.slow() for relative 3× multiplier</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'full employee onboarding @e2e'</span>, <span class="tc-kw">async</span> ({ onboardingPage }) =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">slow</span>(); <span class="tc-cm">// 90s instead of 30s</span>
+
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Create record'</span>,   () =&gt; onboardingPage.<span class="tc-fn">createEmployee</span>());
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Assign dept'</span>,     () =&gt; onboardingPage.<span class="tc-fn">assignDepartment</span>());
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Set credentials'</span>, () =&gt; onboardingPage.<span class="tc-fn">createLogin</span>());
+  <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">step</span>(<span class="tc-str">'Verify login'</span>,    () =&gt; onboardingPage.<span class="tc-fn">verifyEmployeeCanLogin</span>());
+});
+
+<span class="tc-cm">// Slow assertion — override per assertion only</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'bulk import 50 employees @regression'</span>, <span class="tc-kw">async</span> ({ adminPage }) =&gt; {
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">startBulkImport</span>(<span class="tc-str">'./data/employees.csv'</span>);
+
+  <span class="tc-cm">// Only this assertion needs extra time — global 5s still used for everything else</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(adminPage.<span class="tc-fn">getImportSuccessMessage</span>())
+    .<span class="tc-fn">toBeVisible</span>({ timeout: 60_000 });
+});
+
+<span class="tc-cm">// Slow navigation — override per navigation only</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'reports page loads @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/reports/viewReports'</span>, { timeout: 60_000 });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Reports'</span> })).<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-cm">// Dynamic timeout based on runtime data</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'variable-length import @regression'</span>, <span class="tc-kw">async</span> ({ adminPage }) =&gt; {
+  <span class="tc-kw">const</span> rows = <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getImportRowCount</span>();
+  <span class="tc-kw">test</span>.<span class="tc-fn">setTimeout</span>(30_000 + rows * <span class="tc-num">200</span>); <span class="tc-cm">// 200ms per row</span>
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">runImport</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q404.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.17</span>
+      <h2 class="sn-q-text">What happens to timeout when hooks run slowly?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">All hooks — <code class="sn-ic">beforeAll</code>, <code class="sn-ic">beforeEach</code>, <code class="sn-ic">afterEach</code>, <code class="sn-ic">afterAll</code> — contribute to the test timeout. If <code class="sn-ic">beforeEach</code> takes 15 seconds, only 15 seconds remain for the test body before the 30-second timeout fires.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Test timeout: 30s
+
+beforeEach:
+  goto('/login'):             3s
+  fill(username):           0.1s
+  fill(password):           0.1s
+  click(loginButton):       0.1s
+  waitForURL(/dashboard/):  2s
+  Total beforeEach:           ~5.3s
+
+Test body:
+  Remaining budget: 24.7s
+
+afterEach (screenshot):       0.5s (uses action timeout, not additional test time
+                                    — afterEach contributes to the test timeout)</div>
+      </div>
+<p class="sn-para">If your <code class="sn-ic">beforeEach</code> is slow — perhaps it re-logs in every test instead of using <code class="sn-ic">storageState</code> — it eats into the test body's time budget. This is one reason to use stored auth state: login in <code class="sn-ic">beforeEach</code> can cost 3–8 seconds per test. Over 200 tests, that is 10–27 minutes of login time that the timeout system is silently consuming.</p>
+    </div>
+  </div>
+
+  <!-- Q404.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q404.18</span>
+      <h2 class="sn-q-text">What is the most important timeout mistake to avoid?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">The most important mistake: leaving <code class="sn-ic">navigationTimeout</code> unconfigured.</strong></p>
+      </div>
+<p class="sn-para">When <code class="sn-ic">navigationTimeout</code> is not set, page navigations inherit the test timeout (30 seconds by default). This means:</p>
+<ol class="sn-olist">
+<li>A single hung navigation can consume the entire test's time budget</li>
+<li>The error message is "Test timeout exceeded" — not "Navigation timeout"</li>
+<li>If the test timeout is also not set, navigations can hang indefinitely</li>
+</ol>
+<p class="sn-para">The practical consequence is the scenario from the chapter opening: a navigation to a staging environment that is temporarily overloaded hangs for 35 minutes, blocking an entire CI worker while engineers wonder why the pipeline is not completing.</p>
+<p class="sn-para"><strong class="k-green">The fix is three lines in the config:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  actionTimeout:     10_000,
+  navigationTimeout: 30_000,
+},</div>
+      </div>
+<p class="sn-para">With these in place:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A stuck navigation fails in 30 seconds with a specific diagnostic error</span></li>
+<li><span class="icon">💡</span><span>A missing element fails in 10 seconds instead of consuming the full test timeout</span></li>
+<li><span class="icon">⚡</span><span>The team gets fast, specific failures instead of slow, generic "test timeout" messages</span></li>
+</ul>
+<p class="sn-para">The hierarchy to remember: set the test timeout as the outer safety net, set action and navigation timeouts as inner guards that fail fast and specifically, keep the expect timeout low and override slow assertions individually.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Four independent timeouts: test (outer boundary), action (per interaction), navigation (per page load), expect (per assertion retry).</span></li>
+            <li><span class="icon">⭐</span><span>Test timeout: 30s default. Override per test with <code class="sn-ic">{ timeout: N }</code>, at runtime with <code class="sn-ic">test.setTimeout()</code>, or use <code class="sn-ic">test.slow()</code> for 3×.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.slow()</code> multiplies current timeout by 3 — adapts when the global changes; prefer over hardcoded values.</span></li>
+            <li><span class="icon">⭐</span><span>Action timeout: no default — inherits test timeout if unset. Always configure <code class="sn-ic">use.actionTimeout</code> for fast failure on missing elements.</span></li>
+            <li><span class="icon">⭐</span><span>Navigation timeout: no default — inherits test timeout if unset. The most dangerous to leave unconfigured. Always set <code class="sn-ic">use.navigationTimeout</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Expect timeout: 5s default. The assertion retry window. Keep global low; override individual slow assertions with <code class="sn-ic">{ timeout: N }</code>.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>All timeouts nest inside the test timeout — the test is killed if the total sum exceeds the limit.</span></li>
+            <li><span class="icon">⭐</span><span>Different error messages point to different problems: "Test timeout" → slow overall, "locator.click Timeout" → element missing, "page.goto Timeout" → server/network, "expect Timeout" → element not appearing.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">waitUntil: 'domcontentloaded'</code> on <code class="sn-ic">goto()</code> avoids hanging on slow third-party resources.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.setTimeout(0)</code> disables the timeout — only for manual debugging sessions, never in committed code.</span></li>
+            <li><span class="icon">⭐</span><span>Retries reset the timeout per attempt — a test with <code class="sn-ic">retries: 2</code> and <code class="sn-ic">timeout: 30s</code> can consume 90s of CI time.</span></li>
+            <li><span class="icon">⭐</span><span>Always configure all four timeout levels explicitly. Never rely on the "inherits test timeout" fallback for actions and navigations.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

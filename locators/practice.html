@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Locator Practice Lab - VibeTestQ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #eff6ff;
+            --secondary: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --glass: rgba(255, 255, 255, 0.9);
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* ── Header ─────────────────────────────────────────── */
+        header {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--primary-light);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .back-btn:hover { background: var(--primary); color: white; }
+
+        .header-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .score-pill {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        /* ── Layout ──────────────────────────────────────────── */
+        .app-container {
+            display: flex;
+            padding-top: var(--header-height);
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ─────────────────────────────────────────── */
+        aside {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - var(--header-height));
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            overflow-y: auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .sidebar-section-title {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            margin-bottom: 0.2rem;
+        }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary); }
+
+        .nav-dots {
+            margin-left: auto;
+            display: flex;
+            gap: 4px;
+        }
+        .ndot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+        .ndot.css-dot { background: #bfdbfe; }
+        .ndot.pass { background: var(--success) !important; }
+
+        .progress-section {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .legend {
+            margin-top: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ── Main ────────────────────────────────────────────── */
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem 2.5rem;
+            max-width: calc(100% - var(--sidebar-width));
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.9rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
+        .page-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+        .page-header p strong { color: var(--text); }
+
+        /* ── Challenge Card ──────────────────────────────────── */
+        .challenge-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 2px solid var(--border);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            scroll-margin-top: calc(var(--header-height) + 1rem);
+            transition: border-color 0.4s;
+        }
+        .challenge-card.solved { border-color: var(--success); }
+
+        .ch-header {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .ch-num {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .badge.beginner      { background: #d1fae5; color: #065f46; }
+        .badge.intermediate  { background: #fef3c7; color: #92400e; }
+        .badge.advanced      { background: #fce7f3; color: #831843; }
+
+        .solved-badge {
+            margin-left: auto;
+            display: none;
+            align-items: center;
+            gap: 5px;
+            color: var(--success);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .challenge-card.solved .solved-badge { display: flex; }
+
+        .ch-body { padding: 1.5rem; }
+
+        .ch-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+        .ch-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.9rem;
+        }
+        .ch-desc code {
+            background: #f1f5f9;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em;
+            color: #7c3aed;
+        }
+
+        .target-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 5px 13px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            margin-bottom: 1.1rem;
+        }
+
+        /* ── Sandbox ─────────────────────────────────────────── */
+        .sandbox-wrapper {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            background: #fafbff;
+            margin-bottom: 1.25rem;
+            position: relative;
+        }
+        .sandbox-label {
+            position: absolute;
+            top: -10px;
+            left: 14px;
+            background: #fafbff;
+            padding: 0 6px;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-light);
+            font-weight: 700;
+        }
+
+        /* Scoped sandbox element resets */
+        .sandbox label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #475569;
+            display: block;
+            margin-bottom: 3px;
+        }
+        .sandbox .sb-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            max-width: 340px;
+        }
+        .sandbox .sb-row { display: flex; flex-direction: column; }
+        .sandbox input, .sandbox select {
+            padding: 7px 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            outline: none;
+            pointer-events: none;
+        }
+        .sandbox .sb-btns { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .sandbox .sb-btn {
+            padding: 7px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: default;
+            font-family: 'Inter', sans-serif;
+            pointer-events: none;
+        }
+        .sandbox .btn-primary   { background: #2563eb; color: white; }
+        .sandbox .btn-warning   { background: #f59e0b; color: white; }
+        .sandbox .btn-success   { background: #10b981; color: white; }
+        .sandbox .btn-danger    { background: #ef4444; color: white; }
+        .sandbox .btn-secondary { background: #64748b; color: white; }
+
+        .sandbox table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .sandbox th {
+            background: #f1f5f9;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+        }
+        .sandbox td { padding: 8px 12px; border: 1px solid #e2e8f0; }
+        .sandbox .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+        }
+        .sandbox .dot-active   { background: #10b981; }
+        .sandbox .dot-inactive { background: #94a3b8; }
+        .sandbox .dot-pending  { background: #f59e0b; }
+
+        .sandbox nav.sb-nav {
+            background: #1e293b;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        .sandbox nav.sb-nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.82rem;
+        }
+        .sandbox .sb-dropdown { display: inline-flex; gap: 0.25rem; }
+
+        .sandbox .product-grid { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .sandbox .product-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.9rem;
+            background: white;
+            min-width: 110px;
+        }
+        .sandbox .product-card h4 {
+            font-size: 0.82rem;
+            margin-bottom: 4px;
+            color: #1e293b;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+        .sandbox .product-card .price {
+            font-size: 0.82rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .sandbox .sb-alerts { display: flex; flex-direction: column; gap: 0.5rem; }
+        .sandbox .alert {
+            padding: 7px 13px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+        .sandbox .alert-success { background: #d1fae5; color: #065f46; border-left: 3px solid #10b981; }
+        .sandbox .alert-danger  { background: #fee2e2; color: #991b1b; border-left: 3px solid #ef4444; }
+        .sandbox .alert-warning { background: #fef3c7; color: #92400e; border-left: 3px solid #f59e0b; }
+        .sandbox .alert-info    { background: #dbeafe; color: #1e40af; border-left: 3px solid #3b82f6; }
+
+        /* Highlight matched elements */
+        .locator-match {
+            outline: 3px solid #10b981 !important;
+            outline-offset: 2px !important;
+            background-color: rgba(16, 185, 129, 0.12) !important;
+            border-radius: 3px;
+        }
+
+        /* ── Practice Area ───────────────────────────────────── */
+        .practice-area {
+            border-top: 1px solid var(--border);
+            padding-top: 1.25rem;
+        }
+
+        .loc-group { margin-bottom: 0.9rem; }
+
+        .loc-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.73rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.45rem;
+        }
+        .type-badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .type-css   { background: #dbeafe; color: #1e40af; }
+        .type-xpath { background: #f3e8ff; color: #6b21a8; }
+
+        .input-row { display: flex; gap: 0.5rem; align-items: center; }
+
+        .loc-input {
+            flex: 1;
+            padding: 9px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: white;
+            color: var(--text);
+        }
+        .loc-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+        .loc-input.pass { border-color: var(--success); background: #f0fdf4; }
+        .loc-input.fail { border-color: var(--danger); background: #fff5f5; }
+
+        .check-btn {
+            padding: 9px 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+        .check-btn:hover  { background: var(--primary-dark); transform: translateY(-1px); }
+        .check-btn:active { transform: translateY(0); }
+
+        .result-msg {
+            margin-top: 0.5rem;
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            gap: 7px;
+        }
+        .result-msg.pass  { display: flex; background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+        .result-msg.fail  { display: flex; background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .result-msg.err   { display: flex; background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+
+        /* ── Card Footer ─────────────────────────────────────── */
+        .ch-footer {
+            padding: 0.9rem 1.5rem;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .hint-btn, .answer-btn {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .hint-btn { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+        .hint-btn:hover { background: #fde68a; }
+        .answer-btn { background: #f1f5f9; color: var(--text-light); }
+        .answer-btn:hover { background: var(--border); color: var(--text); }
+
+        .hint-box, .answer-box {
+            display: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            width: 100%;
+            margin-top: 0.25rem;
+            line-height: 1.7;
+        }
+        .hint-box   { background: #fffbeb; border: 1px solid #fcd34d; color: #78350f; }
+        .answer-box { background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; }
+        .hint-box code, .answer-box code {
+            background: rgba(0, 0, 0, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85em;
+        }
+
+        /* ── Responsive ──────────────────────────────────────── */
+        @media (max-width: 900px) {
+            aside { display: none; }
+            main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; }
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Locators Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">
+        Score: <span class="score-pill" id="scoreDisplay">0 / 16</span>
+    </div>
+</header>
+
+<div class="app-container">
+
+<!-- ── Sidebar ──────────────────────────────────────────────────── -->
+<aside>
+    <div class="sidebar-section-title">Challenges</div>
+
+    <a href="#c1" class="nav-item">
+        <span>1. ID Selector</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c1-css" title="CSS"></div>
+            <div class="ndot" id="dot-c1-xpath" title="XPath"></div>
+        </div>
+    </a>
+    <a href="#c2" class="nav-item">
+        <span>2. Class Selector</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c2-css"></div>
+            <div class="ndot" id="dot-c2-xpath"></div>
+        </div>
+    </a>
+    <a href="#c3" class="nav-item">
+        <span>3. Attribute Selector</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c3-css"></div>
+            <div class="ndot" id="dot-c3-xpath"></div>
+        </div>
+    </a>
+    <a href="#c4" class="nav-item">
+        <span>4. Descendant</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c4-css"></div>
+            <div class="ndot" id="dot-c4-xpath"></div>
+        </div>
+    </a>
+    <a href="#c5" class="nav-item">
+        <span>5. nth-child / Position</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c5-css"></div>
+            <div class="ndot" id="dot-c5-xpath"></div>
+        </div>
+    </a>
+    <a href="#c6" class="nav-item">
+        <span>6. Data Attribute</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c6-css"></div>
+            <div class="ndot" id="dot-c6-xpath"></div>
+        </div>
+    </a>
+    <a href="#c7" class="nav-item">
+        <span>7. Multiple Classes</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c7-css"></div>
+            <div class="ndot" id="dot-c7-xpath"></div>
+        </div>
+    </a>
+    <a href="#c8" class="nav-item">
+        <span>8. Sibling / Axes</span>
+        <div class="nav-dots">
+            <div class="ndot css-dot" id="dot-c8-css"></div>
+            <div class="ndot" id="dot-c8-xpath"></div>
+        </div>
+    </a>
+
+    <div class="progress-section">
+        <div class="progress-label">
+            <span>Progress</span>
+            <span id="progressText">0%</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="sidebar-section-title" style="margin-top:1rem">Legend</div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#bfdbfe;border:1px solid #93c5fd"></div> CSS pending
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:var(--border)"></div> XPath pending
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:var(--success)"></div> Solved
+        </div>
+    </div>
+</aside>
+
+<!-- ── Main Content ──────────────────────────────────────────────── -->
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-crosshairs" style="color:var(--primary)"></i> Locator Practice Lab</h1>
+        <p>Write a <strong>CSS selector</strong> and an <strong>XPath</strong> that match the target element(s).
+           Click <strong>Check</strong> — matched elements glow green for 3 seconds.
+           Any valid selector that selects the same elements counts as correct.</p>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 1 — ID Selector
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 1</span>
+            <span class="badge beginner">Beginner</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select the Password Input</div>
+            <div class="ch-desc">
+                The login form has three inputs. Write a selector that targets
+                <strong>only the password field</strong> — not the username or email.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-1">
+                    <form class="sb-form">
+                        <div class="sb-row">
+                            <label for="sb1-user">Username</label>
+                            <input id="sb1-user" name="username" type="text" placeholder="Enter username">
+                        </div>
+                        <div class="sb-row">
+                            <label for="sb1-pass">Password</label>
+                            <input id="sb1-pass" name="password" type="password" placeholder="Enter password">
+                        </div>
+                        <div class="sb-row">
+                            <label for="sb1-email">Email</label>
+                            <input id="sb1-email" name="email" type="email" placeholder="Enter email">
+                        </div>
+                        <button type="submit" class="sb-btn btn-primary" style="margin-top:.25rem">Sign In</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c1-css" type="text"
+                               placeholder='e.g.  input[type="text"]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c1','css')">
+                        <button class="check-btn" onclick="checkLocator('c1','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c1-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c1-xpath" type="text"
+                               placeholder='e.g.  //input[@name="username"]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c1','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c1','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c1-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c1-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c1-hint">
+                Use the <code>type</code> attribute or the element's <code>id</code> to distinguish
+                this input from the others. The password field has <code>type="password"</code>
+                and <code>id="sb1-pass"</code>.
+            </div>
+            <div class="answer-box" id="c1-answer">
+                CSS:&nbsp;&nbsp;<code>input[type="password"]</code>&nbsp; or &nbsp;<code>#sb1-pass</code><br>
+                XPath: <code>//input[@type="password"]</code>&nbsp; or &nbsp;<code>//input[@id="sb1-pass"]</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 2 — Class Selector
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 2</span>
+            <span class="badge beginner">Beginner</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select All Warning Buttons</div>
+            <div class="ch-desc">
+                Five buttons are shown with different colour styles. Select
+                <strong>only the amber warning buttons</strong> — there are 2 of them.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 2 elements</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-2">
+                    <div class="sb-btns">
+                        <button class="sb-btn btn-primary">Save</button>
+                        <button class="sb-btn btn-warning">Delete</button>
+                        <button class="sb-btn btn-success">Confirm</button>
+                        <button class="sb-btn btn-warning">Reset</button>
+                        <button class="sb-btn btn-secondary">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c2-css" type="text"
+                               placeholder='e.g.  button.btn-success'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c2','css')">
+                        <button class="check-btn" onclick="checkLocator('c2','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c2-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c2-xpath" type="text"
+                               placeholder='e.g.  //button[contains(@class,"btn-primary")]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c2','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c2','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c2-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c2-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c2-hint">
+                Each button has a class like <code>btn-primary</code>, <code>btn-warning</code>, etc.
+                Target the shared class of the amber buttons. In XPath, use
+                <code>contains(@class, '...')</code> when an element can have multiple classes.
+            </div>
+            <div class="answer-box" id="c2-answer">
+                CSS:&nbsp;&nbsp;<code>.btn-warning</code>&nbsp; or &nbsp;<code>button.btn-warning</code><br>
+                XPath: <code>//button[contains(@class,"btn-warning")]</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 3 — Attribute Selector
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 3</span>
+            <span class="badge beginner">Beginner</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Select All Required Inputs</div>
+            <div class="ch-desc">
+                A registration form has five inputs — three are marked as
+                <code>required</code> and two are optional. Select
+                <strong>only the required fields</strong>.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 3 elements</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-3">
+                    <form class="sb-form">
+                        <div class="sb-row">
+                            <label>Full Name <span style="color:#ef4444">*</span></label>
+                            <input type="text" name="fullname" placeholder="Full Name" required>
+                        </div>
+                        <div class="sb-row">
+                            <label>Email <span style="color:#ef4444">*</span></label>
+                            <input type="email" name="email" placeholder="Email Address" required>
+                        </div>
+                        <div class="sb-row">
+                            <label>Phone <span style="color:#94a3b8">(optional)</span></label>
+                            <input type="tel" name="phone" placeholder="Phone Number">
+                        </div>
+                        <div class="sb-row">
+                            <label>City <span style="color:#94a3b8">(optional)</span></label>
+                            <input type="text" name="city" placeholder="City">
+                        </div>
+                        <div class="sb-row">
+                            <label>Password <span style="color:#ef4444">*</span></label>
+                            <input type="password" name="pwd" placeholder="Password" required>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c3-css" type="text"
+                               placeholder='e.g.  input[name="fullname"]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c3','css')">
+                        <button class="check-btn" onclick="checkLocator('c3','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c3-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c3-xpath" type="text"
+                               placeholder='e.g.  //input[@name="fullname"]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c3','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c3','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c3-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c3-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c3-hint">
+                HTML inputs can carry a boolean <code>required</code> attribute with no value.
+                CSS: select it with <code>[required]</code>. XPath: test for it with <code>[@required]</code>.
+            </div>
+            <div class="answer-box" id="c3-answer">
+                CSS:&nbsp;&nbsp;<code>input[required]</code><br>
+                XPath: <code>//input[@required]</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 4 — Descendant Selector
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 4</span>
+            <span class="badge intermediate">Intermediate</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Descendant — Links Inside the Nav</div>
+            <div class="ch-desc">
+                There are links both inside and outside the navigation bar. Select
+                <strong>only the 4 links inside the nav</strong> — not the paragraph link below it.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 4 elements</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-4">
+                    <nav class="sb-nav">
+                        <a href="#">Home</a>
+                        <a href="#">About</a>
+                        <div class="sb-dropdown">
+                            <a href="#">Services</a>
+                            <a href="#">Pricing</a>
+                        </div>
+                    </nav>
+                    <p style="margin-top:.75rem;font-size:.85rem;color:#64748b">
+                        Also visit
+                        <a href="#" style="color:#3b82f6;text-decoration:none">our blog</a>
+                        for more articles.
+                    </p>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c4-css" type="text"
+                               placeholder='e.g.  .sb-nav a'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c4','css')">
+                        <button class="check-btn" onclick="checkLocator('c4','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c4-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c4-xpath" type="text"
+                               placeholder='e.g.  //nav//a'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c4','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c4','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c4-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c4-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c4-hint">
+                A <strong>descendant selector</strong> matches elements anywhere inside an ancestor.
+                In CSS use a space: <code>nav a</code>. In XPath use <code>//</code> inside a path:
+                <code>//nav//a</code>. This reaches links nested inside the dropdown div too.
+            </div>
+            <div class="answer-box" id="c4-answer">
+                CSS:&nbsp;&nbsp;<code>nav a</code>&nbsp; or &nbsp;<code>.sb-nav a</code><br>
+                XPath: <code>//nav//a</code>&nbsp; or &nbsp;<code>//*[contains(@class,"sb-nav")]//a</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 5 — nth-child / Positional
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 5</span>
+            <span class="badge intermediate">Intermediate</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Positional — Second Product Card</div>
+            <div class="ch-desc">
+                Three product cards sit inside a grid. Select
+                <strong>only the second card</strong> (Samsung Galaxy S24)
+                using a positional selector — not by name or price.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-5">
+                    <div class="product-grid">
+                        <div class="product-card">
+                            <h4>iPhone 15</h4>
+                            <div class="price">$999</div>
+                        </div>
+                        <div class="product-card">
+                            <h4>Samsung Galaxy S24</h4>
+                            <div class="price">$899</div>
+                        </div>
+                        <div class="product-card">
+                            <h4>Pixel 8 Pro</h4>
+                            <div class="price">$699</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c5-css" type="text"
+                               placeholder='e.g.  .product-card:first-child'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c5','css')">
+                        <button class="check-btn" onclick="checkLocator('c5','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c5-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c5-xpath" type="text"
+                               placeholder='e.g.  (//div[@class="product-card"])[1]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c5','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c5','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c5-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c5-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c5-hint">
+                CSS: <code>:nth-child(2)</code> selects the element that is the 2nd child of its parent.
+                XPath: wrap the node-set in parentheses and index it —
+                <code>(//div[contains(@class,"product-card")])[2]</code>.
+            </div>
+            <div class="answer-box" id="c5-answer">
+                CSS:&nbsp;&nbsp;<code>.product-card:nth-child(2)</code><br>
+                XPath: <code>(//div[contains(@class,"product-card")])[2]</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 6 — Data Attribute
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 6</span>
+            <span class="badge intermediate">Intermediate</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Data Attribute — Active Users</div>
+            <div class="ch-desc">
+                Each table row carries a <code>data-status</code> attribute.
+                Select <strong>only the rows where status is "active"</strong> — there are 2.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 2 elements</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-6">
+                    <table>
+                        <thead>
+                            <tr><th>Name</th><th>Role</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr data-status="active">
+                                <td>Alice</td><td>Admin</td>
+                                <td><span class="status-dot dot-active"></span>Active</td>
+                            </tr>
+                            <tr data-status="inactive">
+                                <td>Bob</td><td>User</td>
+                                <td><span class="status-dot dot-inactive"></span>Inactive</td>
+                            </tr>
+                            <tr data-status="active">
+                                <td>Carol</td><td>Moderator</td>
+                                <td><span class="status-dot dot-active"></span>Active</td>
+                            </tr>
+                            <tr data-status="pending">
+                                <td>Dave</td><td>User</td>
+                                <td><span class="status-dot dot-pending"></span>Pending</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c6-css" type="text"
+                               placeholder='e.g.  tr[data-status="inactive"]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c6','css')">
+                        <button class="check-btn" onclick="checkLocator('c6','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c6-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c6-xpath" type="text"
+                               placeholder='e.g.  //tr[@data-status="inactive"]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c6','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c6','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c6-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c6-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c6-hint">
+                <code>data-*</code> attributes are selected exactly like any other attribute.
+                CSS: <code>[data-status="active"]</code>. XPath: <code>[@data-status="active"]</code>.
+            </div>
+            <div class="answer-box" id="c6-answer">
+                CSS:&nbsp;&nbsp;<code>tr[data-status="active"]</code><br>
+                XPath: <code>//tr[@data-status="active"]</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 7 — Multiple Classes
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 7</span>
+            <span class="badge intermediate">Intermediate</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Multiple Classes — Danger Alerts</div>
+            <div class="ch-desc">
+                Five alert banners each have the class <code>alert</code> plus a modifier
+                (<code>alert-success</code>, <code>alert-danger</code>, etc.).
+                Select <strong>only the danger (red) alerts</strong> — there are 2.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 2 elements</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-7">
+                    <div class="sb-alerts">
+                        <div class="alert alert-success">Registration successful!</div>
+                        <div class="alert alert-danger">Invalid credentials. Please try again.</div>
+                        <div class="alert alert-warning">Your session will expire in 5 minutes.</div>
+                        <div class="alert alert-danger">Account locked due to too many failed attempts.</div>
+                        <div class="alert alert-info">You have 3 new notifications.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c7-css" type="text"
+                               placeholder='e.g.  .alert.alert-success'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c7','css')">
+                        <button class="check-btn" onclick="checkLocator('c7','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c7-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c7-xpath" type="text"
+                               placeholder='e.g.  //*[contains(@class,"alert-info")]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c7','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c7','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c7-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c7-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c7-hint">
+                CSS: chain two class selectors with <em>no space</em> between them —
+                <code>.alert.alert-danger</code> means "has both classes simultaneously".
+                XPath: <code>contains(@class,"alert-danger")</code> matches any element
+                whose class attribute contains that string.
+            </div>
+            <div class="answer-box" id="c7-answer">
+                CSS:&nbsp;&nbsp;<code>.alert.alert-danger</code><br>
+                XPath: <code>//*[contains(@class,"alert-danger")]</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         CHALLENGE 8 — Sibling / Axes
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 8</span>
+            <span class="badge advanced">Advanced</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Completed</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Sibling / Axes — Input After a Label</div>
+            <div class="ch-desc">
+                A form has three label–input pairs. Select
+                <strong>the input that immediately follows the "Email" label</strong>
+                using a sibling relationship — not the input's own <code>id</code>.
+            </div>
+            <div class="target-pill"><i class="fas fa-bullseye"></i> Expected: 1 element</div>
+
+            <div class="sandbox-wrapper">
+                <div class="sandbox-label">Live HTML — Sandbox</div>
+                <div class="sandbox" id="sandbox-8">
+                    <form class="sb-form">
+                        <label for="sb8-fname">First Name</label>
+                        <input id="sb8-fname" type="text" placeholder="First Name">
+                        <label for="sb8-email">Email</label>
+                        <input id="sb8-email" type="email" placeholder="Email">
+                        <label for="sb8-phone">Phone</label>
+                        <input id="sb8-phone" type="tel" placeholder="Phone">
+                    </form>
+                </div>
+            </div>
+
+            <div class="practice-area">
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-css">CSS</span> Selector</div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c8-css" type="text"
+                               placeholder='e.g.  label[for="sb8-fname"] + input'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c8','css')">
+                        <button class="check-btn" onclick="checkLocator('c8','css')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c8-css-result"></div>
+                </div>
+                <div class="loc-group">
+                    <div class="loc-label"><span class="type-badge type-xpath">XPath</span></div>
+                    <div class="input-row">
+                        <input class="loc-input" id="c8-xpath" type="text"
+                               placeholder='e.g.  //label[@for="sb8-fname"]/following-sibling::input[1]'
+                               autocomplete="off" spellcheck="false"
+                               onkeydown="if(event.key==='Enter') checkLocator('c8','xpath')">
+                        <button class="check-btn" onclick="checkLocator('c8','xpath')">Check</button>
+                    </div>
+                    <div class="result-msg" id="c8-xpath-result"></div>
+                </div>
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggle('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <button class="answer-btn" onclick="toggle('c8-answer')"><i class="fas fa-eye"></i> Answer</button>
+            <div class="hint-box" id="c8-hint">
+                CSS: the <code>+</code> combinator selects the <em>immediately following sibling</em>.
+                Look for the label whose <code>for</code> attribute says <code>sb8-email</code>.
+                XPath: use the <code>following-sibling::</code> axis from that label and take the first
+                <code>input</code> in that axis.
+            </div>
+            <div class="answer-box" id="c8-answer">
+                CSS:&nbsp;&nbsp;<code>label[for="sb8-email"] + input</code><br>
+                XPath: <code>//label[@for="sb8-email"]/following-sibling::input[1]</code>
+            </div>
+        </div>
+    </div>
+
+</main>
+</div><!-- /.app-container -->
+
+<!-- ══════════════════════════════════════════════════════════════
+     JavaScript — Validation Engine
+═══════════════════════════════════════════════════════════════ -->
+<script>
+    // Ground-truth config: refCSS identifies the expected elements in each sandbox
+    const CHALLENGES = {
+        c1: { sandboxId: 'sandbox-1', refCSS: 'input[type="password"]' },
+        c2: { sandboxId: 'sandbox-2', refCSS: '.btn-warning' },
+        c3: { sandboxId: 'sandbox-3', refCSS: 'input[required]' },
+        c4: { sandboxId: 'sandbox-4', refCSS: 'nav a' },
+        c5: { sandboxId: 'sandbox-5', refCSS: '.product-card:nth-child(2)' },
+        c6: { sandboxId: 'sandbox-6', refCSS: 'tr[data-status="active"]' },
+        c7: { sandboxId: 'sandbox-7', refCSS: '.alert.alert-danger' },
+        c8: { sandboxId: 'sandbox-8', refCSS: 'label[for="sb8-email"] + input' },
+    };
+
+    // Per-challenge pass state { css: bool, xpath: bool }
+    const state = Object.fromEntries(
+        Object.keys(CHALLENGES).map(k => [k, { css: false, xpath: false }])
+    );
+
+    // ── Restore saved progress from localStorage ──────────────────
+    (function restoreProgress() {
+        try {
+            const saved = JSON.parse(localStorage.getItem('vtq-locator-practice') || '{}');
+            Object.keys(saved).forEach(id => {
+                if (!state[id]) return;
+                if (saved[id].css)   { state[id].css   = true; markDot(id, 'css'); }
+                if (saved[id].xpath) { state[id].xpath  = true; markDot(id, 'xpath'); }
+                if (saved[id].css && saved[id].xpath) markCardSolved(id);
+            });
+        } catch (_) { /* corrupt storage — ignore */ }
+        refreshScore();
+    })();
+
+    // ── Core validator ────────────────────────────────────────────
+    function checkLocator(id, type) {
+        const cfg     = CHALLENGES[id];
+        const sandbox = document.getElementById(cfg.sandboxId);
+        const input   = document.getElementById(`${id}-${type}`);
+        const result  = document.getElementById(`${id}-${type}-result`);
+        const value   = input.value.trim();
+
+        if (!value) {
+            showResult(result, 'err', '<i class="fas fa-exclamation-circle"></i> Enter a selector first.');
+            return;
+        }
+
+        // Ground-truth element set
+        const expected = [...sandbox.querySelectorAll(cfg.refCSS)];
+
+        // User's matched elements
+        let matched = [];
+        let error   = null;
+
+        if (type === 'css') {
+            try {
+                matched = [...sandbox.querySelectorAll(value)];
+            } catch (e) {
+                error = e.message;
+            }
+        } else {
+            // XPath — evaluate against document, keep only nodes inside this sandbox
+            try {
+                const xr = document.evaluate(
+                    value, document, null,
+                    XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null
+                );
+                for (let i = 0; i < xr.snapshotLength; i++) {
+                    const node = xr.snapshotItem(i);
+                    if (sandbox.contains(node)) matched.push(node);
+                }
+            } catch (e) {
+                error = e.message;
+            }
+        }
+
+        if (error) {
+            clearHighlights(sandbox);
+            showResult(result, 'err',
+                `<i class="fas fa-exclamation-triangle"></i> Syntax error: ${sanitize(error)}`);
+            input.className = 'loc-input';
+            return;
+        }
+
+        // Highlight matched nodes regardless of pass/fail
+        clearHighlights(sandbox);
+        matched.forEach(el => el.classList.add('locator-match'));
+        setTimeout(() => clearHighlights(sandbox), 3000);
+
+        // Pass = same element set (order-independent)
+        const pass = matched.length === expected.length &&
+                     matched.every(el => expected.includes(el));
+
+        if (pass) {
+            const n = matched.length;
+            showResult(result, 'pass',
+                `<i class="fas fa-check-circle"></i> Correct! Matched ${n} element${n !== 1 ? 's' : ''} — perfect.`);
+            input.classList.add('pass');
+            input.classList.remove('fail');
+
+            if (!state[id][type]) {
+                state[id][type] = true;
+                saveProgress();
+                markDot(id, type);
+                refreshScore();
+                if (state[id].css && state[id].xpath) markCardSolved(id);
+            }
+        } else {
+            const n = matched.length;
+            const e = expected.length;
+            const msg = n === 0
+                ? 'No elements matched. Try a different selector.'
+                : n !== e
+                    ? `Found ${n} element${n !== 1 ? 's' : ''}, expected ${e}. Adjust your selector.`
+                    : 'Right count but wrong elements — refine your selector.';
+            showResult(result, 'fail', `<i class="fas fa-times-circle"></i> ${msg}`);
+            input.classList.add('fail');
+            input.classList.remove('pass');
+        }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────
+    function clearHighlights(sandbox) {
+        sandbox.querySelectorAll('.locator-match')
+               .forEach(el => el.classList.remove('locator-match'));
+    }
+
+    function showResult(el, type, html) {
+        el.className = `result-msg ${type}`;
+        el.innerHTML = html;
+    }
+
+    function markDot(id, type) {
+        const dot = document.getElementById(`dot-${id}-${type}`);
+        if (dot) dot.classList.add('pass');
+    }
+
+    function markCardSolved(id) {
+        const card = document.getElementById(id);
+        if (card) card.classList.add('solved');
+    }
+
+    function refreshScore() {
+        const solved = Object.values(state)
+                             .flatMap(s => [s.css, s.xpath])
+                             .filter(Boolean).length;
+        const total  = Object.keys(CHALLENGES).length * 2;
+        document.getElementById('scoreDisplay').textContent = `${solved} / ${total}`;
+        const pct = Math.round((solved / total) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent  = pct + '%';
+    }
+
+    function saveProgress() {
+        try {
+            localStorage.setItem('vtq-locator-practice', JSON.stringify(state));
+        } catch (_) { /* storage quota exceeded */ }
+    }
+
+    function toggle(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function sanitize(str) {
+        return str.replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;');
+    }
+</script>
+</body>
+</html>

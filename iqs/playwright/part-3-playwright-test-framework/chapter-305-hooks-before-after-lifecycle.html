@@ -1,0 +1,871 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 305 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Hooks</span> <span class="w2">—</span> <span class="w3">before/after</span> <span class="w4">Lifecycle</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's four lifecycle hooks: <code class="sn-ic">beforeAll</code>, <code class="sn-ic">beforeEach</code>, <code class="sn-ic">afterEach</code>, and <code class="sn-ic">afterAll</code>. Interviewers test hooks in every round because they reveal how a candidate structures test setup, handles cleanup, and thinks about test isolation. Candidates who misunderstand hook scope or fixture availability in <code class="sn-ic">beforeAll</code> fail on questions that appear simple.</span>
+  </div>
+
+
+  <!-- Q305.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.1</span>
+      <h2 class="sn-q-text">What are hooks in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hooks are lifecycle callbacks that Playwright calls automatically at specific points around your tests. You register them once and Playwright calls them at the right time — you never invoke them directly.</p>
+      </div>
+<p class="sn-para">There are four hooks:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Hook</th><th class="sn-th-blue">When it runs</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">test.beforeAll</code></td><td>Once, before the first test in the describe block</td></tr>
+          <tr><td><code class="sn-ic">test.beforeEach</code></td><td>Before every individual test in the describe block</td></tr>
+          <tr><td><code class="sn-ic">test.afterEach</code></td><td>After every individual test, whether it passed or failed</td></tr>
+          <tr><td><code class="sn-ic">test.afterAll</code></td><td>Once, after the last test in the describe block</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">They exist to eliminate the duplicated setup code that would otherwise appear at the top of every test in a group. Write it once in a hook — every test in scope gets it automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q305.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.2</span>
+      <h2 class="sn-q-text">Why do hooks exist? What problem do they solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without hooks, every test in a group must repeat the same setup lines. When that setup changes — a URL, a username, a navigation path — you update it in every test. Miss one and a test fails in a confusing way.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Without hooks — setup duplicated 8 times</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'search by name @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  <span class="tc-cm">// actual test logic...</span>
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'search by ID @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);                         <span class="tc-cm">// duplicated</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);   <span class="tc-cm">// duplicated</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);<span class="tc-cm">// duplicated</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>(); <span class="tc-cm">// duplicated</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);                     <span class="tc-cm">// duplicated</span>
+  <span class="tc-cm">// actual test logic...</span>
+});
+
+<span class="tc-cm">// ✅ With beforeEach — setup written once</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee List'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'search by name @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { <span class="tc-cm">/* test logic */</span> });
+  <span class="tc-kw">test</span>(<span class="tc-str">'search by ID @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { <span class="tc-cm">/* test logic */</span> });
+});</div>
+      </div>
+<p class="sn-para">When the username changes, you update it in one place. When the URL changes, you update it in one place. New tests added to the group automatically get the setup.</p>
+    </div>
+  </div>
+
+  <!-- Q305.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.3</span>
+      <h2 class="sn-q-text">When do you use beforeEach and when do you use beforeAll?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple"><code class="sn-ic">beforeEach</code></strong> — for setup that must be fresh for every test. Anything that could leave state from one test affecting the next must go in <code class="sn-ic">beforeEach</code>. Navigation, form resets, and creating isolated test data all belong here.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">beforeAll</code></strong> — for expensive setup that is safe to share across all tests in the group. Getting an auth token, seeding a database, or starting a test server are good candidates — they are expensive and the result does not change between tests.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave API Tests'</span>, () =&gt; {
+  <span class="tc-kw">let</span> authToken: <span class="tc-kw">string</span>;
+
+  <span class="tc-cm">// ✅ beforeAll — auth token is expensive and unchanged between tests</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+      data: { username: <span class="tc-str">'Admin'</span>, password: <span class="tc-str">'admin123'</span> },
+    });
+    authToken = (<span class="tc-kw">await</span> response.<span class="tc-fn">json</span>()).token;
+  });
+
+  <span class="tc-cm">// ✅ beforeEach — each test needs a clean starting URL</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/leave'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'GET /leave returns list @smoke'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/leave'</span>, {
+      headers: { Authorization: <span class="tc-str">`Bearer ${authToken}`</span> },
+    });
+    <span class="tc-kw">expect</span>(res.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">200</span>);
+  });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Rule:</strong> use <code class="sn-ic">beforeEach</code> by default. Use <code class="sn-ic">beforeAll</code> only when the setup is provably safe to share and the cost of repeating it per test is significant.</p>
+    </div>
+  </div>
+
+  <!-- Q305.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.4</span>
+      <h2 class="sn-q-text">How did your project use afterEach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, <code class="sn-ic">afterEach</code> does two things: captures failure evidence and cleans up test data.</p>
+      </div>
+<p class="sn-para">For failure evidence, we attach a screenshot and the current URL to every failing test. This is set up at the file level and applies to all tests:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-kw">if</span> (info.status !== info.expectedStatus) {
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'failure-url'</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">When a test fails in CI, the screenshot and URL appear directly in the HTML report — no need to reproduce the failure locally.</p>
+<p class="sn-para">For data cleanup, tests that create records via API clean them up in <code class="sn-ic">afterEach</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> createdId: <span class="tc-kw">string</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ api }) =&gt; {
+  createdId = <span class="tc-kw">await</span> api.<span class="tc-fn">createEmployee</span>({ firstName: <span class="tc-str">'Test'</span>, lastName: <span class="tc-str">'User'</span> });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ api }) =&gt; {
+  <span class="tc-kw">await</span> api.<span class="tc-fn">deleteEmployee</span>(createdId).<span class="tc-kw">catch</span>(() =&gt; {}); <span class="tc-cm">// defensive .catch()</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q305.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.5</span>
+      <h2 class="sn-q-text">What is the full hook execution order with nested describes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hooks execute from outer to inner on setup, and inner to outer on teardown:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Outer'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'1 — Outer beforeAll'</span>));
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'3 — Outer beforeEach'</span>));
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'6 — Outer afterEach'</span>));
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'8 — Outer afterAll'</span>));
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Inner'</span>, () =&gt; {
+    <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'2 — Inner beforeAll'</span>));
+    <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'4 — Inner beforeEach'</span>));
+    <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'5 — Inner afterEach'</span>));
+    <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(() =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'7 — Inner afterAll'</span>));
+
+    <span class="tc-kw">test</span>(<span class="tc-str">'test 1'</span>, <span class="tc-kw">async</span> () =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'→ TEST 1'</span>));
+    <span class="tc-kw">test</span>(<span class="tc-str">'test 2'</span>, <span class="tc-kw">async</span> () =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'→ TEST 2'</span>));
+  });
+});</div>
+      </div>
+<p class="sn-para">Output:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">1 — Outer beforeAll
+2 — Inner beforeAll
+3 — Outer beforeEach  ← wraps each test, outer first
+4 — Inner beforeEach
+→ TEST 1
+5 — Inner afterEach   ← unwraps each test, inner first
+6 — Outer afterEach
+3 — Outer beforeEach
+4 — Inner beforeEach
+→ TEST 2
+5 — Inner afterEach
+6 — Outer afterEach
+7 — Inner afterAll    ← teardown is reverse of setup
+8 — Outer afterAll</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">beforeAll</code>/<code class="sn-ic">afterAll</code> fire once per describe group. <code class="sn-ic">beforeEach</code>/<code class="sn-ic">afterEach</code> wrap every individual test, outer-first on setup, inner-first on teardown.</p>
+    </div>
+  </div>
+
+  <!-- Q305.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.6</span>
+      <h2 class="sn-q-text">What fixtures can beforeAll access? Why can't it use page?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">beforeAll</code> runs at the worker level — before any individual test exists. The <code class="sn-ic">page</code> fixture is test-scoped: it is created for a specific test and closed when that test ends. Since there is no test when <code class="sn-ic">beforeAll</code> runs, there is no <code class="sn-ic">page</code>.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">beforeAll</code> can only use <strong class="k-pink">worker-scoped fixtures</strong> like <code class="sn-ic">browser</code> and <code class="sn-ic">request</code>.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ browser is worker-scoped — available in beforeAll</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ browser }) =&gt; {
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+  <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/seed'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Seed Data'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>(); <span class="tc-cm">// must close manually — no automatic cleanup</span>
+});
+
+<span class="tc-cm">// ✅ request is worker-scoped — available in beforeAll</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/seed'</span>, { data: { env: <span class="tc-str">'test'</span> } });
+});
+
+<span class="tc-cm">// ⚠️ page is test-scoped — Playwright will warn if used in beforeAll</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Avoid this — page is not designed for this context</span>
+});</div>
+      </div>
+<p class="sn-para">If you need browser interaction in <code class="sn-ic">beforeAll</code>, create a page from <code class="sn-ic">browser</code> and close it yourself after use.</p>
+    </div>
+  </div>
+
+  <!-- Q305.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.7</span>
+      <h2 class="sn-q-text">What happens when beforeEach fails?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">If <code class="sn-ic">beforeEach</code> throws or times out, the test is marked <strong class="k-red">failed</strong>. The test body does not run — there is no point executing the test if setup did not complete. But <code class="sn-ic">afterEach</code> still runs for cleanup.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">beforeEach throws → test marked FAILED → test body skipped → afterEach runs</div>
+      </div>
+<p class="sn-para">In practice, when <code class="sn-ic">beforeEach</code> fails, all tests in the group are marked failed with the error pointing to <code class="sn-ic">beforeEach</code>. This is a clear signal in CI: the failure is in setup, not in the test logic itself. A cluster of tests all failing at <code class="sn-ic">beforeEach</code> usually means an environment problem — the login page is down, a URL changed, or a dependency is unavailable.</p>
+    </div>
+  </div>
+
+  <!-- Q305.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.8</span>
+      <h2 class="sn-q-text">What happens when beforeAll fails?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">If <code class="sn-ic">beforeAll</code> throws, **all tests in the describe block are marked failed immediately** — none of them run. <code class="sn-ic">afterAll</code> still runs for cleanup.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">beforeAll throws → all tests in group marked FAILED → no tests run → afterAll runs</div>
+      </div>
+<p class="sn-para">This pattern is extremely useful in CI. If database seeding in <code class="sn-ic">beforeAll</code> fails, you see a cluster of 10 failures all pointing to <code class="sn-ic">beforeAll</code>. You immediately know this is an environment or infrastructure problem — not 10 separate test bugs. The signal is unmistakable.</p>
+<p class="sn-para">Without <code class="sn-ic">beforeAll</code>, all 10 tests would fail inside their own bodies with confusing "record not found" errors — making the root cause much harder to identify.</p>
+    </div>
+  </div>
+
+  <!-- Q305.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.9</span>
+      <h2 class="sn-q-text">What happens when afterEach fails?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">If <code class="sn-ic">afterEach</code> throws, the test is reported as **failed even if the test body passed**. A passing test becomes a failing test because cleanup broke.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">test body PASSES → afterEach throws → test reported as FAILED</div>
+      </div>
+<p class="sn-para">This is surprising until you understand the logic: an unclean teardown means the test run as a whole was not successful.</p>
+<p class="sn-para">The fix is defensive cleanup — use <code class="sn-ic">.catch()</code> on operations that might fail:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// ❌ If screenshot fails (page already closed), a passing test becomes failing</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ path: <span class="tc-str">'debug.png'</span> });
+
+  <span class="tc-cm">// ✅ If screenshot fails, error is swallowed — test result is preserved</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ path: <span class="tc-str">'debug.png'</span> }).<span class="tc-kw">catch</span>(() =&gt; {});
+
+  <span class="tc-cm">// ✅ Also safe for cleanup actions</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Logout'</span> }).<span class="tc-fn">click</span>().<span class="tc-kw">catch</span>(() =&gt; {});
+});</div>
+      </div>
+<p class="sn-para">The rule: any cleanup action in <code class="sn-ic">afterEach</code> that might fail in edge cases should have a <code class="sn-ic">.catch(() =&gt; {})</code> to prevent it masking the test result.</p>
+    </div>
+  </div>
+
+  <!-- Q305.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.10</span>
+      <h2 class="sn-q-text">Does afterEach always run, even on test failure?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes. <code class="sn-ic">afterEach</code> is guaranteed to run after every test — whether the test passed, failed, timed out, or threw an exception. This guarantee is what makes it the correct place for cleanup and evidence capture.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// This runs regardless of what happened in the test body</span>
+  <span class="tc-cm">// Passed, failed, timed out, threw — afterEach always executes</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">cleanupTestData</span>().<span class="tc-kw">catch</span>(() =&gt; {});
+});</div>
+      </div>
+<p class="sn-para">The one exception: if the entire worker process is killed forcefully (out of memory, <code class="sn-ic">SIGKILL</code>), <code class="sn-ic">afterEach</code> may not run. In all normal failure scenarios — assertion errors, timeouts, uncaught exceptions — it always runs.</p>
+    </div>
+  </div>
+
+  <!-- Q305.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.11</span>
+      <h2 class="sn-q-text">What is the difference between file-level hooks and describe-scoped hooks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A hook declared at the file level (outside any describe) applies to every test in the entire file. A hook inside a describe applies only to tests inside that describe.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File-level — applies to ALL tests in this file</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee Module'</span>, () =&gt; {
+  <span class="tc-cm">// Describe-level — runs only before tests in this describe</span>
+  <span class="tc-cm">// Runs AFTER the file-level beforeEach (login already happened)</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'list loads @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// Two beforeEach ran: file-level login, then describe-level navigation</span>
+  });
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'dashboard loads @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Only the file-level beforeEach ran (login)</span>
+  <span class="tc-cm">// The describe-level hook did NOT run here</span>
+});</div>
+      </div>
+<p class="sn-para">The two levels compose naturally: file-level handles universal setup (login); describe-level handles module-specific setup (navigate to the right page).</p>
+    </div>
+  </div>
+
+  <!-- Q305.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.12</span>
+      <h2 class="sn-q-text">Is beforeAll global across all workers in parallel execution?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">No. <code class="sn-ic">beforeAll</code> runs <strong class="k-orange">per worker</strong> — not once globally across the entire parallel suite.</p>
+      </div>
+<p class="sn-para">When Playwright distributes tests across multiple workers:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Worker 1 picks up tests 1, 2 → runs its own beforeAll
+Worker 2 picks up tests 3, 4 → runs its own beforeAll
+Worker 3 picks up tests 5, 6 → runs its own beforeAll</div>
+      </div>
+<p class="sn-para">Each worker runs <code class="sn-ic">beforeAll</code> independently. If <code class="sn-ic">beforeAll</code> seeds a database record, three workers seed it three times.</p>
+<p class="sn-para">For setup that must run exactly once for the entire suite, use <code class="sn-ic">globalSetup</code> in <code class="sn-ic">playwright.config.ts</code>. That is covered in Chapter 32.</p>
+    </div>
+  </div>
+
+  <!-- Q305.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.13</span>
+      <h2 class="sn-q-text">What is the difference between hooks and fixtures for test setup?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both hooks and fixtures set up state before a test. The key difference: hooks are local to a file, fixtures are shared across the entire project.</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Hooks</th><th class="sn-th-green">Fixtures</th></tr></thead>
+          <tbody>
+          <tr><td>Defined in</td><td>The spec file itself</td><td>A separate fixtures file</td></tr>
+          <tr><td>Reusable across files</td><td>No — copy-paste required</td><td>Yes — injected automatically</td></tr>
+          <tr><td>Teardown</td><td><code class="sn-ic">afterEach</code> or <code class="sn-ic">afterAll</code></td><td>Code after <code class="sn-ic">await use(...)</code></td></tr>
+          <tr><td>Best for</td><td>File-specific navigation, evidence capture</td><td>Page objects, shared auth, API clients</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">In practice, use both together:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Fixture — reusable across all spec files</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.<span class="tc-fn">extend</span>({
+  loginPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> LoginPage(page));
+  },
+});
+
+<span class="tc-cm">// Spec file — local setup specific to this file</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee List'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>); <span class="tc-cm">// local navigation — only in this file</span>
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+      <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+        body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+        contentType: <span class="tc-str">'image/png'</span>,
+      });
+    }
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'list loads @smoke'</span>, <span class="tc-kw">async</span> ({ loginPage }) =&gt; {
+    <span class="tc-cm">// loginPage comes from fixture — reusable</span>
+    <span class="tc-cm">// navigation was done by beforeEach — local to this file</span>
+  });
+});</div>
+      </div>
+<p class="sn-para">Fixtures handle what would otherwise be duplicated across multiple spec files. Hooks handle what is specific to one file or describe block.</p>
+    </div>
+  </div>
+
+  <!-- Q305.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.14</span>
+      <h2 class="sn-q-text">Write a complete spec file using all four hooks correctly.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/baseFixture'</span>;
+
+<span class="tc-cm">// File-level hooks — apply to all tests in this file</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Every test starts logged in — storageState handles auth</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Capture failure evidence on every test failure</span>
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave Module'</span>, () =&gt; {
+  <span class="tc-kw">let</span> createdLeaveId: <span class="tc-kw">string</span>;
+
+  <span class="tc-cm">// beforeAll — get auth token once for all API calls in this group</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeAll</span>(<span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-cm">// worker-scoped fixture — valid in beforeAll</span>
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'Leave module test group starting'</span>);
+  });
+
+  <span class="tc-cm">// beforeEach — create fresh leave data for each test</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ api }) =&gt; {
+    createdLeaveId = <span class="tc-kw">await</span> api.<span class="tc-fn">createLeaveRequest</span>({
+      employeeId: <span class="tc-str">'EMP001'</span>,
+      <span class="tc-kw">type</span>: <span class="tc-str">'Annual'</span>,
+      fromDate: <span class="tc-str">'2026-04-01'</span>,
+      toDate: <span class="tc-str">'2026-04-03'</span>,
+    });
+    <span class="tc-kw">await</span> api.page.<span class="tc-fn">goto</span>(<span class="tc-str">'/leave'</span>); <span class="tc-cm">// navigate to leave module</span>
+  });
+
+  <span class="tc-cm">// afterEach — clean up the leave record after each test</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ api }) =&gt; {
+    <span class="tc-kw">await</span> api.<span class="tc-fn">deleteLeaveRequest</span>(createdLeaveId).<span class="tc-kw">catch</span>(() =&gt; {});
+  });
+
+  <span class="tc-cm">// afterAll — log group completion</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> () =&gt; {
+    console.<span class="tc-fn">log</span>(<span class="tc-str">'Leave module test group complete'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'manager can approve pending leave @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">`leave-${createdLeaveId}`</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Approve'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'leave-status'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Approved'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'manager can reject with reason @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">`leave-${createdLeaveId}`</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Reject'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Reason'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Insufficient notice period'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Confirm'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'leave-status'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Rejected'</span>);
+  });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q305.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.15</span>
+      <h2 class="sn-q-text">How do you capture screenshots on failure using afterEach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The correct pattern checks whether the test's actual status matches its expected status — this correctly handles <code class="sn-ic">test.fail()</code> tests too:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-cm">// info.status     — what actually happened: 'passed', 'failed', 'timedOut'</span>
+  <span class="tc-cm">// info.expectedStatus — what was expected: 'passed' normally, 'failed' for test.fail()</span>
+  <span class="tc-cm">// A test is only genuinely unhealthy when these two differ</span>
+
+  <span class="tc-kw">if</span> (info.status !== info.expectedStatus) {
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'failure-screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">'failure-url'</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">Using <code class="sn-ic">info.status !== info.expectedStatus</code> rather than <code class="sn-ic">info.status === 'failed'</code> ensures that <code class="sn-ic">test.fail()</code> tests (which are expected to fail) do not generate false-positive failure screenshots.</p>
+<p class="sn-para">The screenshot appears directly in the HTML report — no need to dig through file system folders or reproduce failures locally.</p>
+    </div>
+  </div>
+
+  <!-- Q305.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.16</span>
+      <h2 class="sn-q-text">What was the most impactful hook pattern you introduced in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, the most impactful change was moving from per-test <code class="sn-ic">page.goto</code> calls to a file-level <code class="sn-ic">beforeEach</code> that handles all pre-navigation, combined with <code class="sn-ic">afterEach</code> for automatic failure screenshots.</p>
+      </div>
+<p class="sn-para">Before:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'search works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">fill</span>(<span class="tc-str">' S0 
+  await page.fill('</span><span class="tc-cm">#pass', 'admin123');</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">click</span>(<span class="tc-str">'button'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  <span class="tc-cm">// actual test</span>
+});
+<span class="tc-cm">// ×30 tests, all starting with these same 5 lines</span></div>
+      </div>
+<p class="sn-para">After:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>); <span class="tc-cm">// storageState handles login</span>
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'search works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Starts directly at /employees — test is just the real logic</span>
+});</div>
+      </div>
+<p class="sn-para">This removed about 150 lines of duplicated setup code, and CI failure investigation time dropped significantly because every failure now comes with an attached screenshot.</p>
+    </div>
+  </div>
+
+  <!-- Q305.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.17</span>
+      <h2 class="sn-q-text">How does afterEach interact with test.fail() tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <code class="sn-ic">test.fail()</code> test is expected to fail. If it fails as expected, its <code class="sn-ic">info.status</code> is <code class="sn-ic">'failed'</code> and <code class="sn-ic">info.expectedStatus</code> is <code class="sn-ic">'failed'</code> — they match, so the test is reported as healthy.</p>
+      </div>
+<p class="sn-para">If you use <code class="sn-ic">info.status === 'failed'</code> in <code class="sn-ic">afterEach</code> to trigger screenshots, you will capture screenshots for all <code class="sn-ic">test.fail()</code> tests even though they are passing in the intended sense. This pollutes the report with false alarms.</p>
+<p class="sn-para">The correct guard:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().status !== <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().expectedStatus) {
+    <span class="tc-cm">// Only fires for genuinely unexpected outcomes</span>
+    <span class="tc-cm">// Does NOT fire for test.fail() tests that fail as expected</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>(),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">This distinction matters in any project that uses <code class="sn-ic">test.fail()</code> to track known bugs — and it is the kind of subtle detail interviewers use to separate candidates with real project experience.</p>
+    </div>
+  </div>
+
+  <!-- Q305.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q305.18</span>
+      <h2 class="sn-q-text">What is the most common hook mistake you have seen in team code reviews?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The most common mistake is cleanup code in <code class="sn-ic">afterEach</code> without defensive <code class="sn-ic">.catch()</code> calls. A cleanup action that works 99% of the time will eventually fail — the API is slow, the element is already gone, the page is closed. When it does, every passing test in that group suddenly appears as failing in CI. The report shows a test failure with a stack trace pointing to <code class="sn-ic">afterEach</code>, not to the test body. The developer opens the test, sees nothing wrong, and spends 30 minutes confused.</p>
+      </div>
+<p class="sn-para">The fix is mechanical:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Dangerous — any failure here marks the test as failed</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page, api }) =&gt; {
+  <span class="tc-kw">await</span> api.<span class="tc-fn">deleteRecord</span>(createdId);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Logout'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ path: <span class="tc-str">'last-state.png'</span> });
+});
+
+<span class="tc-cm">// ✅ Defensive — failures in cleanup do not mask test results</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page, api }) =&gt; {
+  <span class="tc-kw">await</span> api.<span class="tc-fn">deleteRecord</span>(createdId).<span class="tc-kw">catch</span>(() =&gt; {});
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Logout'</span> }).<span class="tc-fn">click</span>().<span class="tc-kw">catch</span>(() =&gt; {});
+  <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ path: <span class="tc-str">'last-state.png'</span> }).<span class="tc-kw">catch</span>(() =&gt; {});
+});</div>
+      </div>
+<p class="sn-para">I now include this as a required item in our team's PR checklist: any cleanup action in <code class="sn-ic">afterEach</code> must have <code class="sn-ic">.catch(() =&gt; {})</code> unless there is an explicit reason to let the error propagate.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Four hooks: <code class="sn-ic">beforeAll</code> (once per group), <code class="sn-ic">beforeEach</code> (per test), <code class="sn-ic">afterEach</code> (per test, always), <code class="sn-ic">afterAll</code> (once per group).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeEach</code> eliminates duplicated setup. Use it for navigation and anything that must be fresh per test.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeAll</code> is for expensive shared setup — but only receives worker-scoped fixtures, not <code class="sn-ic">page</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">afterEach</code> always runs, even on failure — the correct place for screenshots and cleanup. Use <code class="sn-ic">.catch()</code> defensively.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Hook execution order: outer setup → inner setup → test → inner teardown → outer teardown.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeAll</code> runs per worker, not globally. Use <code class="sn-ic">globalSetup</code> for truly global one-time setup.</span></li>
+            <li><span class="icon">⭐</span><span>Check <code class="sn-ic">info.status !== info.expectedStatus</code> (not <code class="sn-ic">=== 'failed'</code>) to correctly handle <code class="sn-ic">test.fail()</code> tests.</span></li>
+            <li><span class="icon">⭐</span><span>Hooks are local to a file. Fixtures are reusable across files. Use both together.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

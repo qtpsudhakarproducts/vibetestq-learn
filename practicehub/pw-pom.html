@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Page Object Model Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive Playwright POM MCQ challenges. Master page class design, fixtures, constructor patterns, component objects, and best practices with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #9333ea;
+            --primary-dark: #6b21a8;
+            --primary-light: #faf5ff;
+            --accent: #a855f7;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #d8b4fe; transition: all 0.3s; }
+        .score-pill.bump { background: #f3e8ff; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #9333ea, #a855f7); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #faf5ff; color: #6b21a8; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #6b21a8; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #d8b4fe; background: #f3e8ff; color: #6b21a8; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #d8b4fe; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #faf5ff; border: 1px solid #d8b4fe; color: #6b21a8; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">POM Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Why use POM?</span>               <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. Constructor pattern</span>         <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. Private locator fields</span>      <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. goto() method</span>               <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. POM via fixtures</span>            <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. BasePage pattern</span>            <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. Method naming convention</span>    <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Component objects</span>           <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. readonly locator fields</span>     <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. When NOT to use POM</span>        <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. Fixtures vs beforeEach</span>     <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. Test import source</span>         <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-sitemap"></i> Page Object Model</h1>
+        <p>12 challenges covering POM design, TypeScript patterns, fixture injection, BasePage, and when to apply the pattern.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">Fundamentals</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the primary purpose of the Page Object Model?</div>
+            <div class="ch-desc">A team writes the same locators in 20 different test files. When the UI changes, all 20 files break. What problem does POM solve?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> Makes tests run faster by reusing browser instances</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> Centralizes locators and page interactions so UI changes require updates in one place</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> Automatically generates test cases from page structure</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> Replaces the need for assertions in tests</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — centralize locators and interactions</strong><br>POM creates a single source of truth for each page's selectors and interactions. When a button's text changes, you update the locator in ONE page class — all tests that use it continue working. Without POM, changing a selector requires grep-and-replace across dozens of test files. This maintainability benefit is the core reason to adopt POM, especially in large test suites with frequent UI changes.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint">POM = single source of truth for selectors. UI changes → update page class → all tests pass. Without POM → update every test file.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge beginner">Beginner</span><span class="topic-badge">TypeScript</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the correct POM constructor pattern in TypeScript?</div>
+            <div class="ch-desc">You are creating a <code>LoginPage</code> class. Which constructor correctly receives and stores the Playwright <code>Page</code> object?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> constructor(page) { this.page = page; } — no type annotation</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> constructor(private page: Page) {} — TypeScript shorthand</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> constructor(Page page) — Java-style declaration</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> static init(page: Page): LoginPage — factory method instead</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: B — TypeScript parameter property shorthand</strong><br><code>constructor(private page: Page) {}</code> is the idiomatic TypeScript pattern. The <code>private</code> keyword before the parameter name automatically declares <code>this.page</code> as a class field AND assigns the argument — no body code needed. Import <code>Page</code> from <code>@playwright/test</code>. The full class: <code>import { Page } from '@playwright/test'; export class LoginPage { constructor(private page: Page) {} }</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint">TypeScript shorthand: <code>constructor(private page: Page) {}</code> = declare field + assign in one step. No explicit <code>this.page = page</code> needed.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge beginner">Beginner</span><span class="topic-badge">Design</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Where should locators be defined in a POM class?</div>
+            <div class="ch-desc">Tests should NEVER contain locators directly. In a POM class, what is the recommended pattern for storing locators?</div>
+            <div class="code-block"><pre><code class="language-typescript">export class LoginPage {
+  constructor(private page: Page) {}
+
+  // Locators go here as ???
+  ??? emailInput = this.page.getByLabel('Email');
+  ??? submitBtn  = this.page.getByRole('button', { name: 'Login' });
+}</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> public — so tests can access them directly</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> private readonly — hidden from tests, initialized once</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> static — shared across all page instances</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> protected — so subclasses can override them</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — private readonly</strong><br><code>private readonly</code> is the correct modifier: <code>private</code> prevents tests from using locators directly (they must use methods), and <code>readonly</code> ensures the locator reference is never reassigned after initialization. Example: <code>private readonly emailInput = this.page.getByLabel('Email');</code>. Tests call methods like <code>loginPage.fillEmail('user@test.com')</code> — they never know which locator is used internally.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint"><code>private</code> = tests can't access locators directly. <code>readonly</code> = locator reference can't be reassigned. Tests interact via methods only.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge beginner">Beginner</span><span class="topic-badge">Navigation</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What should a goto() method do?</div>
+            <div class="ch-desc">Your <code>LoginPage</code> has a <code>goto()</code> method. Beyond navigating, what should it also do?</div>
+            <div class="code-block"><pre><code class="language-typescript">async goto(): Promise&lt;void&gt; {
+  await this.page.goto('/login');
+  // Should also do ???
+}</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> Return the page title as a string</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> Assert that the page actually loaded (verify URL or visible element)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> Clear all cookies and localStorage</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> Screenshot the page for visual comparison</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — assert the page loaded correctly</strong><br>The action + verification principle: every action should be followed by a check that it succeeded. A robust <code>goto()</code>: <code>async goto() { await this.page.goto('/login'); await expect(this.page).toHaveURL('/login'); await expect(this.loginHeading).toBeVisible(); }</code>. This way, if navigation fails silently (redirects, auth errors), the test fails immediately at <code>goto()</code> with a clear message rather than failing mysteriously later.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint">Action + Verification: navigate → assert arrival. Use <code>expect(page).toHaveURL()</code> or check a landmark element is visible.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Fixtures</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you inject a page object into tests using fixtures?</div>
+            <div class="ch-desc">What is the recommended way to make <code>loginPage</code> available in tests without instantiating it in every test file?</div>
+            <div class="code-block"><pre><code class="language-typescript">// fixtures.ts
+export const test = base.extend&lt;{ loginPage: LoginPage }&gt;({
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
+  }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> Import LoginPage in every test and call new LoginPage(page) in beforeEach</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> Create a custom fixture using test.extend() that instantiates the page object and passes it via use()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> Export a singleton LoginPage instance from the class file</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> Use a global setup file to attach page objects to the test context</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: B — test.extend() fixture</strong><br>Custom fixtures via <code>test.extend()</code> are the idiomatic Playwright way to inject page objects. Tests simply declare <code>{ loginPage }</code> and get a fully initialized instance — no <code>new</code> call needed in the test. Tests import from the fixtures file instead of <code>@playwright/test</code>: <code>import { test } from './fixtures'</code>. This is composable (stack multiple fixtures), automatically handles teardown, and avoids repetitive <code>beforeEach</code> setup.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint">Fixtures = reusable test scaffolding. <code>test.extend({ loginPage: async ({ page }, use) => { await use(new LoginPage(page)); } })</code> — tests get loginPage for free.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Inheritance</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the purpose of a BasePage class?</div>
+            <div class="ch-desc">Multiple page classes need methods like <code>waitForPageLoad()</code>, <code>getTitle()</code>, and <code>scrollTo()</code>. Where should these live?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> Duplicate them in every page class for simplicity</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> In a BasePage class that all page objects extend, with protected page: Page</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> In a separate utility file with standalone async functions</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> In the test fixture file alongside the fixture definitions</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — BasePage with protected page: Page</strong><br>A <code>BasePage</code> class holds shared methods: <code>class BasePage { constructor(protected page: Page) {} async waitForLoad() { await this.page.waitForLoadState('networkidle'); } }</code>. Specific pages extend it: <code>class LoginPage extends BasePage { constructor(page: Page) { super(page); } }</code>. Use <code>protected</code> (not <code>private</code>) so subclasses can access <code>this.page</code>. Only add methods to BasePage that are genuinely shared — avoid making it a dumping ground.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint"><code>BasePage</code> uses <code>protected</code> (not <code>private</code>) so subclasses inherit access to <code>this.page</code>. Don't overcrowd it — only truly shared behavior belongs there.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge beginner">Beginner</span><span class="topic-badge">Naming</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the recommended naming convention for POM methods?</div>
+            <div class="ch-desc">You are naming methods on a <code>CheckoutPage</code>. Which set of method names follows POM best practices?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> emailField(), submitButton(), errorMessage() — noun names for UI elements</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> fillEmail(), clickSubmit(), getErrorMessage() — verb-first action names</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> email_field(), submit_button() — snake_case</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> setEmail(), setButton(), getMessage() — generic setter/getter pattern</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: B — verb-first camelCase action names</strong><br>POM methods should describe actions, not UI elements. Use action verbs: <code>fill</code>, <code>click</code>, <code>select</code>, <code>check</code>, <code>get</code>. Examples: <code>fillEmail(email: string)</code>, <code>clickSubmit()</code>, <code>selectCountry(country: string)</code>, <code>getErrorMessage(): Promise&lt;string&gt;</code>. This makes tests read like prose: <code>await loginPage.fillEmail('user@test.com'); await loginPage.clickSubmit();</code> — the intent is instantly clear.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint">Methods = actions. Start with a verb: <code>fill</code>, <code>click</code>, <code>select</code>, <code>verify</code>. Tests should read like plain English steps.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Components</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What are Component Objects in POM?</div>
+            <div class="ch-desc">Your app has a <code>NavBar</code> that appears on 15 different pages, and a <code>Modal</code> used across 8 pages. How should you model these?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> Duplicate the nav/modal methods in every page class that uses them</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> Create separate NavBar and Modal classes, then compose them inside page objects</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> Add them to BasePage so every page inherits all nav and modal methods</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> Handle nav/modal directly in each test without page objects</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: B — separate component classes, composed into pages</strong><br>Component Objects model reusable UI pieces. <code>class NavBar { constructor(private page: Page) {} async clickLogo() {...} }</code>. Then compose: <code>class DashboardPage { nav = new NavBar(this.page); modal = new Modal(this.page); }</code>. Tests use: <code>await dashboardPage.nav.clickLogo()</code>. This avoids BasePage bloat — BasePage would have ALL nav+modal methods mixed with page-specific methods. Composition is cleaner for shared UI components.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint">Composition &gt; inheritance for shared components. Create <code>NavBar</code>, <code>Modal</code> classes and include them as fields in page classes: <code>nav = new NavBar(this.page)</code>.</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">TypeScript</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Why use readonly for locator fields in a page class?</div>
+            <div class="ch-desc">What is the benefit of declaring locators as <code>private readonly</code> class fields in a POM class?</div>
+            <div class="code-block"><pre><code class="language-typescript">export class LoginPage {
+  constructor(private page: Page) {}
+
+  private readonly emailInput = this.page.getByLabel('Email');
+  private readonly password    = this.page.getByLabel('Password');
+}</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> readonly makes the locator execute the query immediately at construction time</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> readonly prevents accidental reassignment and communicates the field is stable; the locator itself is lazy</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> readonly caches the DOM element so queries run faster</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> readonly makes the locator thread-safe for parallel tests</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — prevents reassignment; locators are still lazy</strong><br>Playwright locators are lazy — they don't query the DOM until you interact with them (click, fill, etc.). <code>readonly</code> on the field only prevents someone from accidentally doing <code>this.emailInput = somethingElse</code> later in the class. The locator definition line is evaluated once at construction time but no DOM query runs. This TypeScript discipline catches bugs like <code>this.emailInput = this.page.getByLabel('Wrong')</code> at compile time.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">Locators are lazy — no DOM query at construction. <code>readonly</code> = TypeScript protection against reassigning the locator reference, not a caching mechanism.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Pragmatics</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When should you NOT use the Page Object Model?</div>
+            <div class="ch-desc">A QA engineer has 3 end-to-end tests that each test a unique one-off workflow. These pages are not tested anywhere else. Should they use POM?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> Yes — POM is always required for all Playwright tests</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> No — POM overhead is not justified for one-off tests; use locators directly in the test</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> Yes — POM is needed even for single tests to ensure future scalability</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> No — POM should never be used in modern Playwright projects</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — POM is overkill for one-off tests</strong><br>POM is an investment that pays off when the same page is tested multiple times across many test files. For truly one-off tests (unique workflow, used once), creating a full page class adds complexity with no benefit. The pragmatic approach: write the test directly, and only extract a page object when you find yourself repeating the same interactions in more than 2-3 places. Don't over-engineer for hypothetical future reuse.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">POM is justified by reuse. If locators/interactions appear in only 1 test, skip the class. Extract when you see duplication — not before.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Setup</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Fixtures vs beforeEach for page object setup — what's the difference?</div>
+            <div class="ch-desc">Both <code>beforeEach</code> and custom fixtures can instantiate a page object before each test. Which approach is preferred for page objects and why?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> beforeEach — it's built into Playwright and doesn't require extra files</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> Fixtures — they are composable, reusable across files, and don't require describe blocks</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> They are equivalent — choose based on team preference</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> beforeEach — it executes after fixtures, giving more control over ordering</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — fixtures are preferred</strong><br>Fixtures win because: (1) <strong>Composable</strong> — one fixture can depend on another; (2) <strong>File-scoped reuse</strong> — define once in fixtures.ts, use in any test file by importing; (3) <strong>No describe block needed</strong> — beforeEach requires being inside a describe or test file; (4) <strong>Automatic teardown</strong> — code after <code>await use()</code> runs as cleanup. <code>beforeEach</code> in a test file only helps that file. Fixtures scale; beforeEach doesn't.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint">Fixtures are cross-file and composable. <code>beforeEach</code> is file-local. For page objects used across multiple test files, always prefer fixtures.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge beginner">Beginner</span><span class="topic-badge">Setup</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When using POM with custom fixtures, where should tests import 'test' from?</div>
+            <div class="ch-desc">Your project has <code>fixtures.ts</code> that extends test with page object fixtures. What import should test files use?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> import { test } from '@playwright/test'</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> import { test } from '../fixtures' — the custom extended test object</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> Both imports are needed — one for test, one for expect</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> import { test } from 'playwright' — the older import path</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — import from the fixtures file</strong><br>When you create custom fixtures with <code>base.extend()</code>, the result is a new <code>test</code> object that includes your page object fixtures. Tests MUST import this extended <code>test</code> — importing from <code>@playwright/test</code> directly will not have the custom fixtures defined. Also export <code>expect</code> from your fixtures file: <code>export { expect } from '@playwright/test'</code> so tests only need one import: <code>import { test, expect } from '../fixtures'</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint">The extended <code>test</code> lives in your fixtures file. Import from there — not from <code>@playwright/test</code> — to get your custom fixtures. Export <code>expect</code> from fixtures too.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const STORAGE_KEY = 'vtq-pw-pom';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

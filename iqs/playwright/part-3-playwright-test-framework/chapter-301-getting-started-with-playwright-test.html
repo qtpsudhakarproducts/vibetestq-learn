@@ -1,0 +1,287 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 301 &nbsp;·&nbsp; 14 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Getting</span> <span class="w2">Started</span> <span class="w3">with</span> <span class="w4">Playwright</span> <span class="w5">Test</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the foundations of <code class="sn-ic">@playwright/test</code> — Playwright's built-in test runner. Interviewers ask these questions to gauge your basic setup and understand your grasp of why Playwright is preferred over older libraries.</span>
+  </div>
+
+
+  <!-- Q301.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.1</span>
+      <h2 class="sn-q-text">What is @playwright/test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">@playwright/test</code> is a <strong class="k-blue">complete test runner</strong> designed specifically for web application testing. It wraps the core Playwright library (which handles browser control via CDP) and provides a test runner with features like **parallelism, fixtures, assertions, configuration, and html reports**.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.2</span>
+      <h2 class="sn-q-text">What is the difference between the Playwright library and the Playwright test runner?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <strong class="k-green">Playwright library</strong> (<code class="sn-ic">playwright-core</code> or <code class="sn-ic">playwright</code>) is a plain node library that exposes APIs to control browsers. The <strong class="k-green">test runner</strong> (<code class="sn-ic">@playwright/test</code>) is a framework that wraps the library and manages the execution lifecycle of tests:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The library has no concept of assertions, reporters, retries, or command-line executors.</span></li>
+<li><span class="icon">💡</span><span>The test runner automates launcher processes, runs multiple workers in parallel, injects fixtures, and validates outcomes.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q301.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.3</span>
+      <h2 class="sn-q-text">When would you use the Playwright library without @playwright/test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You use the library directly when you are building a custom crawler, scraper, or when integrating browser automation into an existing runner like <strong class="k-purple">Jest, Vitest, or Mocha</strong> instead of migrating the whole test suite to Playwright's runner.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.4</span>
+      <h2 class="sn-q-text">How is @playwright/test set up in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You initialize a new project by running:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm init playwright@latest</div>
+      </div>
+<p class="sn-para">This creates a <code class="sn-ic">playwright.config.ts</code>, a sample test folder, and installs necessary browser executables.</p>
+    </div>
+  </div>
+
+  <!-- Q301.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.5</span>
+      <h2 class="sn-q-text">What does a basic Playwright test file look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">It imports <code class="sn-ic">test</code> and <code class="sn-ic">expect</code> from <code class="sn-ic">@playwright/test</code>, defines a test with a title, and executes interactions:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'has title'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>('https:<span class="tc-cm">//playwright.dev/');</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveTitle</span>(/Playwright/);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.6</span>
+      <h2 class="sn-q-text">What does the test function provide — what is in the fixtures parameter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The test function passes a <strong class="k-pink">fixtures object</strong> as its first parameter. These are isolated, pre-initialized components (like <code class="sn-ic">page</code>, <code class="sn-ic">context</code>, <code class="sn-ic">browser</code>, <code class="sn-ic">request</code>) managed by Playwright's lifecycle.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.7</span>
+      <h2 class="sn-q-text">What is the difference between page, browser, and context fixtures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-red">browser</strong>: A launch instance of Chromium, Firefox, or WebKit. Extremely heavy. Shared across workers.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-red">context</strong>: An isolated, lightweight "incognito" session inside the browser. No shared cookies, cache, or storage.</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-red">page</strong>: A single tab/window within a context. This is what you interact with most.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q301.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.8</span>
+      <h2 class="sn-q-text">What happens when a test fails — what does Playwright report?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a test fails, Playwright stops executing the current test block, captures diagnostic outputs (like screenshots, trace logs, or video if configured), reports the exact assertion failure line, and proceeds to the next test in line.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.9</span>
+      <h2 class="sn-q-text">What is the difference between @playwright/test and Jest or Mocha?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-blue">Jest/Mocha</strong> are generic JS test runners that require extra libraries (like Selenium or Puppeteer) for browser control.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-blue">@playwright/test</strong> is built specifically for browser automation with native auto-waiting and browser isolation built-in.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q301.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.10</span>
+      <h2 class="sn-q-text">What does @playwright/test provide that a plain test runner does not?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">It provides <strong class="k-green">auto-waiting locators, multi-browser configurations, visual comparison assertions, network interception, trace recording, and browser context isolation</strong> out of the box.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.11</span>
+      <h2 class="sn-q-text">What is wrong with importing page from playwright instead of using the page fixture?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Importing page directly from playwright requires you to manually manage browser launches, contexts, and cleanup. Using the <code class="sn-ic">page</code> fixture lets Playwright handle launch/teardown automatically and guarantees incognito isolation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.12</span>
+      <h2 class="sn-q-text">How does @playwright/test compare to Cypress's test runner?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-orange">Cypress</strong> runs tests <em>inside</em> the browser, which makes it fast but limits multi-tab and multi-window scenarios.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-orange">Playwright</strong> runs tests <em>outside</em> the browser via WebSocket, giving full multi-page, cross-domain, and multi-browser support.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q301.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.13</span>
+      <h2 class="sn-q-text">Write a complete first test file for a login page</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'login flow'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">fill</span>(<span class="tc-str">' S0 
+  await page.fill('</span><span class="tc-cm">#password', 'pass1');</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">click</span>(<span class="tc-str">' S2 
+  await expect(page).toHaveURL('</span>/dashboard');
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q301.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q301.14</span>
+      <h2 class="sn-q-text">Write a test that uses the request fixture for an API call alongside a page test</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'hybrid API and UI test'</span>, <span class="tc-kw">async</span> ({ page, request }) =&gt; {
+  <span class="tc-cm">// Call API</span>
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/users'</span>, {
+    data: { name: <span class="tc-str">'Bob'</span> }
+  });
+  <span class="tc-kw">expect</span>(response.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBeTruthy</span>();
+
+  <span class="tc-cm">// Go to UI and verify</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/users'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Bob'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+</div>
+</div>

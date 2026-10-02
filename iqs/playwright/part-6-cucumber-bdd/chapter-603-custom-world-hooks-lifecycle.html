@@ -1,0 +1,785 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🌐 Part 6 &nbsp;·&nbsp; Chapter 603 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Custom</span> <span class="w2">World,</span> <span class="w3">Hooks</span> <span class="w4">&amp;</span> <span class="w5">Lifecycle</span></h1>
+    <p class="sn-title-sub">Cucumber BDD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the Custom World, all hook levels, screenshot-on-failure, and the <code class="sn-ic">setDefaultTimeout</code> pattern. Interviewers focus here because World and hooks are where Cucumber's complexity lives — wiring Playwright's browser lifecycle into Cucumber's scenario lifecycle is where most BDD frameworks break down. Questions progress from what the World is, through hook ordering and scope, to the screenshot attachment pattern and real project debugging challenges.</span>
+  </div>
+
+
+  <!-- Q603.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.1</span>
+      <h2 class="sn-q-text">What is the Cucumber World and why does it exist?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The World is a JavaScript class that Cucumber creates fresh for every scenario. It is the shared context for all step definitions in that scenario. Without a World, step definitions have no way to share state — one step cannot pass a <code class="sn-ic">page</code> object to the next step.</p>
+      </div>
+<p class="sn-para">Cucumber creates a new World instance at the start of each scenario and destroys it at the end. Every <code class="sn-ic">Given</code>, <code class="sn-ic">When</code>, <code class="sn-ic">Then</code>, <code class="sn-ic">And</code> step in a scenario runs as a method on that same World instance, with <code class="sn-ic">this</code> pointing to it.</p>
+<p class="sn-para">By default, Cucumber gives you an empty World. In a Playwright project, you extend it to hold your browser, context, and page:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { World, setWorldConstructor } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> OrangeHRMWorld <span class="tc-kw">extends</span> World {
+  browser!: Browser;
+  context!: BrowserContext;
+  page!: Page;
+}
+
+<span class="tc-fn">setWorldConstructor</span>(OrangeHRMWorld);</div>
+      </div>
+<p class="sn-para">Every step definition in this project can now access <code class="sn-ic">this.browser</code>, <code class="sn-ic">this.context</code>, and <code class="sn-ic">this.page</code> — because they all run on the same World instance for their scenario.</p>
+    </div>
+  </div>
+
+  <!-- Q603.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.2</span>
+      <h2 class="sn-q-text">Why does each scenario get its own World instance?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Test isolation. If scenarios shared a World, a test that fails halfway through could leave the browser in a broken state — logged in as the wrong user, on the wrong page, with a dirty form. The next scenario would start from that broken state and fail for the wrong reason.</p>
+      </div>
+<p class="sn-para">Because Cucumber creates a new World per scenario:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A fresh browser is opened for each scenario (<code class="sn-ic">Before</code> hook calls <code class="sn-ic">openBrowser()</code>)</span></li>
+<li><span class="icon">💡</span><span>A fresh browser context means a clean cookie jar, fresh storage, no previous session</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>A failed scenario cannot poison the next one</span></li>
+</ul>
+<p class="sn-para">In the OrangeHRM project, the <code class="sn-ic">Before</code> hook opens the browser on the fresh World instance, and <code class="sn-ic">After</code> closes it:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();   <span class="tc-cm">// opens browser on THIS scenario's World</span>
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();  <span class="tc-cm">// closes browser on THIS scenario's World</span>
+});</div>
+      </div>
+<p class="sn-para">Scenario A's <code class="sn-ic">page</code> and Scenario B's <code class="sn-ic">page</code> are different objects. They cannot interfere.</p>
+    </div>
+  </div>
+
+  <!-- Q603.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.3</span>
+      <h2 class="sn-q-text">What is setWorldConstructor and where must it be called?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">setWorldConstructor</code> tells Cucumber which class to instantiate as the World for every scenario. Without it, Cucumber uses the default built-in World class, which has no browser, page, or any custom properties.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { World, setWorldConstructor } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> OrangeHRMWorld <span class="tc-kw">extends</span> World {
+  <span class="tc-cm">// ... your properties and methods</span>
+}
+
+<span class="tc-fn">setWorldConstructor</span>(OrangeHRMWorld);  <span class="tc-cm">// ← must be at the module level, not inside a function</span></div>
+      </div>
+<p class="sn-para">It must be called in a file that Cucumber requires before any scenarios run. In <code class="sn-ic">cucumber.js</code>, the <code class="sn-ic">require</code> array controls this:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">require</span>: [
+  <span class="tc-str">'support/world.ts'</span>,    <span class="tc-cm">// ← setWorldConstructor is called here</span>
+  <span class="tc-str">'support/hooks.ts'</span>,
+  <span class="tc-str">'step-definitions S1 *.ts'</span>,
+],</div>
+      </div>
+<p class="sn-para">If you define two World classes and call <code class="sn-ic">setWorldConstructor</code> twice, the last call wins. In the OrangeHRM project, the <code class="sn-ic">default</code> profile loads <code class="sn-ic">world.ts</code> (which registers <code class="sn-ic">OrangeHRMWorld</code>), and the <code class="sn-ic">pom</code> profile loads <code class="sn-ic">pom-world.ts</code> (which registers <code class="sn-ic">POMWorld</code>). They never load both — the profile ensures only one World is active per run.</p>
+    </div>
+  </div>
+
+  <!-- Q603.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.4</span>
+      <h2 class="sn-q-text">How did you use the World in your OrangeHRM BDD project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had two World classes — one for each Cucumber profile.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">OrangeHRMWorld</code> (default profile) held <code class="sn-ic">browser</code>, <code class="sn-ic">context</code>, <code class="sn-ic">page</code>, <code class="sn-ic">baseUrl</code>, <code class="sn-ic">headless</code>, and <code class="sn-ic">slowMo</code>. Step definitions used <code class="sn-ic">this.page</code> directly to interact with elements.</p>
+<p class="sn-para"><code class="sn-ic">POMWorld</code> (pom profile) held the same browser properties, plus all eight page objects: <code class="sn-ic">loginPage</code>, <code class="sn-ic">dashboardPage</code>, <code class="sn-ic">employeeListPage</code>, <code class="sn-ic">addEmployeePage</code>, <code class="sn-ic">userManagementPage</code>, and <code class="sn-ic">addUserPage</code>. After the browser opened, <code class="sn-ic">initPages()</code> instantiated all page objects in one place:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">private</span> <span class="tc-fn">initPages</span>(): <span class="tc-kw">void</span> {
+  <span class="tc-kw">this</span>.loginPage         = <span class="tc-kw">new</span> LoginPage(<span class="tc-kw">this</span>.page);
+  <span class="tc-kw">this</span>.dashboardPage     = <span class="tc-kw">new</span> DashboardPage(<span class="tc-kw">this</span>.page);
+  <span class="tc-kw">this</span>.employeeListPage  = <span class="tc-kw">new</span> EmployeeListPage(<span class="tc-kw">this</span>.page);
+  <span class="tc-kw">this</span>.addEmployeePage   = <span class="tc-kw">new</span> AddEmployeePage(<span class="tc-kw">this</span>.page);
+  <span class="tc-kw">this</span>.userManagementPage = <span class="tc-kw">new</span> UserManagementPage(<span class="tc-kw">this</span>.page);
+  <span class="tc-kw">this</span>.addUserPage       = <span class="tc-kw">new</span> AddUserPage(<span class="tc-kw">this</span>.page);
+}</div>
+      </div>
+<p class="sn-para">This meant step definitions in the pom profile never imported page objects directly. They just called <code class="sn-ic">this.loginPage.clickLogin()</code> or <code class="sn-ic">this.addEmployeePage.saveEmployee()</code>. Adding a new page object meant adding one line to <code class="sn-ic">initPages()</code> and one property to <code class="sn-ic">POMWorld</code> — nothing else changed.</p>
+    </div>
+  </div>
+
+  <!-- Q603.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.5</span>
+      <h2 class="sn-q-text">What hook levels does Cucumber support and what is the order?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cucumber has six hook types across three scope levels.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Suite level</strong> — runs once for the entire test run:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">BeforeAll</code> — runs before any scenario starts</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">AfterAll</code> — runs after all scenarios finish</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Scenario level</strong> — runs once per scenario:</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span><code class="sn-ic">Before</code> — runs before each scenario's first step</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">After</code> — runs after each scenario's last step (or after failure)</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Step level</strong> — runs once per step:</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span><code class="sn-ic">BeforeStep</code> — runs before each individual step</span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">AfterStep</code> — runs after each individual step</span></li>
+</ul>
+<p class="sn-para">The execution order for a single scenario is:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">BeforeAll (suite, once)
+  └─ Before (scenario)
+      └─ BeforeStep (step 1)
+          └─ Given step 1 executes
+      └─ AfterStep (step 1)
+      └─ BeforeStep (step 2)
+          └─ When step 2 executes
+      └─ AfterStep (step 2)
+      └─ ... (remaining steps)
+  └─ After (scenario)
+AfterAll (suite, once)</div>
+      </div>
+<p class="sn-para">In the OrangeHRM project, all six hook types are used:</p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span><code class="sn-ic">BeforeAll</code> / <code class="sn-ic">AfterAll</code> print suite start/end banners to the console</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">Before</code> opens the browser</span></li>
+<li><span class="icon">📦</span><span><code class="sn-ic">After</code> takes a failure screenshot and closes the browser</span></li>
+<li><span class="icon">🔶</span><span><code class="sn-ic">BeforeStep</code> logs the step text being executed</span></li>
+<li><span class="icon">🎪</span><span><code class="sn-ic">AfterStep</code> takes a screenshot when the step fails</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q603.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.6</span>
+      <h2 class="sn-q-text">How does setDefaultTimeout work and why can't it go in cucumber.js?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">setDefaultTimeout</code> sets the maximum time any individual step or hook can take before Cucumber marks it as timed out. The unit is milliseconds.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { setDefaultTimeout } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+
+<span class="tc-fn">setDefaultTimeout</span>(60_000);  <span class="tc-cm">// 60 seconds per step</span></div>
+      </div>
+<p class="sn-para">This must be called in a support file (hooks or world) that Cucumber loads before running any steps — not in <code class="sn-ic">cucumber.js</code>. The reason is that <code class="sn-ic">cucumber.js</code> is a Node.js module that Cucumber reads for configuration (which files to load, which formatters to use). It does not execute TypeScript step lifecycle calls. <code class="sn-ic">setDefaultTimeout</code> is a runtime call that registers a timeout with the Cucumber runtime — it only works in a file that gets <code class="sn-ic">require</code>d and executed.</p>
+<p class="sn-para">The default timeout if you do not call <code class="sn-ic">setDefaultTimeout</code> is 5000ms (5 seconds). For Playwright tests that include page navigation and <code class="sn-ic">waitForLoadState('networkidle')</code>, 5 seconds is not enough. The OrangeHRM project sets <code class="sn-ic">60_000</code> because some pages take several seconds to load.</p>
+<div class="sn-callout c-purple"><span class="sn-callout-icon">💡</span><span class="sn-callout-text">💡 <strong class="k-pink">Interview Tip:</strong> "Where do you set the step timeout in Cucumber?" is a common interview question. The wrong answer is "in <code class="sn-ic">cucumber.js</code>". The correct answer is <code class="sn-ic">setDefaultTimeout()</code> in a hooks file that is required before tests run.</span></div>
+    </div>
+  </div>
+
+  <!-- Q603.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.7</span>
+      <h2 class="sn-q-text">How do you take a screenshot on failure and attach it to the report?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You take the screenshot in the <code class="sn-ic">After</code> hook, check the scenario status, and use <code class="sn-ic">this.attach()</code> to add it to the Cucumber report:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> });
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);           <span class="tc-cm">// attaches to Cucumber HTML report</span>
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`\n[FAILED] Scenario: ${scenario.pickle.name}`</span>);
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">scenario</code> parameter gives you:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">scenario.result?.status</code> — <code class="sn-ic">Status.PASSED</code>, <code class="sn-ic">Status.FAILED</code>, <code class="sn-ic">Status.PENDING</code>, <code class="sn-ic">Status.SKIPPED</code></span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">scenario.pickle.name</code> — the scenario name as written in the feature file</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">scenario.pickle.tags</code> — array of tags on this scenario</span></li>
+</ul>
+<p class="sn-para"><code class="sn-ic">this.attach()</code> is a method from the Cucumber <code class="sn-ic">World</code> base class. It takes a buffer and a MIME type. Cucumber writes the attachment into the JSON report, and both the HTML reporter and Allure pick it up — the screenshot appears in the report next to the failed scenario.</p>
+<p class="sn-para">The OrangeHRM project also takes a screenshot in <code class="sn-ic">AfterStep</code> for step-level failure visibility:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">AfterStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, step) {
+  <span class="tc-kw">if</span> (step.result.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> });
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+  }
+});</div>
+      </div>
+<p class="sn-para">This gives you a screenshot at the exact moment a step fails — more precise than the scenario-level screenshot.</p>
+    </div>
+  </div>
+
+  <!-- Q603.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.8</span>
+      <h2 class="sn-q-text">What is the difference between AfterStep and After hooks for failure handling?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both can capture screenshots, but they serve different purposes.</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">AfterStep</code></th><th class="sn-th-green"><code class="sn-ic">After</code></th></tr></thead>
+          <tbody>
+          <tr><td>Runs</td><td>After each step</td><td>After the whole scenario</td></tr>
+          <tr><td>Screenshot shows</td><td>Exact state when the step failed</td><td>State after all steps completed or aborted</td></tr>
+          <tr><td>Precision</td><td>High — captures the failing step's state</td><td>Lower — UI may have changed</td></tr>
+          <tr><td>Browser state</td><td>Page is still open</td><td>You close browser here</td></tr>
+          <tr><td>Use for</td><td>Debugging step-level failures</td><td>Cleanup and final scenario attachment</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The <code class="sn-ic">After</code> hook is where you close the browser — you must always do this, even on failure. The <code class="sn-ic">AfterStep</code> hook is for capturing diagnostic information at the step level.</p>
+<p class="sn-para">In the OrangeHRM project, both are used together. <code class="sn-ic">AfterStep</code> captures a screenshot after any failed step; <code class="sn-ic">After</code> also captures one (for scenarios where the failure happened at the hook or scenario level rather than a step), then closes the browser.</p>
+<p class="sn-para">One important rule: close the browser in <code class="sn-ic">After</code>, not in <code class="sn-ic">AfterStep</code>. If you close the browser in <code class="sn-ic">AfterStep</code>, the remaining steps in the scenario cannot run because there is no browser anymore.</p>
+    </div>
+  </div>
+
+  <!-- Q603.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.9</span>
+      <h2 class="sn-q-text">How do you log step execution to the console?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">BeforeStep</code> to log each step before it runs. The <code class="sn-ic">step</code> parameter has <code class="sn-ic">step.pickleStep.text</code> — the step text as written in the feature file.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">BeforeStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, step) {
+  <span class="tc-kw">const</span> stepText = step.pickleStep.text;
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`  → STEP: ${stepText}`</span>);
+});</div>
+      </div>
+<p class="sn-para">Output for a login scenario:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">  → STEP: the user navigates to OrangeHRM login page
+  → STEP: the user enters username &quot;testadmin&quot;
+  → STEP: the user enters password &quot;Vibetestq@123&quot;
+  → STEP: the user clicks the login button
+  → STEP: the user should be redirected to the dashboard</div>
+      </div>
+<p class="sn-para">This logging is useful when running without a visual reporter — in CI, where you are reading raw console output, this trace tells you exactly which step was running when a timeout occurred.</p>
+<p class="sn-para">Combined with <code class="sn-ic">AfterStep</code>, you get before and after logging per step:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">BeforeStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, step) {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`  → START: ${step.pickleStep.text}`</span>);
+});
+
+AfterStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, step) {
+  <span class="tc-kw">const</span> status = step.result.status;
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`  ← ${status.toUpperCase()}: ${step.pickleStep.text}`</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q603.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.10</span>
+      <h2 class="sn-q-text">What is the difference between BeforeAll/AfterAll and Before/After?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">BeforeAll</code> / <code class="sn-ic">AfterAll</code></th><th class="sn-th-green"><code class="sn-ic">Before</code> / <code class="sn-ic">After</code></th></tr></thead>
+          <tbody>
+          <tr><td>Runs</td><td>Once per test run</td><td>Once per scenario</td></tr>
+          <tr><td><code class="sn-ic">this</code> context</td><td>NOT the World — <code class="sn-ic">this</code> is a plain object</td><td>IS the World — <code class="sn-ic">this</code> has browser, page etc.</td></tr>
+          <tr><td>Purpose</td><td>Suite-wide setup/teardown</td><td>Per-scenario browser lifecycle</td></tr>
+          <tr><td>Use for</td><td>Logging banners, global resources</td><td>Opening and closing browser</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">In the OrangeHRM project:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">BeforeAll(<span class="tc-kw">async</span> <span class="tc-kw">function</span> () {
+  <span class="tc-cm">// 'this' here is NOT OrangeHRMWorld — it's a plain Cucumber object</span>
+  <span class="tc-cm">// You cannot access this.page here</span>
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'\n=== OrangeHRM BDD Test Suite Starting ===\n'</span>);
+});
+
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-cm">// 'this' IS OrangeHRMWorld</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();   <span class="tc-cm">// opens browser for this scenario</span>
+});</div>
+      </div>
+<p class="sn-para">The most common mistake is trying to open the browser in <code class="sn-ic">BeforeAll</code> and use it across all scenarios. This breaks test isolation — all scenarios share one browser, one page, one session. If one scenario logs in as admin, every scenario after it starts as admin.</p>
+<p class="sn-para">Always open and close the browser in <code class="sn-ic">Before</code> and <code class="sn-ic">After</code> — one browser per scenario.</p>
+    </div>
+  </div>
+
+  <!-- Q603.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.11</span>
+      <h2 class="sn-q-text">What is wrong with this hooks setup?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ COMMON MISTAKE — browser opened in BeforeAll, closed in AfterAll</span>
+<span class="tc-kw">let</span> sharedPage: Page;
+
+BeforeAll(<span class="tc-kw">async</span> <span class="tc-kw">function</span> () {
+  <span class="tc-kw">const</span> browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>();
+  <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+  sharedPage = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+});
+
+AfterAll(<span class="tc-kw">async</span> <span class="tc-kw">function</span> () {
+  <span class="tc-kw">await</span> sharedPage.<span class="tc-fn">close</span>();
+});
+
+Given(<span class="tc-str">'the user navigates to login page'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> () {
+  <span class="tc-kw">await</span> sharedPage.<span class="tc-fn">goto</span>('https:<span class="tc-cm">//app.example.com/login');</span>
+});</div>
+      </div>
+<p class="sn-para">Three problems. First, <code class="sn-ic">sharedPage</code> is shared across all scenarios — one scenario's actions affect the next. Second, <code class="sn-ic">BeforeAll</code>'s <code class="sn-ic">this</code> is not the World — you lose access to <code class="sn-ic">this.baseUrl</code> and all World methods. Third, when a scenario fails midway, the browser is in an unknown state. The next scenario starts from that broken state — a logged-in session, a half-filled form, a previous URL.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ CORRECT APPROACH — browser per scenario on the World</span>
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();   <span class="tc-cm">// fresh browser, fresh context, fresh page</span>
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();  <span class="tc-cm">// always close, even on failure</span>
+});</div>
+      </div>
+<p class="sn-para">One browser per scenario. Clean state every time. The Cucumber World enforces this pattern.</p>
+    </div>
+  </div>
+
+  <!-- Q603.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.12</span>
+      <h2 class="sn-q-text">How do you add a Playwright trace to Cucumber hooks for debugging?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { Before, After, Status } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { OrangeHRMWorld } <span class="tc-kw">from</span> <span class="tc-str">'./world'</span>;
+<span class="tc-kw">import</span> * as fs <span class="tc-kw">from</span> <span class="tc-str">'fs'</span>;
+<span class="tc-kw">import</span> * as path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();
+  <span class="tc-cm">// Start tracing after context is created</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">start</span>({
+    screenshots: <span class="tc-kw">true</span>,
+    snapshots: <span class="tc-kw">true</span>,
+    sources: <span class="tc-kw">true</span>,
+  });
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">const</span> traceName = scenario.pickle.name.<span class="tc-fn">replace</span>(/[^a-z0-<span class="tc-num">9</span>]/gi, <span class="tc-str">'-'</span>);
+    <span class="tc-kw">const</span> tracePath = path.<span class="tc-fn">join</span>(<span class="tc-str">'reports'</span>, <span class="tc-str">'traces'</span>, <span class="tc-str">`${traceName}.zip`</span>);
+
+    <span class="tc-cm">// Ensure directory exists</span>
+    fs.<span class="tc-fn">mkdirSync</span>(path.<span class="tc-fn">dirname</span>(tracePath), { recursive: <span class="tc-kw">true</span> });
+
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">stop</span>({ path: tracePath });
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Trace saved: ${tracePath}`</span>);
+
+    <span class="tc-cm">// Also attach screenshot to report</span>
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+  } <span class="tc-kw">else</span> {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">stop</span>();   <span class="tc-cm">// stop without saving on pass</span>
+  }
+
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();
+});</div>
+      </div>
+<p class="sn-para">Open the saved trace with:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-trace &quot;reports/traces/Successful-login.zip&quot;</div>
+      </div>
+<p class="sn-para">The Playwright Trace Viewer shows every action, DOM snapshot, network request, and console log — exactly what happened before the failure.</p>
+    </div>
+  </div>
+
+  <!-- Q603.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.13</span>
+      <h2 class="sn-q-text">How do you handle a scenario that needs a specific user role?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use a tag to mark which scenarios need a specific role, and a tagged <code class="sn-ic">Before</code> hook to set up that role:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// All scenarios use the standard login</span>
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();
+});
+
+<span class="tc-cm">// Scenarios tagged @admin get logged in as admin before steps run</span>
+Before({ tags: <span class="tc-str">'@admin'</span> }, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigateTo</span>(<span class="tc-str">''</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'testadmin'</span>, <span class="tc-str">'Vibetestq@123'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.dashboardPage.<span class="tc-fn">verifyDashboardLoaded</span>();
+});
+
+<span class="tc-cm">// Scenarios tagged @ess-user get logged in as ESS user</span>
+Before({ tags: <span class="tc-str">'@ess-user'</span> }, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigateTo</span>(<span class="tc-str">''</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'ess.user'</span>, <span class="tc-str">'EssUser@123'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.dashboardPage.<span class="tc-fn">verifyDashboardLoaded</span>();
+});</div>
+      </div>
+<p class="sn-para">Feature file:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">@admin @employee
+Scenario: Add a <span class="tc-kw">new</span> employee
+  When the user clicks on Add Employee button
+  ...
+
+@ess-user
+Scenario: ESS user cannot access admin settings
+  When the user tries to navigate to admin panel
+  Then access should be denied</div>
+      </div>
+<p class="sn-para">The tagged hooks run after the generic <code class="sn-ic">Before</code> (which opens the browser). Cucumber runs <code class="sn-ic">Before</code> hooks in the order they are registered. The generic browser-open hook must be registered before the role-specific login hooks.</p>
+    </div>
+  </div>
+
+  <!-- Q603.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.14</span>
+      <h2 class="sn-q-text">Write a complete hooks file for the POM profile</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// support/pom-hooks.ts</span>
+<span class="tc-kw">import</span> {
+  Before,
+  After,
+  BeforeAll,
+  AfterAll,
+  BeforeStep,
+  AfterStep,
+  Status,
+  setDefaultTimeout,
+} <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { POMWorld } <span class="tc-kw">from</span> <span class="tc-str">'./pom-world'</span>;
+
+<span class="tc-cm">// ─── Set step timeout — must be here, not in cucumber.js ─────────────────────</span>
+<span class="tc-fn">setDefaultTimeout</span>(60_000);
+
+<span class="tc-cm">// ─── Suite-level hooks (this = plain object, NOT POMWorld) ───────────────────</span>
+
+BeforeAll(<span class="tc-kw">async</span> <span class="tc-kw">function</span> () {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'\n========================================'</span>);
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'  OrangeHRM BDD Test Suite Starting [POM]'</span>);
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'========================================\n'</span>);
+});
+
+AfterAll(<span class="tc-kw">async</span> <span class="tc-kw">function</span> () {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'\n========================================'</span>);
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'  OrangeHRM BDD Test Suite Completed [POM]'</span>);
+  console.<span class="tc-fn">log</span>(<span class="tc-str">'========================================\n'</span>);
+});
+
+<span class="tc-cm">// ─── Scenario-level hooks (this = POMWorld) ───────────────────────────────────</span>
+
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();   <span class="tc-cm">// browser + context + page + all page objects</span>
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`\n[FAILED] Scenario: ${scenario.pickle.name}`</span>);
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();  <span class="tc-cm">// always runs, even on failure</span>
+});
+
+<span class="tc-cm">// ─── Step-level hooks ─────────────────────────────────────────────────────────</span>
+
+BeforeStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, step) {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`  → STEP: ${step.pickleStep.text}`</span>);
+});
+
+AfterStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, step) {
+  <span class="tc-kw">if</span> (step.result.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+    <span class="tc-cm">// browser stays open — After hook will close it</span>
+  }
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q603.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q603.15</span>
+      <h2 class="sn-q-text">Describe a real World or hooks challenge from your project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM BDD project, we ran into a problem with the <code class="sn-ic">BeforeStep</code> logging hook. When a step failed, <code class="sn-ic">AfterStep</code> captured a screenshot and attached it to the report. But when the scenario had five steps and step 3 failed, the report showed two screenshots — one from <code class="sn-ic">AfterStep</code> and one from <code class="sn-ic">After</code>. This was confusing because both showed the same failed state.</p>
+      </div>
+<p class="sn-para">We solved it by attaching the detailed screenshot only in <code class="sn-ic">AfterStep</code>, and making the <code class="sn-ic">After</code> screenshot conditional — only take the final screenshot if no <code class="sn-ic">AfterStep</code> screenshot was already taken (which happens when the failure is at the scenario level, not a step):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Track whether a step-level screenshot was taken</span>
+<span class="tc-kw">let</span> stepScreenshotTaken = <span class="tc-kw">false</span>;
+
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  stepScreenshotTaken = <span class="tc-kw">false</span>;
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();
+});
+
+AfterStep(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, step) {
+  <span class="tc-kw">if</span> (step.result.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+    stepScreenshotTaken = <span class="tc-kw">true</span>;
+  }
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED &amp;&amp; !stepScreenshotTaken) {
+    <span class="tc-cm">// Only take scenario screenshot if no step screenshot was already taken</span>
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();
+});</div>
+      </div>
+<p class="sn-para">The lesson: hook interactions are not always obvious. A screenshot from <code class="sn-ic">AfterStep</code> and another from <code class="sn-ic">After</code> both appear in the report, and duplicate screenshots add noise. Understanding the hook execution order lets you design clean, non-redundant diagnostic output.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>The World is a fresh class instance per scenario — it holds the browser, page, and all page objects. <code class="sn-ic">setWorldConstructor</code> registers your custom class.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">BeforeAll</code> / <code class="sn-ic">AfterAll</code> run once per suite — <code class="sn-ic">this</code> is not the World there. <code class="sn-ic">Before</code> / <code class="sn-ic">After</code> run per scenario — <code class="sn-ic">this</code> IS the World.</span></li>
+            <li><span class="icon">⭐</span><span>Always open the browser in <code class="sn-ic">Before</code> and close it in <code class="sn-ic">After</code> — never in <code class="sn-ic">BeforeAll</code>. One browser per scenario guarantees isolation.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">setDefaultTimeout(60_000)</code> must be called in a hooks or world file — not in <code class="sn-ic">cucumber.js</code>. The default 5s is too short for Playwright tests.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">this.attach(buffer, 'image/png')</code> attaches a screenshot to the Cucumber HTML and Allure report. Use it in <code class="sn-ic">After</code> for scenario-level failures, in <code class="sn-ic">AfterStep</code> for step-level precision.</span></li>
+            <li><span class="icon">⭐</span><span>Tagged hooks (<code class="sn-ic">Before({ tags: '@admin' })</code>) run only for scenarios with that tag — use this for role-specific login setup.</span></li>
+            <li><span class="icon">⭐</span><span>In interviews: know the hook execution order, explain why per-scenario browsers give test isolation, and describe the <code class="sn-ic">setDefaultTimeout</code> gotcha.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

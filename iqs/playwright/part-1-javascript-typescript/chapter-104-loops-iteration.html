@@ -1,0 +1,596 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 104 &nbsp;·&nbsp; 17 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Loops</span> <span class="w2">&amp;</span> <span class="w3">Iteration</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers every loop type JavaScript provides and how they behave with async code. Interviewers test loops because <code class="sn-ic">forEach</code> + <code class="sn-ic">await</code> is one of the most common bugs in Playwright tests — a test that silently does nothing and still passes. Questions move from loop syntax through async behaviour to short practical tasks.</span>
+  </div>
+
+
+  <!-- Q104.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.1</span>
+      <h2 class="sn-q-text">What types of loops does JavaScript have?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">for</code> — fixed number of iterations with a counter</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">while</code> — repeats while a condition is true (checked before)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">do...while</code> — always runs once, then checks condition</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">for...of</code> — iterates over values of an array or any sequence</span></li>
+<li><span class="icon">📌</span><span><code class="sn-ic">for...in</code> — iterates over keys of an object</span></li>
+<li><span class="icon">🔑</span><span><code class="sn-ic">forEach</code> — array method, calls a callback per element</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q104.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.2</span>
+      <h2 class="sn-q-text">What is the difference between for, while, and do...while?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// for — when you know the count</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">let</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">3</span>; i++) {
+  console.<span class="tc-fn">log</span>(i); <span class="tc-cm">// 0, 1, 2</span>
+}
+
+<span class="tc-cm">// while — when count is unknown, condition checked first</span>
+<span class="tc-kw">let</span> n = <span class="tc-num">0</span>;
+<span class="tc-kw">while</span> (n &lt; <span class="tc-num">3</span>) {
+  console.<span class="tc-fn">log</span>(n++);
+}
+
+<span class="tc-cm">// do...while — always runs at least once</span>
+<span class="tc-kw">let</span> x = <span class="tc-num">5</span>;
+<span class="tc-kw">do</span> {
+  console.<span class="tc-fn">log</span>(x); <span class="tc-cm">// prints 5 even though condition is false</span>
+} <span class="tc-kw">while</span> (x &lt; <span class="tc-num">3</span>);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.3</span>
+      <h2 class="sn-q-text">When do you use a loop in a Playwright test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Loops appear in test automation in four situations:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Iterating over test data — running the same steps for multiple inputs</span></li>
+<li><span class="icon">💡</span><span>Collecting values from the page — reading text from a list of elements</span></li>
+<li><span class="icon">⚡</span><span>Retry logic — repeating a step until it succeeds or a limit is reached</span></li>
+<li><span class="icon">🎯</span><span>API setup — creating multiple test records before a test runs</span></li>
+</ul>
+<p class="sn-para">The key rule: any loop that contains <code class="sn-ic">await</code> must use <code class="sn-ic">for...of</code>, not <code class="sn-ic">forEach</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q104.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.4</span>
+      <h2 class="sn-q-text">How do you use loops in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, <code class="sn-ic">for...of</code> is the standard async loop. We iterate over test data arrays, sets of URLs to check, and API records to clean up.</p>
+      </div>
+<p class="sn-para">We have an ESLint rule that bans <code class="sn-ic">forEach(async</code>. If anyone writes <code class="sn-ic">array.forEach(async () =&gt; ...)</code>, CI fails immediately.</p>
+    </div>
+  </div>
+
+  <!-- Q104.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.5</span>
+      <h2 class="sn-q-text">What is the difference between for...of and for...in?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">for...of</code> gives you the <strong class="k-teal">values</strong> of a sequence (array, string, Set). <code class="sn-ic">for...in</code> gives you the <strong class="k-teal">keys</strong> of an object (or array indices as strings).</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> fruits = [&quot;apple&quot;, &quot;banana&quot;, &quot;cherry&quot;];
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> fruit <span class="tc-kw">of</span> fruits) {
+  console.<span class="tc-fn">log</span>(fruit);        <span class="tc-cm">// &amp;quot;apple&amp;quot;, &amp;quot;banana&amp;quot;, &amp;quot;cherry&amp;quot;</span>
+}
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> index <span class="tc-kw">in</span> fruits) {
+  console.<span class="tc-fn">log</span>(index);        <span class="tc-cm">// &amp;quot;0&amp;quot;, &amp;quot;1&amp;quot;, &amp;quot;2&amp;quot;  — strings!</span>
+}
+
+<span class="tc-kw">const</span> config = { timeout: <span class="tc-num">5000</span>, retries: <span class="tc-num">2</span> };
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> key <span class="tc-kw">in</span> config) {
+  console.<span class="tc-fn">log</span>(key, config[key]); <span class="tc-cm">// &amp;quot;timeout&amp;quot; 5000, &amp;quot;retries&amp;quot; 2</span>
+}</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">for...of</code> for arrays. Use <code class="sn-ic">for...in</code> for plain objects. Never use <code class="sn-ic">for...in</code> on arrays in production code.</p>
+    </div>
+  </div>
+
+  <!-- Q104.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.6</span>
+      <h2 class="sn-q-text">What is the difference between forEach and for...of?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both iterate over array elements. The critical difference is how they handle <code class="sn-ic">await</code>.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">forEach</code> is a method. It calls a callback and ignores any Promise the callback returns. <code class="sn-ic">await</code> inside <code class="sn-ic">forEach</code> does not pause the loop.</p>
+<p class="sn-para"><code class="sn-ic">for...of</code> is a built-in loop keyword. It respects <code class="sn-ic">await</code> correctly — the loop pauses until the promise finishes before moving to the next item.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ forEach — await is ignored, all run at the same time</span>
+items.<span class="tc-fn">forEach</span>(<span class="tc-kw">async</span> (item) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">save</span>(item); <span class="tc-cm">// forEach doesn't wait for this</span>
+});
+
+<span class="tc-cm">// ✅ for...of — awaits each one before continuing</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> item <span class="tc-kw">of</span> items) {
+  <span class="tc-kw">await</span> <span class="tc-fn">save</span>(item); <span class="tc-cm">// loop pauses here</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.7</span>
+      <h2 class="sn-q-text">Why does await inside forEach not work? What is the fix?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">forEach</code> was designed before <code class="sn-ic">async/await</code>. It calls each callback and moves on immediately, ignoring the returned promise. Errors inside the callback are silently lost. The code after <code class="sn-ic">forEach</code> runs before any async work finishes.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Broken — &amp;quot;Done&amp;quot; prints before any item saves</span>
+items.<span class="tc-fn">forEach</span>(<span class="tc-kw">async</span> (item) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">save</span>(item);
+});
+console.<span class="tc-fn">log</span>(&quot;Done&quot;); <span class="tc-cm">// runs immediately</span>
+
+<span class="tc-cm">// ✅ Fix with for...of</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> item <span class="tc-kw">of</span> items) {
+  <span class="tc-kw">await</span> <span class="tc-fn">save</span>(item);
+}
+console.<span class="tc-fn">log</span>(&quot;Done&quot;); <span class="tc-cm">// runs after all saves complete</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.8</span>
+      <h2 class="sn-q-text">What are break and continue and when do you use them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">break</code> exits the loop immediately. <code class="sn-ic">continue</code> skips the current iteration and moves to the next.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// break — stop when first match found</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> item <span class="tc-kw">of</span> items) {
+  <span class="tc-kw">if</span> (item.status === &quot;error&quot;) {
+    console.<span class="tc-fn">log</span>(&quot;Error found, stopping&quot;);
+    <span class="tc-kw">break</span>;
+  }
+}
+
+<span class="tc-cm">// continue — skip items that don't qualify</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> item <span class="tc-kw">of</span> items) {
+  <span class="tc-kw">if</span> (!item.active) <span class="tc-kw">continue</span>;
+  <span class="tc-fn">process</span>(item); <span class="tc-cm">// only active items reach here</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.9</span>
+      <h2 class="sn-q-text">What is the difference between for...of and forEach for async operations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">for...of</code> pauses at <code class="sn-ic">await</code> and waits for the promise before continuing. <code class="sn-ic">forEach</code> fires all callbacks at once and ignores their promises.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> ids = [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>];
+
+<span class="tc-cm">// forEach — fires all three fetches simultaneously, returns immediately</span>
+ids.<span class="tc-fn">forEach</span>(<span class="tc-kw">async</span> (id) =&gt; {
+  <span class="tc-kw">const</span> data = <span class="tc-kw">await</span> <span class="tc-fn">fetch</span>(<span class="tc-str">`/api/${id}`</span>);
+  console.<span class="tc-fn">log</span>(data); <span class="tc-cm">// may print in any order</span>
+});
+
+<span class="tc-cm">// for...of — fetches one at a time, in order</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> id <span class="tc-kw">of</span> ids) {
+  <span class="tc-kw">const</span> data = <span class="tc-kw">await</span> <span class="tc-fn">fetch</span>(<span class="tc-str">`/api/${id}`</span>);
+  console.<span class="tc-fn">log</span>(data); <span class="tc-cm">// always prints in order: 1, 2, 3</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.10</span>
+      <h2 class="sn-q-text">When should you use for...of vs Promise.all for async loops?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">for...of</code> — sequential. Each item waits for the previous to complete. Use when operations depend on each other, share state, or must run in order.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">Promise.all</code> with <code class="sn-ic">map</code> — parallel. All start at the same time. Use when operations are independent and you want speed.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Sequential — order matters</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> step <span class="tc-kw">of</span> steps) {
+  <span class="tc-kw">await</span> <span class="tc-fn">runStep</span>(step); <span class="tc-cm">// step 2 needs step 1 to finish</span>
+}
+
+<span class="tc-cm">// Parallel — all independent</span>
+<span class="tc-kw">const</span> results = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>(
+  ids.<span class="tc-fn">map</span>(id =&gt; <span class="tc-fn">fetchUser</span>(id)) <span class="tc-cm">// all fetched simultaneously</span>
+);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.11</span>
+      <h2 class="sn-q-text">What is wrong with this async loop — find the bug?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ What is wrong?</span>
+<span class="tc-kw">const</span> urls = [&quot;/home&quot;, &quot;/about&quot;, &quot;/contact&quot;];
+
+urls.<span class="tc-fn">forEach</span>(<span class="tc-kw">async</span> (url) =&gt; {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-fn">checkUrl</span>(url);
+  <span class="tc-kw">if</span> (!response.ok) <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Failed: ${url}`</span>);
+});
+<span class="tc-cm">// Test passes even if all URLs fail — why?</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">forEach</code> ignores the promises. Each callback throws but nobody is listening. The code after <code class="sn-ic">forEach</code> runs immediately and the test ends without ever seeing the errors.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Fix</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> url <span class="tc-kw">of</span> urls) {
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> <span class="tc-fn">checkUrl</span>(url);
+  <span class="tc-kw">if</span> (!response.ok) <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`Failed: ${url}`</span>);
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.12</span>
+      <h2 class="sn-q-text">What is an infinite loop and how do you prevent it in test code?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An infinite loop runs forever because its exit condition never becomes true. It freezes the process.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Infinite — i decrements instead of increments</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">let</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">10</span>; i--) {
+  console.<span class="tc-fn">log</span>(i);
+}</div>
+      </div>
+<p class="sn-para">Prevention: always include a counter limit in <code class="sn-ic">while</code> loops. Never rely on an external condition alone.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> attempts = <span class="tc-num">0</span>;
+<span class="tc-kw">while</span> (!isReady &amp;&amp; attempts &lt; <span class="tc-num">10</span>) {
+  <span class="tc-kw">await</span> <span class="tc-fn">delay</span>(<span class="tc-num">500</span>);
+  isReady = <span class="tc-fn">checkStatus</span>();
+  attempts++;
+}
+<span class="tc-kw">if</span> (!isReady) <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(&quot;Timed out waiting <span class="tc-kw">for</span> ready state&quot;);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q104.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.13</span>
+      <h2 class="sn-q-text">Write a loop that checks each URL in a list sequentially</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> urls = [&quot;/&quot;, &quot;/about&quot;, &quot;/contact&quot;];
+
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> url <span class="tc-kw">of</span> urls) {
+  <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> <span class="tc-fn">fetch</span>(baseUrl + url);
+  <span class="tc-kw">if</span> (res.status !== <span class="tc-num">200</span>) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`${url} returned ${res.status}`</span>);
+  }
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`${url} — OK`</span>);
+}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">for...of</code> with <code class="sn-ic">await</code> ensures each request completes before the next starts. A failure throws immediately with the URL that broke.</p>
+    </div>
+  </div>
+
+  <!-- Q104.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.14</span>
+      <h2 class="sn-q-text">Write code that runs multiple tasks in parallel using Promise.all</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> userIds = [<span class="tc-num">101</span>, <span class="tc-num">102</span>, <span class="tc-num">103</span>];
+
+<span class="tc-cm">// All three fetches run at the same time</span>
+<span class="tc-kw">const</span> users = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>(
+  userIds.<span class="tc-fn">map</span>(id =&gt; <span class="tc-fn">fetchUser</span>(id))
+);
+
+console.<span class="tc-fn">log</span>(users); <span class="tc-cm">// [user101, user102, user103]</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">Promise.all</code> finishes in the time of the slowest request, not the sum of all three. Use it when tasks are independent.</p>
+    </div>
+  </div>
+
+  <!-- Q104.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.15</span>
+      <h2 class="sn-q-text">Describe a loop-related bug you encountered in a Playwright test</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project a test validated status badges in a results table. A team member wrote:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">rows.<span class="tc-fn">forEach</span>(<span class="tc-kw">async</span> (row) =&gt; {
+  <span class="tc-kw">const</span> text = <span class="tc-kw">await</span> row.<span class="tc-fn">getByTestId</span>(&quot;status&quot;).<span class="tc-fn">textContent</span>();
+  <span class="tc-kw">expect</span>(text).<span class="tc-fn">toMatch</span>(/Active|Pending/);
+});</div>
+      </div>
+<p class="sn-para">The test always passed — even when badges were wrong. <code class="sn-ic">forEach</code> returned before any assertion ran. Errors were silently lost.</p>
+<p class="sn-para">The fix was <code class="sn-ic">for...of</code>. After that we added the ESLint rule banning <code class="sn-ic">forEach(async</code>. It has caught three similar bugs since.</p>
+    </div>
+  </div>
+
+  <!-- Q104.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.16</span>
+      <h2 class="sn-q-text">What is the difference between map, filter, and reduce?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">These are the three array methods that transform data without mutating the original array. They appear constantly in test helpers, data builders, and assertion preparation.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> items = [
+  { name: &quot;login&quot;,    passed: <span class="tc-kw">true</span>  },
+  { name: &quot;checkout&quot;, passed: <span class="tc-kw">false</span> },
+  { name: &quot;search&quot;,   passed: <span class="tc-kw">true</span>  },
+];
+
+<span class="tc-cm">// map — transforms each element, returns a same-length array</span>
+<span class="tc-kw">const</span> names = items.<span class="tc-fn">map</span>(item =&gt; item.name);
+<span class="tc-cm">// [&amp;quot;login&amp;quot;, &amp;quot;checkout&amp;quot;, &amp;quot;search&amp;quot;]</span>
+
+<span class="tc-cm">// filter — keeps only elements matching the condition</span>
+<span class="tc-kw">const</span> failures = items.<span class="tc-fn">filter</span>(item =&gt; !item.passed);
+<span class="tc-cm">// [{ name: &amp;quot;checkout&amp;quot;, passed: false }]</span>
+
+<span class="tc-cm">// reduce — accumulates a single result from the array</span>
+<span class="tc-kw">const</span> passCount = items.<span class="tc-fn">reduce</span>((count, item) =&gt; count + (item.passed ? <span class="tc-num">1</span> : <span class="tc-num">0</span>), <span class="tc-num">0</span>);
+<span class="tc-cm">// 2</span></div>
+      </div>
+<p class="sn-para">Rule for test code: <code class="sn-ic">map</code> and <code class="sn-ic">filter</code> are safe with sync operations. If you need <code class="sn-ic">await</code> inside any of them, switch to <code class="sn-ic">for...of</code> instead.</p>
+    </div>
+  </div>
+
+  <!-- Q104.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q104.17</span>
+      <h2 class="sn-q-text">What is array destructuring in a loop and how do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Destructuring unpacks values directly inside the loop variable, avoiding a separate access line. It is used constantly when iterating <code class="sn-ic">Object.entries()</code> or arrays of pairs.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> config = { timeout: <span class="tc-num">5000</span>, retries: <span class="tc-num">2</span>, baseUrl: &quot;https:<span class="tc-cm">//example.com&amp;quot; };</span>
+
+<span class="tc-cm">// Object.entries() gives [key, value] pairs</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> [key, value] <span class="tc-kw">of</span> Object.<span class="tc-fn">entries</span>(config)) {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`${key}: ${value}`</span>);
+}
+<span class="tc-cm">// timeout: 5000</span>
+<span class="tc-cm">// retries: 2</span>
+<span class="tc-cm">// baseUrl: https://example.com</span>
+
+<span class="tc-cm">// Destructuring an array of pairs</span>
+<span class="tc-kw">const</span> testCases = [[&quot;admin&quot;, <span class="tc-kw">true</span>], [&quot;guest&quot;, <span class="tc-kw">false</span>]];
+<span class="tc-kw">for</span> (<span class="tc-kw">const</span> [role, canEdit] <span class="tc-kw">of</span> testCases) {
+  console.<span class="tc-fn">log</span>(<span class="tc-str">`${role} canEdit: ${canEdit}`</span>);
+}</div>
+      </div>
+<p class="sn-para">This pattern appears in test helpers that log config, validate environment variables, or iterate over parameterised test data.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">forEach</code> + <code class="sn-ic">await</code> = silent bug. <code class="sn-ic">forEach</code> ignores promises. Always use <code class="sn-ic">for...of</code> when the loop body has <code class="sn-ic">await</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">for...of</code> gives values. <code class="sn-ic">for...in</code> gives keys. Never <code class="sn-ic">for...in</code> on arrays.</span></li>
+            <li><span class="icon">⭐</span><span>Sequential async → <code class="sn-ic">for...of</code>. Parallel async → <code class="sn-ic">Promise.all</code> with <code class="sn-ic">map</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Always add a counter limit to <code class="sn-ic">while</code> loops in test code.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>The <code class="sn-ic">forEach</code>/<code class="sn-ic">await</code> trap is guaranteed to come up in a Playwright interview.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">map</code> transforms, <code class="sn-ic">filter</code> keeps, <code class="sn-ic">reduce</code> accumulates. None of them honour <code class="sn-ic">await</code> — use <code class="sn-ic">for...of</code> if async work is needed inside.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">for...of</code> with <code class="sn-ic">Object.entries()</code> and destructuring is the clean way to iterate key/value pairs.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

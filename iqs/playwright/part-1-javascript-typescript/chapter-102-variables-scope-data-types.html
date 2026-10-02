@@ -1,0 +1,595 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 102 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Variables,</span> <span class="w2">Scope</span> <span class="w3">&amp;</span> <span class="w4">Data</span> <span class="w5">Types</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers how JavaScript stores and manages data. Interviewers test this topic because weak understanding of <code class="sn-ic">var</code>, <code class="sn-ic">let</code>, <code class="sn-ic">const</code>, and scope is the root cause of many real bugs. Questions move from what each keyword does through scope rules to the tricky behaviour that trips people up.</span>
+  </div>
+
+
+  <!-- Q102.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.1</span>
+      <h2 class="sn-q-text">What is a variable in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A variable is a named container for a value. You declare it once and use the name to read or update the value later.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> score = <span class="tc-num">10</span>;
+score = <span class="tc-num">20</span>;      <span class="tc-cm">// update</span>
+console.<span class="tc-fn">log</span>(score); <span class="tc-cm">// 20</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.2</span>
+      <h2 class="sn-q-text">What is the difference between var, let, and const?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">var</code></th><th class="sn-th-green"><code class="sn-ic">let</code></th><th class="sn-th-purple"><code class="sn-ic">const</code></th></tr></thead>
+          <tbody>
+          <tr><td>Scope</td><td>Function</td><td>Block</td><td>Block</td></tr>
+          <tr><td>Reassignable</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Redeclarable</td><td>Yes</td><td>No</td><td>No</td></tr>
+          <tr><td>Hoisting</td><td><code class="sn-ic">undefined</code></td><td>TDZ error</td><td>TDZ error</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">var</span> x = <span class="tc-num">1</span>;
+<span class="tc-kw">var</span> x = <span class="tc-num">2</span>; <span class="tc-cm">// redeclared — no error (bad)</span>
+
+<span class="tc-kw">let</span> a = <span class="tc-num">1</span>;
+<span class="tc-kw">let</span> a = <span class="tc-num">2</span>; <span class="tc-cm">// SyntaxError — cannot redeclare</span>
+
+<span class="tc-kw">const</span> MAX = <span class="tc-num">100</span>;
+MAX = <span class="tc-num">200</span>; <span class="tc-cm">// TypeError — cannot reassign</span></div>
+      </div>
+<p class="sn-para">**Rule: use <code class="sn-ic">const</code> by default. Use <code class="sn-ic">let</code> when you need to reassign. Never use <code class="sn-ic">var</code>.**</p>
+    </div>
+  </div>
+
+  <!-- Q102.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.3</span>
+      <h2 class="sn-q-text">When would you use let vs const in a project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">const</code> for anything that does not change after assignment — URLs, configuration values, object references, function references.</p>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">let</code> only when the value genuinely needs to change — a counter, a running total, a flag updated inside a condition.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> baseUrl = &quot;https:<span class="tc-cm">//example.com&amp;quot;; // never changes</span>
+<span class="tc-kw">const</span> items   = [];                    <span class="tc-cm">// reference is const, array can still grow</span>
+
+<span class="tc-kw">let</span> count = <span class="tc-num">0</span>;
+count++;        <span class="tc-cm">// needs to change — let is correct</span></div>
+      </div>
+<p class="sn-para">In practice, around 90% of variables should be <code class="sn-ic">const</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q102.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.4</span>
+      <h2 class="sn-q-text">How do you use const and let in your automation project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project every page object, locator, and helper reference is <code class="sn-ic">const</code> — they are assigned once and never reassigned. We use <code class="sn-ic">let</code> only in a test body when building a value conditionally across a few steps.</p>
+      </div>
+<p class="sn-para">We enforce this with ESLint's <code class="sn-ic">prefer-const</code> and <code class="sn-ic">no-var</code> rules. Any <code class="sn-ic">let</code> that is never reassigned is flagged automatically in CI.</p>
+    </div>
+  </div>
+
+  <!-- Q102.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.5</span>
+      <h2 class="sn-q-text">What are the primitive data types in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Seven primitives: <code class="sn-ic">string</code>, <code class="sn-ic">number</code>, <code class="sn-ic">boolean</code>, <code class="sn-ic">null</code>, <code class="sn-ic">undefined</code>, <code class="sn-ic">bigint</code>, <code class="sn-ic">symbol</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">&quot;hello&quot;        <span class="tc-cm">// string</span>
+<span class="tc-num">42</span>             <span class="tc-cm">// number</span>
+<span class="tc-kw">true</span>           <span class="tc-cm">// boolean</span>
+<span class="tc-kw">null</span>           <span class="tc-cm">// intentional absence</span>
+<span class="tc-kw">undefined</span>      <span class="tc-cm">// unassigned</span>
+9007199n       <span class="tc-cm">// bigint</span>
+Symbol(&quot;id&quot;)   <span class="tc-cm">// symbol</span></div>
+      </div>
+<p class="sn-para">In test automation you mostly use <code class="sn-ic">string</code> (URLs, expected text), <code class="sn-ic">number</code> (status codes, counts, timeouts), and <code class="sn-ic">boolean</code> (flags).</p>
+    </div>
+  </div>
+
+  <!-- Q102.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.6</span>
+      <h2 class="sn-q-text">What is the difference between null and undefined?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">undefined</code> — JavaScript's default empty state. A variable declared but not yet assigned.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">null</code> — a deliberate choice by the programmer meaning "no value here".</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">let</span> x;          <span class="tc-cm">// undefined — not assigned yet</span>
+<span class="tc-kw">let</span> y = <span class="tc-kw">null</span>;   <span class="tc-cm">// null — intentionally empty</span></div>
+      </div>
+<p class="sn-para">One quirk: <code class="sn-ic">typeof null === &quot;object&quot;</code> — a historical JavaScript bug. To check for null, always use <code class="sn-ic">=== null</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q102.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.7</span>
+      <h2 class="sn-q-text">What is type coercion in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">JavaScript automatically changes one type to match another when you mix types together — for example, a string next to a number. This is called type coercion.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">&quot;<span class="tc-num">5</span>&quot; + <span class="tc-num">3</span>     <span class="tc-cm">// &amp;quot;53&amp;quot;  — number coerced to string</span>
+&quot;<span class="tc-num">5</span>&quot; - <span class="tc-num">3</span>     <span class="tc-cm">// 2     — string coerced to number</span>
+<span class="tc-kw">true</span> + <span class="tc-num">1</span>    <span class="tc-cm">// 2     — boolean coerced to number</span></div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">+</code> operator is the trap — it concatenates when either side is a string instead of adding.</p>
+<p class="sn-para">Always use <code class="sn-ic">===</code> to avoid silent coercion bugs. <code class="sn-ic">===</code> never converts types.</p>
+    </div>
+  </div>
+
+  <!-- Q102.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.8</span>
+      <h2 class="sn-q-text">What is hoisting in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hoisting means JavaScript moves your variable and function declarations to the top before running any code.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">var</code> is hoisted and initialised to <code class="sn-ic">undefined</code> — you can read it before its line without an error (but get <code class="sn-ic">undefined</code>).</p>
+<p class="sn-para"><code class="sn-ic">let</code> and <code class="sn-ic">const</code> are hoisted but not initialised — reading them before their declaration throws a <code class="sn-ic">ReferenceError</code>. This gap — from the block start to the declaration line — is called the TDZ (Temporal Dead Zone).</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">console.<span class="tc-fn">log</span>(a); <span class="tc-cm">// undefined — var hoisted</span>
+<span class="tc-kw">var</span> a = <span class="tc-num">5</span>;
+
+console.<span class="tc-fn">log</span>(b); <span class="tc-cm">// ReferenceError — TDZ</span>
+<span class="tc-kw">let</span> b = <span class="tc-num">5</span>;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.9</span>
+      <h2 class="sn-q-text">What is scope in JavaScript? What are the three types?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Scope decides which code can see a variable.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Global</strong> — declared outside all functions and blocks. Visible everywhere.</p>
+<p class="sn-para"><strong class="k-blue">Function</strong> — declared inside a function. Only visible inside that function.</p>
+<p class="sn-para"><strong class="k-blue">Block</strong> — declared with <code class="sn-ic">let</code> or <code class="sn-ic">const</code> inside <code class="sn-ic">{ }</code>. Only visible inside that block.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> appName = &quot;MyApp&quot;;   <span class="tc-cm">// global</span>
+
+<span class="tc-kw">function</span> <span class="tc-fn">greet</span>() {
+  <span class="tc-kw">const</span> msg = &quot;Hello&quot;;     <span class="tc-cm">// function scope</span>
+  console.<span class="tc-fn">log</span>(appName);    <span class="tc-cm">// ✅ can see global</span>
+  console.<span class="tc-fn">log</span>(msg);        <span class="tc-cm">// ✅ can see own scope</span>
+}
+
+console.<span class="tc-fn">log</span>(msg);          <span class="tc-cm">// ❌ ReferenceError</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.10</span>
+      <h2 class="sn-q-text">What is the Temporal Dead Zone (TDZ)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">TDZ stands for Temporal Dead Zone. It is the gap from the start of a block until the line where <code class="sn-ic">let</code> or <code class="sn-ic">const</code> is declared. The variable exists in memory but you cannot read it yet.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">console.<span class="tc-fn">log</span>(name); <span class="tc-cm">// ReferenceError: Cannot access 'name' before initialization</span>
+<span class="tc-kw">const</span> name = &quot;Alice&quot;;</div>
+      </div>
+<p class="sn-para">This is intentional — it prevents the silent <code class="sn-ic">undefined</code> bug that <code class="sn-ic">var</code> hoisting creates. An error is better than a wrong value.</p>
+    </div>
+  </div>
+
+  <!-- Q102.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.11</span>
+      <h2 class="sn-q-text">What is the difference between global scope and block scope?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Global scope — variable lives outside all blocks, accessible everywhere.</p>
+      </div>
+<p class="sn-para">Block scope — variable lives inside <code class="sn-ic">{ }</code>, dies when the block ends.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> TAX = <span class="tc-num">0.20</span>;          <span class="tc-cm">// global — accessible everywhere</span>
+
+<span class="tc-kw">if</span> (<span class="tc-kw">true</span>) {
+  <span class="tc-kw">const</span> discount = <span class="tc-num">0.10</span>;   <span class="tc-cm">// block — only inside this { }</span>
+  console.<span class="tc-fn">log</span>(TAX);        <span class="tc-cm">// ✅ can see global</span>
+  console.<span class="tc-fn">log</span>(discount);   <span class="tc-cm">// ✅ can see block variable</span>
+}
+
+console.<span class="tc-fn">log</span>(TAX);          <span class="tc-cm">// ✅ 0.20</span>
+console.<span class="tc-fn">log</span>(discount);     <span class="tc-cm">// ❌ ReferenceError — block is gone</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.12</span>
+      <h2 class="sn-q-text">What is wrong with using var in a loop — show the bug and fix it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">var</code> is function-scoped. All iterations share the same variable. When a callback fires later, it reads the final value — not the value at the time it was created.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ var — all callbacks read i = 3</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">var</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">3</span>; i++) {
+  <span class="tc-fn">setTimeout</span>(() =&gt; console.<span class="tc-fn">log</span>(i), <span class="tc-num">0</span>);
+}
+<span class="tc-cm">// prints: 3, 3, 3</span>
+
+<span class="tc-cm">// ✅ let — each iteration gets its own i</span>
+<span class="tc-kw">for</span> (<span class="tc-kw">let</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">3</span>; i++) {
+  <span class="tc-fn">setTimeout</span>(() =&gt; console.<span class="tc-fn">log</span>(i), <span class="tc-num">0</span>);
+}
+<span class="tc-cm">// prints: 0, 1, 2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.13</span>
+      <h2 class="sn-q-text">Write code showing the difference between var, let, and const in a block</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// var leaks out of the if block</span>
+<span class="tc-kw">if</span> (<span class="tc-kw">true</span>) {
+  <span class="tc-kw">var</span> leaky = &quot;I escaped&quot;;
+}
+console.<span class="tc-fn">log</span>(leaky); <span class="tc-cm">// &amp;quot;I escaped&amp;quot; — bad</span>
+
+<span class="tc-cm">// let stays inside</span>
+<span class="tc-kw">if</span> (<span class="tc-kw">true</span>) {
+  <span class="tc-kw">let</span> contained = &quot;I stay here&quot;;
+}
+console.<span class="tc-fn">log</span>(contained); <span class="tc-cm">// ReferenceError — good</span>
+
+<span class="tc-cm">// const — cannot reassign</span>
+<span class="tc-kw">const</span> MAX = <span class="tc-num">100</span>;
+MAX = <span class="tc-num">200</span>; <span class="tc-cm">// TypeError</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.14</span>
+      <h2 class="sn-q-text">Write code that demonstrates the var loop bug vs the let fix</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ var bug — closures all share the same variable</span>
+<span class="tc-kw">const</span> fns = [];
+<span class="tc-kw">for</span> (<span class="tc-kw">var</span> i = <span class="tc-num">0</span>; i &lt; <span class="tc-num">3</span>; i++) {
+  fns.<span class="tc-fn">push</span>(() =&gt; i);
+}
+console.<span class="tc-fn">log</span>(fns[<span class="tc-num">0</span>](), fns[<span class="tc-num">1</span>](), fns[<span class="tc-num">2</span>]()); <span class="tc-cm">// 3, 3, 3</span>
+
+<span class="tc-cm">// ✅ let fix — each iteration has its own binding</span>
+<span class="tc-kw">const</span> fns2 = [];
+<span class="tc-kw">for</span> (<span class="tc-kw">let</span> j = <span class="tc-num">0</span>; j &lt; <span class="tc-num">3</span>; j++) {
+  fns2.<span class="tc-fn">push</span>(() =&gt; j);
+}
+console.<span class="tc-fn">log</span>(fns2[<span class="tc-num">0</span>](), fns2[<span class="tc-num">1</span>](), fns2[<span class="tc-num">2</span>]()); <span class="tc-cm">// 0, 1, 2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q102.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.15</span>
+      <h2 class="sn-q-text">Describe a scope or type bug that broke something in your project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project an API was returning a status field as the string <code class="sn-ic">&quot;200&quot;</code> instead of the number <code class="sn-ic">200</code>. Our assertion used <code class="sn-ic">==</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ passed silently — coercion hid the type bug</span>
+<span class="tc-kw">expect</span>(status == <span class="tc-num">200</span>).<span class="tc-fn">toBeTruthy</span>();</div>
+      </div>
+<p class="sn-para">A discount calculation later broke because <code class="sn-ic">&quot;200&quot; + 1</code> gives <code class="sn-ic">&quot;2001&quot;</code>, not <code class="sn-ic">201</code>. We fixed assertions to use <code class="sn-ic">===</code> and added the <code class="sn-ic">eqeqeq</code> ESLint rule to enforce it project-wide.</p>
+    </div>
+  </div>
+
+  <!-- Q102.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.16</span>
+      <h2 class="sn-q-text">What is the difference between == and ===?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">==</code> is the loose equality operator. It coerces types before comparing. <code class="sn-ic">===</code> is the strict equality operator. It never converts types.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-num">0</span> == <span class="tc-kw">false</span>          <span class="tc-cm">// true  — coercion</span>
+<span class="tc-num">0</span> === <span class="tc-kw">false</span>         <span class="tc-cm">// false — no coercion</span>
+
+<span class="tc-kw">null</span> == <span class="tc-kw">undefined</span>   <span class="tc-cm">// true  — special rule in the spec</span>
+<span class="tc-kw">null</span> === <span class="tc-kw">undefined</span>  <span class="tc-cm">// false</span>
+
+&quot;<span class="tc-num">1</span>&quot; == <span class="tc-num">1</span>            <span class="tc-cm">// true  — string coerced to number</span>
+&quot;<span class="tc-num">1</span>&quot; === <span class="tc-num">1</span>           <span class="tc-cm">// false</span></div>
+      </div>
+<p class="sn-para">Always use <code class="sn-ic">===</code>. The <code class="sn-ic">==</code> coercion rules are complex enough that even experienced engineers misremember them. ESLint's <code class="sn-ic">eqeqeq</code> rule enforces <code class="sn-ic">===</code> project-wide — it belongs in every Playwright project's ESLint config alongside <code class="sn-ic">prefer-const</code> and <code class="sn-ic">no-var</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q102.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.17</span>
+      <h2 class="sn-q-text">What is the difference between a primitive and a reference type?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Primitives</strong> (<code class="sn-ic">string</code>, <code class="sn-ic">number</code>, <code class="sn-ic">boolean</code>, <code class="sn-ic">null</code>, <code class="sn-ic">undefined</code>, <code class="sn-ic">bigint</code>, <code class="sn-ic">symbol</code>) are stored by value. Copying a primitive copies the actual value.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Reference types</strong> (objects, arrays, functions) are stored by reference. The variable holds a pointer to data in memory, not the data itself.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Primitive — copy by value</span>
+<span class="tc-kw">let</span> a = <span class="tc-num">5</span>;
+<span class="tc-kw">let</span> b = a;
+b = <span class="tc-num">10</span>;
+console.<span class="tc-fn">log</span>(a); <span class="tc-cm">// 5 — unchanged</span>
+
+<span class="tc-cm">// Reference — copy by reference</span>
+<span class="tc-kw">const</span> arr = [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>];
+<span class="tc-kw">const</span> arr2 = arr;
+arr2.<span class="tc-fn">push</span>(<span class="tc-num">4</span>);
+console.<span class="tc-fn">log</span>(arr); <span class="tc-cm">// [1, 2, 3, 4] — original changed!</span></div>
+      </div>
+<p class="sn-para">This explains why <code class="sn-ic">const arr = []</code> does not mean the array is immutable. <code class="sn-ic">const</code> prevents reassigning the variable — it does not prevent mutating the object it points to. The binding is constant; the data is not.</p>
+    </div>
+  </div>
+
+  <!-- Q102.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q102.18</span>
+      <h2 class="sn-q-text">What does typeof return and when would you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">typeof</code> returns a string describing the runtime type of a value.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">typeof</span> &quot;hello&quot;      <span class="tc-cm">// &amp;quot;string&amp;quot;</span>
+<span class="tc-kw">typeof</span> <span class="tc-num">42</span>           <span class="tc-cm">// &amp;quot;number&amp;quot;</span>
+<span class="tc-kw">typeof</span> <span class="tc-kw">true</span>         <span class="tc-cm">// &amp;quot;boolean&amp;quot;</span>
+<span class="tc-kw">typeof</span> <span class="tc-kw">undefined</span>    <span class="tc-cm">// &amp;quot;undefined&amp;quot;</span>
+<span class="tc-kw">typeof</span> <span class="tc-kw">null</span>         <span class="tc-cm">// &amp;quot;object&amp;quot;   ← historical bug — use === null instead</span>
+<span class="tc-kw">typeof</span> {}           <span class="tc-cm">// &amp;quot;object&amp;quot;</span>
+<span class="tc-kw">typeof</span> []           <span class="tc-cm">// &amp;quot;object&amp;quot;   ← arrays are also &amp;quot;object&amp;quot;</span>
+<span class="tc-kw">typeof</span> <span class="tc-kw">function</span>(){} <span class="tc-cm">// &amp;quot;function&amp;quot;</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">typeof</code> in test helpers when reading values from environment variables or configuration — those come in as strings and sometimes need to be validated before use.</p>
+<p class="sn-para">Two traps to know: <code class="sn-ic">typeof null</code> returns <code class="sn-ic">&quot;object&quot;</code> — always check for null with <code class="sn-ic">=== null</code>. And <code class="sn-ic">typeof []</code> returns <code class="sn-ic">&quot;object&quot;</code> — use <code class="sn-ic">Array.isArray()</code> to distinguish arrays from plain objects.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">const</code> by default. <code class="sn-ic">let</code> when you need to reassign. Never <code class="sn-ic">var</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">var</code> is function-scoped and leaks from blocks. <code class="sn-ic">let</code>/<code class="sn-ic">const</code> are block-scoped.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">undefined</code> = not yet assigned. <code class="sn-ic">null</code> = deliberately empty.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">===</code> never coerces types. Always use it over <code class="sn-ic">==</code>. ESLint's <code class="sn-ic">eqeqeq</code> enforces this.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>TDZ: <code class="sn-ic">let</code>/<code class="sn-ic">const</code> throw if read before their declaration line.</span></li>
+            <li><span class="icon">⭐</span><span>The <code class="sn-ic">var</code>-in-loop closure bug is a classic interview question — know it cold.</span></li>
+            <li><span class="icon">⭐</span><span>Primitives are copied by value. Reference types (objects, arrays) are copied by reference — <code class="sn-ic">const arr = []</code> does not make the array immutable.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">typeof null</code> returns <code class="sn-ic">&quot;object&quot;</code> (historical bug). Use <code class="sn-ic">=== null</code> to check for null. Use <code class="sn-ic">Array.isArray()</code> for arrays.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

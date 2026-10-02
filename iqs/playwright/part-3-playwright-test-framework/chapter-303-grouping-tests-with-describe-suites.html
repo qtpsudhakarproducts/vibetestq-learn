@@ -1,0 +1,798 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 303 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Grouping</span> <span class="w2">Tests</span> <span class="w3">with</span> <span class="w4">describe</span> <span class="w5">&amp;</span> <span class="w6">Suites</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers <code class="sn-ic">test.describe()</code> — Playwright's mechanism for grouping related tests under a shared name. Interviewers ask about grouping because it is where test structure decisions become visible: how tests share setup, how configuration is scoped, how reports are organised, and how execution modes work. Candidates who understand describe deeply write maintainable suites; those who don't produce flat, unmanageable spec files.</span>
+  </div>
+
+
+  <!-- Q303.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.1</span>
+      <h2 class="sn-q-text">What is test.describe() and why does it exist?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.describe()</code> groups related tests under a shared name. It does three distinct things:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">1. Creates hierarchy in reports</strong> — tests appear under their group name, not as a flat list. When failures occur, you see which feature area broke.</p>
+<p class="sn-para"><strong class="k-blue">2. Scopes hooks</strong> — <code class="sn-ic">beforeEach</code>, <code class="sn-ic">afterEach</code>, <code class="sn-ic">beforeAll</code>, <code class="sn-ic">afterAll</code> declared inside a describe apply only to tests in that describe. They do not leak into other groups.</p>
+<p class="sn-para"><strong class="k-blue">3. Scopes test.use()</strong> — configuration overrides (viewport, locale, baseURL) declared inside a describe apply only to tests inside it.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login — Standard Authentication'</span>, () =&gt; {
+  <span class="tc-kw">test</span>(<span class="tc-str">'valid credentials redirect to dashboard @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'invalid password shows error @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login — Password Reset'</span>, () =&gt; {
+  <span class="tc-kw">test</span>(<span class="tc-str">'forgot password link opens reset page @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'reset with expired token shows error @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para">The CI report now groups failures by feature area. Two failures under "Password Reset" tell you instantly where the problem is.</p>
+    </div>
+  </div>
+
+  <!-- Q303.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.2</span>
+      <h2 class="sn-q-text">What is the full test title in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The full test title is the concatenation of all describe names and the test name, joined by <code class="sn-ic">&gt;</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">[Outer describe] &gt; [Inner describe] &gt; [Test title]</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Password Reset'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'sends email for valid address @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  });
+});
+<span class="tc-cm">// Full title: &amp;quot;Login &amp;gt; Password Reset &amp;gt; sends email for valid address @regression&amp;quot;</span></div>
+      </div>
+<p class="sn-para">The full title is what:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">--grep</code> matches on the CLI</span></li>
+<li><span class="icon">💡</span><span>HTML and JUnit reports display</span></li>
+<li><span class="icon">⚡</span><span>Test IDs in parallelism are based on</span></li>
+</ul>
+<p class="sn-para">Keep full titles short enough to read at a glance in a CI failure report.</p>
+    </div>
+  </div>
+
+  <!-- Q303.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.3</span>
+      <h2 class="sn-q-text">How do you use describe to scope hooks in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, describe blocks let different test groups set up their own starting state without interfering with each other.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee List'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+    <span class="tc-cm">// Only runs before tests in this group</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'shows all employees by default @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'search filters results correctly @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Add Employee'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees/add'</span>);
+    <span class="tc-cm">// Completely separate setup — does not affect Employee List tests</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'saves with valid data @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'shows error for duplicate ID @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para">Without describe, a file-level <code class="sn-ic">beforeEach</code> would navigate to <code class="sn-ic">/employees</code> before every test — including tests that need to start on <code class="sn-ic">/employees/add</code>. Describe makes each group own its own setup.</p>
+    </div>
+  </div>
+
+  <!-- Q303.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.4</span>
+      <h2 class="sn-q-text">What is the hook execution order in nested describes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hooks execute from outer to inner on setup, and inner to outer on teardown:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Outer'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> () =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'outer beforeEach'</span>));
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ()  =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'outer afterEach'</span>));
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Inner'</span>, () =&gt; {
+    <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> () =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'inner beforeEach'</span>));
+    <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ()  =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'inner afterEach'</span>));
+
+    <span class="tc-kw">test</span>(<span class="tc-str">'runs'</span>, <span class="tc-kw">async</span> () =&gt; console.<span class="tc-fn">log</span>(<span class="tc-str">'test body'</span>));
+  });
+});</div>
+      </div>
+<p class="sn-para">Output for the one test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">outer beforeEach
+inner beforeEach
+test body
+inner afterEach
+outer afterEach</div>
+      </div>
+<p class="sn-para">This mirrors a "peel the onion" model — outer setup wraps inner setup. The most common practical use: outer <code class="sn-ic">beforeEach</code> logs in (shared auth), inner <code class="sn-ic">beforeEach</code> navigates to the specific page for that group.</p>
+    </div>
+  </div>
+
+  <!-- Q303.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.5</span>
+      <h2 class="sn-q-text">What does test.use() do inside a describe?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.use()</code> overrides configuration options for all tests inside the describe. Outside the describe, the original configuration is restored.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Mobile Layout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ viewport: { width: <span class="tc-num">375</span>, height: <span class="tc-num">812</span> } }); <span class="tc-cm">// iPhone 14 viewport</span>
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'navigation menu collapses on mobile @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// This test runs with the mobile viewport</span>
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'footer is visible without scrolling @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// Also uses the mobile viewport</span>
+  });
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'checkout is accessible at desktop size @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Back to the global viewport — test.use() only applied inside the describe</span>
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.use()</code> is the correct way to apply locale, baseURL, or viewport overrides to a subset of tests — without changing the global config and without duplicating <code class="sn-ic">test.use()</code> in every individual test.</p>
+    </div>
+  </div>
+
+  <!-- Q303.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.6</span>
+      <h2 class="sn-q-text">What is the difference between test.describe.only and test.only?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.only()</code> marks one test to run exclusively. All other tests — in the same file and across the entire project — are skipped.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.describe.only()</code> marks one describe group to run exclusively. Tests outside that group are skipped. Tests inside the group all run normally.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">only</span>(<span class="tc-str">'Login'</span>, () =&gt; {
+  <span class="tc-cm">// All tests in this describe run</span>
+  <span class="tc-kw">test</span>(<span class="tc-str">'valid credentials @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'invalid password @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Dashboard'</span>, () =&gt; {
+  <span class="tc-cm">// All tests in this describe are skipped</span>
+  <span class="tc-kw">test</span>(<span class="tc-str">'widgets load @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para">Both forms are local debugging tools. Neither should ever be committed. Both are blocked by <code class="sn-ic">forbidOnly: !!process.env.CI</code> in <code class="sn-ic">playwright.config.ts</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q303.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.7</span>
+      <h2 class="sn-q-text">What is test.describe.skip?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.describe.skip()</code> skips all tests inside the group. They appear in the report as skipped — they are not hidden.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">skip</span>(<span class="tc-str">'Recruitment Module'</span>, () =&gt; {
+  <span class="tc-cm">// All tests skipped — module not deployed in this environment</span>
+  <span class="tc-kw">test</span>(<span class="tc-str">'post vacancy @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'shortlist candidate @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para">This is equivalent to marking every test in the group with <code class="sn-ic">test.skip</code>, but in one declaration rather than many. The reason should still be documented — either in the describe name itself or as a comment.</p>
+    </div>
+  </div>
+
+  <!-- Q303.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.8</span>
+      <h2 class="sn-q-text">What is the difference between describe.skip and describe.fixme?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.describe.skip()</code> — all tests in the group are intentionally disabled.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">test.describe.fixme()</code> — all tests in the group are broken and need repair. They appear under the "Fixme" category in the HTML report, not "Skipped".</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Skip — module intentionally disabled</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">skip</span>(<span class="tc-str">'Beta Feature — Not in Test Environment'</span>, () =&gt; {
+  <span class="tc-kw">test</span>(<span class="tc-str">'feature works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});
+
+<span class="tc-cm">// Fixme — tests broken after a regression</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">fixme</span>(<span class="tc-str">'Leave Management — Broken after v3.0 — ticket  S2 
+  test('</span>apply leave shows confirmation<span class="tc-str">', async ({ page }) =&amp;gt; { ... });
+  test('</span>leave balance updates after approval', <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para">The distinction matters for team communication. A fixme group signals "this is broken and needs someone to fix it." A skip group signals "this is off by choice." Both are visible in the report; the categories are separate.</p>
+    </div>
+  </div>
+
+  <!-- Q303.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.9</span>
+      <h2 class="sn-q-text">What is describe.parallel and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.describe.configure({ mode: 'parallel' })</code> makes all tests inside the describe run concurrently — in separate workers simultaneously, rather than sequentially in one worker.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Independent API Tests'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ mode: <span class="tc-str">'parallel'</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'GET /users returns 200'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'POST /users creates record'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'DELETE /users removes record'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Only use parallel mode when tests are fully independent</strong> — they must not share any state, must not depend on execution order, and must not modify shared data that other tests in the group read.</p>
+<p class="sn-para">By default, Playwright already runs test files in parallel across workers. <code class="sn-ic">describe.parallel</code> goes further — it runs tests within one file concurrently. This is rarely needed unless tests within the file are completely isolated and the file has many slow tests.</p>
+    </div>
+  </div>
+
+  <!-- Q303.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.10</span>
+      <h2 class="sn-q-text">What is describe.serial and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.describe.configure({ mode: 'serial' })</code> forces all tests inside the describe to run in the same worker, in order, one at a time. If one test fails, all subsequent tests in the group are skipped automatically.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Multi-Step Checkout Wizard'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ mode: <span class="tc-str">'serial'</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'step 1 — cart review'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'step 2 — shipping details'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'step 3 — payment'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'step 4 — confirmation'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Use serial only for genuinely sequential workflows</strong> where each step depends on the previous one completing successfully. This is uncommon — most test suites should be written so every test is independent.</p>
+<p class="sn-para">Serial mode is the opposite of good test design for most scenarios. When you find yourself reaching for it, ask first: can this be restructured into independent tests that each set up their own state?</p>
+    </div>
+  </div>
+
+  <!-- Q303.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.11</span>
+      <h2 class="sn-q-text">How deep should you nest describe blocks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Two levels maximum. A third level is a signal that the spec file is too broad and should be split into separate files.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Two levels — clear, maintainable</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Checkout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Payment Methods'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'credit card payment completes @smoke'</span>, ...)
+    <span class="tc-kw">test</span>(<span class="tc-str">'PayPal payment completes @regression'</span>, ...)
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Shipping Options'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'standard shipping calculates correct total @smoke'</span>, ...)
+    <span class="tc-kw">test</span>(<span class="tc-str">'express shipping calculates correct total @regression'</span>, ...)
+  });
+});
+
+<span class="tc-cm">// ❌ Three levels — too deep, spec file is doing too much</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Checkout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Payment Methods'</span>, () =&gt; {
+    <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Credit Card'</span>, () =&gt; { <span class="tc-cm">// split this into its own file</span>
+      <span class="tc-kw">test</span>(<span class="tc-str">'valid card completes payment @smoke'</span>, ...)
+    });
+  });
+});</div>
+      </div>
+<p class="sn-para">The full test title also gets longer with each nesting level. Very deep nesting produces titles that are too long to read in the CI report.</p>
+    </div>
+  </div>
+
+  <!-- Q303.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.12</span>
+      <h2 class="sn-q-text">What is the difference between a file-level beforeEach and a describe-scoped beforeEach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <code class="sn-ic">beforeEach</code> at the file level (outside any describe) runs before every test in the entire file.</p>
+      </div>
+<p class="sn-para">A <code class="sn-ic">beforeEach</code> inside a describe runs only before tests inside that describe.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// File-level — runs before every test in the file</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin@example.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'password'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employee Module'</span>, () =&gt; {
+  <span class="tc-cm">// Group-level — runs only before tests in this describe</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'employee list loads @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// Two beforeEach ran: file-level (login) then describe-level (navigate)</span>
+  });
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'dashboard loads after login @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Only the file-level beforeEach ran (login)</span>
+  <span class="tc-cm">// The describe-level beforeEach did NOT run here</span>
+});</div>
+      </div>
+<p class="sn-para">The two levels compose: outer runs first, inner runs second. The file-level is for setup that applies everywhere; the describe-level is for setup specific to that group.</p>
+    </div>
+  </div>
+
+  <!-- Q303.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.13</span>
+      <h2 class="sn-q-text">How do you use test.describe to configure different viewports for different test groups?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Desktop Layout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ viewport: { width: <span class="tc-num">1440</span>, height: <span class="tc-num">900</span> } });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'sidebar is visible @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>)).<span class="tc-fn">toBeVisible</span>();
+  });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Tablet Layout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ viewport: { width: <span class="tc-num">768</span>, height: <span class="tc-num">1024</span> } });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'sidebar collapses into hamburger @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Menu'</span> })).<span class="tc-fn">toBeVisible</span>();
+  });
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Mobile Layout'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ viewport: { width: <span class="tc-num">375</span>, height: <span class="tc-num">812</span> } });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'sidebar is hidden by default @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>)).<span class="tc-fn">toBeHidden</span>();
+  });
+});</div>
+      </div>
+<p class="sn-para">Each describe group runs its tests at its own viewport. The global viewport from <code class="sn-ic">playwright.config.ts</code> applies everywhere else. No configuration change is needed between groups — <code class="sn-ic">test.use()</code> scopes it automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q303.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.14</span>
+      <h2 class="sn-q-text">Write code that uses nested describe with scoped hooks and test.use().</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Settings Module'</span>, () =&gt; {
+  <span class="tc-cm">// File-level setup — applies to all groups in this file</span>
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// Assume auth is handled by storageState in the fixture</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/settings'</span>);
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Profile Settings'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'displays current user name @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'profile-name'</span>)).<span class="tc-fn">toBeVisible</span>();
+    });
+
+    <span class="tc-kw">test</span>(<span class="tc-str">'saves updated display name @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Display Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice Updated'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Profile saved'</span>);
+    });
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Notification Settings'</span>, () =&gt; {
+    <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+      <span class="tc-cm">// Navigate to the notifications sub-page</span>
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'link'</span>, { name: <span class="tc-str">'Notifications'</span> }).<span class="tc-fn">click</span>();
+    });
+
+    <span class="tc-kw">test</span>(<span class="tc-str">'email notifications are enabled by default @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email notifications'</span>)).<span class="tc-fn">toBeChecked</span>();
+    });
+
+    <span class="tc-kw">test</span>(<span class="tc-str">'can disable push notifications @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Push notifications'</span>).<span class="tc-fn">uncheck</span>();
+      <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Preferences saved'</span>);
+    });
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Accessibility Settings'</span>, () =&gt; {
+    <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ colorScheme: <span class="tc-str">'dark'</span> }); <span class="tc-cm">// Dark mode for this group only</span>
+
+    <span class="tc-kw">test</span>(<span class="tc-str">'dark mode is applied when system preference is dark @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'body'</span>)).<span class="tc-fn">toHaveCSS</span>(<span class="tc-str">'background-color'</span>, <span class="tc-str">'rgb(18, 18, 18)'</span>);
+    });
+  });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q303.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.15</span>
+      <h2 class="sn-q-text">How do you run only tests in a specific describe group from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use <code class="sn-ic">--grep</code> with the describe name. The grep pattern matches against the full test title, which includes the describe prefix:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;Login&quot;
+
+npx playwright test --grep &quot;Login &gt; Password Reset&quot;
+
+npx playwright test --grep &quot;Login.*@smoke&quot;</div>
+      </div>
+<p class="sn-para">The pattern is a regex, so partial matches work. <code class="sn-ic">--grep &quot;Login&quot;</code> matches any full title containing "Login" — including nested describes like "Login > Password Reset > sends email for valid address @regression".</p>
+    </div>
+  </div>
+
+  <!-- Q303.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.16</span>
+      <h2 class="sn-q-text">What is the one top-level describe per file rule?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Each spec file should have exactly one top-level <code class="sn-ic">test.describe()</code>. The describe name should match the file name.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// employees.spec.ts</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Employees'</span>, () =&gt; {
+  <span class="tc-cm">// All tests in this file belong here</span>
+});
+
+<span class="tc-cm">// NOT:</span>
+<span class="tc-cm">// test.describe('Employees', () =&amp;gt; { ... });</span>
+<span class="tc-cm">// test.describe('Leave', () =&amp;gt; { ... }); // &amp;lt;- belongs in leave.spec.ts</span></div>
+      </div>
+<p class="sn-para">This rule exists for two reasons:</p>
+<ol class="sn-olist">
+<li><strong class="k-yellow">Parallelism</strong>: Playwright runs spec files in parallel. If a file has</li>
+</ol>
+<p class="sn-para">   two unrelated describe groups, they always run in the same worker and    cannot be parallelised against each other. Separate files can run    on separate workers simultaneously.</p>
+<ol class="sn-olist">
+<li><strong class="k-yellow">Maintainability</strong>: A file with one feature area is easier to understand,</li>
+</ol>
+<p class="sn-para">   faster to search, and cleaner to track in version control. Changes to    the employees feature only affect <code class="sn-ic">employees.spec.ts</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q303.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.17</span>
+      <h2 class="sn-q-text">How did your project organise describe structure for a large module?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, the checkout module has 60+ tests covering cart, shipping, payment, and confirmation. We split them into four files — one per sub-feature. Each file has one top-level describe. Within each file, we use two levels of nesting for happy path vs edge case groups.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">tests/
+  checkout/
+    cart.spec.ts           # test.describe('Cart')
+    shipping.spec.ts       # test.describe('Shipping')
+    payment.spec.ts        # test.describe('Payment')
+    confirmation.spec.ts   # test.describe('Confirmation')</div>
+      </div>
+<p class="sn-para">Inside <code class="sn-ic">payment.spec.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Payment'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// Navigate to checkout with a pre-filled cart (via API setup)</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/checkout/payment'</span>);
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Credit Card'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'valid card completes payment @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+    <span class="tc-kw">test</span>(<span class="tc-str">'expired card shows error @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+    <span class="tc-kw">test</span>(<span class="tc-str">'invalid CVC shows error @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'PayPal'</span>, () =&gt; {
+    <span class="tc-kw">test</span>(<span class="tc-str">'PayPal redirect opens popup @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+    <span class="tc-kw">test</span>(<span class="tc-str">'completed PayPal returns to confirmation @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; { ... });
+  });
+});</div>
+      </div>
+<p class="sn-para">Each file runs in its own worker. CI runs all four files in parallel. A failure in <code class="sn-ic">payment.spec.ts</code> does not delay results from <code class="sn-ic">shipping.spec.ts</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q303.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q303.18</span>
+      <h2 class="sn-q-text">What is describe.configure and how does it differ from describe.parallel?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.describe.configure({ mode, retries })</code> is the explicit, composable API for setting execution mode and retry count on a describe group. <code class="sn-ic">test.describe.parallel</code> is a shorthand alias for <code class="sn-ic">configure({ mode: 'parallel' })</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// These are equivalent</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">parallel</span>(<span class="tc-str">'My Group'</span>, () =&gt; { ... });
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'My Group'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ mode: <span class="tc-str">'parallel'</span> });
+  <span class="tc-cm">// ...</span>
+});
+
+<span class="tc-cm">// configure lets you combine mode and retries in one call</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Flaky Network Tests'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ mode: <span class="tc-str">'parallel'</span>, retries: <span class="tc-num">2</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'API call 1 retries on failure'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; { ... });
+  <span class="tc-kw">test</span>(<span class="tc-str">'API call 2 retries on failure'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; { ... });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Use <code class="sn-ic">configure()</code> when you need both a mode override and a retry override</strong> for the same group. For mode-only changes, <code class="sn-ic">describe.parallel</code> or <code class="sn-ic">describe.serial</code> are more readable.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.describe()</code> creates hierarchy in reports, scopes hooks, and scopes <code class="sn-ic">test.use()</code> — three distinct purposes.</span></li>
+            <li><span class="icon">⭐</span><span>The full test title is <code class="sn-ic">[describe] &gt; [test title]</code>. This is what <code class="sn-ic">--grep</code> matches and what CI shows.</span></li>
+            <li><span class="icon">⭐</span><span>Hooks inside a describe only run for tests inside that describe — they do not leak outward.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.use()</code> inside a describe applies configuration only to that group — viewport, locale, baseURL overrides.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">describe.only</code> and <code class="sn-ic">test.only</code> are local debugging tools. Never commit them — <code class="sn-ic">forbidOnly: !!process.env.CI</code> is the safety net.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">describe.skip</code> disables all tests in the group. <code class="sn-ic">describe.fixme</code> marks them as broken. Both appear in the report.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">describe.parallel</code> runs tests concurrently — only safe when tests are fully independent.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">describe.serial</code> runs tests in order in one worker — use only for genuinely sequential workflows.</span></li>
+            <li><span class="icon">⭐</span><span>Maximum two levels of nesting. Deeper nesting means the file is too broad — split it.</span></li>
+            <li><span class="icon">⭐</span><span>One top-level describe per file. File name should match the describe name.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

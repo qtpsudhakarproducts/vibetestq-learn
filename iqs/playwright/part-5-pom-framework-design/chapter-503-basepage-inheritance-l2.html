@@ -1,0 +1,928 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 503 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">BasePage</span> <span class="w2">&amp;</span> <span class="w3">Inheritance</span> <span class="w4">(L2)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers BasePage — the parent class every page object extends at Level 2 to eliminate constructor boilerplate, centralise navigation logic, and provide shared utility methods. Interviewers test inheritance patterns to assess whether candidates understand the TypeScript keywords <code class="sn-ic">extends</code>, <code class="sn-ic">super</code>, and <code class="sn-ic">protected</code> in a real framework context, not just in theory. A candidate who can explain why <code class="sn-ic">protected</code> is required for the <code class="sn-ic">page</code> property — and what breaks if <code class="sn-ic">private</code> is used instead — is demonstrating genuine understanding.</span>
+  </div>
+
+
+  <!-- Q503.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.1</span>
+      <h2 class="sn-q-text">What problem does BasePage solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every page object at Level 1 starts with identical boilerplate:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Repeated in LoginPage, EmployeeListPage, UserManagementPage — every class</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;
+
+<span class="tc-fn">constructor</span>(page: Page) {
+  <span class="tc-kw">this</span>.page = page;
+}</div>
+      </div>
+<p class="sn-para">With six page objects this is manageable. With twenty pages across PIM, Admin, Leave, and Recruitment modules, you have twenty copies of the same code. Every new page object written adds another copy. This violates DRY — the principle that every piece of knowledge should exist in exactly one place.</p>
+<p class="sn-para">BasePage fixes this. The <code class="sn-ic">page</code> property and the constructor that sets it are declared once in <code class="sn-ic">BasePage</code>. Every page object <code class="sn-ic">extends BasePage</code> and calls <code class="sn-ic">super(page)</code> — one line instead of three. The framework also gains shared navigation, wait, and assertion utilities that every page object inherits automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q503.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.2</span>
+      <h2 class="sn-q-text">What does the complete BasePage.ts look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/BasePage.ts</span>
+<span class="tc-kw">import</span> { Page, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> BasePage {
+
+  <span class="tc-cm">// protected — child classes can access this.page directly</span>
+  <span class="tc-cm">// private would make this.page inaccessible in LoginPage, EmployeeListPage, etc.</span>
+  <span class="tc-kw">protected</span> <span class="tc-kw">readonly</span> page: Page;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.page = page;
+  }
+
+  <span class="tc-cm">// ─── Navigation ──────────────────────────────────────────</span>
+
+  <span class="tc-cm">// protected — only page objects call this internally via their goto() methods</span>
+  <span class="tc-cm">// tests call loginPage.goto(), not loginPage.navigate()</span>
+  <span class="tc-kw">protected</span> <span class="tc-kw">async</span> <span class="tc-fn">navigate</span>(path: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(path);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+
+  <span class="tc-cm">// public — tests may need to wait explicitly after a slow action</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">waitForPageLoad</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">waitForURL</span>(urlPattern: <span class="tc-kw">string</span> | RegExp): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForURL</span>(urlPattern);
+  }
+
+  <span class="tc-cm">// ─── Common Assertions ────────────────────────────────────</span>
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertURL</span>(urlPattern: <span class="tc-kw">string</span> | RegExp): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page).<span class="tc-fn">toHaveURL</span>(urlPattern);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageTitle</span>(expectedTitle: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page).<span class="tc-fn">toHaveTitle</span>(expectedTitle);
+  }
+
+  <span class="tc-cm">// ─── Common Utilities ─────────────────────────────────────</span>
+
+  <span class="tc-kw">async</span> <span class="tc-fn">getCurrentURL</span>(): Promise&lt;<span class="tc-kw">string</span>&gt; {
+    <span class="tc-kw">return</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">url</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">getPageTitle</span>(): Promise&lt;<span class="tc-kw">string</span>&gt; {
+    <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">title</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">scrollToBottom</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">evaluate</span>(() =&gt;
+      window.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, document.body.scrollHeight)
+    );
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">scrollToTop</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">evaluate</span>(() =&gt; window.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, <span class="tc-num">0</span>));
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">reloadPage</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">reload</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">waitForPageLoad</span>();
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q503.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.3</span>
+      <h2 class="sn-q-text">What are extends, super, and protected — and what breaks without them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple"><code class="sn-ic">extends</code></strong> — declares the inheritance relationship. <code class="sn-ic">LoginPage extends BasePage</code> means LoginPage inherits every property and method BasePage declares.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage { ... }
+<span class="tc-cm">// LoginPage now has: this.page, navigate(), waitForPageLoad(), assertURL(), etc.</span></div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">super(page)</code></strong> — calls the parent constructor. It must be the first statement in the child constructor. The parent constructor is what sets <code class="sn-ic">this.page</code>. Without <code class="sn-ic">super()</code>, TypeScript emits a compile error: <code class="sn-ic">&quot;Constructors for derived classes must contain a 'super' call.&quot;</code></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-fn">constructor</span>(page: Page) {
+  <span class="tc-fn">super</span>(page);  <span class="tc-cm">// ← first line always; sets this.page via BasePage constructor</span>
+  <span class="tc-kw">this</span>.usernameInput = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>); <span class="tc-cm">// this.page is now set</span>
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">protected</code></strong> — the access modifier on <code class="sn-ic">page</code> in BasePage. Its meaning: accessible by BasePage itself AND by all classes that extend it.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// If private: only BasePage can use this.page</span>
+<span class="tc-cm">// LoginPage trying to use this.page → compile error</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;   <span class="tc-cm">// ❌ breaks all child classes</span>
+
+<span class="tc-cm">// If protected: BasePage and all extending classes can use this.page</span>
+<span class="tc-kw">protected</span> <span class="tc-kw">readonly</span> page: Page; <span class="tc-cm">// ✅ correct</span></div>
+      </div>
+<p class="sn-para">The distinction matters every time a child class locator uses <code class="sn-ic">this.page</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// In LoginPage constructor — requires protected, not private</span>
+<span class="tc-kw">this</span>.usernameInput = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>);
+<span class="tc-cm">//                   ↑ accessing parent's property — only works with protected</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q503.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.4</span>
+      <h2 class="sn-q-text">How does LoginPage look after refactoring to extend BasePage?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/LoginPage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { BasePage }              <span class="tc-kw">from</span> <span class="tc-str">'./BasePage'</span>;   <span class="tc-cm">// ← import parent class</span>
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage {             <span class="tc-cm">// ← extends BasePage</span>
+
+  <span class="tc-cm">// No page property declared here — inherited from BasePage as this.page</span>
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> usernameInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> passwordInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> loginButton:   Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> errorMessage:  Locator;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);   <span class="tc-cm">// ← replaces this.page = page — calls BasePage constructor</span>
+
+    <span class="tc-kw">this</span>.usernameInput = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>)
+                                  .<span class="tc-kw">describe</span>(<span class="tc-str">'Username input field'</span>);
+    <span class="tc-kw">this</span>.passwordInput = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>)
+                                  .<span class="tc-kw">describe</span>(<span class="tc-str">'Password input field'</span>);
+    <span class="tc-kw">this</span>.loginButton   = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> })
+                                  .<span class="tc-kw">describe</span>(<span class="tc-str">'Login submit button'</span>);
+    <span class="tc-kw">this</span>.errorMessage  = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-alert-content-text'</span>)
+                                  .<span class="tc-kw">describe</span>(<span class="tc-str">'Login error message'</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigate</span>(<span class="tc-str">'/web/index.php/auth/login'</span>);  <span class="tc-cm">// ← inherited from BasePage</span>
+    <span class="tc-cm">// navigate() also waits for networkidle — no separate waitForLoadState needed</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.usernameInput.<span class="tc-fn">fill</span>(username);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.passwordInput.<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginButton.<span class="tc-fn">click</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">assertURL</span>(/auth\/login/);   <span class="tc-cm">// ← inherited from BasePage</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.usernameInput).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.loginButton).<span class="tc-fn">toBeVisible</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertInvalidCredentialsError</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.errorMessage).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.errorMessage).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Invalid credentials'</span>);
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">What changed from Level 1:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">private readonly page: Page</code> removed — inherited from BasePage</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">this.page = page</code> replaced with <code class="sn-ic">super(page)</code></span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">this.page.goto(path)</code> replaced with <code class="sn-ic">this.navigate(path)</code></span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">expect(this.page).toHaveURL(...)</code> replaced with <code class="sn-ic">this.assertURL(...)</code></span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q503.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.5</span>
+      <h2 class="sn-q-text">Why is navigate() protected instead of public?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">navigate()</code> is an internal implementation mechanism used by page objects inside their <code class="sn-ic">goto()</code> methods. It should never be called from test files directly.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Test calling navigate() directly — bypasses goto() API contract</span>
+<span class="tc-kw">await</span> loginPage.<span class="tc-fn">navigate</span>(<span class="tc-str">'/web/index.php/auth/login'</span>);
+
+<span class="tc-cm">// ✅ Test calling goto() — the intended public API</span>
+<span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();</div>
+      </div>
+<p class="sn-para">Making <code class="sn-ic">navigate()</code> <code class="sn-ic">protected</code> enforces this boundary at compile time. Test files get a TypeScript error if they try to call <code class="sn-ic">loginPage.navigate()</code>. The only path to navigation is through the page object's public <code class="sn-ic">goto()</code> method.</p>
+<p class="sn-para">This is the principle of encapsulation applied to methods, not just properties. The how is hidden; the what is exposed.</p>
+    </div>
+  </div>
+
+  <!-- Q503.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.6</span>
+      <h2 class="sn-q-text">What is the difference between private, protected, and public in TypeScript classes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> BasePage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;      <span class="tc-cm">// only BasePage can access this.page</span>
+  <span class="tc-kw">protected</span> <span class="tc-kw">readonly</span> ctx: Page;     <span class="tc-cm">// BasePage AND child classes can access this.ctx</span>
+  <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> url: <span class="tc-kw">string</span>;      <span class="tc-cm">// everything can access this.url (not recommended for locators)</span>
+}
+
+<span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);
+    <span class="tc-cm">// this.page  → ❌ TypeScript error — private, only BasePage can access it</span>
+    <span class="tc-cm">// this.ctx   → ✅ works — protected, accessible in child classes</span>
+    <span class="tc-cm">// this.url   → ✅ works — public, accessible everywhere</span>
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">For page objects in this framework:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">page</code> property → <code class="sn-ic">protected readonly</code> — child classes need it</span></li>
+<li><span class="icon">💡</span><span>All <code class="sn-ic">Locator</code> fields → <code class="sn-ic">private readonly</code> — internal to each class</span></li>
+<li><span class="icon">⚡</span><span>All action and assertion methods → <code class="sn-ic">public</code> (default) — test files call them</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">navigate()</code> → <code class="sn-ic">protected</code> — internal to page objects only</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q503.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.7</span>
+      <h2 class="sn-q-text">Why does waitForLoadState('networkidle') belong in BasePage?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without <code class="sn-ic">waitForLoadState</code>, <code class="sn-ic">page.goto()</code> resolves as soon as the initial HTML document is received — not when dynamic data (tables, charts, employee lists) has finished loading. Tests that fire immediately after navigation can fail with "element not found" because the data is still loading.</p>
+      </div>
+<p class="sn-para">By putting the wait inside <code class="sn-ic">navigate()</code> in BasePage, every <code class="sn-ic">goto()</code> call in every page object automatically waits for the page to fully settle:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// BasePage — networkidle wait is automatic for all page objects</span>
+<span class="tc-kw">protected</span> <span class="tc-kw">async</span> <span class="tc-fn">navigate</span>(path: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(path);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);  <span class="tc-cm">// ← wait for all requests to finish</span>
+}</div>
+      </div>
+<p class="sn-para">Without BasePage, each <code class="sn-ic">goto()</code> in every page object must remember to add the wait separately. Some will forget it. Some will add a different wait. The inconsistency causes intermittent failures.</p>
+<p class="sn-para">BasePage centralises the decision once — every page object benefits without thinking about it.</p>
+    </div>
+  </div>
+
+  <!-- Q503.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.8</span>
+      <h2 class="sn-q-text">What does a new page object look like at Level 2 vs Level 1?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Writing a new page object at Level 2 requires less code and has no boilerplate:</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Level 1 — new page object:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> PersonalDetailsPage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;          <span class="tc-cm">// boilerplate</span>
+  <span class="tc-cm">// ... locators</span>
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.page = page;                   <span class="tc-cm">// boilerplate</span>
+    <span class="tc-cm">// ... initialise locators</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(employeeId: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(               <span class="tc-cm">// direct call</span>
+      <span class="tc-str">`/web/index.php/pim/viewPersonalDetails/empNumber/${employeeId}`</span>
+    );
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);  <span class="tc-cm">// must remember to add</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page).<span class="tc-fn">toHaveURL</span>(/viewPersonalDetails/);  <span class="tc-cm">// repeated pattern</span>
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Level 2 — same page object with BasePage:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> PersonalDetailsPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-cm">// no page property</span>
+  <span class="tc-cm">// no boilerplate constructor setup</span>
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);  <span class="tc-cm">// ← one line — done</span>
+    <span class="tc-cm">// ... initialise locators using this.page</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(employeeId: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigate</span>(               <span class="tc-cm">// inherited — goto + wait in one call</span>
+      <span class="tc-str">`/web/index.php/pim/viewPersonalDetails/empNumber/${employeeId}`</span>
+    );
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">assertURL</span>(/viewPersonalDetails/);  <span class="tc-cm">// inherited, no repetition</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.firstNameInput).<span class="tc-fn">toBeVisible</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para">The Level 2 class is shorter, contains no repeated patterns, and gains <code class="sn-ic">waitForPageLoad()</code>, <code class="sn-ic">scrollToBottom()</code>, <code class="sn-ic">reloadPage()</code> and all other BasePage utilities without any extra code.</p>
+    </div>
+  </div>
+
+  <!-- Q503.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.9</span>
+      <h2 class="sn-q-text">What happens to test files when you add BasePage?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">Nothing.</strong> Test files at Level 2 are identical to Level 1.</p>
+      </div>
+<p class="sn-para">BasePage is an internal refactoring of the page object layer. Tests only interact with page objects through their public API — <code class="sn-ic">goto()</code>, <code class="sn-ic">login()</code>, <code class="sn-ic">assertPageLoaded()</code>. Whether <code class="sn-ic">goto()</code> internally calls <code class="sn-ic">this.page.goto()</code> directly or <code class="sn-ic">this.navigate()</code> from BasePage is invisible to the test.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// This test is IDENTICAL at Level 1 and Level 2</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can add a new employee'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> loginPage    = <span class="tc-kw">new</span> LoginPage(page);
+  <span class="tc-kw">const</span> dashboardPage = <span class="tc-kw">new</span> DashboardPage(page);
+
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();              <span class="tc-cm">// calls navigate() internally at Level 2</span>
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> dashboardPage.<span class="tc-fn">assertPageLoaded</span>(); <span class="tc-cm">// calls assertURL() internally at Level 2</span>
+});</div>
+      </div>
+<p class="sn-para">This is the principle of abstraction at the framework level. The test describes what to test. The page objects handle how. When the how changes (BasePage refactoring), the what is completely unaffected.</p>
+<p class="sn-para">After refactoring to Level 2, run the full suite to verify:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --workers=1</div>
+      </div>
+<p class="sn-para">Every test that passed at Level 1 should pass at Level 2. If anything fails, the most likely cause is a broken import path — sub-folder page objects must import <code class="sn-ic">from '../BasePage'</code> not <code class="sn-ic">from './BasePage'</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q503.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.10</span>
+      <h2 class="sn-q-text">What is the difference between extends and composition in POM?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Inheritance (extends)</strong> — the pattern used in this framework:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-cm">// LoginPage IS-A BasePage — inherits all BasePage members</span>
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Composition</strong> — an alternative where BasePage is stored as a property:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> basePage: BasePage; <span class="tc-cm">// LoginPage HAS-A BasePage</span>
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.basePage = <span class="tc-kw">new</span> BasePage(page);
+  }
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.basePage.<span class="tc-fn">navigate</span>(<span class="tc-str">'/...'</span>); <span class="tc-cm">// must delegate explicitly</span>
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Why this framework uses inheritance:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Navigation, assertions, and utilities are genuinely shared behaviour</span></li>
+</ul>
+<p class="sn-para">  that all page objects have — not optional composition</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Inheritance makes <code class="sn-ic">this.navigate()</code> and <code class="sn-ic">this.assertURL()</code> available</span></li>
+</ul>
+<p class="sn-para">  directly, without delegation syntax</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>TypeScript's access modifiers (<code class="sn-ic">protected</code>, <code class="sn-ic">private</code>) work cleanly</span></li>
+</ul>
+<p class="sn-para">  with inheritance for enforcing the <code class="sn-ic">navigate()</code> boundary</p>
+<p class="sn-para"><strong class="k-green">When composition is preferred in general OOP:</strong> when the relationship is "uses" not "is a" — and when you need multiple parents (TypeScript classes can only extend one parent). For page object frameworks, the IS-A relationship (every page IS-A BasePage) makes inheritance the cleaner choice.</p>
+    </div>
+  </div>
+
+  <!-- Q503.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.11</span>
+      <h2 class="sn-q-text">How do you handle a page that needs both BasePage utilities and module-specific utilities?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Add a module-level base page that extends BasePage:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/pim/BasePIMPage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { BasePage }      <span class="tc-kw">from</span> <span class="tc-str">'../BasePage'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> BasePIMPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-cm">// PIM-specific locators shared across PIM pages</span>
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> pimBreadcrumb: Locator;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);
+    <span class="tc-kw">this</span>.pimBreadcrumb = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-topbar-header-breadcrumb'</span>)
+                                   .<span class="tc-kw">describe</span>(<span class="tc-str">'PIM module breadcrumb'</span>);
+  }
+
+  <span class="tc-cm">// PIM-specific shared method used by all PIM pages</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPIMModuleLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.pimBreadcrumb).<span class="tc-fn">toBeVisible</span>();
+  }
+}
+
+<span class="tc-cm">// pages/pim/EmployeeListPage.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> EmployeeListPage <span class="tc-kw">extends</span> BasePIMPage {
+  <span class="tc-cm">// EmployeeListPage inherits from BasePIMPage which inherits from BasePage</span>
+  <span class="tc-cm">// Has access to: BasePage utilities, PIM-specific utilities, its own methods</span>
+}</div>
+      </div>
+<p class="sn-para">This creates a three-level hierarchy: <code class="sn-ic">BasePage</code> → <code class="sn-ic">BasePIMPage</code> → <code class="sn-ic">EmployeeListPage</code></p>
+<p class="sn-para">Use module-level base pages only when there are genuinely shared elements across all pages in a module — navigation breadcrumbs, module headers, or module-level menus. If there are only one or two shared items, adding to the main BasePage or keeping them per-page is simpler.</p>
+    </div>
+  </div>
+
+  <!-- Q503.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.12</span>
+      <h2 class="sn-q-text">What is the refactoring checklist for converting Level 1 page objects to Level 2?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">For each page object, exactly five changes:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Before (Level 1)                    // After (Level 2)</span>
+────────────────────────────────────────────────────────
+<span class="tc-cm">// 1. Add import for BasePage</span>
+<span class="tc-kw">import</span> { Page, Locator, <span class="tc-kw">expect</span> }   →   <span class="tc-kw">import</span> { Page, Locator, <span class="tc-kw">expect</span> }
+<span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;               <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+                                        <span class="tc-kw">import</span> { BasePage } <span class="tc-kw">from</span> <span class="tc-str">'../BasePage'</span>;
+                                        <span class="tc-cm">// (or '../../BasePage' for sub-folders)</span>
+
+<span class="tc-cm">// 2. Extend BasePage</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {           →   <span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage {
+
+<span class="tc-cm">// 3. Remove page property</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;       →   (removed entirely)
+
+<span class="tc-cm">// 4. Replace constructor body</span>
+<span class="tc-fn">constructor</span>(page: Page) {          →   <span class="tc-fn">constructor</span>(page: Page) {
+  <span class="tc-kw">this</span>.page = page;                →     <span class="tc-fn">super</span>(page);
+  <span class="tc-cm">// locators...                         // locators...</span>
+}                                        }
+
+<span class="tc-cm">// 5a. Replace goto() body</span>
+<span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(path);        →   <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigate</span>(path);
+
+<span class="tc-cm">// 5b. Replace URL assertions</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page)            →   <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">assertURL</span>(pattern);
+  .<span class="tc-fn">toHaveURL</span>(pattern);</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Verify after each file:</strong> run <code class="sn-ic">npx playwright test --workers=1</code> after refactoring each page object. Catching an import error immediately is faster than debugging multiple broken imports at the end.</p>
+    </div>
+  </div>
+
+  <!-- Q503.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.13</span>
+      <h2 class="sn-q-text">How does BasePage handle the baseURL from playwright.config.ts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">BasePage does NOT store or manage <code class="sn-ic">baseURL</code>. Playwright handles this automatically — when <code class="sn-ic">page.goto('/web/index.php/auth/login')</code> is called, Playwright prepends the <code class="sn-ic">baseURL</code> from <code class="sn-ic">playwright.config.ts</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+use: {
+  baseURL: 'https:<span class="tc-cm">//opensource-demo.orangehrmlive.com',</span>
+}
+
+<span class="tc-cm">// pages/BasePage.ts</span>
+<span class="tc-kw">protected</span> <span class="tc-kw">async</span> <span class="tc-fn">navigate</span>(path: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(path);  <span class="tc-cm">// Playwright prepends baseURL automatically</span>
+  <span class="tc-cm">// page.goto('/web/index.php/auth/login') becomes:</span>
+  <span class="tc-cm">// page.goto('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')</span>
+}</div>
+      </div>
+<p class="sn-para">This means page objects always use paths (<code class="sn-ic">/web/index.php/...</code>), never full URLs. Changing environments (staging, production, local) requires changing one value in <code class="sn-ic">playwright.config.ts</code>. No changes to page objects.</p>
+<p class="sn-para">If BasePage stored baseURL itself, a second source of truth would exist. When environments change, both <code class="sn-ic">playwright.config.ts</code> and BasePage would need updating — increasing the chance of inconsistency.</p>
+    </div>
+  </div>
+
+  <!-- Q503.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.14</span>
+      <h2 class="sn-q-text">Write a PersonalDetailsPage using BasePage.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/pim/PersonalDetailsPage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { BasePage }              <span class="tc-kw">from</span> <span class="tc-str">'../BasePage'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> PersonalDetailsPage <span class="tc-kw">extends</span> BasePage {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> firstNameInput:  Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> lastNameInput:   Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> employeeIdInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> saveButton:      Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> successToast:    Locator;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);   <span class="tc-cm">// single line of boilerplate — BasePage handles the rest</span>
+
+    <span class="tc-kw">this</span>.firstNameInput  = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'First Name'</span>)
+                                    .<span class="tc-kw">describe</span>(<span class="tc-str">'First name input field'</span>);
+    <span class="tc-kw">this</span>.lastNameInput   = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Last Name'</span>)
+                                    .<span class="tc-kw">describe</span>(<span class="tc-str">'Last name input field'</span>);
+    <span class="tc-kw">this</span>.employeeIdInput = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input.oxd-input'</span>).<span class="tc-fn">nth</span>(<span class="tc-num">1</span>)
+                                    .<span class="tc-kw">describe</span>(<span class="tc-str">'Employee ID input field'</span>);
+    <span class="tc-kw">this</span>.saveButton      = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">first</span>()
+                                    .<span class="tc-kw">describe</span>(<span class="tc-str">'Save personal details button'</span>);
+    <span class="tc-kw">this</span>.successToast    = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-toast-content'</span>)
+                                    .<span class="tc-kw">describe</span>(<span class="tc-str">'Success toast notification'</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(employeeId: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigate</span>(
+      <span class="tc-str">`/web/index.php/pim/viewPersonalDetails/empNumber/${employeeId}`</span>
+    );
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">updateFirstName</span>(firstName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.firstNameInput.<span class="tc-fn">clear</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.firstNameInput.<span class="tc-fn">fill</span>(firstName);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">savePersonalDetails</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.saveButton.<span class="tc-fn">click</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">assertURL</span>(/viewPersonalDetails/);     <span class="tc-cm">// inherited from BasePage</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.firstNameInput).<span class="tc-fn">toBeVisible</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPersonalDetailsSaved</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.successToast).<span class="tc-fn">toBeVisible</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertFirstName</span>(expectedFirstName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.firstNameInput).<span class="tc-fn">toHaveValue</span>(expectedFirstName);
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q503.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.15</span>
+      <h2 class="sn-q-text">How does scrollToBottom() from BasePage get used in practice?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// BasePage provides scroll utilities</span>
+<span class="tc-kw">async</span> <span class="tc-fn">scrollToBottom</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">evaluate</span>(() =&gt;
+    window.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, document.body.scrollHeight)
+  );
+}
+
+<span class="tc-cm">// EmployeeListPage can call this when the table has more rows below the fold</span>
+<span class="tc-kw">async</span> <span class="tc-fn">loadAllEmployees</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-cm">// scroll to trigger lazy-loading of additional rows</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">scrollToBottom</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">waitForPageLoad</span>();
+}
+
+<span class="tc-cm">// In a test that checks total employee count</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'employee list shows all records'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> employeeListPage = <span class="tc-kw">new</span> EmployeeListPage(page);
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">loadAllEmployees</span>();  <span class="tc-cm">// scrolls to load all rows</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-table-row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">50</span>);
+});</div>
+      </div>
+<p class="sn-para">BasePage utilities like <code class="sn-ic">scrollToBottom()</code>, <code class="sn-ic">reloadPage()</code>, and <code class="sn-ic">getCurrentURL()</code> are used less frequently than navigation and assertions — but when they are needed, they are available to every page object without any extra code. The value of BasePage compounds with every page object added to the framework.</p>
+    </div>
+  </div>
+
+  <!-- Q503.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.16</span>
+      <h2 class="sn-q-text">What is the Level 2 project structure?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">One file added. Everything else stays the same:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">pages/
+  BasePage.ts                 ← NEW — parent for all page objects
+  LoginPage.ts                ← refactored: extends BasePage
+  DashboardPage.ts            ← refactored: extends BasePage
+  pim/
+    EmployeeListPage.ts       ← refactored: extends BasePage, import '../BasePage'
+    AddEmployeePage.ts        ← refactored: extends BasePage, import '../BasePage'
+    PersonalDetailsPage.ts    ← NEW — written from scratch using BasePage
+  admin/
+    UserManagementPage.ts     ← refactored: extends BasePage, import '../BasePage'
+    AddUserPage.ts            ← refactored: extends BasePage, import '../BasePage'
+
+tests/                        ← NO CHANGES at Level 2
+playwright.config.ts          ← NO CHANGES at Level 2</div>
+      </div>
+<p class="sn-para">The import path for sub-folder page objects is <code class="sn-ic">'../BasePage'</code> (one level up), not <code class="sn-ic">'./BasePage'</code> (same folder). This is the most common mistake when refactoring Level 1 to Level 2.</p>
+    </div>
+  </div>
+
+  <!-- Q503.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.17</span>
+      <h2 class="sn-q-text">What does Level 2 not solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 2 eliminates boilerplate inside page objects. It does nothing about:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Login still repeated in every test file's <code class="sn-ic">beforeEach</code>:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Still present in every test file</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  loginPage = <span class="tc-kw">new</span> LoginPage(page);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> dashboardPage.<span class="tc-fn">assertPageLoaded</span>();
+});</div>
+      </div>
+<p class="sn-para">Level 3 (Fixtures) gives authenticated sessions directly to tests.</p>
+<p class="sn-para"><strong class="k-blue">Hardcoded test data:</strong> Employee names and credentials are still string literals in test files. Level 5 (Test Data) introduces factory functions.</p>
+<p class="sn-para"><strong class="k-blue">Cross-test ordering dependencies:</strong> The admin user tests still depend on the employee tests having run first. Level 4 (Test Independence) and Level 6 (API setup) break these chains.</p>
+    </div>
+  </div>
+
+  <!-- Q503.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q503.18</span>
+      <h2 class="sn-q-text">How did you introduce BasePage in the OrangeHRM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">We introduced BasePage at Level 2 as a refactoring — no test behaviour changed, only the internal structure of page objects.</p>
+      </div>
+<p class="sn-para">The team was adding a new module (Leave). Writing the first Leave page object — <code class="sn-ic">ApplyLeavePage.ts</code> — without BasePage meant copy-pasting the <code class="sn-ic">private readonly page</code> declaration, the constructor body, and a <code class="sn-ic">waitForLoadState</code> call for the fourth time. At that point the DRY violation was impossible to ignore.</p>
+<p class="sn-para">The refactoring plan: create <code class="sn-ic">BasePage.ts</code>, refactor one page object as a proof of concept, verify the tests still pass, then refactor the rest. The full refactoring took about 90 minutes across six page objects.</p>
+<p class="sn-para"><strong class="k-green">The unexpected benefit beyond DRY:</strong> BasePage's <code class="sn-ic">navigate()</code> method included <code class="sn-ic">waitForLoadState('networkidle')</code>. Before BasePage, three of the six <code class="sn-ic">goto()</code> methods were missing the <code class="sn-ic">waitForLoadState</code> call — we had not noticed because those tests ran fast enough that the timing rarely mattered. BasePage made the wait universal. Two intermittent failures we had attributed to flakiness disappeared.</p>
+<p class="sn-para">This is the pattern: structural improvements often fix bugs that were invisible because their impact was subtle and intermittent. BasePage did not just reduce boilerplate — it made navigation behaviour consistent across every page object in the framework.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>BasePage is a parent class every page object extends to eliminate <code class="sn-ic">page</code> property and constructor boilerplate.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">protected readonly page: Page</code> — accessible in BasePage and all child classes; <code class="sn-ic">private</code> would prevent child classes from using <code class="sn-ic">this.page</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">extends BasePage</code> — declares inheritance; child class gets all BasePage properties and methods.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">super(page)</code> — must be the first line of the child constructor; calls BasePage constructor which sets <code class="sn-ic">this.page</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">navigate()</code> is <code class="sn-ic">protected</code> — child page objects use it internally; test files cannot call it directly.</span></li>
+            <li><span class="icon">⭐</span><span>BasePage's <code class="sn-ic">navigate()</code> combines <code class="sn-ic">page.goto()</code> + <code class="sn-ic">waitForLoadState('networkidle')</code> — ensures every goto() waits for the page to settle.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">assertURL()</code> and <code class="sn-ic">assertPageTitle()</code> are shared assertions; <code class="sn-ic">scrollToBottom()</code>, <code class="sn-ic">reloadPage()</code>, <code class="sn-ic">getCurrentURL()</code> are shared utilities.</span></li>
+            <li><span class="icon">⭐</span><span>Test files are identical at Level 1 and Level 2 — BasePage is an internal refactoring invisible to tests.</span></li>
+            <li><span class="icon">⭐</span><span>Sub-folder page objects import BasePage with <code class="sn-ic">'../BasePage'</code> (one level up), not <code class="sn-ic">'./BasePage'</code>.</span></li>
+            <li><span class="icon">⭐</span><span>BasePage does NOT store <code class="sn-ic">baseURL</code> — Playwright handles that from config automatically.</span></li>
+            <li><span class="icon">⭐</span><span>After refactoring each page object, run the suite to catch import path errors immediately.</span></li>
+            <li><span class="icon">⭐</span><span>Level 2 solves boilerplate; it deliberately leaves repeated login (Level 3), hardcoded data (Level 5), and test ordering (Level 4+) for subsequent levels.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

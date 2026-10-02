@@ -1,0 +1,917 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🌐 Part 6 &nbsp;·&nbsp; Chapter 601 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">BDD</span> <span class="w2">with</span> <span class="w3">Cucumber</span> <span class="w4">&amp;</span> <span class="w5">Playwright</span> <span class="w6">—</span> <span class="w7">Overview</span></h1>
+    <p class="sn-title-sub">Cucumber BDD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">> <strong>Part 1 of 5 BDD chapters (81–85)</strong> This chapter covers Behaviour-Driven Development using CucumberJS and Playwright together. BDD is asked in interviews because it sits at the boundary of technical automation and business collaboration — interviewers want to know if you understand both the <em>why</em> (making tests readable to business) and the <em>how</em> (wiring Gherkin to Playwright). Questions progress from core Gherkin syntax and the Cucumber-Playwright setup, through the Custom World and POM integration, to hooks, profiles, reporting, and real project challenges.</span>
+  </div>
+
+
+  <!-- Q601.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.1</span>
+      <h2 class="sn-q-text">What is BDD and why do teams use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">BDD stands for Behaviour-Driven Development. It is a way of writing tests in plain English so that both technical and non-technical team members can read and understand them.</p>
+      </div>
+<p class="sn-para">In BDD, you describe the expected behaviour of the system before you write the code to automate it. The description is written in a structured format called Gherkin, using keywords like <code class="sn-ic">Feature</code>, <code class="sn-ic">Scenario</code>, <code class="sn-ic">Given</code>, <code class="sn-ic">When</code>, and <code class="sn-ic">Then</code>.</p>
+<p class="sn-para">Teams use BDD for three reasons. First, it closes the gap between business requirements and test cases — a Gherkin scenario can be reviewed and approved by a product owner before any code is written. Second, it creates living documentation — the feature files describe what the system does, and they stay up to date because they are run as tests. Third, it forces testers to think about behaviour (what the system should do) rather than implementation (how to click a button).</p>
+    </div>
+  </div>
+
+  <!-- Q601.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.2</span>
+      <h2 class="sn-q-text">What is Gherkin? What are its keywords?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Gherkin is the plain-English syntax used to write BDD scenarios. It gives structure to what would otherwise be free-form text.</p>
+      </div>
+<p class="sn-para">The core keywords are:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-green">Feature</strong> — names the feature being tested. One feature file, one Feature.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-green">Scenario</strong> — a single test case. It has a name and a list of steps.</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-green">Background</strong> — steps that run before every Scenario in the file (like <code class="sn-ic">beforeEach</code>).</span></li>
+<li><span class="icon">🎯</span><span><strong class="k-green">Given</strong> — sets up the initial state before the action happens.</span></li>
+<li><span class="icon">📌</span><span><strong class="k-green">When</strong> — describes the action the user takes.</span></li>
+<li><span class="icon">🔑</span><span><strong class="k-green">Then</strong> — describes the expected outcome after the action.</span></li>
+<li><span class="icon">🚀</span><span><strong class="k-green">And / But</strong> — continuation keywords. They replace repeating <code class="sn-ic">Given</code>, <code class="sn-ic">When</code>, or <code class="sn-ic">Then</code>.</span></li>
+<li><span class="icon">🌟</span><span><strong class="k-green">Scenario Outline</strong> — a template Scenario with placeholders. Runs once per row in <code class="sn-ic">Examples</code>.</span></li>
+<li><span class="icon">📦</span><span><strong class="k-green">Examples</strong> — a table of data used with <code class="sn-ic">Scenario Outline</code>.</span></li>
+<li><span class="icon">🔶</span><span><strong class="k-green">@tagName</strong> — a tag placed above a Feature or Scenario to allow filtering during execution.</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">@login
+Feature: OrangeHRM Login
+
+  Background:
+    Given the user navigates to OrangeHRM login page
+
+  Scenario: Successful login with valid credentials
+    When the user enters username &quot;testadmin&quot;
+    And the user enters password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+    And the user clicks the login button
+    Then the user should be redirected to the dashboard
+    And the dashboard header should be visible</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q601.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.3</span>
+      <h2 class="sn-q-text">How do you set up Cucumber with Playwright in a TypeScript project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You install <code class="sn-ic">@cucumber/cucumber</code> as your test runner alongside <code class="sn-ic">playwright</code> (the browser library, not <code class="sn-ic">@playwright/test</code>). You use <code class="sn-ic">ts-node</code> to run TypeScript without a compile step.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @cucumber/cucumber playwright ts-node typescript @types/node
+npx playwright install chromium</div>
+      </div>
+<p class="sn-para">Your <code class="sn-ic">cucumber.js</code> config file tells Cucumber where to find feature files, step definitions, and support files:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// cucumber.js</span>
+<span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: {
+    requireModule: [<span class="tc-str">'ts-node/register'</span>],     <span class="tc-cm">// run TypeScript directly</span>
+    <span class="tc-kw">require</span>: [
+      <span class="tc-str">'support/hooks.ts'</span>,
+      <span class="tc-str">'support/world.ts'</span>,
+      <span class="tc-str">'step-definitions S2 *.ts'</span>,
+    ],
+    features: [<span class="tc-str">'features S3 *.feature'</span>],
+    format: [
+      <span class="tc-str">'progress-bar'</span>,
+      <span class="tc-str">'json:reports/cucumber-report.json'</span>,
+      <span class="tc-str">'html:reports/cucumber-report.html'</span>,
+    ],
+    formatOptions: { snippetInterface: <span class="tc-str">'async-await'</span> },
+    publishQuiet: <span class="tc-kw">true</span>,
+    parallel: <span class="tc-num">1</span>,
+    worldParameters: {
+      baseUrl: 'https:<span class="tc-cm">//your-app.com',</span>
+      headless: <span class="tc-kw">false</span>,
+      slowMo: <span class="tc-num">100</span>,
+    },
+  },
+};</div>
+      </div>
+<p class="sn-para">The key difference from <code class="sn-ic">@playwright/test</code> is that Cucumber is the test runner, not Playwright. Playwright is used only as a browser automation library here.</p>
+    </div>
+  </div>
+
+  <!-- Q601.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.4</span>
+      <h2 class="sn-q-text">How did you use Cucumber BDD in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, we built a CucumberJS + Playwright + TypeScript BDD framework with two profiles — <code class="sn-ic">default</code> (direct locators in step definitions) and <code class="sn-ic">pom</code> (step definitions delegate to page objects).</p>
+      </div>
+<p class="sn-para">Feature files covered login, employee management, and user management. Non-technical team members could read the <code class="sn-ic">login.feature</code> file and immediately understand what each test does. The Background block handled navigation to the login page so every scenario started from a consistent state.</p>
+<p class="sn-para">We used <code class="sn-ic">worldParameters</code> in <code class="sn-ic">cucumber.js</code> to centralise configuration — <code class="sn-ic">baseUrl</code>, <code class="sn-ic">headless</code>, and <code class="sn-ic">slowMo</code> were all passed through <code class="sn-ic">worldParameters</code>, which meant we never hard-coded URLs in step definitions. Switching from local to staging was one line change in <code class="sn-ic">cucumber.js</code>.</p>
+<p class="sn-para">For reporting, we integrated both <code class="sn-ic">multiple-cucumber-html-reporter</code> and Allure. The Cucumber HTML report was shared with the business team; Allure was used by the development team for deeper failure analysis.</p>
+    </div>
+  </div>
+
+  <!-- Q601.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.5</span>
+      <h2 class="sn-q-text">What is the Custom World in CucumberJS?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The World is a class that CucumberJS creates fresh for every Scenario. It is the shared context for all steps in a scenario — the browser, page, and any test state live on the World.</p>
+      </div>
+<p class="sn-para">Without a custom World, step definitions cannot share browser state. With a custom World, every step in a scenario can access <code class="sn-ic">this.page</code>, <code class="sn-ic">this.browser</code>, and any other property you put on the class.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// support/world.ts</span>
+<span class="tc-kw">import</span> { Browser, BrowserContext, Page, chromium } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { IWorldOptions, World, setWorldConstructor } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> OrangeHRMWorld <span class="tc-kw">extends</span> World {
+  browser!: Browser;
+  context!: BrowserContext;
+  page!: Page;
+
+  <span class="tc-kw">readonly</span> baseUrl: <span class="tc-kw">string</span>;
+  <span class="tc-kw">readonly</span> headless: <span class="tc-kw">boolean</span>;
+
+  <span class="tc-fn">constructor</span>(options: IWorldOptions) {
+    <span class="tc-fn">super</span>(options);
+    <span class="tc-kw">this</span>.baseUrl = (options.parameters as <span class="tc-kw">any</span>)?.baseUrl ?? <span class="tc-str">''</span>;
+    <span class="tc-kw">this</span>.headless = (options.parameters as <span class="tc-kw">any</span>)?.headless ?? <span class="tc-kw">false</span>;
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">openBrowser</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">this</span>.browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>({ headless: <span class="tc-kw">this</span>.headless });
+    <span class="tc-kw">this</span>.context = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.browser.<span class="tc-fn">newContext</span>();
+    <span class="tc-kw">this</span>.page = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.<span class="tc-fn">newPage</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">closeBrowser</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context?.<span class="tc-fn">close</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.browser?.<span class="tc-fn">close</span>();
+  }
+}
+
+<span class="tc-fn">setWorldConstructor</span>(OrangeHRMWorld);  <span class="tc-cm">// register with Cucumber</span></div>
+      </div>
+<p class="sn-para">Step definitions access the World via <code class="sn-ic">this</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">Given(<span class="tc-str">'the user navigates to login page'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(<span class="tc-kw">this</span>.baseUrl);
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">setWorldConstructor</code> call at the bottom tells Cucumber to use your class instead of the default World.</p>
+    </div>
+  </div>
+
+  <!-- Q601.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.6</span>
+      <h2 class="sn-q-text">What are Cucumber hooks and how do they differ from Playwright hooks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cucumber hooks run lifecycle code before or after scenarios and steps. They are different from Playwright's <code class="sn-ic">beforeEach</code> / <code class="sn-ic">afterEach</code> which are tied to the <code class="sn-ic">@playwright/test</code> runner.</p>
+      </div>
+<p class="sn-para">Cucumber has four hook levels:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Hook</th><th class="sn-th-blue">When it runs</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">BeforeAll</code></td><td>Once before the entire test suite</td></tr>
+          <tr><td><code class="sn-ic">AfterAll</code></td><td>Once after the entire test suite</td></tr>
+          <tr><td><code class="sn-ic">Before</code></td><td>Before every Scenario</td></tr>
+          <tr><td><code class="sn-ic">After</code></td><td>After every Scenario</td></tr>
+          <tr><td><code class="sn-ic">BeforeStep</code></td><td>Before every step</td></tr>
+          <tr><td><code class="sn-ic">AfterStep</code></td><td>After every step</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">In a Playwright BDD project, you open the browser in <code class="sn-ic">Before</code> and close it in <code class="sn-ic">After</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { Before, After, Status, setDefaultTimeout } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { OrangeHRMWorld } <span class="tc-kw">from</span> <span class="tc-str">'./world'</span>;
+
+<span class="tc-fn">setDefaultTimeout</span>(60_000);  <span class="tc-cm">// step timeout — must be set here, not in cucumber.js</span>
+
+Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> });
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);  <span class="tc-cm">// attach to Cucumber report</span>
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">this.attach()</code> is a method from the Cucumber World — it adds the screenshot to the Cucumber HTML report and Allure report for the failed scenario.</p>
+<div class="sn-callout c-purple"><span class="sn-callout-icon">💡</span><span class="sn-callout-text">💡 <strong class="k-pink">Interview Tip:</strong> A common interview question is "Where do you set the timeout in Cucumber?" The answer is <code class="sn-ic">setDefaultTimeout()</code> in a hooks file — not in <code class="sn-ic">cucumber.js</code>. If you set it in <code class="sn-ic">cucumber.js</code>, it is ignored for hooks and step definitions.</span></div>
+    </div>
+  </div>
+
+  <!-- Q601.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.7</span>
+      <h2 class="sn-q-text">What is the difference between step-definitions and step-definitions-pom? Why have two folders?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">This is a teaching pattern — two profiles that show the evolution from a direct locator approach to a Page Object Model approach.</p>
+      </div>
+<p class="sn-para"><strong class="k-red"><code class="sn-ic">step-definitions/</code></strong> — the direct approach. Locators live inside the step definition functions. The step definition talks directly to <code class="sn-ic">this.page</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions/login.steps.ts</span>
+When(<span class="tc-str">'the user enters username {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, username: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;username&amp;quot;]'</span>).<span class="tc-fn">fill</span>(username);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-red"><code class="sn-ic">step-definitions-pom/</code></strong> — the POM approach. Step definitions only call page object methods. Locators are in the page classes:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions-pom/login.steps.ts</span>
+When(<span class="tc-str">'the user enters username {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, username: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">enterUsername</span>(username);  <span class="tc-cm">// delegate to page object</span>
+});</div>
+      </div>
+<p class="sn-para">The direct approach is easier to start with but harder to maintain. When a locator changes, you update it in every step definition that uses it. The POM approach is harder to set up but easier to maintain — a locator change happens in one page class, and all step definitions that call that method are automatically fixed.</p>
+    </div>
+  </div>
+
+  <!-- Q601.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.8</span>
+      <h2 class="sn-q-text">What is POMWorld and how does it give step definitions access to page objects?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">POMWorld</code> extends the basic World and adds page object instances as properties. After the browser opens, it instantiates all page objects and stores them on <code class="sn-ic">this</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// support/pom-world.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> POMWorld <span class="tc-kw">extends</span> World {
+  loginPage!: LoginPage;
+  dashboardPage!: DashboardPage;
+  employeeListPage!: EmployeeListPage;
+  addEmployeePage!: AddEmployeePage;
+
+  <span class="tc-kw">async</span> <span class="tc-fn">openBrowser</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-cm">// ... launch browser, create context and page ...</span>
+    <span class="tc-kw">this</span>.<span class="tc-fn">initPages</span>();  <span class="tc-cm">// create page objects after page exists</span>
+  }
+
+  <span class="tc-kw">private</span> <span class="tc-fn">initPages</span>(): <span class="tc-kw">void</span> {
+    <span class="tc-kw">this</span>.loginPage = <span class="tc-kw">new</span> LoginPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.dashboardPage = <span class="tc-kw">new</span> DashboardPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.employeeListPage = <span class="tc-kw">new</span> EmployeeListPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.addEmployeePage = <span class="tc-kw">new</span> AddEmployeePage(<span class="tc-kw">this</span>.page);
+  }
+}</div>
+      </div>
+<p class="sn-para">Step definitions type <code class="sn-ic">this</code> as <code class="sn-ic">POMWorld</code> to get TypeScript autocomplete:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">When(<span class="tc-str">'the user clicks the login button'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">clickLogin</span>();  <span class="tc-cm">// TypeScript knows loginPage exists</span>
+});</div>
+      </div>
+<p class="sn-para">This is Cucumber's equivalent of Playwright's custom fixtures. Instead of injecting page objects via fixture parameters, you put them on the World and access via <code class="sn-ic">this</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q601.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.9</span>
+      <h2 class="sn-q-text">What is a Scenario Outline and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <code class="sn-ic">Scenario Outline</code> is a template scenario that runs once for each row in its <code class="sn-ic">Examples</code> table. Placeholders in angle brackets (<code class="sn-ic">&lt;firstName&gt;</code>) are replaced by column values at runtime.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario Outline: Add multiple employees
+  When the user clicks on Add Employee button
+  And the user enters first name &quot;&lt;firstName&gt;&quot;
+  And the user enters last name &quot;&lt;lastName&gt;&quot;
+  And the user saves the <span class="tc-kw">new</span> employee
+  Then the employee profile page should be displayed
+
+  Examples:
+    | firstName | lastName  |
+    | Alice     | Johnson   |
+    | Bob       | Williams  |
+    | Carol     | Brown     |</div>
+      </div>
+<p class="sn-para">This creates three separate test runs — one for Alice Johnson, one for Bob Williams, one for Carol Brown. The step definition receives the actual value as a string parameter.</p>
+<p class="sn-para">Use <code class="sn-ic">Scenario Outline</code> when the same workflow needs to be tested with different data. Common examples: login with multiple usernames, form validation with different invalid inputs, creating records with different field combinations.</p>
+    </div>
+  </div>
+
+  <!-- Q601.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.10</span>
+      <h2 class="sn-q-text">What is a Background in Gherkin? How is it different from a hook?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A <code class="sn-ic">Background</code> is a set of Given steps that run before every Scenario in the same feature file. It is part of the feature file, not code.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Feature: OrangeHRM Employee Management
+
+  Background:
+    Given the user is logged <span class="tc-kw">in</span> as &quot;testadmin&quot; with password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+    And the user navigates to PIM <span class="tc-kw">module</span></div>
+      </div>
+<p class="sn-para">Every Scenario in this file starts already logged in and on the PIM page.</p>
+<p class="sn-para"><strong class="k-green">Background vs Before hook:</strong></p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Background</th><th class="sn-th-green">Before hook</th></tr></thead>
+          <tbody>
+          <tr><td>Where defined</td><td>Feature file (Gherkin)</td><td>TypeScript hooks file</td></tr>
+          <tr><td>Visible to business team</td><td>Yes</td><td>No</td></tr>
+          <tr><td>Scope</td><td>One feature file</td><td>All scenarios (unless tagged)</td></tr>
+          <tr><td>Can use step definitions</td><td>Yes</td><td>Direct code</td></tr>
+          <tr><td>Reported as steps</td><td>Yes — visible in report</td><td>No</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">Background</code> for setup that is part of the business scenario (it belongs in the feature file because it describes context). Use <code class="sn-ic">Before</code> hooks for technical setup that is not part of the business scenario (opening the browser, setting timeouts).</p>
+    </div>
+  </div>
+
+  <!-- Q601.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.11</span>
+      <h2 class="sn-q-text">What is wrong with this step definition?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ COMMON MISTAKE — hard-coded credentials in step definition</span>
+Given(<span class="tc-str">'the user is logged in'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(<span class="tc-str">'https: S1 
+  await this.page.locator('</span>input[name=&quot;username&quot;]<span class="tc-str">').fill('</span>testadmin<span class="tc-str">');
+  await this.page.locator('</span>input[name=&quot;password&quot;]<span class="tc-str">').fill('</span>Vibetestq@<span class="tc-num">123</span><span class="tc-str">');
+  await this.page.locator('</span>button[<span class="tc-kw">type</span>=&quot;submit&quot;]').<span class="tc-fn">click</span>();
+});</div>
+      </div>
+<p class="sn-para">Three problems. First, the URL is hard-coded — if the environment changes, this step breaks. Second, the credentials are hard-coded in code. Third, this step can only log in as one user — it cannot be reused for different roles.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ CORRECT APPROACH — parameterised step with World config</span>
+Given(
+  <span class="tc-str">'the user is logged in as {string} with password {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigateTo</span>(<span class="tc-str">'/'</span>);                              <span class="tc-cm">// baseUrl from World</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;username&amp;quot;]'</span>).<span class="tc-fn">fill</span>(username);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;password&amp;quot;]'</span>).<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]'</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'**/dashboard/index'</span>, { timeout: <span class="tc-num">15000</span> });
+  }
+);</div>
+      </div>
+<p class="sn-para">The URL comes from <code class="sn-ic">this.baseUrl</code> via <code class="sn-ic">navigateTo()</code>. Credentials come from the feature file as parameters. The same step works for admin users and ESS users.</p>
+    </div>
+  </div>
+
+  <!-- Q601.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.12</span>
+      <h2 class="sn-q-text">How does the Cucumber BDD approach compare to native Playwright Test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">CucumberJS + Playwright</th><th class="sn-th-green">@playwright/test (native)</th></tr></thead>
+          <tbody>
+          <tr><td>Test runner</td><td>CucumberJS</td><td>Playwright Test</td></tr>
+          <tr><td>Test format</td><td>Gherkin feature files</td><td>TypeScript test files</td></tr>
+          <tr><td>Business readability</td><td>High — non-technical team can read</td><td>Low — TypeScript only</td></tr>
+          <tr><td>Parallel execution</td><td><code class="sn-ic">parallel: N</code> in cucumber.js</td><td><code class="sn-ic">workers: N</code>, <code class="sn-ic">fullyParallel: true</code></td></tr>
+          <tr><td>Fixtures</td><td>Custom World + hooks</td><td>Built-in fixture DI system</td></tr>
+          <tr><td>Reporters</td><td>Cucumber HTML, Allure, JSON</td><td>HTML, JSON, JUnit, Allure</td></tr>
+          <tr><td>Trace Viewer</td><td>Not built-in</td><td>Built-in</td></tr>
+          <tr><td>Auto-waiting</td><td>Manual (Playwright API)</td><td>Same — Playwright API</td></tr>
+          <tr><td>Setup cost</td><td>Higher (World, hooks wiring)</td><td>Lower</td></tr>
+          <tr><td>Maintenance</td><td>Higher (two layers: Gherkin + code)</td><td>Lower</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-orange">Use CucumberJS when:</strong> the team includes non-technical stakeholders who will read or approve feature files, or the project follows a BDD process where acceptance criteria are written in Gherkin.</p>
+<p class="sn-para"><strong class="k-orange">Use native Playwright Test when:</strong> the team is entirely technical, and the priority is speed, simplicity, and full access to Playwright Test's features (sharding, trace viewer, built-in fixtures).</p>
+    </div>
+  </div>
+
+  <!-- Q601.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.13</span>
+      <h2 class="sn-q-text">Write the step definition for a Scenario Outline with Examples</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Feature file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario Outline: Add multiple employees
+  When the user clicks on Add Employee button
+  And the user enters first name &quot;&lt;firstName&gt;&quot;
+  And the user enters last name &quot;&lt;lastName&gt;&quot;
+  And the user saves the <span class="tc-kw">new</span> employee
+  Then the employee profile page should be displayed
+
+  Examples:
+    | firstName | lastName |
+    | Alice     | Johnson  |
+    | Bob       | Williams |</div>
+      </div>
+<p class="sn-para">Step definition:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { When, Then } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { OrangeHRMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/world'</span>;
+
+When(<span class="tc-str">'the user enters first name {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, firstName: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;firstName&amp;quot;]'</span>).<span class="tc-fn">fill</span>(firstName);
+  }
+);
+
+When(<span class="tc-str">'the user enters last name {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, lastName: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;lastName&amp;quot;]'</span>).<span class="tc-fn">fill</span>(lastName);
+  }
+);
+
+When(<span class="tc-str">'the user saves the new employee'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]:has-text(&amp;quot;Save&amp;quot;)'</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+);
+
+Then(<span class="tc-str">'the employee profile page should be displayed'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'**/pim/viewPersonalDetails**'</span>, { timeout: <span class="tc-num">15000</span> });
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.orangehrm-main-title'</span>)).<span class="tc-fn">toBeVisible</span>();
+  }
+);</div>
+      </div>
+<p class="sn-para">Cucumber runs these step definitions three times — once for Alice Johnson, once for Bob Williams. The <code class="sn-ic">{string}</code> parameter in the step definition receives the value from the <code class="sn-ic">Examples</code> table for each run.</p>
+    </div>
+  </div>
+
+  <!-- Q601.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.14</span>
+      <h2 class="sn-q-text">How do you use tags to run a subset of tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tags in Gherkin start with <code class="sn-ic">@</code>. You place them above a <code class="sn-ic">Feature</code>, <code class="sn-ic">Scenario</code>, or <code class="sn-ic">Scenario Outline</code>.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">@login
+Feature: OrangeHRM Login
+
+  Scenario: Successful login
+    ...
+
+@employee @smoke
+  Scenario: Add a <span class="tc-kw">new</span> employee
+    ...</div>
+      </div>
+<p class="sn-para">You run tagged tests using <code class="sn-ic">--tags</code> in the CLI or in <code class="sn-ic">package.json</code> scripts:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx cucumber-js --tags &quot;@login&quot;
+
+npx cucumber-js --tags &quot;@smoke&quot;
+
+npx cucumber-js --tags &quot;@employee and not @slow&quot;
+
+npx cucumber-js --tags &quot;@smoke or @regression&quot;</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">package.json</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;scripts&quot;: {
+    &quot;test:login&quot;:    &quot;cucumber-js --config cucumber.js --tags \&quot;@login\&quot;&quot;,
+    &quot;test:employee&quot;: &quot;cucumber-js --config cucumber.js --tags \&quot;@employee\&quot;&quot;,
+    &quot;test:smoke&quot;:    &quot;cucumber-js --config cucumber.js --tags \&quot;@smoke\&quot;&quot;
+  }
+}</div>
+      </div>
+<p class="sn-para">Tags are also used in <code class="sn-ic">Before</code>/<code class="sn-ic">After</code> hooks to apply setup only to certain scenarios:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">Before({ tags: <span class="tc-str">'@employee'</span> }, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-cm">// Only runs before scenarios tagged @employee</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">loginAsAdmin</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q601.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.15</span>
+      <h2 class="sn-q-text">How do you integrate Allure reporting with CucumberJS?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Install the Allure Cucumber adapter:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev allure-cucumberjs allure-commandline</div>
+      </div>
+<p class="sn-para">Add the Allure reporter to the <code class="sn-ic">format</code> array in <code class="sn-ic">cucumber.js</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">format: [
+  <span class="tc-str">'progress-bar'</span>,
+  <span class="tc-str">'json:reports/cucumber-report.json'</span>,
+  <span class="tc-str">'allure-cucumberjs/reporter'</span>,        <span class="tc-cm">// writes to allure-results/</span>
+],
+formatOptions: {
+  snippetInterface: <span class="tc-str">'async-await'</span>,
+  resultsDir: <span class="tc-str">'allure-results'</span>,        <span class="tc-cm">// where Allure writes its raw results</span>
+},</div>
+      </div>
+<p class="sn-para">Generate and open the report:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx allure generate allure-results --clean -o allure-report
+
+npx allure open allure-report
+
+npx allure serve allure-results</div>
+      </div>
+<p class="sn-para">Allure picks up feature names, scenario names, steps, tags, and attachments (screenshots, logs) automatically from the Cucumber adapter.</p>
+    </div>
+  </div>
+
+  <!-- Q601.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.16</span>
+      <h2 class="sn-q-text">How do you debug a failing Cucumber + Playwright test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Four approaches, in order of usefulness.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Step 1 — Read the Cucumber HTML report.</strong> The report shows exactly which step failed, what the error message was, and the screenshot attached in the <code class="sn-ic">After</code> hook. Start here before opening any other tool.</p>
+<p class="sn-para"><strong class="k-yellow">Step 2 — Run with slowMo.</strong> Set <code class="sn-ic">slowMo: 500</code> in <code class="sn-ic">worldParameters</code> in <code class="sn-ic">cucumber.js</code>. The browser slows down and you can see what is happening before the failure.</p>
+<p class="sn-para"><strong class="k-yellow">Step 3 — Run headed.</strong> Set <code class="sn-ic">headless: false</code> in <code class="sn-ic">worldParameters</code> (or use <code class="sn-ic">cross-env HEADLESS=false</code>). Watch the browser during the failing scenario.</p>
+<p class="sn-para"><strong class="k-yellow">Step 4 — Add Playwright trace.</strong> In your <code class="sn-ic">Before</code> hook, start a trace. In your <code class="sn-ic">After</code> hook, save it on failure:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">Before(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">openBrowser</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">start</span>({ screenshots: <span class="tc-kw">true</span>, snapshots: <span class="tc-kw">true</span> });
+});
+
+After(<span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, scenario) {
+  <span class="tc-kw">if</span> (scenario.result?.status === Status.FAILED) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.tracing.<span class="tc-fn">stop</span>({
+      path: <span class="tc-str">`reports/traces/${scenario.pickle.name}.zip`</span>
+    });
+    <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">takeScreenshot</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">attach</span>(screenshot, <span class="tc-str">'image/png'</span>);
+  }
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">closeBrowser</span>();
+});</div>
+      </div>
+<p class="sn-para">Open the trace:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-trace &quot;reports/traces/Successful login.zip&quot;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q601.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.17</span>
+      <h2 class="sn-q-text">Describe a real challenge you faced in your Cucumber BDD project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM BDD project, we hit a problem with the autocomplete employee name field on the Add User form. The Gherkin step was <code class="sn-ic">And the user selects employee name &quot;John Doe&quot;</code>, but the field was a dynamic autocomplete widget — it showed suggestions as you typed, and you had to click one to set the value.</p>
+      </div>
+<p class="sn-para">The first attempt just filled the input directly. The autocomplete dropdown appeared but <code class="sn-ic">fill()</code> moved to the next step before we clicked the suggestion, so the employee name was never properly set. The form saved but the employee field was blank.</p>
+<p class="sn-para">We fixed it with a wait-and-fallback pattern in the step definition:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">When(<span class="tc-str">'the user selects employee name {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, employeeName: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">const</span> input = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-form-row:has(.oxd-label:text(&amp;quot;Employee Name&amp;quot;)) input'</span>);
+    <span class="tc-kw">await</span> input.<span class="tc-fn">fill</span>(employeeName.<span class="tc-fn">split</span>(<span class="tc-str">' '</span>)[<span class="tc-num">0</span>]);   <span class="tc-cm">// type first name only to trigger suggestions</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">1500</span>);            <span class="tc-cm">// wait for suggestions to load</span>
+
+    <span class="tc-kw">const</span> exactMatch = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">`.oxd-autocomplete-option:has-text(&amp;quot;${employeeName}&amp;quot;)`</span>).<span class="tc-fn">first</span>();
+    <span class="tc-kw">const</span> exactVisible = <span class="tc-kw">await</span> exactMatch.<span class="tc-fn">isVisible</span>().<span class="tc-kw">catch</span>(() =&gt; <span class="tc-kw">false</span>);
+    <span class="tc-kw">if</span> (exactVisible) {
+      <span class="tc-kw">await</span> exactMatch.<span class="tc-fn">click</span>();
+    } <span class="tc-kw">else</span> {
+      <span class="tc-cm">// Fallback: click first suggestion if exact match not found</span>
+      <span class="tc-kw">const</span> first = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-autocomplete-option'</span>).<span class="tc-fn">first</span>();
+      <span class="tc-kw">if</span> (<span class="tc-kw">await</span> first.<span class="tc-fn">isVisible</span>().<span class="tc-kw">catch</span>(() =&gt; <span class="tc-kw">false</span>)) <span class="tc-kw">await</span> first.<span class="tc-fn">click</span>();
+    }
+  }
+);</div>
+      </div>
+<p class="sn-para">The lesson: dynamic UI components in step definitions need more defensive code than static inputs. The fallback pattern prevented the test from failing silently on environments where the test data name differed slightly.</p>
+<div class="sn-callout c-purple"><span class="sn-callout-icon">💡</span><span class="sn-callout-text">💡 <strong class="k-blue">Interview Tip:</strong> This type of question is testing whether you have actually built a BDD framework, not just read about one. If you describe a real, specific problem — autocomplete dropdowns, timing issues, multi-profile setups — the interviewer knows you have done this work.</span></div>
+    </div>
+  </div>
+
+  <!-- Q601.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q601.18</span>
+      <h2 class="sn-q-text">How does your team manage the two Cucumber profiles (default vs pom)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, the <code class="sn-ic">default</code> profile uses direct locators in step definitions and the <code class="sn-ic">pom</code> profile delegates to page objects. Both profiles share the same feature files — the Gherkin never changes, only the implementation layer below it changes.</p>
+      </div>
+<p class="sn-para">We use the <code class="sn-ic">default</code> profile to onboard new team members. It is easier to follow because each step definition is self-contained — you see the locator and the action in the same function. New team members can trace what a test does without jumping between files.</p>
+<p class="sn-para">The <code class="sn-ic">pom</code> profile is what we use in CI and for production runs. It is more maintainable — locator changes happen in one page class rather than across multiple step definition files.</p>
+<p class="sn-para">The two profiles are defined in <code class="sn-ic">cucumber.js</code> using the <code class="sn-ic">module.exports</code> object:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">module</span>.exports = {
+  <span class="tc-kw">default</span>: { <span class="tc-kw">require</span>: [<span class="tc-str">'support/world.ts'</span>, <span class="tc-str">'step-definitions S0 *.ts'</span>], ... },
+  pom:     { <span class="tc-kw">require</span>: [<span class="tc-str">'support/pom-world.ts'</span>, <span class="tc-str">'step-definitions-pom S1 *.ts'</span>], ... },
+};</div>
+      </div>
+<p class="sn-para">Running the POM profile: <code class="sn-ic">npm run test:pom</code> which maps to <code class="sn-ic">cucumber-js --profile pom</code>.</p>
+<p class="sn-para">For new frameworks, we skip the <code class="sn-ic">default</code> profile entirely and start with POM. The two-profile approach was a teaching tool — in a production project, you pick one approach and commit to it.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>BDD uses Gherkin (Given/When/Then) to write test scenarios in plain English so business and tech teams can read them together.</span></li>
+            <li><span class="icon">⭐</span><span>CucumberJS is the test runner; Playwright is the browser library — they are separate. You wire them together through the Custom World and hooks.</span></li>
+            <li><span class="icon">⭐</span><span>The Custom World (<code class="sn-ic">setWorldConstructor</code>) gives every scenario its own browser, page, and config. Step definitions access these via <code class="sn-ic">this</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Before</code> / <code class="sn-ic">After</code> hooks open and close the browser per scenario. <code class="sn-ic">setDefaultTimeout()</code> must be called in the hooks file — not in <code class="sn-ic">cucumber.js</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">Background</code> for setup steps that are part of the business scenario (visible in the feature file). Use <code class="sn-ic">Before</code> hooks for technical setup (browser launch).</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Scenario Outline</code> + <code class="sn-ic">Examples</code> runs one scenario with multiple data sets — use it for data-driven tests.</span></li>
+            <li><span class="icon">⭐</span><span>Tags (<code class="sn-ic">@login</code>, <code class="sn-ic">@smoke</code>) filter which scenarios run. Combine with <code class="sn-ic">--tags</code> CLI or <code class="sn-ic">package.json</code> scripts.</span></li>
+            <li><span class="icon">⭐</span><span>Use POM approach in <code class="sn-ic">step-definitions-pom/</code> — step definitions call page object methods; locators never appear in step definitions.</span></li>
+            <li><span class="icon">⭐</span><span>For debugging: Cucumber HTML report first → slowMo → headed → Playwright trace in <code class="sn-ic">After</code> hook.</span></li>
+            <li><span class="icon">⭐</span><span>In interviews: mention <code class="sn-ic">worldParameters</code> for centralised config, the two-profile approach for teaching vs production, and the autocomplete / dynamic field challenge as a real project story.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

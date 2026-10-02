@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment: AI in Test Automation - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary: #1e40af;
+    --primary-dark: #1e3a8a;
+    --secondary: #22c55e;
+    --accent: #f97316;
+    --warning: #fbbf24;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card-bg: #ffffff;
+    --text: #1e293b;
+    --text-light: #64748b;
+    --border: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+}
+
+.logo img {
+    height: 50px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--primary-dark);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.back-link:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.assessment-title {
+    text-align: right;
+}
+
+.assessment-title h1 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.assessment-title p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+.question {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.question:last-child {
+    border-bottom: none;
+}
+
+.question-text {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.question-number {
+    color: var(--primary);
+    min-width: 25px;
+}
+
+.options {
+    display: grid;
+    gap: 10px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.option:hover {
+    background-color: #f1f5f9;
+    border-color: var(--primary);
+}
+
+.option input {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.option.correct {
+    border-color: var(--secondary);
+    background-color: #ecfdf5;
+}
+
+.option.incorrect {
+    border-color: var(--danger);
+    background-color: #fef2f2;
+}
+
+.question.unanswered {
+    border: 2px solid var(--danger) !important;
+    background-color: #fef2f2 !important;
+    border-radius: 8px;
+    padding: 15px !important;
+    margin-bottom: 25px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+}
+
+.btn-success {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.result-section {
+    display: none;
+    text-align: center;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.score-display {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--primary);
+    margin: 20px 0;
+}
+
+.feedback-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.name-input-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.name-input-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.name-input-section input {
+    padding: 10px 15px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: 15px;
+}
+
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    background: #ef4444;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: none;
+    z-index: 1000;
+    font-weight: 500;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.explanation {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    display: none;
+    padding: 10px;
+    background: #f8fafc;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary);
+}
+
+@media print {
+
+    .btn,
+    .name-input-section {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+
+    .explanation,
+    .result-section {
+        display: block !important;
+    }
+
+    #printed-name {
+        display: block !important;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 10px;
+    }
+}
+
+#printed-name {
+    display: none;
+}
+
+code {
+    background: #f1f5f9;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #e11d48;
+    font-family: monospace;
+}
+
+pre {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 15px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 10px 0;
+    font-size: 0.85rem;
+}
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><img src="/assets/Title with logo and box.png" alt="VibeTestQ Logo"></div>
+            <a class="back-link" href="index.html"><i class="fas fa-arrow-left"></i> Back to Assessments Home</a>
+            <div class="assessment-title">
+                <h1>Assessment</h1>
+                <p>Loading topics...</p>
+            </div>
+        </header>
+
+        <div id="result-container" class="card result-section">
+            <div id="printed-name"></div>
+            <h2>Assessment Completed!</h2>
+            <div id="score-display" class="score-display">0 / 0</div>
+            <p id="feedback-text" class="feedback-text"></p>
+            <div class="name-input-section">
+                <label for="student-name">Enter your name for the report:</label>
+                <input type="text" id="student-name" placeholder="Your Full Name"><br>
+                <button class="btn btn-success" onclick="preparePrint()"><i class="fas fa-print"></i> Print
+                    Result</button>
+            </div>
+        </div>
+
+        <div id="quiz-container">
+            <div class="card">
+                <form id="quiz-form"></form>
+            </div>
+        </div>
+
+        <footer style="text-align: center; margin-top: 40px; color: var(--text-light); font-size: 0.8rem;">
+            &copy; 2026 VibeTestQ. All rights reserved.
+        </footer>
+    </div>
+
+    <script type="text/plain" id="assessment-markdown">
+# Assessment: AI in Test Automation MCQ
+
+**Total Questions:** 30
+**Time:** 30 minutes
+**Pass Mark:** 60%
+**Topics:** AI Prompts, Test Data Generation, RAG, Guardrails, Security
+
+---
+
+## Questions
+
+### Question 1
+Which statement best describes Prompt design?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Evaluation measures accuracy and usefulness of AI outputs.
+
+**Answer: A) Prompt design shapes AI outputs for testing tasks.**
+
+**Explanation:** Prompt design is the practice of crafting effective instructions for AI models. Well-designed prompts include context, constraints, and examples that guide AI to produce relevant, accurate outputs for specific testing scenarios.
+
+---
+
+### Question 2
+What is a best practice for Prompt design?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Use structured prompts with clear constraints.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Use structured prompts with clear constraints.**
+
+**Explanation:** Structured prompts with explicit constraints (format, length, style) produce more consistent and reliable outputs. Including examples (few-shot prompting) and specifying edge cases helps the AI understand exactly what you need.
+
+---
+
+### Question 3
+Which pitfall should you avoid with Prompt design?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) Providing vague prompts without context.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: C) Providing vague prompts without context.**
+
+**Explanation:** Vague prompts lead to inconsistent or irrelevant outputs. Without context about your testing environment, requirements, and expected formats, AI may generate content that doesn't fit your needs and requires extensive rework.
+
+---
+
+### Question 4
+Which statement best describes Test data generation?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) RAG uses retrieved context for grounded responses.
+C) Evaluation measures accuracy and usefulness of AI outputs.
+D) AI can generate realistic test data quickly.
+
+**Answer: D) AI can generate realistic test data quickly.**
+
+**Explanation:** AI can generate diverse test datasets including edge cases, boundary values, and realistic user scenarios much faster than manual creation. This includes names, addresses, transactions, and domain-specific data patterns.
+
+---
+
+### Question 5
+What is a best practice for Test data generation?
+
+A) Validate AI-generated data against constraints.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Validate AI-generated data against constraints.**
+
+**Explanation:** Always validate AI-generated test data against business rules, data type constraints, and format requirements. AI might produce syntactically correct but semantically invalid data that could pass tests but represent impossible real-world scenarios.
+
+---
+
+### Question 6
+Which pitfall should you avoid with Test data generation?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Using AI data without verification.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Using AI data without verification.**
+
+**Explanation:** Blindly trusting AI-generated data can introduce invalid test cases or miss important edge cases. Always review generated data for accuracy, realistic values, and proper coverage of boundary conditions before use in tests.
+
+---
+
+### Question 7
+Which statement best describes RAG workflows?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Evaluation measures accuracy and usefulness of AI outputs.
+
+**Answer: C) RAG uses retrieved context for grounded responses.**
+
+**Explanation:** Retrieval-Augmented Generation (RAG) combines AI with document retrieval to provide context-aware responses. For testing, RAG can reference requirements documents, API specs, and existing test cases to generate more accurate outputs.
+
+---
+
+### Question 8
+What is a best practice for RAG workflows?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Keep retrieval sources current and relevant.
+
+**Answer: D) Keep retrieval sources current and relevant.**
+
+**Explanation:** RAG quality depends on the retrieved documents. Regularly update your knowledge base with current requirements, API changes, and test documentation. Remove outdated information that could lead to incorrect or conflicting AI outputs.
+
+---
+
+### Question 9
+Which pitfall should you avoid with RAG workflows?
+
+A) Using stale or irrelevant context.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Using stale or irrelevant context.**
+
+**Explanation:** Outdated documentation in your RAG system leads to AI generating tests based on old requirements or deprecated APIs. This creates maintenance burden and false confidence in test coverage that doesn't match current functionality.
+
+---
+
+### Question 10
+Which statement best describes Evaluation metrics?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Evaluation measures accuracy and usefulness of AI outputs.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Evaluation measures accuracy and usefulness of AI outputs.**
+
+**Explanation:** Evaluation metrics help quantify AI performance in testing tasks. Common metrics include precision, recall, relevance scores, and task-specific measures like test coverage achieved or defects found by AI-generated tests.
+
+---
+
+### Question 11
+What is a best practice for Evaluation metrics?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) Define evaluation criteria and scoring.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: C) Define evaluation criteria and scoring.**
+
+**Explanation:** Establish clear evaluation criteria before using AI in testing. Define what constitutes good output (accuracy, coverage, readability) and create scoring rubrics. This enables consistent assessment and improvement tracking over time.
+
+---
+
+### Question 12
+Which pitfall should you avoid with Evaluation metrics?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Skipping evaluation and trusting outputs blindly.
+
+**Answer: D) Skipping evaluation and trusting outputs blindly.**
+
+**Explanation:** AI outputs can contain hallucinations, logical errors, or irrelevant content. Without evaluation, you may deploy faulty tests that give false confidence. Regular evaluation catches quality issues and guides prompt improvements.
+
+---
+
+### Question 13
+Which statement best describes Guardrails?
+
+A) Guardrails prevent unsafe or incorrect outputs.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Guardrails prevent unsafe or incorrect outputs.**
+
+**Explanation:** Guardrails are safety mechanisms that validate, filter, or constrain AI outputs. They prevent harmful content, ensure outputs meet quality standards, and catch obvious errors before they reach production test suites.
+
+---
+
+### Question 14
+What is a best practice for Guardrails?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Add safety checks and validation steps.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Add safety checks and validation steps.**
+
+**Explanation:** Implement multiple validation layers: syntax checks for generated code, semantic validation for test logic, and format verification for test data. Automated guardrails catch common issues before human review saves time.
+
+---
+
+### Question 15
+Which pitfall should you avoid with Guardrails?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) Allowing AI to make final decisions alone.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: C) Allowing AI to make final decisions alone.**
+
+**Explanation:** AI should assist, not replace, human judgment in critical testing decisions. Automated deployment of AI-generated tests without human oversight can introduce subtle bugs, security vulnerabilities, or missing test coverage.
+
+---
+
+### Question 16
+Which statement best describes Human review?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Human review validates AI suggestions before use.
+
+**Answer: D) Human review validates AI suggestions before use.**
+
+**Explanation:** Human review ensures AI outputs meet quality standards and align with testing goals. Reviewers catch contextual errors, verify test logic, and ensure generated tests provide meaningful coverage that AI alone cannot guarantee.
+
+---
+
+### Question 17
+What is a best practice for Human review?
+
+A) Keep humans in the loop for critical decisions.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Keep humans in the loop for critical decisions.**
+
+**Explanation:** Human oversight is essential for decisions affecting security, compliance, or critical business logic. Use AI to accelerate routine tasks while reserving human judgment for high-impact testing decisions and edge cases.
+
+---
+
+### Question 18
+Which pitfall should you avoid with Human review?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Deploying AI output without review.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Deploying AI output without review.**
+
+**Explanation:** Skipping review leads to quality issues in production. AI may generate syntactically correct but logically flawed tests, miss important assertions, or create tests that pass for wrong reasons. Always review before deployment.
+
+---
+
+### Question 19
+Which statement best describes Workflow automation?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) AI can assist with test case authoring.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: C) AI can assist with test case authoring.**
+
+**Explanation:** AI accelerates test case creation by generating initial drafts from requirements, suggesting assertions, and identifying edge cases. This reduces manual effort while allowing testers to focus on strategy and complex scenarios.
+
+---
+
+### Question 20
+What is a best practice for Workflow automation?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Use AI to draft and humans to refine.
+
+**Answer: D) Use AI to draft and humans to refine.**
+
+**Explanation:** AI excels at generating first drafts quickly, while humans excel at refining, contextualizing, and validating. This collaborative approach maximizes efficiency: AI handles repetitive generation while humans ensure quality and relevance.
+
+---
+
+### Question 21
+Which pitfall should you avoid with Workflow automation?
+
+A) Replacing domain knowledge with AI output.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Replacing domain knowledge with AI output.**
+
+**Explanation:** AI lacks deep understanding of your specific domain, business rules, and historical context. Relying solely on AI ignores valuable tribal knowledge and may miss critical test scenarios that only domain experts would consider.
+
+---
+
+### Question 22
+Which statement best describes Bias and fairness?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Bias can appear in AI-generated data or logic.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Bias can appear in AI-generated data or logic.**
+
+**Explanation:** AI models can inherit biases from training data, leading to skewed test data or overlooked scenarios. For example, generated user profiles might lack diversity, or test cases might not cover accessibility requirements.
+
+---
+
+### Question 23
+What is a best practice for Bias and fairness?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) Check for bias in test data generation.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: C) Check for bias in test data generation.**
+
+**Explanation:** Actively audit AI-generated test data for diversity and representation. Ensure test users, scenarios, and inputs reflect your actual user base. Include explicit prompts for edge cases and underrepresented groups.
+
+---
+
+### Question 24
+Which pitfall should you avoid with Bias and fairness?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Using biased data that skews results.
+
+**Answer: D) Using biased data that skews results.**
+
+**Explanation:** Biased test data leads to incomplete coverage and potential production issues. If AI-generated data lacks diversity, your tests may miss bugs affecting specific user groups, locales, or accessibility requirements.
+
+---
+
+### Question 25
+Which statement best describes Security and privacy?
+
+A) Security and privacy protect sensitive data in AI workflows.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Security and privacy protect sensitive data in AI workflows.**
+
+**Explanation:** AI workflows may process or generate sensitive information. Protecting PII, credentials, and proprietary data is critical. This includes securing prompts, responses, and any data sent to external AI services.
+
+---
+
+### Question 26
+What is a best practice for Security and privacy?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Avoid sending secrets to external models.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Avoid sending secrets to external models.**
+
+**Explanation:** Never include API keys, passwords, or sensitive data in prompts to external AI services. Use synthetic data for testing, sanitize inputs, and consider self-hosted models for workflows involving confidential information.
+
+---
+
+### Question 27
+Which pitfall should you avoid with Security and privacy?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) Sharing production data with AI tools.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: C) Sharing production data with AI tools.**
+
+**Explanation:** Production data often contains PII and sensitive business information. Sending it to AI tools risks data leaks and compliance violations. Use anonymized, synthetic, or properly sanitized data for AI-assisted testing.
+
+---
+
+### Question 28
+Which statement best describes Operational monitoring?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) AI can generate realistic test data quickly.
+C) RAG uses retrieved context for grounded responses.
+D) Monitoring tracks AI output drift and reliability.
+
+**Answer: D) Monitoring tracks AI output drift and reliability.**
+
+**Explanation:** AI model behavior can change over time due to model updates or context drift. Operational monitoring tracks output quality, consistency, and reliability to detect degradation before it impacts testing workflows.
+
+---
+
+### Question 29
+What is a best practice for Operational monitoring?
+
+A) Monitor AI usage and performance over time.
+B) Prompt design shapes AI outputs for testing tasks.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: A) Monitor AI usage and performance over time.**
+
+**Explanation:** Track metrics like response latency, output quality scores, error rates, and usage patterns. Regular monitoring helps identify issues early, optimize costs, and ensure AI tools continue delivering value to your testing process.
+
+---
+
+### Question 30
+Which pitfall should you avoid with Operational monitoring?
+
+A) Prompt design shapes AI outputs for testing tasks.
+B) Ignoring model drift in production workflows.
+C) AI can generate realistic test data quickly.
+D) RAG uses retrieved context for grounded responses.
+
+**Answer: B) Ignoring model drift in production workflows.**
+
+**Explanation:** AI models can degrade silently as underlying models update or data distributions shift. Without monitoring, you may not notice declining output quality until it causes test failures or missed defects in production.
+
+---
+
+</script>
+    <script>
+(() => {
+    const markdownNode = document.getElementById('assessment-markdown');
+    if (!markdownNode) {
+        return;
+    }
+
+    const markdown = markdownNode.textContent.trim();
+    const form = document.getElementById('quiz-form');
+    const titleElement = document.querySelector('.assessment-title h1');
+    const subtitleElement = document.querySelector('.assessment-title p');
+    const scoreDisplay = document.getElementById('score-display');
+
+    const assessmentData = parseAssessmentMarkdown(markdown);
+    renderAssessment(assessmentData);
+
+    function parseAssessmentMarkdown(raw) {
+        const lines = raw.replace(/\r\n/g, '\n').split('\n');
+        const titleLine = lines.find((line) => line.trim().startsWith('# ')) || '';
+        const rawTitle = titleLine.replace(/^#\s*/, '').trim();
+        const cleanedTitle = rawTitle
+            .replace(/^Assessment\s*\d*\s*:?\s*/i, '')
+            .replace(/\bMCQ\b/i, '')
+            .trim();
+
+        let topics = '';
+        const topicsLine =
+            lines.find((line) => /^\*\*Topics/i.test(line)) ||
+            lines.find((line) => /^\*\*Topics Covered/i.test(line));
+        if (topicsLine) {
+            const parts = topicsLine.split(':');
+            topics = parts.length > 1 ? parts.slice(1).join(':').replace(/\*\*/g, '').trim() : '';
+        }
+
+        if (!topics) {
+            const subtitleLine = lines.find((line) => line.trim().startsWith('## '));
+            if (subtitleLine) {
+                topics = subtitleLine.replace(/^##\s*/, '').trim();
+            }
+        }
+
+        const questionBlocks = [];
+        const hasQuestionsHeading = lines.some((line) => /^##\s*Questions/i.test(line.trim()));
+        let inQuestions = !hasQuestionsHeading;
+        let stopQuestions = false;
+        let current = null;
+
+        for (const line of lines) {
+            const trimmed = line.trim();
+
+            if (/^##\s*Questions/i.test(trimmed)) {
+                inQuestions = true;
+                continue;
+            }
+
+            if (inQuestions && /^##\s+/i.test(trimmed) && !/^##\s*Questions/i.test(trimmed)) {
+                stopQuestions = true;
+                if (current) {
+                    questionBlocks.push(current);
+                    current = null;
+                }
+                continue;
+            }
+
+            if (!inQuestions || stopQuestions) {
+                continue;
+            }
+
+            if (/^###\s*Question\s*\d+/i.test(trimmed)) {
+                if (current) {
+                    questionBlocks.push(current);
+                }
+                current = [];
+                continue;
+            }
+
+            if (current) {
+                current.push(line);
+            }
+        }
+
+        if (current) {
+            questionBlocks.push(current);
+        }
+
+        const questions = questionBlocks
+            .map((block) => parseQuestionBlock(block))
+            .filter((question) => question.options.length > 0);
+
+        return {
+            title: cleanedTitle || rawTitle || 'Assessment',
+            topics,
+            questions
+        };
+    }
+
+    function parseQuestionBlock(lines) {
+        const questionLines = [];
+        const options = [];
+        let answer = '';
+        const explanationLines = [];
+        let capturingExplanation = false;
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+
+            if (/^\*\*Answer:/i.test(trimmed)) {
+                const match = trimmed.match(/Answer:\s*([A-D])/i);
+                if (match) {
+                    answer = match[1].toLowerCase();
+                }
+                capturingExplanation = false;
+                return;
+            }
+
+            if (/^\*\*Explanation:/i.test(trimmed)) {
+                capturingExplanation = true;
+                const explanationText = trimmed
+                    .replace(/^\*\*Explanation:\*\*\s*/i, '')
+                    .replace(/^\*\*Explanation:\s*/i, '')
+                    .trim();
+                if (explanationText) {
+                    explanationLines.push(explanationText);
+                }
+                return;
+            }
+
+            if (capturingExplanation) {
+                if (trimmed === '---') {
+                    capturingExplanation = false;
+                } else {
+                    explanationLines.push(line);
+                }
+                return;
+            }
+
+            const optionMatch = trimmed.match(/^[-*]?\s*([A-D])\)\s*(.*)$/);
+            if (optionMatch) {
+                options.push({
+                    letter: optionMatch[1].toLowerCase(),
+                    text: optionMatch[2].trim()
+                });
+                return;
+            }
+
+            if (trimmed === '---' || /^##/.test(trimmed)) {
+                return;
+            }
+
+            questionLines.push(line);
+        });
+
+        if (!answer && options.length > 0) {
+            answer = options[0].letter;
+        }
+
+        const { promptLine, bodyLines } = splitPromptAndBody(questionLines);
+
+        return {
+            promptHtml: formatInlineCode(promptLine || 'Select the correct option.'),
+            bodyHtml: formatLinesToHtml(bodyLines),
+            options: options.map((opt) => ({
+                letter: opt.letter,
+                html: formatInlineCode(opt.text)
+            })),
+            answer,
+            explanationHtml: formatLinesToHtml(explanationLines)
+        };
+    }
+
+    function splitPromptAndBody(lines) {
+        let promptLine = '';
+        const bodyLines = [];
+        let foundPrompt = false;
+
+        lines.forEach((line) => {
+            if (!foundPrompt && line.trim() && !line.trim().startsWith('```')) {
+                promptLine = line.trim();
+                foundPrompt = true;
+            } else {
+                bodyLines.push(line);
+            }
+        });
+
+        return { promptLine, bodyLines };
+    }
+
+    function formatLinesToHtml(lines) {
+        if (!lines.length) {
+            return '';
+        }
+
+        const parts = [];
+        let inCodeBlock = false;
+        let codeLines = [];
+        let textLines = [];
+
+        const flushText = () => {
+            if (!textLines.length) {
+                return;
+            }
+            parts.push(textLines.map(formatInlineCode).join('<br>'));
+            textLines = [];
+        };
+
+        lines.forEach((line) => {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('```')) {
+                if (inCodeBlock) {
+                    parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+                    codeLines = [];
+                    inCodeBlock = false;
+                } else {
+                    flushText();
+                    inCodeBlock = true;
+                }
+                return;
+            }
+
+            if (inCodeBlock) {
+                codeLines.push(line);
+            } else if (trimmed !== '') {
+                textLines.push(line);
+            }
+        });
+
+        if (codeLines.length) {
+            parts.push(`<pre><code>${escapeHtml(codeLines.join('\n'))}</code></pre>`);
+        }
+
+        flushText();
+        return parts.join('');
+    }
+
+    function formatInlineCode(text) {
+        if (!text) {
+            return '';
+        }
+
+        const segments = text.split('`');
+        return segments
+            .map((segment, index) => {
+                if (index % 2 === 1) {
+                    return `<code>${escapeHtml(segment)}</code>`;
+                }
+                return escapeHtml(segment);
+            })
+            .join('');
+    }
+
+    function escapeHtml(value) {
+        return value
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function renderAssessment(data) {
+        const heading = data.title ? `Assessment: ${data.title}` : 'Assessment';
+        titleElement.textContent = heading;
+        subtitleElement.textContent = data.topics || data.title || 'Multiple Choice Questions';
+        document.title = `${heading} - VibeTestQ`;
+
+        form.innerHTML = '';
+
+        data.questions.forEach((question, index) => {
+            form.appendChild(buildQuestionElement(question, index));
+        });
+
+        const submitWrap = document.createElement('div');
+        submitWrap.style.textAlign = 'center';
+        submitWrap.style.marginTop = '30px';
+        submitWrap.innerHTML = `
+            <button type="button" class="btn btn-primary" onclick="submitQuiz()">
+                <i class="fas fa-paper-plane"></i> Submit Assessment
+            </button>
+        `;
+        form.appendChild(submitWrap);
+
+        scoreDisplay.textContent = `0 / ${data.questions.length}`;
+    }
+
+    function buildQuestionElement(question, index) {
+        const questionElement = document.createElement('div');
+        questionElement.className = 'question';
+        questionElement.dataset.answer = question.answer;
+
+        const questionText = document.createElement('div');
+        questionText.className = 'question-text';
+
+        const numberSpan = document.createElement('span');
+        numberSpan.className = 'question-number';
+        numberSpan.textContent = `${index + 1}.`;
+
+        const textSpan = document.createElement('span');
+        textSpan.innerHTML = question.promptHtml;
+
+        questionText.appendChild(numberSpan);
+        questionText.appendChild(textSpan);
+        questionElement.appendChild(questionText);
+
+        if (question.bodyHtml) {
+            const body = document.createElement('div');
+            body.className = 'question-body';
+            body.innerHTML = question.bodyHtml;
+            questionElement.appendChild(body);
+        }
+
+        const options = document.createElement('div');
+        options.className = 'options';
+
+        question.options.forEach((option) => {
+            const label = document.createElement('label');
+            label.className = 'option';
+
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = `q${index + 1}`;
+            input.value = option.letter;
+
+            const optionText = document.createElement('span');
+            optionText.innerHTML = option.html;
+
+            label.appendChild(input);
+            label.appendChild(optionText);
+            options.appendChild(label);
+        });
+
+        questionElement.appendChild(options);
+
+        const explanation = document.createElement('p');
+        explanation.className = 'explanation';
+        explanation.innerHTML = question.explanationHtml || '';
+        questionElement.appendChild(explanation);
+
+        return questionElement;
+    }
+
+    window.submitQuiz = function submitQuiz() {
+        const questions = document.querySelectorAll('.question');
+        let score = 0;
+        const unAnsweredSet = [];
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            if (!selected) {
+                unAnsweredSet.push(q);
+                q.classList.add('unanswered');
+            } else {
+                q.classList.remove('unanswered');
+            }
+        });
+
+        if (unAnsweredSet.length > 0) {
+            showToast("Please answer all questions before submitting.");
+            unAnsweredSet[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        questions.forEach((q, index) => {
+            const qNum = index + 1;
+            const selected = form.querySelector(`input[name="q${qNum}"]:checked`);
+            const correctAnswer = q.getAttribute('data-answer');
+            const options = q.querySelectorAll('.option');
+            const explanation = q.querySelector('.explanation');
+
+            if (explanation) {
+                explanation.style.display = 'block';
+            }
+
+            options.forEach(opt => {
+                const radio = opt.querySelector('input');
+                if (radio.value === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+                if (selected && radio === selected && radio.value !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (selected && selected.value === correctAnswer) {
+                score += 1;
+            }
+        });
+
+        document.getElementById('result-container').style.display = 'block';
+        document.getElementById('score-display').innerText = `${score} / ${questions.length}`;
+
+        let feedback = "";
+        const percentage = (score / questions.length) * 100;
+        if (percentage === 100) feedback = "Perfect Score! You are a JS Wizard!";
+        else if (percentage >= 80) feedback = "Excellent! You have a strong grasp of fundamentals.";
+        else if (percentage >= 60) feedback = "Good job! Keep practicing to master the concepts.";
+        else feedback = "Keep learning! Review the Docs to strengthen your basics.";
+
+        document.getElementById('feedback-text').innerText = feedback;
+
+        form.querySelectorAll('input').forEach(input => input.disabled = true);
+        const submitButton = form.querySelector('button');
+        if (submitButton) {
+            submitButton.style.display = 'none';
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.preparePrint = function preparePrint() {
+        const name = document.getElementById('student-name').value;
+        if (name) {
+            document.getElementById('printed-name').innerText = "Student: " + name;
+        } else {
+            document.getElementById('printed-name').innerText = "";
+        }
+        window.print();
+    };
+
+    function showToast(message) {
+        let toast = document.getElementById('toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.className = 'toast';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = message;
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 3000);
+    }
+})();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,847 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 314 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Assertions</span> <span class="w2">&amp;</span> <span class="w3">Expect</span> <span class="w4">API</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's <code class="sn-ic">expect</code> API — the assertion system that turns test actions into pass/fail verdicts. Assertions are the most frequently used concept in any test suite and one of the most heavily tested topics in interviews. A candidate who understands web-first assertions, soft assertions, polling, and the <code class="sn-ic">.not</code> modifier — and can explain why locator assertions auto-retry — is ready to answer assertion questions at any level.</span>
+  </div>
+
+
+  <!-- Q314.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.1</span>
+      <h2 class="sn-q-text">What is an assertion in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An assertion is a statement that says "I expect this to be true." If the condition is not true, the test fails. Assertions are how a test communicates its verdict — pass or fail.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// The basic pattern: expect(actual).toMatcherName(expected)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'h1'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Welcome to the Dashboard'</span>);
+<span class="tc-cm">//     ↑           ↑                           ↑</span>
+<span class="tc-cm">//  assertion   what you're               what you expect</span>
+<span class="tc-cm">//  function    checking                  it to be</span></div>
+      </div>
+<p class="sn-para">Playwright's assertion system is built on top of Jest's <code class="sn-ic">expect</code> — extended with Playwright-specific matchers for browser elements. The critical difference from Jest: assertions on locators <strong class="k-blue">automatically retry</strong> until the condition passes or the timeout expires. This eliminates manual wait calls before assertions.</p>
+    </div>
+  </div>
+
+  <!-- Q314.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.2</span>
+      <h2 class="sn-q-text">What is the difference between a web-first assertion and a value assertion?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">Web-first assertions</strong> operate on locators. They auto-retry the condition repeatedly until it passes or the timeout expires (default 5 seconds). They always need <code class="sn-ic">await</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Auto-retries until visible or timeout</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.success-banner'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+<span class="tc-cm">// Auto-retries until text matches or timeout</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Dashboard'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Value assertions</strong> operate on plain JavaScript values. They check once, immediately — no retry, no <code class="sn-ic">await</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Checks once — no retry</span>
+<span class="tc-kw">expect</span>(<span class="tc-num">2</span> + <span class="tc-num">2</span>).<span class="tc-fn">toBe</span>(<span class="tc-num">4</span>);
+<span class="tc-kw">expect</span>({ name: <span class="tc-str">'Alice'</span> }).<span class="tc-fn">toEqual</span>({ name: <span class="tc-str">'Alice'</span> });
+
+<span class="tc-kw">const</span> count = <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.item'</span>).<span class="tc-fn">count</span>();
+<span class="tc-kw">expect</span>(count).<span class="tc-fn">toBe</span>(<span class="tc-num">3</span>); <span class="tc-cm">// count() resolves to a number — assert the number</span></div>
+      </div>
+<p class="sn-para"><strong class="k-green">Decision rule:</strong> Use web-first assertions (<code class="sn-ic">await expect(locator).toX()</code>) when checking UI state — they are safer because they wait for the UI to settle. Use value assertions (<code class="sn-ic">expect(value).toX()</code>) when checking plain values extracted from the page or computed in the test.</p>
+    </div>
+  </div>
+
+  <!-- Q314.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.3</span>
+      <h2 class="sn-q-text">What are the most important locator visibility assertions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toBeVisible() — element exists in DOM AND is visible on screen</span>
+<span class="tc-cm">// Fails if: element does not exist, has display:none, visibility:hidden, opacity:0</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.success-banner'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+<span class="tc-cm">// toBeHidden() — element does NOT exist OR is visually hidden</span>
+<span class="tc-cm">// Passes if element has display:none, visibility:hidden, or does not exist at all</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.loading-spinner'</span>)).<span class="tc-fn">toBeHidden</span>();
+
+<span class="tc-cm">// toBeAttached() — element exists in the DOM (may be hidden)</span>
+<span class="tc-cm">// Use when you need to confirm presence without caring about visibility</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">' S6 
+
+ S7 
+await expect(page.locator('</span>.notifications-list')).<span class="tc-fn">toBeEmpty</span>();</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">The key distinction:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">toBeVisible()</code> — exists AND is visible (the most common assertion)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">toBeHidden()</code> — does NOT exist OR is hidden (for asserting absence)</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">toBeAttached()</code> — exists in DOM, regardless of visibility</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q314.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.4</span>
+      <h2 class="sn-q-text">How do you use text assertions in your OrangeHRM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we used text assertions for confirming form submissions, validating error messages, and verifying navigation:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toHaveText() — exact match (use for headings, labels, status messages)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Employee List'</span> }))
+  .<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Employee List'</span>);
+
+<span class="tc-cm">// toHaveText() with regex — for dynamic text with known patterns</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-id'</span>))
+  .<span class="tc-fn">toHaveText</span>(/^EMP-\d{<span class="tc-num">4</span>}$/);  <span class="tc-cm">// Matches 'EMP-1234', 'EMP-9999', etc.</span>
+
+<span class="tc-cm">// toContainText() — for partial matches (element may have more text)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.success-toast'</span>))
+  .<span class="tc-fn">toContainText</span>(<span class="tc-str">'Successfully Saved'</span>);
+<span class="tc-cm">// Passes even if the full message is 'Record Successfully Saved'</span>
+
+<span class="tc-cm">// Checking multiple list items at once</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.side-nav-item'</span>)).<span class="tc-fn">toHaveText</span>([
+  <span class="tc-str">'Admin'</span>,
+  <span class="tc-str">'PIM'</span>,
+  <span class="tc-str">'Leave'</span>,
+  <span class="tc-str">'Time'</span>,
+  <span class="tc-str">'Recruitment'</span>,
+]);
+<span class="tc-cm">// Each locator match must correspond to each array entry in order</span></div>
+      </div>
+<p class="sn-para">We preferred <code class="sn-ic">toContainText()</code> for toast messages and dynamic feedback because the surrounding text could change (timestamps, counts) but the key phrase stayed constant.</p>
+    </div>
+  </div>
+
+  <!-- Q314.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.5</span>
+      <h2 class="sn-q-text">What form element assertions are available?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toHaveValue() — current value of input, select, or textarea</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>)).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Priya'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Department'</span>)).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Engineering'</span>);
+
+<span class="tc-cm">// toBeEnabled() / toBeDisabled() — for form validation states</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> })).<span class="tc-fn">toBeEnabled</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> })).<span class="tc-fn">toBeDisabled</span>();
+
+<span class="tc-cm">// toBeChecked() — for checkboxes and radio buttons</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Accept Terms'</span>)).<span class="tc-fn">toBeChecked</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Newsletter'</span>)).not.<span class="tc-fn">toBeChecked</span>();
+
+<span class="tc-cm">// toHaveValues() — for multi-select elements</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'select[multiple]'</span>))
+  .<span class="tc-fn">toHaveValues</span>([<span class="tc-str">'Engineering'</span>, <span class="tc-str">'Product'</span>]);
+
+<span class="tc-cm">// toBeEditable() — element can be typed into (enabled + not readonly)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>)).<span class="tc-fn">toBeEditable</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q314.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.6</span>
+      <h2 class="sn-q-text">What page-level assertions are available?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Page assertions check properties of the entire page rather than individual elements:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toHaveURL() — verify navigation completed to the right URL</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'https: S1 
+await expect(page).toHaveURL(/\/dashboard/);            S2 
+await expect(page).toHaveURL(/checkout\/step-\d+/);    S3 
+
+ S4 
+await expect(page).toHaveTitle('</span>OrangeHRM<span class="tc-str">');
+await expect(page).toHaveTitle(/OrangeHRM/);            S5 
+
+ S6 
+await expect(page).toHaveScreenshot('</span>dashboard.png');
+<span class="tc-cm">// Compares against a stored baseline image</span></div>
+      </div>
+<p class="sn-para"><code class="sn-ic">toHaveURL()</code> is one of the most important assertions for navigation verification. After clicking a login button, asserting <code class="sn-ic">toHaveURL(/dashboard/)</code> confirms the redirect completed — far more reliable than checking for a heading that might briefly appear on an intermediate page.</p>
+    </div>
+  </div>
+
+  <!-- Q314.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.7</span>
+      <h2 class="sn-q-text">How do count and attribute assertions work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toHaveCount() — checks how many elements match the locator</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">10</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.validation-error'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">0</span>); <span class="tc-cm">// None present</span>
+
+<span class="tc-cm">// toHaveAttribute() — check an HTML attribute value</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'img.company-logo'</span>))
+  .<span class="tc-fn">toHaveAttribute</span>(<span class="tc-str">'alt'</span>, <span class="tc-str">'OrangeHRM Logo'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'a.help-link'</span>))
+  .<span class="tc-fn">toHaveAttribute</span>(<span class="tc-str">'href'</span>, <span class="tc-str">'/help'</span>);
+
+<span class="tc-cm">// toHaveAttribute() with regex</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-link'</span>))
+  .<span class="tc-fn">toHaveAttribute</span>(<span class="tc-str">'href'</span>, /\/employee\/\d+/);
+
+<span class="tc-cm">// toHaveClass() — check for CSS class</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.tab-item.active'</span>)).<span class="tc-fn">toHaveClass</span>(/active/);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.alert'</span>)).<span class="tc-fn">toHaveClass</span>(<span class="tc-str">'alert alert-danger'</span>);
+
+<span class="tc-cm">// toHaveCSS() — check computed CSS property</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.required-field label'</span>))
+  .<span class="tc-fn">toHaveCSS</span>(<span class="tc-str">'color'</span>, <span class="tc-str">'rgb(255, 0, 0)'</span>);
+
+<span class="tc-cm">// toBeFocused() — element currently has keyboard focus</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Search'</span>).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Search'</span>)).<span class="tc-fn">toBeFocused</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q314.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.8</span>
+      <h2 class="sn-q-text">How does auto-retry work in web-first assertions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Web-first assertions do not check once and fail immediately. They enter a retry loop:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">1. Evaluate the condition (is element visible? does text match?)
+2. If passes → assertion succeeds, test continues
+3. If fails → wait a short interval and retry
+4. Repeat until: condition passes (✅) OR timeout expires (❌)</div>
+      </div>
+<p class="sn-para">The default retry timeout is 5 seconds (<code class="sn-ic">expect.timeout</code> in config). The retry interval starts short and grows slightly with each attempt.</p>
+<p class="sn-para"><strong class="k-yellow">Why this matters:</strong> In a real application, an element might take 200ms to appear after a button click. Without auto-retry, an assertion immediately after the click would fail because the element is not there yet. With auto-retry, the assertion keeps checking for up to 5 seconds — finding the element as soon as it appears.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+
+<span class="tc-cm">// Without auto-retry: might fail if results take 300ms to appear</span>
+<span class="tc-cm">// With auto-retry: keeps checking for up to 5 seconds</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">5</span>);</div>
+      </div>
+<p class="sn-para">This is the core reason web-first assertions replace <code class="sn-ic">page.waitForSelector()</code> in modern Playwright tests. The assertion itself is the wait.</p>
+    </div>
+  </div>
+
+  <!-- Q314.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.9</span>
+      <h2 class="sn-q-text">What is the .not modifier and when do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">.not</code> before any matcher asserts the opposite condition:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// After successful login — error message should NOT appear</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.login-error'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/dashboard/);
+
+<span class="tc-cm">// After form submission — submit button should not be disabled</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> })).not.<span class="tc-fn">toBeDisabled</span>();
+
+<span class="tc-cm">// After deleting a record — it should not appear in the list</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">`[data-id=&amp;quot;${deletedId}&amp;quot;]`</span>)).not.<span class="tc-fn">toBeAttached</span>();
+
+<span class="tc-cm">// After clearing a field — value should not remain</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>).<span class="tc-fn">clear</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'First Name'</span>)).not.<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Priya'</span>);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">.not</code> assertions also auto-retry — they keep checking until the condition is false (the element disappears, text changes) or the timeout expires. Use <code class="sn-ic">.not.toBeVisible()</code> instead of a hard wait when waiting for something to disappear (loading spinner, toast message).</p>
+    </div>
+  </div>
+
+  <!-- Q314.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.10</span>
+      <h2 class="sn-q-text">What are soft assertions and when do you use them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">By default, a failing assertion immediately stops the test. Soft assertions let the test continue collecting multiple failures, reporting all of them at the end:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'verify leave application confirmation page @regression'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> leavePage.<span class="tc-fn">submitLeaveApplication</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/leave\/confirmation/);
+
+  <span class="tc-cm">// Use expect.soft() — test continues even if any of these fail</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.leave-type'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Annual Leave'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.leave-dates'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.leave-status'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Pending'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.approver-name'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.manager-email'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'@'</span>);
+
+  <span class="tc-cm">// Hard assertion at the end — stops if this fails</span>
+  <span class="tc-cm">// If soft assertions failed, the test is already marked as failed</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Cancel Request'</span> }))
+    .<span class="tc-fn">toBeEnabled</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">When to use soft assertions:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Checking multiple independent elements on the same page</span></li>
+<li><span class="icon">💡</span><span>Page-level audits (SEO, accessibility attributes, analytics tags)</span></li>
+<li><span class="icon">⚡</span><span>Regression tests where you want the full picture of what broke</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">When NOT to use soft assertions:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>When later actions depend on earlier elements being present (use hard</span></li>
+</ul>
+<p class="sn-para">  assertions to fail fast and avoid cascading errors)</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>When one failure makes the remaining assertions meaningless</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q314.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.11</span>
+      <h2 class="sn-q-text">What is expect.poll() and when do you need it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">expect.poll()</code> repeatedly calls a function until the return value matches the expected condition or the timeout expires. Use it for things that are not Playwright locators — API responses, database state, background jobs:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Poll an API until a background job completes</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'bulk import completes within 60 seconds @regression'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+  <span class="tc-kw">const</span> { jobId } = <span class="tc-kw">await</span> (<span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/import/start'</span>, {
+    data: { file: <span class="tc-str">'employees.csv'</span> },
+  })).<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// Keep calling the API and checking status</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">poll</span>(
+    <span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">`/api/import/status/${jobId}`</span>);
+      <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> res.<span class="tc-fn">json</span>();
+      <span class="tc-kw">return</span> body.status;  <span class="tc-cm">// Returns 'pending', 'running', or 'completed'</span>
+    },
+    {
+      message: <span class="tc-str">`Import job ${jobId} should complete within 60 seconds`</span>,
+      timeout:   60_000,
+      intervals: [<span class="tc-num">1000</span>, <span class="tc-num">2000</span>, <span class="tc-num">5000</span>], <span class="tc-cm">// check after 1s, 2s, then every 5s</span>
+    }
+  ).<span class="tc-fn">toBe</span>(<span class="tc-str">'completed'</span>);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">expect.poll()</code> vs <code class="sn-ic">expect(locator)</code> auto-retry:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">expect(locator).toX()</code> — for DOM elements; Playwright controls the retry</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">expect.poll(fn)</code> — for any async value; you control what is checked</span></li>
+</ul>
+<p class="sn-para">Use <code class="sn-ic">expect.poll()</code> when the thing you are waiting for is not directly observable in the DOM — a backend job, an email arrival, a cache update, a database record.</p>
+    </div>
+  </div>
+
+  <!-- Q314.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.12</span>
+      <h2 class="sn-q-text">What is the difference between toHaveText() and toContainText()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both assert text content, but with different strictness:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Suppose the element's actual text is: &amp;quot;Your order (3 items) is confirmed&amp;quot;</span>
+
+<span class="tc-cm">// toHaveText() — matches the COMPLETE text of the element</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(locator).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Your order (3 items) is confirmed'</span>); <span class="tc-cm">// ✅ passes</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(locator).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'confirmed'</span>);                          <span class="tc-cm">// ❌ fails</span>
+
+<span class="tc-cm">// toContainText() — checks that the element CONTAINS this text</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(locator).<span class="tc-fn">toContainText</span>(<span class="tc-str">'confirmed'</span>);       <span class="tc-cm">// ✅ passes</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(locator).<span class="tc-fn">toContainText</span>(<span class="tc-str">'3 items'</span>);         <span class="tc-cm">// ✅ passes</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(locator).<span class="tc-fn">toContainText</span>(<span class="tc-str">'cancelled'</span>);       <span class="tc-cm">// ❌ fails</span></div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Decision rule:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Use <code class="sn-ic">toHaveText()</code> when you know the complete text and want an exact match</span></li>
+<li><span class="icon">💡</span><span>Use <code class="sn-ic">toContainText()</code> when the text has dynamic parts (timestamps, counts,</span></li>
+</ul>
+<p class="sn-para">  usernames) but you only care about a stable phrase within it</p>
+<p class="sn-para"><code class="sn-ic">toHaveText()</code> accepts regex too: <code class="sn-ic">toHaveText(/\d+ items/)</code> — this is the cleanest option for dynamic text with a known pattern.</p>
+    </div>
+  </div>
+
+  <!-- Q314.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.13</span>
+      <h2 class="sn-q-text">What is the difference between toBeVisible() and toBeAttached()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toBeAttached() — element exists in the DOM tree</span>
+<span class="tc-cm">// Passes even if element is hidden with display:none or visibility:hidden</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">' S2 
+
+ S3 
+ S4 
+await expect(page.locator('</span>.success-banner')).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+<p class="sn-para">A common situation in OrangeHRM: a modal dialog exists in the DOM at all times but is hidden until triggered:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Modal exists in DOM but is hidden — these behave differently:</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">' S1 
+await expect(page.locator('</span><span class="tc-cm">#leave-modal')).toBeVisible();     // ❌ fails (hidden)</span>
+
+<span class="tc-cm">// After clicking &amp;quot;Apply Leave&amp;quot; to open the modal:</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Apply Leave'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>('<span class="tc-cm">#leave-modal')).toBeVisible();     // ✅ now passes</span></div>
+      </div>
+<p class="sn-para"><strong class="k-teal">Decision rule:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Use <code class="sn-ic">toBeVisible()</code> for confirming that the user can see and interact</span></li>
+</ul>
+<p class="sn-para">  with an element (the common case)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Use <code class="sn-ic">toBeAttached()</code> when you need to verify DOM presence for elements</span></li>
+</ul>
+<p class="sn-para">  that are legitimately hidden — like validating a hidden input's presence</p>
+    </div>
+  </div>
+
+  <!-- Q314.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.14</span>
+      <h2 class="sn-q-text">How do you add custom messages to assertions for clearer failures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Pass a custom message as the second argument to <code class="sn-ic">expect()</code>. It appears in the failure output when the assertion fails:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Default failure output — generic:</span>
+<span class="tc-cm">// &amp;quot;Error: expect(locator).toHaveText() - expected 'Error' to equal 'Dashboard'&amp;quot;</span>
+
+<span class="tc-cm">// Custom message — specific and diagnostic:</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+  page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>),
+  <span class="tc-str">'After login redirect, the dashboard heading should read &amp;quot;Dashboard&amp;quot;'</span>
+).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Dashboard'</span>);
+
+<span class="tc-cm">// For assertions in page object methods — the method name becomes the context</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+  <span class="tc-kw">this</span>.saveButton,
+  <span class="tc-str">`saveButton should be enabled before submitting the ${formName} form`</span>
+).<span class="tc-fn">toBeEnabled</span>();
+
+<span class="tc-cm">// For data-driven tests — include the data in the message</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+  page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-name'</span>),
+  <span class="tc-str">`Employee &amp;quot;${employeeName}&amp;quot; should appear in the search results`</span>
+).<span class="tc-fn">toContainText</span>(employeeName);</div>
+      </div>
+<p class="sn-para">Custom messages are particularly valuable in page object methods, where the assertion failure would otherwise not tell you which action triggered it. The custom message adds that context directly to the failure report.</p>
+    </div>
+  </div>
+
+  <!-- Q314.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.15</span>
+      <h2 class="sn-q-text">What are the most common assertion mistakes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Mistake 1 — Missing <code class="sn-ic">await</code> on locator assertions:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Silent failure — passes immediately without actually checking</span>
+<span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'h1'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Dashboard'</span>);
+
+<span class="tc-cm">// ✅ Correct</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'h1'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Dashboard'</span>);</div>
+      </div>
+<p class="sn-para">This is the most common mistake. The assertion without <code class="sn-ic">await</code> resolves to a Promise object which is always truthy — the check is silently skipped. TypeScript with strict settings will warn about this; always enable it.</p>
+<p class="sn-para"><strong class="k-red">Mistake 2 — Using <code class="sn-ic">toBe()</code> for object comparison:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Fails — toBe() uses === (reference equality)</span>
+<span class="tc-kw">expect</span>({ id: <span class="tc-num">1</span> }).<span class="tc-fn">toBe</span>({ id: <span class="tc-num">1</span> });  <span class="tc-cm">// different objects, different references</span>
+
+<span class="tc-cm">// ✅ Use toEqual() for deep comparison</span>
+<span class="tc-kw">expect</span>({ id: <span class="tc-num">1</span> }).<span class="tc-fn">toEqual</span>({ id: <span class="tc-num">1</span> });</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Mistake 3 — Using <code class="sn-ic">toHaveText()</code> for partial matches:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Fails if full text is 'Successfully Saved — 3 records updated'</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.toast'</span>)).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Successfully Saved'</span>);
+
+<span class="tc-cm">// ✅ Use toContainText() for partial matches</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.toast'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Successfully Saved'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Mistake 4 — Asserting count on shared database data:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Flaky in parallel — other tests may add records</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">5</span>);
+
+<span class="tc-cm">// ✅ Search for known specific data instead</span>
+<span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Linda Anderson'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">1</span>);</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q314.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.16</span>
+      <h2 class="sn-q-text">Write assertions for a complete OrangeHRM login flow.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'valid credentials redirect to dashboard @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/auth/login'</span>);
+
+  <span class="tc-cm">// Verify the login page loaded</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveTitle</span>(/OrangeHRM/);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Login'</span> })).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Fill the form</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Verify successful login and redirect</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/dashboard/);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Dashboard'</span> })).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Verify no error message appeared</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-alert-content'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'invalid credentials show error @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/auth/login'</span>);
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'wrong-password'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Stay on login page</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/auth\/login/);
+
+  <span class="tc-cm">// Error message appears</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-alert-content'</span>))
+    .<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-alert-content'</span>))
+    .<span class="tc-fn">toContainText</span>(<span class="tc-str">'Invalid credentials'</span>);
+
+  <span class="tc-cm">// Fields remain visible — not cleared</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>))
+    .<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q314.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.17</span>
+      <h2 class="sn-q-text">How do you use assertions with value assertions from the page?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When you extract a value from the page and want to assert on it with non-Playwright matchers:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee count matches search results @regression'</span>, <span class="tc-kw">async</span> ({ page, employeeListPage }) =&gt; {
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByDepartment</span>(<span class="tc-str">'Engineering'</span>);
+
+  <span class="tc-cm">// Extract a number from the page, then assert on the number</span>
+  <span class="tc-kw">const</span> countText = <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-table-header .orangehrm-count'</span>).<span class="tc-fn">textContent</span>();
+  <span class="tc-kw">const</span> count = <span class="tc-fn">parseInt</span>(countText!.<span class="tc-fn">replace</span>(/[^<span class="tc-num">0</span>-<span class="tc-num">9</span>]/g, <span class="tc-str">''</span>), <span class="tc-num">10</span>);
+  <span class="tc-kw">expect</span>(count).<span class="tc-fn">toBeGreaterThan</span>(<span class="tc-num">0</span>);
+  <span class="tc-kw">expect</span>(count).<span class="tc-fn">toBeLessThan</span>(<span class="tc-num">200</span>);
+
+  <span class="tc-cm">// Verify that the table row count matches the displayed count</span>
+  <span class="tc-kw">const</span> rowCount = <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-table-body .oxd-table-row'</span>).<span class="tc-fn">count</span>();
+  <span class="tc-kw">expect</span>(rowCount).<span class="tc-fn">toBe</span>(count);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'leave balance is a valid number @smoke'</span>, <span class="tc-kw">async</span> ({ page, leavePage }) =&gt; {
+  <span class="tc-kw">await</span> leavePage.<span class="tc-fn">goto</span>();
+
+  <span class="tc-kw">const</span> balanceText = <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.leave-balance-days'</span>).<span class="tc-fn">textContent</span>();
+  <span class="tc-kw">const</span> balance = <span class="tc-fn">parseFloat</span>(balanceText!.<span class="tc-fn">trim</span>());
+
+  <span class="tc-cm">// Value assertions on extracted data</span>
+  <span class="tc-kw">expect</span>(balance).<span class="tc-fn">toBeGreaterThanOrEqual</span>(<span class="tc-num">0</span>);
+  <span class="tc-kw">expect</span>(balance).<span class="tc-fn">toBeLessThanOrEqual</span>(<span class="tc-num">365</span>);
+  <span class="tc-kw">expect</span>(Number.<span class="tc-fn">isFinite</span>(balance)).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+});</div>
+      </div>
+<p class="sn-para">The pattern: use web-first assertions (<code class="sn-ic">await expect(locator)</code>) for UI state checks; use value assertions (<code class="sn-ic">expect(value)</code>) for numbers, strings, and objects extracted from the page or API responses.</p>
+    </div>
+  </div>
+
+  <!-- Q314.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q314.18</span>
+      <h2 class="sn-q-text">How did you handle assertion strategy in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, we established three assertion conventions that reduced flakiness and improved failure messages significantly.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Convention 1 — Use <code class="sn-ic">toContainText()</code> for all toast and alert messages.</strong> Our toast messages included timestamps and record IDs. Using <code class="sn-ic">toHaveText()</code> caused failures whenever the message format changed. Switching to <code class="sn-ic">toContainText()</code> for the stable key phrase meant format changes no longer broke tests.</p>
+<p class="sn-para"><strong class="k-green">Convention 2 — Soft assertions for page-level audits.</strong> We had regression tests that verified the full state of a form page — all field labels, help text, placeholder values, and button states. Using hard assertions meant the first field mismatch stopped the test. Switching to soft assertions for the field checks (with one final hard assertion on the primary action) gave us complete failure reports — useful when a deployment changed multiple labels at once.</p>
+<p class="sn-para"><strong class="k-green">Convention 3 — Custom messages in all page object assertions.</strong> Every assertion inside a page object method now includes a custom message identifying the method and the expected state. Before this change, a failure in <code class="sn-ic">leavePage.verifyConfirmation()</code> said "expected 'pending' to equal 'approved'". After: "verifyConfirmation(): leave status should be 'Pending' after initial submission." The extra context cut average investigation time in half.</p>
+<p class="sn-para">The combined effect: 23% fewer flaky assertions in the first month, and average failure diagnosis time dropped from 8 minutes to 3.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>An assertion is a pass/fail statement. Playwright's <code class="sn-ic">expect</code> API extends Jest with browser-specific matchers.</span></li>
+            <li><span class="icon">⭐</span><span>Web-first assertions (<code class="sn-ic">await expect(locator).toX()</code>) auto-retry until the condition passes or times out. No manual waits needed.</span></li>
+            <li><span class="icon">⭐</span><span>Value assertions (<code class="sn-ic">expect(value).toX()</code>) check once immediately — use for numbers and objects extracted from the page.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">toBeVisible()</code> — exists AND visible. <code class="sn-ic">toBeHidden()</code> — does not exist OR hidden. <code class="sn-ic">toBeAttached()</code> — in DOM regardless of visibility.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">toHaveText()</code> — exact match. <code class="sn-ic">toContainText()</code> — partial match. Use regex with <code class="sn-ic">toHaveText(/pattern/)</code> for dynamic content.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">toHaveURL()</code> and <code class="sn-ic">toHaveTitle()</code> are page-level assertions — essential for verifying navigation.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">.not</code> modifier asserts the opposite. <code class="sn-ic">.not.toBeVisible()</code> also auto-retries — use it to wait for elements to disappear.</span></li>
+            <li><span class="icon">⭐</span><span>Soft assertions (<code class="sn-ic">expect.soft()</code>) continue the test after failure, collecting all failures for a combined report at the end.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">expect.poll(fn)</code> retries a custom async function — use for API responses, database state, background jobs.</span></li>
+            <li><span class="icon">⭐</span><span>Always <code class="sn-ic">await</code> locator assertions — omitting <code class="sn-ic">await</code> silently skips the check.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">toContainText()</code> for messages with dynamic parts; <code class="sn-ic">toHaveText()</code> with regex for known patterns; exact string only when fully stable.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

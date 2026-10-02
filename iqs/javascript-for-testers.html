@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaScript for Testers | Interview Questions | VibeTestQ</title>
+<meta name="description" content="172 JavaScript interview questions for QA engineers — 12 chapters covering variables, async/await, Promises, TypeScript, closures, and modern JS for test automation.">
+<link rel="canonical" href="https://vibetestq.com/docs/iqs/javascript-for-testers">
+<meta property="og:title" content="JavaScript for Testers | Interview Questions | VibeTestQ">
+<meta property="og:description" content="Master JavaScript for test automation — 12 chapters, 172 questions on variables, async, TypeScript and more.">
+<meta property="og:image" content="https://vibetestq.com/assets/utitle.jpg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<style>
+/* ── Reset ───────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f1f5f9;
+  --sb-bg:#ffffff;
+  --top-bg:rgba(255,255,255,.97);
+  --top-border:#e2e8f0;
+  --panel:#ffffff;
+  --panel-b:#e2e8f0;
+  --text:#1e293b;
+  --text-dim:#64748b;
+  --text-bright:#0f172a;
+  --text-mid:#475569;
+  --cyan:#0284c7;
+  --violet:#7c3aed;
+  --green:#059669;
+  --amber:#d97706;
+  --pink:#db2777;
+  --code-bg:#1e293b;
+  --sb-w:290px;
+  --top-h:56px;
+  --r:10px;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.05);
+}
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.65;
+  min-height:100vh;overflow-x:hidden;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+#topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--top-h);z-index:300;
+  background:var(--top-bg);
+  border-bottom:1px solid var(--top-border);
+  backdrop-filter:blur(12px);
+  box-shadow:0 1px 8px rgba(0,0,0,.06);
+  display:flex;align-items:center;gap:.75rem;padding:0 1rem;
+}
+#sb-toggle{
+  background:none;border:1px solid #e2e8f0;
+  color:var(--text);cursor:pointer;border-radius:7px;
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;transition:background .15s,border-color .15s;flex-shrink:0;
+}
+#sb-toggle:hover{background:#f1f5f9;border-color:var(--cyan)}
+.tbar-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0}
+.tbar-logo img{height:34px;width:auto;display:block}
+.tbar-sep{color:var(--text-dim);font-size:.75rem;flex-shrink:0}
+.tbar-pg{font-size:.76rem;font-weight:700;color:var(--text-mid);white-space:nowrap;flex-shrink:0}
+#tbar-ch{flex:1;font-size:.76rem;color:var(--text-mid);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;padding-left:.25rem}
+.tbar-right{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.tbar-btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.32rem .75rem;border-radius:7px;font-size:.73rem;font-weight:700;
+  text-decoration:none;border:1px solid #e2e8f0;
+  color:var(--text-mid);transition:all .15s;white-space:nowrap;
+}
+.tbar-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(2,132,199,.05)}
+.tbar-btn.accent{background:rgba(2,132,199,.08);border-color:rgba(2,132,199,.25);color:var(--cyan)}
+.tbar-btn.accent:hover{background:rgba(2,132,199,.14)}
+
+/* ── App layout ──────────────────────────────────────────────── */
+#app{
+  display:flex;
+  padding-top:var(--top-h);
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────── */
+#sidebar{
+  width:var(--sb-w);flex-shrink:0;
+  background:var(--sb-bg);
+  border-right:1px solid #e2e8f0;
+  overflow-y:auto;overflow-x:hidden;
+  transition:transform .25s cubic-bezier(.4,0,.2,1),width .25s;
+  position:relative;z-index:200;
+  scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent;
+}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+#sidebar.collapsed{transform:translateX(calc(-1 * var(--sb-w)))}
+
+.sb-head{
+  padding:.85rem 1rem .7rem;
+  border-bottom:1px solid #f1f5f9;
+  position:sticky;top:0;background:var(--sb-bg);z-index:10;
+}
+.sb-head-title{
+  font-size:.68rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--cyan);display:flex;align-items:center;gap:.4rem;
+}
+.sb-head-title::before{
+  content:'';display:inline-block;width:6px;height:6px;
+  border-radius:50%;background:var(--cyan);
+}
+.sb-head-meta{font-size:.74rem;color:var(--text-dim);margin-top:.25rem}
+
+/* Chapter list */
+.part-group{border-bottom:1px solid #f1f5f9}
+.part-toggle{
+  width:100%;background:none;border:none;cursor:pointer;
+  padding:.6rem .9rem .6rem .85rem;
+  display:flex;align-items:center;gap:.55rem;
+  color:var(--text);transition:background .13s;
+  position:relative;overflow:hidden;
+}
+.part-toggle::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--pc,#fbbf24);opacity:0;transition:opacity .15s;
+}
+.part-toggle:hover{background:#f8fafc}
+.part-toggle:hover::before{opacity:1}
+.part-toggle.open::before{opacity:1}
+.part-toggle.open{background:#f8fafc}
+.p-badge{
+  width:30px;height:22px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.58rem;font-weight:900;letter-spacing:.02em;flex-shrink:0;
+  background:rgba(var(--pc-rgb,251,191,36),.1);
+  color:var(--pc,#fbbf24);
+  border:1px solid rgba(var(--pc-rgb,251,191,36),.18);
+}
+.p-info{flex:1;min-width:0;text-align:left}
+.p-title{font-size:.84rem;font-weight:700;color:var(--text-bright);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p-count{font-size:.72rem;color:var(--text-dim);margin-top:.1rem}
+.p-chevron{font-size:.65rem;color:var(--text-dim);flex-shrink:0;transition:transform .2s}
+.part-toggle.open .p-chevron{transform:rotate(90deg)}
+
+.part-chapters{display:none;overflow:hidden}
+.part-toggle.open + .part-chapters{display:block}
+
+.ch-link{
+  display:flex;align-items:center;gap:.55rem;
+  padding:.44rem 1rem .44rem 2.6rem;
+  text-decoration:none;color:var(--text-mid);
+  font-size:.82rem;line-height:1.4;
+  transition:background .1s,color .1s;
+  border-left:2px solid transparent;
+  position:relative;
+}
+.ch-link:hover{background:#f1f5f9;color:var(--text)}
+.ch-link.active{
+  border-left-color:var(--pc,#fbbf24);
+  background:rgba(var(--pc-rgb,251,191,36),.07);
+  color:var(--text-bright);
+}
+.ch-link.active .ch-num{color:var(--pc,#fbbf24)}
+.ch-num{
+  font-size:.71rem;font-weight:800;color:var(--text-dim);
+  flex-shrink:0;width:26px;text-align:right;font-variant-numeric:tabular-nums;
+  letter-spacing:-.01em;
+}
+
+/* ── Content column ──────────────────────────────────────────── */
+#content-col{
+  flex:1;overflow-y:auto;overflow-x:hidden;position:relative;
+  scrollbar-width:thin;scrollbar-color:#cbd5e1 transparent;
+}
+#content-col::-webkit-scrollbar{width:6px}
+#content-col::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:6px}
+
+/* Progress bar */
+#prog{height:2px;position:sticky;top:0;z-index:50;background:transparent}
+#prog-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,#fbbf24,var(--violet));
+  transition:width .1s;
+}
+
+/* Main content area */
+#main{padding:0;min-height:100%}
+
+/* ── HOME SCREEN ─────────────────────────────────────────────── */
+.home-wrap{
+  max-width:1100px;margin:0 auto;padding:2.5rem 1.75rem;
+}
+.home-hero{
+  text-align:center;padding:3rem 1.5rem;
+  background:linear-gradient(160deg,#fffbeb 0%,#faf5ff 50%,#f0fdf4 100%);
+  border-radius:16px;margin-bottom:2rem;
+  border:1px solid #e2e8f0;
+}
+.home-eyebrow{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);
+  border-radius:999px;padding:.3rem .9rem;
+  font-size:.72rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;
+  color:#b45309;margin-bottom:1.25rem;
+}
+.home-hero h1{
+  font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;
+  letter-spacing:-.03em;line-height:1.1;
+  color:var(--text-bright);margin-bottom:.5rem;
+}
+.home-hero h1 .g{
+  background:linear-gradient(135deg,#fbbf24,var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.home-sub{
+  color:var(--text-mid);font-size:.97rem;max-width:560px;margin:.75rem auto 2rem;
+  line-height:1.6;
+}
+.home-stats{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem 3rem;
+  margin-bottom:0;
+}
+.hstat b{display:block;font-size:2rem;font-weight:900;
+  background:linear-gradient(135deg,#fbbf24,var(--violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1}
+.hstat s{display:block;font-size:.68rem;color:var(--text-dim);text-transform:uppercase;
+  letter-spacing:.06em;text-decoration:none;margin-top:.2rem}
+
+/* Chapter cards grid */
+.chapters-home-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;
+}
+.ch-card{
+  background:var(--panel);border:1px solid var(--panel-b);border-radius:12px;
+  overflow:hidden;text-decoration:none;display:block;
+  box-shadow:var(--sh);
+  transition:transform .18s,box-shadow .18s,border-color .18s;
+  cursor:pointer;
+}
+.ch-card:hover{
+  transform:translateY(-3px);
+  border-color:#fbbf24;
+  box-shadow:0 8px 28px rgba(0,0,0,.1),0 0 0 1px #fbbf24;
+}
+.ch-card-top{height:4px;background:#fbbf24}
+.ch-card-body{padding:1.1rem 1.2rem}
+.ch-card-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.65rem}
+.ch-num-badge{
+  width:42px;height:42px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;flex-direction:column;line-height:1;
+  background:rgba(251,191,36,.1);
+  border:1px solid rgba(251,191,36,.25);
+}
+.ch-num-badge .cn{font-size:1rem;font-weight:900;color:#b45309}
+.ch-card-title{font-size:.92rem;font-weight:800;color:var(--text-bright);line-height:1.25}
+.ch-card-foot{display:flex;align-items:center;justify-content:flex-end}
+.ch-go{
+  font-size:.74rem;font-weight:700;color:#b45309;
+  display:flex;align-items:center;gap:.3rem;
+}
+
+/* ── CHAPTER READER ──────────────────────────────────────────── */
+.reader-wrap{max-width:860px;margin:0 auto;padding:2rem 2rem 4rem;min-width:0}
+
+/* Chapter header */
+.ch-part-badge{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:rgba(251,191,36,.1);
+  border:1px solid rgba(251,191,36,.25);
+  border-radius:999px;padding:.25rem .8rem;
+  font-size:.67rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;
+  color:#b45309;margin-bottom:.85rem;
+}
+.ch-title{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:900;color:var(--text-bright);letter-spacing:-.02em;line-height:1.2;margin-bottom:1.75rem}
+.section-hd{font-size:1.05rem;font-weight:800;color:var(--cyan);margin:2.5rem 0 1rem;letter-spacing:-.01em;padding-bottom:.4rem;border-bottom:2px solid rgba(2,132,199,.12)}
+.sub-hd{font-size:.94rem;font-weight:700;color:var(--text-bright);margin:1.5rem 0 .5rem}
+.subsub-hd{font-size:.86rem;font-weight:700;color:var(--text-mid);margin:1rem 0 .4rem}
+.q-sep{border:none;border-top:1px solid #e2e8f0;margin:2rem 0}
+
+/* ── Q-block ─────────────────────────────────────────────────── */
+.q-block{
+  background:#ffffff;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  margin:1.5rem 0;
+  box-shadow:0 1px 4px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.04);
+  overflow:hidden;
+  animation:fadeSlide .25s ease;
+}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.q-question{
+  display:flex;align-items:flex-start;gap:.75rem;
+  padding:1rem 1.25rem 1rem;
+  background:linear-gradient(135deg,rgba(251,191,36,.06) 0%,rgba(124,58,237,.04) 100%);
+  border-bottom:1px solid #e2e8f0;
+  border-left:4px solid #fbbf24;
+}
+.q-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:900;letter-spacing:.04em;
+  color:#b45309;
+  background:rgba(251,191,36,.12);
+  border:1px solid rgba(251,191,36,.3);
+  border-radius:6px;padding:.25rem .5rem;
+  white-space:nowrap;flex-shrink:0;margin-top:.15rem;
+}
+.q-text{
+  font-size:1rem;font-weight:700;color:var(--text-bright);
+  line-height:1.45;margin:0;
+}
+.q-answer{
+  padding:1.25rem 1.25rem 1.25rem;
+  background:#ffffff;
+  display:flex;flex-direction:column;gap:.75rem;
+}
+.q-para{
+  font-size:.95rem;color:var(--text);line-height:1.85;margin:0;
+}
+.q-tip{
+  background:rgba(245,158,11,.08);
+  border-left:3px solid #f59e0b;
+  border-radius:0 8px 8px 0;
+  padding:.7rem 1rem;
+  font-size:.88rem;color:var(--text);line-height:1.7;font-style:italic;
+}
+.q-list,.q-olist{
+  margin:0 0 0 1.4rem;
+  display:flex;flex-direction:column;gap:.35rem;
+}
+.q-list li,.q-olist li{
+  font-size:.93rem;color:var(--text);line-height:1.75;
+  padding-left:.2rem;
+}
+.q-list li::marker{color:#fbbf24}
+.q-olist li::marker{color:var(--violet);font-weight:700}
+.q-answer .sub-hd{margin:.5rem 0 .25rem;font-size:.88rem}
+.q-answer .subsub-hd{margin:.4rem 0 .2rem}
+
+/* Inline code */
+.ic{
+  font-family:'Cascadia Code','Consolas','JetBrains Mono',monospace;
+  font-size:.82em;background:#f1f5f9;
+  border:1px solid #e2e8f0;
+  color:#0369a1;border-radius:4px;padding:.1em .35em;white-space:nowrap;
+}
+
+/* Code blocks */
+.code-block{
+  position:relative;background:var(--code-bg) !important;
+  border:1px solid #334155;border-radius:8px;
+  overflow:hidden;margin:0;font-size:.82rem;flex-shrink:0;
+}
+.code-block::before{
+  content:attr(data-lang);
+  position:absolute;top:.5rem;right:3.8rem;
+  font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:rgba(148,163,184,.5);pointer-events:none;
+}
+.code-block code{
+  display:block;overflow-x:auto;padding:1rem 1.1rem;
+  font-family:'Cascadia Code','Consolas','JetBrains Mono',monospace;
+  line-height:1.7;font-size:.84rem;
+  scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.12) transparent;
+}
+.copy-btn{
+  position:absolute;top:.45rem;right:.55rem;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:#94a3b8;border-radius:5px;padding:.2rem .5rem;
+  font-size:.63rem;cursor:pointer;transition:all .12s;
+  display:flex;align-items:center;gap:.25rem;
+}
+.copy-btn:hover{background:rgba(255,255,255,.15);color:#e2e8f0}
+.copy-btn.copied{color:#34d399;border-color:rgba(52,211,153,.3)}
+
+/* Tables */
+.table-wrap{overflow-x:auto;margin:0;border-radius:8px;border:1px solid #e2e8f0}
+.q-table{width:100%;border-collapse:collapse;font-size:.84rem;min-width:480px}
+.q-table th{
+  background:#fffbeb;color:#b45309;
+  padding:.6rem .9rem;text-align:left;font-size:.74rem;
+  font-weight:700;letter-spacing:.03em;white-space:nowrap;
+  border-bottom:1px solid #e2e8f0;
+}
+.q-table td{
+  padding:.52rem .9rem;border-bottom:1px solid #f1f5f9;
+  color:var(--text);line-height:1.55;vertical-align:top;
+}
+.q-table tr:last-child td{border-bottom:none}
+.q-table tr:hover td{background:#fffbeb}
+
+/* Prev/Next nav */
+.chapter-nav{
+  display:grid;grid-template-columns:1fr 1fr;gap:.75rem;
+  padding:2.5rem 0 1rem;border-top:1px solid #e2e8f0;
+  margin-top:2.5rem;
+}
+.nav-btn{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.9rem 1rem;border-radius:10px;text-decoration:none;
+  background:#ffffff;border:1px solid #e2e8f0;
+  box-shadow:var(--sh);transition:all .15s;
+}
+.nav-btn:hover{border-color:#fbbf24;box-shadow:0 4px 16px rgba(251,191,36,.15)}
+.nav-btn.prev{flex-direction:row}
+.nav-btn.next{flex-direction:row-reverse;text-align:right}
+.nav-btn:nth-child(2):only-child,.nav-btn:last-child:nth-child(2){grid-column:2}
+.nav-arrow{font-size:.8rem;color:#b45309;flex-shrink:0}
+.nav-info{}
+.nav-label{font-size:.63rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.15rem}
+.nav-title{font-size:.8rem;font-weight:700;color:var(--text-bright);line-height:1.3}
+
+/* ── Mobile sidebar overlay ───────────────────────────────────── */
+#sb-overlay{
+  display:none;position:fixed;inset:0;background:rgba(15,23,42,.4);z-index:190;
+  backdrop-filter:blur(2px);
+}
+#sb-overlay.show{display:block}
+
+/* ── Utility ───────────────────────────────────────────────────── */
+strong{color:var(--text-bright);font-weight:700}
+em{color:var(--amber);font-style:italic}
+a{color:var(--cyan);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Content fade-in */
+.fade-in{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ── Responsive ───────────────────────────────────────────────── */
+@media(max-width:768px){
+  :root{--sb-w:290px;--top-h:56px}
+  #sidebar{
+    position:fixed;top:var(--top-h);bottom:0;left:0;z-index:200;
+    transform:translateX(calc(-1 * var(--sb-w)));transition:transform .25s;
+  }
+  #sidebar.open{transform:translateX(0)}
+  .home-wrap,.reader-wrap{padding-left:.85rem;padding-right:.85rem;padding-top:1.25rem;min-width:0}
+  .chapters-home-grid{grid-template-columns:1fr}
+  .chapter-nav{grid-template-columns:1fr}
+  .nav-btn.next{grid-column:1}
+  .nav-btn:last-child:nth-child(2){grid-column:1}
+  .q-question{padding:.85rem 1rem .85rem}
+  .q-answer{padding:1rem 1rem 1rem}
+  .q-text{font-size:.92rem}
+  .q-para{font-size:.88rem}
+  .q-list li,.q-olist li{font-size:.86rem}
+  .code-block code{font-size:.78rem;padding:.85rem .9rem;overflow-x:auto}
+  .code-block{overflow-x:auto}
+  .table-wrap{border-radius:6px;overflow-x:auto}
+  .ch-title{font-size:1.3rem}
+  .tbar-label{display:none}
+  .tbar-pg{max-width:100px;overflow:hidden;text-overflow:ellipsis}
+  #tbar-ch{display:none}
+  .home-hero{padding:1.5rem .75rem 2rem}
+  .home-stats{gap:1rem 2rem}
+  .hstat b{font-size:1.5rem}
+}
+@media(min-width:769px){
+  #sidebar.collapsed{
+    transform:translateX(calc(-1 * var(--sb-w)));
+    width:0 !important;
+  }
+}
+</style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header id="topbar">
+  <button id="sb-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+  <a class="tbar-logo" href="/"><img src="../../assets/ulogo.jpg" alt="VibeTestQ"></a>
+  <span class="tbar-sep">›</span>
+  <span class="tbar-pg">JS for Testers</span>
+  <span id="tbar-ch"></span>
+  <div class="tbar-right">
+    <a class="tbar-btn" href="#home"><i class="fas fa-house"></i> <span class="tbar-label">Home</span></a>
+    <a class="tbar-btn" href="/qa-ai-era-training" target="_blank"><i class="fas fa-graduation-cap"></i> <span class="tbar-label">Training</span></a>
+    <a class="tbar-btn accent" href="/interviews"><i class="fas fa-microphone-lines"></i> <span class="tbar-label">Interviews</span></a>
+  </div>
+</header>
+
+<!-- Mobile overlay -->
+<div id="sb-overlay"></div>
+
+<!-- APP LAYOUT -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-head">
+      <div class="sb-head-title"><i class="fab fa-js" style="font-size:.9rem"></i> JS for Testers</div>
+      <div class="sb-head-meta">12 chapters &middot; 172+ questions</div>
+    </div>
+    <nav id="sb-nav"><!-- Generated by JS --></nav>
+  </aside>
+
+  <!-- CONTENT COLUMN -->
+  <div id="content-col">
+    <div id="prog"><div id="prog-fill"></div></div>
+    <div id="main"><!-- Injected --></div>
+  </div>
+
+</div>
+
+<script>
+// ── Chapter data ──────────────────────────────────────────────────────────────
+const PART = {
+  slug: 'part-1-javascript-typescript',
+  color: '#fbbf24',
+  rgb: '251,191,36',
+  icon: 'fab fa-js',
+  short: 'JS &amp; TypeScript',
+  chapters: [
+    {num:101, slug:'chapter-101-javascript-for-automation-introduction-history', title:'Introduction &amp; History'},
+    {num:102, slug:'chapter-102-variables-scope-data-types',                    title:'Variables, Scope &amp; Data Types'},
+    {num:103, slug:'chapter-103-operators-conditionals',                         title:'Operators &amp; Conditionals'},
+    {num:104, slug:'chapter-104-loops-iteration',                                title:'Loops &amp; Iteration'},
+    {num:105, slug:'chapter-105-arrays-collections',                             title:'Arrays &amp; Collections'},
+    {num:106, slug:'chapter-106-functions-arrow-functions',                      title:'Functions &amp; Arrow Functions'},
+    {num:107, slug:'chapter-107-objects-prototypes',                             title:'Objects &amp; Prototypes'},
+    {num:108, slug:'chapter-108-strings-regular-expressions',                    title:'Strings &amp; Regular Expressions'},
+    {num:109, slug:'chapter-109-async-javascript-promises-await',                title:'Async, Promises &amp; await'},
+    {num:110, slug:'chapter-110-classes-modules-scope',                          title:'Classes, Modules &amp; Scope'},
+    {num:111, slug:'chapter-111-exception-handling',                             title:'Exception Handling'},
+    {num:112, slug:'chapter-112-typescript-for-test-automation',                 title:'TypeScript for Test Automation'},
+  ]
+};
+
+const ALL_CHAPTERS = PART.chapters;
+
+// ── DOM refs ─────────────────────────────────────────────────────────────────
+const sbNav      = document.getElementById('sb-nav');
+const mainEl     = document.getElementById('main');
+const progFill   = document.getElementById('prog-fill');
+const tbarCh     = document.getElementById('tbar-ch');
+const sbToggle   = document.getElementById('sb-toggle');
+const sidebar    = document.getElementById('sidebar');
+const overlay    = document.getElementById('sb-overlay');
+const contentCol = document.getElementById('content-col');
+
+// ── Build sidebar ─────────────────────────────────────────────────────────────
+function buildSidebar() {
+  sbNav.innerHTML = '';
+  const grp = document.createElement('div');
+  grp.className = 'part-group';
+
+  const toggle = document.createElement('button');
+  toggle.className = 'part-toggle open';
+  toggle.style.cssText = `--pc:${PART.color};--pc-rgb:${PART.rgb}`;
+  toggle.innerHTML = `
+    <span class="p-badge" style="--pc:${PART.color};--pc-rgb:${PART.rgb}">
+      <i class="${PART.icon}" style="font-size:.7rem;color:${PART.color}"></i>
+    </span>
+    <span class="p-info">
+      <span class="p-title">JavaScript &amp; TypeScript</span>
+      <span class="p-count">12 chapters &middot; ~172 Qs</span>
+    </span>
+    <i class="fas fa-chevron-right p-chevron"></i>`;
+
+  const chList = document.createElement('div');
+  chList.className = 'part-chapters';
+  ALL_CHAPTERS.forEach(c => {
+    const a = document.createElement('a');
+    a.className = 'ch-link';
+    a.href = `#ch${c.num}`;
+    a.style.cssText = `--pc:${PART.color};--pc-rgb:${PART.rgb}`;
+    a.dataset.chnum = c.num;
+    a.innerHTML = `<span class="ch-num">${c.num}</span><span style="flex:1;min-width:0">${c.title}</span>`;
+    chList.appendChild(a);
+  });
+
+  toggle.addEventListener('click', () => toggle.classList.toggle('open'));
+  grp.appendChild(toggle);
+  grp.appendChild(chList);
+  sbNav.appendChild(grp);
+}
+
+// ── Show home screen ──────────────────────────────────────────────────────────
+function showHome() {
+  tbarCh.textContent = '';
+  document.title = 'JavaScript for Testers | Interview Questions | VibeTestQ';
+
+  const cards = ALL_CHAPTERS.map(c => `
+    <div class="ch-card" data-chnum="${c.num}">
+      <div class="ch-card-top"></div>
+      <div class="ch-card-body">
+        <div class="ch-card-head">
+          <div class="ch-num-badge"><span class="cn">${c.num}</span></div>
+          <div class="ch-card-title">${c.title}</div>
+        </div>
+        <div class="ch-card-foot">
+          <span class="ch-go">Start <i class="fas fa-arrow-right" style="font-size:.62rem"></i></span>
+        </div>
+      </div>
+    </div>`).join('');
+
+  mainEl.innerHTML = `
+    <div class="home-wrap fade-in">
+      <div class="home-hero">
+        <div class="home-eyebrow"><i class="fab fa-js"></i> JavaScript for Testers</div>
+        <h1>JavaScript Foundations<br><span class="g">Built for QA Engineers</span></h1>
+        <p class="home-sub">From variables and closures to async/await and TypeScript — every concept a modern tester needs to know, one question at a time.</p>
+        <div class="home-stats">
+          <div class="hstat"><b>172+</b><s>Questions</s></div>
+          <div class="hstat"><b>12</b><s>Chapters</s></div>
+          <div class="hstat"><b>1</b><s>Part</s></div>
+        </div>
+      </div>
+      <div class="chapters-home-grid">${cards}</div>
+    </div>`;
+
+  mainEl.querySelectorAll('.ch-card').forEach(card => {
+    card.addEventListener('click', () => {
+      location.hash = '#ch' + card.dataset.chnum;
+    });
+  });
+
+  document.querySelectorAll('.ch-link.active').forEach(l => l.classList.remove('active'));
+}
+
+// ── Load chapter ──────────────────────────────────────────────────────────────
+async function loadChapter(chNum) {
+  const entry = ALL_CHAPTERS.find(c => c.num === chNum);
+  if (!entry) { showHome(); return; }
+
+  const htmlPath = `playwright/${PART.slug}/${entry.slug}.html`;
+
+  mainEl.innerHTML = `<div class="reader-wrap" style="color:var(--text-dim);padding-top:3rem;text-align:center">
+    <i class="fas fa-spinner fa-spin" style="font-size:1.5rem;color:#fbbf24"></i>
+    <p style="margin-top:.75rem;font-size:.85rem">Loading chapter ${chNum}…</p></div>`;
+
+  let html;
+  try {
+    const res = await fetch(htmlPath);
+    if (!res.ok) throw new Error('fetch failed');
+    html = await res.text();
+  } catch {
+    mainEl.innerHTML = `<div class="reader-wrap"><p style="color:#f87171;font-size:.9rem"><i class="fas fa-exclamation-triangle"></i> Could not load chapter ${chNum}.</p></div>`;
+    return;
+  }
+
+  document.title = `Ch ${chNum}: ${entry.title.replace(/&amp;/g,'&')} | JS for Testers | VibeTestQ`;
+  tbarCh.textContent = `Ch ${chNum} — ${entry.title.replace(/&amp;/g,'&')}`;
+
+  const idx = ALL_CHAPTERS.findIndex(c => c.num === chNum);
+  const prev = idx > 0 ? ALL_CHAPTERS[idx - 1] : null;
+  const next = idx < ALL_CHAPTERS.length - 1 ? ALL_CHAPTERS[idx + 1] : null;
+
+  const prevBtn = prev ? `
+    <a class="nav-btn prev" href="#ch${prev.num}">
+      <span class="nav-arrow"><i class="fas fa-chevron-left"></i></span>
+      <span class="nav-info">
+        <span class="nav-label">Previous</span>
+        <span class="nav-title">${prev.title}</span>
+      </span>
+    </a>` : '';
+
+  const nextBtn = next ? `
+    <a class="nav-btn next" href="#ch${next.num}">
+      <span class="nav-info">
+        <span class="nav-label">Next</span>
+        <span class="nav-title">${next.title}</span>
+      </span>
+      <span class="nav-arrow"><i class="fas fa-chevron-right"></i></span>
+    </a>` : '';
+
+  const partBadge = `<span class="ch-part-badge">
+    <i class="${PART.icon}"></i> JavaScript &amp; TypeScript</span>`;
+
+  mainEl.innerHTML = `
+    <div class="reader-wrap fade-in" style="--pc:${PART.color};--pc-rgb:${PART.rgb}">
+      ${partBadge}
+      <div class="ch-content">${html}</div>
+      <div class="chapter-nav">${prevBtn}${nextBtn}</div>
+    </div>`;
+
+  mainEl.querySelectorAll('pre.code-block code').forEach(el => {
+    hljs.highlightElement(el);
+  });
+
+  mainEl.querySelectorAll('pre.code-block').forEach(pre => {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+    btn.addEventListener('click', () => {
+      const code = pre.querySelector('code');
+      navigator.clipboard.writeText(code.innerText).then(() => {
+        btn.className = 'copy-btn copied';
+        btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+        setTimeout(() => {
+          btn.className = 'copy-btn';
+          btn.innerHTML = '<i class="fas fa-copy"></i> Copy';
+        }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+
+  contentCol.scrollTo({ top: 0, behavior: 'smooth' });
+
+  document.querySelectorAll('.ch-link.active').forEach(l => l.classList.remove('active'));
+  const activeLink = document.querySelector(`.ch-link[data-chnum="${chNum}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
+    const toggle = activeLink.closest('.part-group')?.querySelector('.part-toggle');
+    if (toggle && !toggle.classList.contains('open')) toggle.classList.add('open');
+    setTimeout(() => activeLink.scrollIntoView({ block: 'nearest' }), 150);
+  }
+}
+
+// ── Progress bar ──────────────────────────────────────────────────────────────
+contentCol.addEventListener('scroll', () => {
+  const h = contentCol.scrollHeight - contentCol.clientHeight;
+  const pct = h > 0 ? (contentCol.scrollTop / h) * 100 : 0;
+  progFill.style.width = pct + '%';
+});
+
+// ── Sidebar toggle ────────────────────────────────────────────────────────────
+function openSidebar() {
+  sidebar.classList.add('open');
+  overlay.classList.add('show');
+}
+function closeSidebar() {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+}
+function toggleSidebar() {
+  if (window.innerWidth <= 768) {
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  } else {
+    sidebar.classList.toggle('collapsed');
+  }
+}
+sbToggle.addEventListener('click', toggleSidebar);
+overlay.addEventListener('click', closeSidebar);
+
+// ── Hash routing ──────────────────────────────────────────────────────────────
+function route() {
+  const hash = location.hash;
+  if (!hash || hash === '#' || hash === '#home') {
+    showHome();
+  } else {
+    const m = hash.match(/^#ch(\d+)$/);
+    if (m) {
+      loadChapter(parseInt(m[1]));
+      if (window.innerWidth <= 768) closeSidebar();
+    } else {
+      showHome();
+    }
+  }
+}
+
+window.addEventListener('hashchange', route);
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildSidebar();
+route();
+</script>
+</body>
+</html>

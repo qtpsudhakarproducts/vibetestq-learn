@@ -1,0 +1,681 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">⚡ Part 1 &nbsp;·&nbsp; Chapter 105 &nbsp;·&nbsp; 20 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Arrays</span> <span class="w2">&amp;</span> <span class="w3">Collections</span></h1>
+    <p class="sn-title-sub">JavaScript &amp; TypeScript — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers JavaScript arrays and the methods used most in test automation. Interviewers test arrays because <code class="sn-ic">map</code>, <code class="sn-ic">filter</code>, <code class="sn-ic">find</code>, and mutation bugs appear constantly in test data handling. Questions move from what an array is through method differences to short practical code.</span>
+  </div>
+
+
+  <!-- Q105.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.1</span>
+      <h2 class="sn-q-text">What is an array in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An array is an ordered list of values. Each value has an index starting at zero. Arrays can hold any type.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> colours   = [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;];
+<span class="tc-kw">const</span> numbers   = [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>, <span class="tc-num">5</span>];
+<span class="tc-kw">const</span> mixed     = [&quot;Alice&quot;, <span class="tc-num">30</span>, <span class="tc-kw">true</span>];
+
+console.<span class="tc-fn">log</span>(colours[<span class="tc-num">0</span>]);     <span class="tc-cm">// &amp;quot;red&amp;quot;</span>
+console.<span class="tc-fn">log</span>(colours.length); <span class="tc-cm">// 3</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.2</span>
+      <h2 class="sn-q-text">What is the difference between map, filter, and reduce?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">map</code> — transforms every element, returns a new array of the same length. <code class="sn-ic">filter</code> — keeps only matching elements, returns a shorter (or same) array. <code class="sn-ic">reduce</code> — collapses the array into a single value.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> prices = [<span class="tc-num">10</span>, <span class="tc-num">20</span>, <span class="tc-num">30</span>];
+
+<span class="tc-kw">const</span> doubled  = prices.<span class="tc-fn">map</span>(p =&gt; p * <span class="tc-num">2</span>);       <span class="tc-cm">// [20, 40, 60]</span>
+<span class="tc-kw">const</span> over15   = prices.<span class="tc-fn">filter</span>(p =&gt; p &gt; <span class="tc-num">15</span>);    <span class="tc-cm">// [20, 30]</span>
+<span class="tc-kw">const</span> total    = prices.<span class="tc-fn">reduce</span>((s, p) =&gt; s + p, <span class="tc-num">0</span>); <span class="tc-cm">// 60</span></div>
+      </div>
+<p class="sn-para">None of them modify the original array.</p>
+    </div>
+  </div>
+
+  <!-- Q105.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.3</span>
+      <h2 class="sn-q-text">When do you use array methods in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">map</code> — extract one field from a list of objects (names, IDs, statuses)</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">filter</code> — select a subset of test records by role, status, or tag</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">find</code> — get the first record matching a condition</span></li>
+<li><span class="icon">🎯</span><span><code class="sn-ic">forEach</code> — when you just want to do something with each item, like</span></li>
+</ul>
+<p class="sn-para">  print or log it (never with <code class="sn-ic">await</code>)</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Spread and destructuring — build test data objects cleanly</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q105.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.4</span>
+      <h2 class="sn-q-text">How do you use arrays in your Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, arrays hold test data sets. We use <code class="sn-ic">filter</code> to pick the records relevant to a specific test, <code class="sn-ic">map</code> to extract the values we want to assert on, and <code class="sn-ic">find</code> to locate a specific record by ID.</p>
+      </div>
+<p class="sn-para">We never mutate shared arrays — every test calls a factory function that returns a fresh copy.</p>
+    </div>
+  </div>
+
+  <!-- Q105.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.5</span>
+      <h2 class="sn-q-text">What does the find method do? How is it different from filter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">find</code> returns the <strong class="k-teal">first</strong> matching element, or <code class="sn-ic">undefined</code>. <code class="sn-ic">filter</code> returns <strong class="k-teal">all</strong> matching elements as a new array (possibly empty).</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> users = [
+  { name: &quot;Alice&quot;, role: &quot;admin&quot; },
+  { name: &quot;Bob&quot;,   role: &quot;viewer&quot; },
+  { name: &quot;Carol&quot;, role: &quot;admin&quot; },
+];
+
+users.<span class="tc-fn">find</span>(u =&gt; u.role === &quot;admin&quot;);    <span class="tc-cm">// { name: &amp;quot;Alice&amp;quot;, ... } — first match</span>
+users.<span class="tc-fn">filter</span>(u =&gt; u.role === &quot;admin&quot;);  <span class="tc-cm">// [{ name: &amp;quot;Alice&amp;quot; }, { name: &amp;quot;Carol&amp;quot; }]</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">find</code> when you expect one result. Use <code class="sn-ic">filter</code> when you expect many.</p>
+    </div>
+  </div>
+
+  <!-- Q105.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.6</span>
+      <h2 class="sn-q-text">What is array destructuring?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Destructuring unpacks array values into named variables in one statement.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> [first, second, third] = [&quot;chromium&quot;, &quot;firefox&quot;, &quot;webkit&quot;];
+console.<span class="tc-fn">log</span>(first);  <span class="tc-cm">// &amp;quot;chromium&amp;quot;</span>
+console.<span class="tc-fn">log</span>(third);  <span class="tc-cm">// &amp;quot;webkit&amp;quot;</span>
+
+<span class="tc-cm">// Skip elements with empty comma</span>
+<span class="tc-kw">const</span> [, , safari] = [&quot;chromium&quot;, &quot;firefox&quot;, &quot;webkit&quot;];
+console.<span class="tc-fn">log</span>(safari); <span class="tc-cm">// &amp;quot;webkit&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.7</span>
+      <h2 class="sn-q-text">What is the spread operator and how does it work with arrays?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">...</code> expands an array into individual elements. Used to copy or combine arrays without mutating the original.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> a = [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>];
+<span class="tc-kw">const</span> b = [...a, <span class="tc-num">4</span>, <span class="tc-num">5</span>]; <span class="tc-cm">// [1, 2, 3, 4, 5] — a is unchanged</span>
+
+<span class="tc-kw">const</span> combined = [...a, ...b]; <span class="tc-cm">// merge two arrays</span>
+
+<span class="tc-cm">// Copy without sharing a reference</span>
+<span class="tc-kw">const</span> copy = [...a];
+copy.<span class="tc-fn">push</span>(<span class="tc-num">99</span>);
+console.<span class="tc-fn">log</span>(a); <span class="tc-cm">// [1, 2, 3] — original untouched</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.8</span>
+      <h2 class="sn-q-text">What is the rest parameter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">...</code> in a function parameter list collects all remaining arguments into an array. It must be the last parameter.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">function</span> <span class="tc-fn">sum</span>(...numbers) {
+  <span class="tc-kw">return</span> numbers.<span class="tc-fn">reduce</span>((total, n) =&gt; total + n, <span class="tc-num">0</span>);
+}
+
+console.<span class="tc-fn">log</span>(<span class="tc-fn">sum</span>(<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>));       <span class="tc-cm">// 6</span>
+console.<span class="tc-fn">log</span>(<span class="tc-fn">sum</span>(<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>, <span class="tc-num">5</span>)); <span class="tc-cm">// 15</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.9</span>
+      <h2 class="sn-q-text">What is the difference between map and forEach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">map</code> returns a <strong class="k-blue">new array</strong> with the transformed values. <code class="sn-ic">forEach</code> returns <strong class="k-blue">nothing</strong> — use it only when you want to do something with each item, like printing or saving.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> nums = [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>];
+
+<span class="tc-kw">const</span> doubled = nums.<span class="tc-fn">map</span>(n =&gt; n * <span class="tc-num">2</span>);  <span class="tc-cm">// [2, 4, 6]</span>
+nums.<span class="tc-fn">forEach</span>(n =&gt; console.<span class="tc-fn">log</span>(n));     <span class="tc-cm">// prints 1, 2, 3 — returns undefined</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">map</code> when you need the result array. Use <code class="sn-ic">forEach</code> when you just want to do something with each item — and never with <code class="sn-ic">await</code> (see Chapter 4).</p>
+    </div>
+  </div>
+
+  <!-- Q105.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.10</span>
+      <h2 class="sn-q-text">What is the difference between find and filter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">find</code> → one element or <code class="sn-ic">undefined</code>. Stops at first match. <code class="sn-ic">filter</code> → always an array. Checks every element.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code">[<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>].<span class="tc-fn">find</span>(n =&gt; n &gt; <span class="tc-num">2</span>);    <span class="tc-cm">// 3</span>
+[<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>].<span class="tc-fn">filter</span>(n =&gt; n &gt; <span class="tc-num">2</span>);  <span class="tc-cm">// [3, 4]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.11</span>
+      <h2 class="sn-q-text">What is wrong with mutating an array directly — show the anti-pattern and fix it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Mutating a shared array affects every part of the code that holds a reference to it, including other tests running in the same worker.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Shared array — mutation persists between tests</span>
+<span class="tc-kw">const</span> sharedUsers = [&quot;alice&quot;, &quot;bob&quot;];
+
+<span class="tc-kw">function</span> <span class="tc-fn">testA</span>() {
+  sharedUsers.<span class="tc-fn">push</span>(&quot;carol&quot;); <span class="tc-cm">// modifies sharedUsers permanently</span>
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">testB</span>() {
+  console.<span class="tc-fn">log</span>(sharedUsers); <span class="tc-cm">// [&amp;quot;alice&amp;quot;, &amp;quot;bob&amp;quot;, &amp;quot;carol&amp;quot;] — unexpected</span>
+}</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Factory function — each caller gets a fresh copy</span>
+<span class="tc-kw">function</span> <span class="tc-fn">getUsers</span>() {
+  <span class="tc-kw">return</span> [&quot;alice&quot;, &quot;bob&quot;];
+}
+
+<span class="tc-kw">function</span> <span class="tc-fn">testA</span>() {
+  <span class="tc-kw">const</span> users = <span class="tc-fn">getUsers</span>();
+  users.<span class="tc-fn">push</span>(&quot;carol&quot;); <span class="tc-cm">// only affects this local copy</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.12</span>
+      <h2 class="sn-q-text">What is flat and when is it useful in test data processing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">flat()</code> turns a nested array into a single-level array.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> nested = [[<span class="tc-num">1</span>, <span class="tc-num">2</span>], [<span class="tc-num">3</span>, <span class="tc-num">4</span>], [<span class="tc-num">5</span>]];
+nested.<span class="tc-fn">flat</span>(); <span class="tc-cm">// [1, 2, 3, 4, 5]</span>
+
+<span class="tc-cm">// Deeper nesting</span>
+[[<span class="tc-num">1</span>, [<span class="tc-num">2</span>, <span class="tc-num">3</span>]], [<span class="tc-num">4</span>]].<span class="tc-fn">flat</span>(<span class="tc-num">2</span>); <span class="tc-cm">// [1, 2, 3, 4]</span></div>
+      </div>
+<p class="sn-para">Useful when you collect results from multiple sources (each returning an array) and need to process them all in one flat list.</p>
+    </div>
+  </div>
+
+  <!-- Q105.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.13</span>
+      <h2 class="sn-q-text">Write code that filters and transforms a list of test records</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> records = [
+  { id: <span class="tc-num">1</span>, status: &quot;pass&quot;,   duration: <span class="tc-num">1200</span> },
+  { id: <span class="tc-num">2</span>, status: &quot;fail&quot;,   duration: <span class="tc-num">3400</span> },
+  { id: <span class="tc-num">3</span>, status: &quot;pass&quot;,   duration: <span class="tc-num">800</span>  },
+  { id: <span class="tc-num">4</span>, status: &quot;skip&quot;,   duration: <span class="tc-num">0</span>    },
+];
+
+<span class="tc-cm">// Get IDs of failed tests</span>
+<span class="tc-kw">const</span> failedIds = records
+  .<span class="tc-fn">filter</span>(r =&gt; r.status === &quot;fail&quot;)
+  .<span class="tc-fn">map</span>(r =&gt; r.id);
+
+console.<span class="tc-fn">log</span>(failedIds); <span class="tc-cm">// [2]</span>
+
+<span class="tc-cm">// Average duration of passing tests</span>
+<span class="tc-kw">const</span> passDurations = records
+  .<span class="tc-fn">filter</span>(r =&gt; r.status === &quot;pass&quot;)
+  .<span class="tc-fn">map</span>(r =&gt; r.duration);
+
+<span class="tc-kw">const</span> avg = passDurations.<span class="tc-fn">reduce</span>((s, d) =&gt; s + d, <span class="tc-num">0</span>) / passDurations.length;
+console.<span class="tc-fn">log</span>(avg); <span class="tc-cm">// 1000</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.14</span>
+      <h2 class="sn-q-text">Write a test data factory using array methods and destructuring</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> catalogue = [
+  { id: &quot;P1&quot;, name: &quot;Widget A&quot;, price: <span class="tc-num">29.99</span> },
+  { id: &quot;P2&quot;, name: &quot;Widget B&quot;, price: <span class="tc-num">14.99</span> },
+  { id: &quot;P3&quot;, name: &quot;Widget C&quot;, price: <span class="tc-num">49.99</span> },
+];
+
+<span class="tc-kw">function</span> <span class="tc-fn">buildOrder</span>(productIds) {
+  <span class="tc-kw">const</span> items   = catalogue.<span class="tc-fn">filter</span>(p =&gt; productIds.<span class="tc-fn">includes</span>(p.id));
+  <span class="tc-kw">const</span> total   = items.<span class="tc-fn">reduce</span>((s, p) =&gt; s + p.price, <span class="tc-num">0</span>);
+  <span class="tc-kw">return</span> { items, total: total.<span class="tc-fn">toFixed</span>(<span class="tc-num">2</span>) };
+}
+
+<span class="tc-kw">const</span> order = <span class="tc-fn">buildOrder</span>([&quot;P1&quot;, &quot;P3&quot;]);
+console.<span class="tc-fn">log</span>(order.total); <span class="tc-cm">// &amp;quot;79.98&amp;quot;</span>
+
+<span class="tc-cm">// Destructure what you need</span>
+<span class="tc-kw">const</span> { items: [first], total } = order;
+console.<span class="tc-fn">log</span>(first.name, total); <span class="tc-cm">// &amp;quot;Widget A&amp;quot; &amp;quot;79.98&amp;quot;</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q105.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.15</span>
+      <h2 class="sn-q-text">Describe a scenario where you used array methods to process test results</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project the test run produced an array of result objects. We needed a summary: how many passed, how many failed, and which test names failed.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-fn">getTestResults</span>();
+
+<span class="tc-kw">const</span> failed    = results.<span class="tc-fn">filter</span>(r =&gt; r.status === &quot;fail&quot;);
+<span class="tc-kw">const</span> failNames = failed.<span class="tc-fn">map</span>(r =&gt; r.name);
+<span class="tc-kw">const</span> passCount = results.<span class="tc-fn">filter</span>(r =&gt; r.status === &quot;pass&quot;).length;
+
+console.<span class="tc-fn">log</span>(<span class="tc-str">`Passed: ${passCount}, Failed: ${failed.length}`</span>);
+console.<span class="tc-fn">log</span>(&quot;Failed tests:&quot;, failNames);</div>
+      </div>
+<p class="sn-para">This replaced a <code class="sn-ic">for</code> loop with counters and a separate push array — cleaner, less error-prone, and easier to read in code review.</p>
+    </div>
+  </div>
+
+  <!-- Q105.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.16</span>
+      <h2 class="sn-q-text">What do some() and every() do?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">some()</code> returns <code class="sn-ic">true</code> if <strong class="k-yellow">at least one</strong> element passes the test. <code class="sn-ic">every()</code> returns <code class="sn-ic">true</code> only if <strong class="k-yellow">all</strong> elements pass the test. Both stop early as soon as the outcome is determined.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> results = [&quot;pass&quot;, &quot;pass&quot;, &quot;fail&quot;, &quot;pass&quot;];
+
+results.<span class="tc-fn">some</span>(r =&gt; r === &quot;fail&quot;);   <span class="tc-cm">// true  — at least one failed</span>
+results.<span class="tc-fn">every</span>(r =&gt; r === &quot;pass&quot;);  <span class="tc-cm">// false — not all passed</span>
+results.<span class="tc-fn">every</span>(r =&gt; r !== &quot;error&quot;); <span class="tc-cm">// true  — none have status &amp;quot;error&amp;quot;</span></div>
+      </div>
+<p class="sn-para">In test automation, <code class="sn-ic">every</code> checks whether all records meet a condition before asserting. <code class="sn-ic">some</code> is used as a guard — "does this list contain any failures before we proceed?"</p>
+    </div>
+  </div>
+
+  <!-- Q105.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.17</span>
+      <h2 class="sn-q-text">What is the difference between indexOf, findIndex, and find?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">indexOf</code> — finds the index of a <strong class="k-blue">value</strong> using strict equality. Works for primitives. Returns <code class="sn-ic">-1</code> if not found.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">findIndex</code> — finds the index of the <strong class="k-blue">first element matching a callback</strong>. Works for objects.</p>
+<p class="sn-para"><code class="sn-ic">find</code> — returns the <strong class="k-blue">element itself</strong> (not the index) of the first match.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> nums = [<span class="tc-num">10</span>, <span class="tc-num">20</span>, <span class="tc-num">30</span>];
+nums.<span class="tc-fn">indexOf</span>(<span class="tc-num">20</span>);              <span class="tc-cm">// 1</span>
+nums.<span class="tc-fn">indexOf</span>(<span class="tc-num">99</span>);              <span class="tc-cm">// -1</span>
+
+<span class="tc-kw">const</span> users = [
+  { id: <span class="tc-num">1</span>, name: &quot;Alice&quot; },
+  { id: <span class="tc-num">2</span>, name: &quot;Bob&quot; },
+];
+users.<span class="tc-fn">findIndex</span>(u =&gt; u.id === <span class="tc-num">2</span>); <span class="tc-cm">// 1   — index</span>
+users.<span class="tc-fn">find</span>(u =&gt; u.id === <span class="tc-num">2</span>);      <span class="tc-cm">// { id: 2, name: &amp;quot;Bob&amp;quot; } — element</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">indexOf</code> for primitive arrays. Use <code class="sn-ic">findIndex</code> when you need the position in an object array. Use <code class="sn-ic">find</code> when you need the object itself.</p>
+    </div>
+  </div>
+
+  <!-- Q105.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.18</span>
+      <h2 class="sn-q-text">What is the difference between slice and splice?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">slice</code> — <strong class="k-green">non-mutating</strong>. Returns a shallow copy of a portion of the array. <code class="sn-ic">splice</code> — <strong class="k-green">mutating</strong>. Removes, replaces, or inserts elements in place.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> arr = [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>, <span class="tc-num">5</span>];
+
+<span class="tc-cm">// slice(start, end) — does not change arr</span>
+<span class="tc-kw">const</span> portion = arr.<span class="tc-fn">slice</span>(<span class="tc-num">1</span>, <span class="tc-num">3</span>); <span class="tc-cm">// [2, 3]</span>
+console.<span class="tc-fn">log</span>(arr);                <span class="tc-cm">// [1, 2, 3, 4, 5] — unchanged</span>
+
+<span class="tc-cm">// splice(start, deleteCount) — modifies arr</span>
+<span class="tc-kw">const</span> removed = arr.<span class="tc-fn">splice</span>(<span class="tc-num">1</span>, <span class="tc-num">2</span>); <span class="tc-cm">// removes 2 elements at index 1</span>
+console.<span class="tc-fn">log</span>(removed); <span class="tc-cm">// [2, 3]</span>
+console.<span class="tc-fn">log</span>(arr);     <span class="tc-cm">// [1, 4, 5] — arr is changed!</span></div>
+      </div>
+<p class="sn-para">The interview trap: both sound similar. The key: <code class="sn-ic">slice</code> is safe, <code class="sn-ic">splice</code> mutates. In test code, prefer <code class="sn-ic">slice</code> — never mutate shared data.</p>
+    </div>
+  </div>
+
+  <!-- Q105.19 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.19</span>
+      <h2 class="sn-q-text">What is the sort() gotcha in JavaScript?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">sort()</code> mutates the original array and by default converts elements to strings before comparing. This produces wrong results for numbers.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Default sort — compares as strings</span>
+[<span class="tc-num">10</span>, <span class="tc-num">2</span>, <span class="tc-num">1</span>, <span class="tc-num">20</span>].<span class="tc-fn">sort</span>();         <span class="tc-cm">// [1, 10, 2, 20] — wrong!</span>
+
+<span class="tc-cm">// ✅ Numeric sort — pass a comparator</span>
+[<span class="tc-num">10</span>, <span class="tc-num">2</span>, <span class="tc-num">1</span>, <span class="tc-num">20</span>].<span class="tc-fn">sort</span>((a, b) =&gt; a - b);  <span class="tc-cm">// [1, 2, 10, 20] — correct</span>
+[<span class="tc-num">10</span>, <span class="tc-num">2</span>, <span class="tc-num">1</span>, <span class="tc-num">20</span>].<span class="tc-fn">sort</span>((a, b) =&gt; b - a);  <span class="tc-cm">// [20, 10, 2, 1] — descending</span></div>
+      </div>
+<p class="sn-para">Two traps to know: the default string comparison silently gives wrong results for numbers, and <code class="sn-ic">sort()</code> mutates the original array. To sort without mutation, spread first: <code class="sn-ic">[...arr].sort((a, b) =&gt; a - b)</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q105.20 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q105.20</span>
+      <h2 class="sn-q-text">What is Array.from() and when do you use it in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">Array.from()</code> creates a real array from any array-like or iterable value. In Playwright, <code class="sn-ic">locator.all()</code> already returns an array — but <code class="sn-ic">page.$$()</code> and some DOM APIs return NodeList or similar iterables that lack array methods. <code class="sn-ic">Array.from()</code> converts them.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Convert a string to an array of characters</span>
+Array.<span class="tc-kw">from</span>(&quot;hello&quot;); <span class="tc-cm">// [&amp;quot;h&amp;quot;, &amp;quot;e&amp;quot;, &amp;quot;l&amp;quot;, &amp;quot;l&amp;quot;, &amp;quot;o&amp;quot;]</span>
+
+<span class="tc-cm">// Convert a Set to an array</span>
+<span class="tc-kw">const</span> unique = Array.<span class="tc-kw">from</span>(<span class="tc-kw">new</span> Set([<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>])); <span class="tc-cm">// [1, 2, 3]</span>
+
+<span class="tc-cm">// In Playwright — evaluate returns a NodeList, Array.from converts it</span>
+<span class="tc-kw">const</span> texts = <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt;
+  Array.<span class="tc-kw">from</span>(document.<span class="tc-fn">querySelectorAll</span>(&quot;.item&quot;)).<span class="tc-fn">map</span>(el =&gt; el.textContent)
+);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">Array.from()</code> also accepts a mapping function as a second argument, making it a compact alternative to <code class="sn-ic">new Array(n).fill(0).map(...)</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">javascript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Create 5 sequential IDs</span>
+Array.<span class="tc-kw">from</span>({ length: <span class="tc-num">5</span> }, (_, i) =&gt; i + <span class="tc-num">1</span>); <span class="tc-cm">// [1, 2, 3, 4, 5]</span></div>
+      </div>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">map</code> transforms, <code class="sn-ic">filter</code> selects, <code class="sn-ic">find</code> gets the first match, <code class="sn-ic">reduce</code> collapses. None mutate the original.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">find</code> returns one element or <code class="sn-ic">undefined</code>. <code class="sn-ic">filter</code> always returns an array.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">forEach</code> returns nothing. Never use it with <code class="sn-ic">await</code> — use <code class="sn-ic">for...of</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Spread <code class="sn-ic">[...arr]</code> copies without sharing a reference.</span></li>
+            <li><span class="icon">⭐</span><span>Never mutate shared arrays between tests — use factory functions.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">some</code> → at least one matches. <code class="sn-ic">every</code> → all match. Both stop early.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">indexOf</code> for primitive values. <code class="sn-ic">findIndex</code> for object arrays (returns index). <code class="sn-ic">find</code> returns the element.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">slice</code> is safe (non-mutating). <code class="sn-ic">splice</code> mutates. Prefer <code class="sn-ic">slice</code> in test code.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">sort()</code> compares as strings by default — always pass <code class="sn-ic">(a, b) =&gt; a - b</code> for numbers. Spread before sorting to avoid mutation.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">Array.from()</code> converts iterables and NodeLists to real arrays. Essential inside <code class="sn-ic">page.evaluate()</code> calls.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

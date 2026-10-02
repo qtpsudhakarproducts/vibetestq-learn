@@ -1,0 +1,776 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎨 Part 8 &nbsp;·&nbsp; Chapter 806 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Best</span> <span class="w2">Practices</span> <span class="w3">—</span> <span class="w4">Visual</span> <span class="w5">&amp;</span> <span class="w6">Accessibility</span></h1>
+    <p class="sn-title-sub">Visual &amp; Accessibility — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter synthesises the two disciplines — visual regression testing and accessibility testing — into a unified quality strategy. It covers how they complement each other, common pitfalls, maintenance patterns, and how to present a joined strategy in an interview at senior/architect level. This is the final chapter of Part 7.</span>
+  </div>
+
+
+  <!-- Q806.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.1</span>
+      <h2 class="sn-q-text">How do visual testing and accessibility testing complement each other?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Visual and accessibility testing answer different questions about the same UI. A mature quality strategy needs both.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Visual testing</strong> answers: "Does the page look correct?" It catches layout regressions, CSS breakage, missing elements, and unintended style changes. It does not tell you whether the page is usable — a visually perfect page can be completely inaccessible.</p>
+<p class="sn-para"><strong class="k-blue">Accessibility testing</strong> answers: "Can all users use this page?" It verifies semantic structure, keyboard operability, screen reader compatibility, and WCAG compliance. It does not tell you whether the page looks correct — a fully accessible page can have a broken layout that passes every axe-core rule.</p>
+<p class="sn-para">They are complementary, not substitutable:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A button with wrong colours → caught by visual test (colour changed)</span></li>
+</ul>
+<p class="sn-para">  and possibly by axe (colour contrast violation)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>A button with no accessible name → missed by visual test (looks fine),</span></li>
+</ul>
+<p class="sn-para">  caught by accessibility test</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>A broken layout that collapses a menu → caught by visual test,</span></li>
+</ul>
+<p class="sn-para">  missed by axe (the element is still in the DOM)</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>A skip-navigation link that is missing → missed by visual test,</span></li>
+</ul>
+<p class="sn-para">  caught by accessibility test</p>
+<p class="sn-para">Run both in CI. Gate both. Treat them as different quality dimensions.</p>
+    </div>
+  </div>
+
+  <!-- Q806.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.2</span>
+      <h2 class="sn-q-text">What are the ten most important rules for visual testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">1. Always use Docker for baselines.</strong> Font rendering differs across OS. Baselines created on macOS will fail on Linux CI. Docker is not optional.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">2. Disable animations before every snapshot.</strong> <code class="sn-ic">animations: 'disabled'</code> or CSS injection. Animations produce non-deterministic screenshots.</p>
+<p class="sn-para"><strong class="k-green">3. Wait for fonts and network before capturing.</strong> <code class="sn-ic">document.fonts.ready</code> + <code class="sn-ic">waitForLoadState('networkidle')</code>. A snapshot taken before fonts load shows system fonts — a guaranteed false positive.</p>
+<p class="sn-para"><strong class="k-green">4. Mask dynamic content, do not delete it.</strong> Use <code class="sn-ic">mask: [locator]</code> for timestamps, avatars, and live data. Deletion removes elements from the layout, masking covers them while preserving their space.</p>
+<p class="sn-para"><strong class="k-green">5. Commit baselines to the repository.</strong> They are test fixtures. Not committing them means the team cannot see visual changes in PRs.</p>
+<p class="sn-para"><strong class="k-green">6. Only <code class="sn-ic">--update-snapshots</code> inside Docker.</strong> Enforced via a script. Mac-generated baselines are a contamination vector.</p>
+<p class="sn-para"><strong class="k-green">7. Do not gate PRs on visual tests until the suite is stable.</strong> Run visual tests as advisory for the first month. Promote to blocking gate only after false positive rate drops below 5%.</p>
+<p class="sn-para"><strong class="k-green">8. Component-level beats page-level.</strong> Test components in isolation. Page-level tests catch composition failures; component-level tests catch the specific breakage. Run both.</p>
+<p class="sn-para"><strong class="k-green">9. Use loose thresholds for canvas and charts, tight for logos.</strong> Logo pixels should never change. Chart rendering variation is acceptable. Tune per element type.</p>
+<p class="sn-para"><strong class="k-green">10. Block third-party scripts in visual tests.</strong> Ad networks, chat widgets, and analytics scripts load non-deterministic content. Block them with <code class="sn-ic">page.route()</code> before navigation.</p>
+    </div>
+  </div>
+
+  <!-- Q806.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.3</span>
+      <h2 class="sn-q-text">What are the ten most important rules for accessibility testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">1. Gate CI on critical violations only at first.</strong> Starting with all four impact levels blocks builds on minor issues. Earn team trust by fixing critical issues first.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">2. Document every disabled rule with a ticket reference.</strong> A <code class="sn-ic">disableRules</code> call without a comment is technical debt with no expiry date.</p>
+<p class="sn-para"><strong class="k-purple">3. Use <code class="sn-ic">getByRole</code> as your primary locator.</strong> Not just for accessibility tests — everywhere. If <code class="sn-ic">getByRole</code> cannot find the element, neither can a screen reader.</p>
+<p class="sn-para"><strong class="k-purple">4. Test keyboard navigation explicitly.</strong> axe-core cannot verify that tab order is logical or that modals trap focus. Write dedicated keyboard tests with <code class="sn-ic">page.keyboard.press('Tab')</code>.</p>
+<p class="sn-para"><strong class="k-purple">5. Scope scans to the component under test.</strong> <code class="sn-ic">include(selector)</code> gives faster, more targeted scans. Full-page scans are for page-level audit tests only.</p>
+<p class="sn-para"><strong class="k-purple">6. Exclude third-party components you cannot fix.</strong> Chat widgets, ad units, and embedded content from vendors often have violations you have no power to fix. Exclude them explicitly with a comment.</p>
+<p class="sn-para"><strong class="k-purple">7. Test both the DOM and the visual.</strong> <code class="sn-ic">aria-label</code> exists in the DOM but <code class="sn-ic">getByRole</code> verifies it is exposed correctly through the accessibility tree. Both layers matter.</p>
+<p class="sn-para"><strong class="k-purple">8. Verify that error messages are linked to their fields.</strong> <code class="sn-ic">aria-describedby</code> is the mechanism. axe tests for label presence; manual tests verify the connection to specific error messages.</p>
+<p class="sn-para"><strong class="k-purple">9. Treat accessibility violations like security vulnerabilities.</strong> Critical violations are blocking defects — not "nice to have" improvements. They prevent users from accessing your product.</p>
+<p class="sn-para"><strong class="k-purple">10. Run axe scans after interaction, not just on page load.</strong> Dynamic content — modals, accordions, validation errors — can introduce violations only visible after user actions.</p>
+    </div>
+  </div>
+
+  <!-- Q806.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.4</span>
+      <h2 class="sn-q-text">How do you structure a combined visual + accessibility test suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">tests/
+  functional/                  ← Standard functional tests
+    login.spec.ts
+    employee.spec.ts
+
+  visual/                      ← Visual regression tests
+    pages/
+      homepage.visual.spec.ts
+      login.visual.spec.ts
+    components/
+      table.visual.spec.ts
+      button.visual.spec.ts
+
+  a11y/                        ← Accessibility tests
+    audit/
+      pages.a11y.spec.ts       ← axe-core page scans
+    keyboard/
+      navigation.a11y.spec.ts  ← keyboard navigation tests
+    attributes/
+      forms.a11y.spec.ts       ← aria attribute assertions
+
+  fixtures/
+    a11y.fixture.ts
+    visual.fixture.ts</div>
+      </div>
+<p class="sn-para">In <code class="sn-ic">playwright.config.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  <span class="tc-cm">// Functional — all tests, every PR</span>
+  {
+    name:      <span class="tc-str">'chromium'</span>,
+    testMatch: /functional\/.*\.spec\.ts/,
+    use:       { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+  },
+
+  <span class="tc-cm">// Visual — only when UI files change + nightly</span>
+  {
+    name:      <span class="tc-str">'visual'</span>,
+    testMatch: /visual\/.*\.visual\.spec\.ts/,
+    use: {
+      ...devices[<span class="tc-str">'Desktop Chrome'</span>],
+      launchOptions: { args: [<span class="tc-str">'--force-prefers-reduced-motion'</span>] },
+    },
+  },
+
+  <span class="tc-cm">// Accessibility — only when HTML/component files change + nightly</span>
+  {
+    name:      <span class="tc-str">'accessibility'</span>,
+    testMatch: /a11y\/.*\.a11y\.spec\.ts/,
+    use:       { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+  },
+],</div>
+      </div>
+<p class="sn-para">Each suite has a separate project, separate CI trigger, and separate reporting section. Functional tests run on every PR. Visual and accessibility tests run on path-based triggers and nightly.</p>
+    </div>
+  </div>
+
+  <!-- Q806.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.5</span>
+      <h2 class="sn-q-text">What is the false positive problem and how do you solve it for each discipline?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Visual testing false positives</strong> are caused by: OS rendering differences, CSS animations, dynamic content, sub-pixel anti-aliasing, and Playwright version upgrades.</p>
+      </div>
+<p class="sn-para">Solutions:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Docker for consistent rendering</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">animations: 'disabled'</code> globally in the visual project</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">mask</code> for all dynamic content</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">threshold: 0.2</code> as the global default (not <code class="sn-ic">0</code>)</span></li>
+<li><span class="icon">📌</span><span>Pin Playwright version exactly in <code class="sn-ic">package.json</code> and Docker image</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Accessibility testing false positives</strong> are caused by: third-party components, legacy pages under active remediation, and axe rules that fire on valid patterns (rare but possible).</p>
+<p class="sn-para">Solutions:</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span><code class="sn-ic">exclude()</code> for third-party components</span></li>
+<li><span class="icon">🚀</span><span><code class="sn-ic">disableRules()</code> with a ticket reference for known legacy issues</span></li>
+<li><span class="icon">🌟</span><span><code class="sn-ic">onlyImpact: ['critical', 'serious']</code> to ignore noise during initial rollout</span></li>
+<li><span class="icon">📦</span><span>Review <code class="sn-ic">results.incomplete</code> — these are "needs manual check" items that</span></li>
+</ul>
+<p class="sn-para">  axe cannot automatically classify</p>
+<p class="sn-para">The shared principle: track every suppression explicitly and tie it to a resolution plan. Suppressions without expiry become permanent blind spots.</p>
+    </div>
+  </div>
+
+  <!-- Q806.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.6</span>
+      <h2 class="sn-q-text">How do you make both suites maintainable over time?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">For visual tests:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Centralise threshold configuration in <code class="sn-ic">playwright.config.ts</code> under</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">expect.toHaveScreenshot</code> — one change updates all tests</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Use a single <code class="sn-ic">update-snapshots.sh</code> script that runs Docker and commits</span></li>
+</ul>
+<p class="sn-para">  baselines — no ad-hoc developer baseline updates</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>Schedule a quarterly visual audit — review all baselines, delete tests</span></li>
+</ul>
+<p class="sn-para">  for pages that no longer exist, add tests for new critical pages</p>
+<p class="sn-para"><strong class="k-pink">For accessibility tests:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Review the <code class="sn-ic">KNOWN_VIOLATIONS</code> map in every sprint — remove resolved</span></li>
+</ul>
+<p class="sn-para">  violations, add context to new ones</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Track the violation count as a metric in the team dashboard — it should</span></li>
+</ul>
+<p class="sn-para">  trend down, never up</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>Include accessibility sign-off in your definition of done for new UI features</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">For both:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Tag all tests with <code class="sn-ic">@visual</code> or <code class="sn-ic">@a11y</code> — makes targeted runs easy</span></li>
+<li><span class="icon">🌟</span><span>Co-locate the fixture files — <code class="sn-ic">fixtures/visual.fixture.ts</code> and</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">fixtures/a11y.fixture.ts</code> are the single source of truth for options</p>
+<ul class="sn-list">
+<li><span class="icon">📦</span><span>Review failures weekly as a team — visual and accessibility failures</span></li>
+</ul>
+<p class="sn-para">  often signal design or engineering decisions that need discussion</p>
+    </div>
+  </div>
+
+  <!-- Q806.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.7</span>
+      <h2 class="sn-q-text">How do you handle responsive design in both visual and accessibility testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Visual — responsive testing:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+projects: [
+  { name: <span class="tc-str">'visual-desktop'</span>, use: { viewport: { width: <span class="tc-num">1440</span>, height: <span class="tc-num">900</span>  } } },
+  { name: <span class="tc-str">'visual-tablet'</span>,  use: { viewport: { width: <span class="tc-num">768</span>,  height: <span class="tc-num">1024</span> } } },
+  { name: <span class="tc-str">'visual-mobile'</span>,  use: { viewport: { width: <span class="tc-num">375</span>,  height: <span class="tc-num">812</span>  } } },
+],</div>
+      </div>
+<p class="sn-para">Each project generates its own baseline set. A layout that breaks on mobile but is fine on desktop shows up as a failure in the mobile visual project only.</p>
+<p class="sn-para"><strong class="k-red">Accessibility — responsive testing:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'mobile navigation accessibility'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ ...devices[<span class="tc-str">'iPhone 14'</span>] });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'hamburger menu is accessible on mobile @a11y'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+    <span class="tc-cm">// Mobile-specific: hamburger button should be properly labelled</span>
+    <span class="tc-kw">const</span> menuBtn = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: /menu|navigation/i });
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(menuBtn).<span class="tc-fn">toBeVisible</span>();
+
+    <span class="tc-kw">await</span> menuBtn.<span class="tc-fn">tap</span>();
+    <span class="tc-kw">const</span> nav = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(nav).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(nav).<span class="tc-fn">toHaveAttribute</span>(<span class="tc-str">'aria-expanded'</span>);
+  });
+});</div>
+      </div>
+<p class="sn-para">Accessibility requirements do not change with viewport — an element needs a label whether it is on desktop or mobile. But the elements that appear change with responsive layout, so run accessibility scans on both desktop and mobile viewports.</p>
+    </div>
+  </div>
+
+  <!-- Q806.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.8</span>
+      <h2 class="sn-q-text">What is the cost vs value trade-off for visual and accessibility tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Visual testing costs:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Baseline maintenance: developers must update baselines after every</span></li>
+</ul>
+<p class="sn-para">  intentional UI change — estimated 10–20 minutes per sprint for a   medium-sized suite</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Infrastructure: Docker overhead; Percy/Applitools subscription if cloud</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>False positive investigation: 30–60 minutes per occurrence if not</span></li>
+</ul>
+<p class="sn-para">  properly suppressed</p>
+<p class="sn-para"><strong class="k-yellow">Visual testing value:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Catches CSS regressions that functional tests never detect</span></li>
+<li><span class="icon">📌</span><span>Provides a visual change log in git history</span></li>
+<li><span class="icon">🔑</span><span>Prevents "silent" UI degradation over time</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Accessibility testing costs:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Initial setup: ~4 hours for the fixture and CI integration</span></li>
+<li><span class="icon">🌟</span><span>Ongoing maintenance: ~30 minutes per sprint for the known violations map</span></li>
+<li><span class="icon">📦</span><span>Remediation: fixing critical violations requires developer + designer time</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Accessibility testing value:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔶</span><span>Legal compliance risk mitigation</span></li>
+<li><span class="icon">🎪</span><span>Real user impact: improves the experience for ~15% of users</span></li>
+<li><span class="icon">🔹</span><span>Forces better HTML semantics (which also benefits SEO and maintainability)</span></li>
+<li><span class="icon">🔷</span><span>axe-core is free; the cost is entirely in remediation and maintenance</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Return on investment comparison:</strong></p>
+<p class="sn-para">Visual testing ROI is highest for: design-heavy applications, component libraries, and design system maintenance.</p>
+<p class="sn-para">Accessibility testing ROI is highest for: public-facing applications, government or regulated-industry products, and companies with diverse user bases.</p>
+<p class="sn-para">Both have high ROI when established early — retroactively fixing visual regressions or accessibility violations is 5–10× more expensive than catching them at the PR stage.</p>
+    </div>
+  </div>
+
+  <!-- Q806.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.9</span>
+      <h2 class="sn-q-text">What WCAG success criteria map to which testing approaches?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Not every WCAG criterion can be automated. Understanding which can be tested with Playwright tells you the realistic coverage boundary:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Testable with axe-core + Playwright:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>1.1.1 Non-text Content (alt text) — <code class="sn-ic">image-alt</code> rule</span></li>
+<li><span class="icon">💡</span><span>1.3.1 Info and Relationships (labels, headings) — <code class="sn-ic">label</code>, <code class="sn-ic">heading-order</code></span></li>
+<li><span class="icon">⚡</span><span>1.4.3 Contrast Minimum — <code class="sn-ic">color-contrast</code> rule</span></li>
+<li><span class="icon">🎯</span><span>2.4.1 Bypass Blocks (skip nav) — keyboard test</span></li>
+<li><span class="icon">📌</span><span>2.4.2 Page Titled — <code class="sn-ic">document-title</code> rule</span></li>
+<li><span class="icon">🔑</span><span>4.1.2 Name, Role, Value (ARIA) — <code class="sn-ic">button-name</code>, <code class="sn-ic">aria-required-attr</code></span></li>
+</ul>
+<p class="sn-para"><strong class="k-blue">Testable only with Playwright custom tests (not axe):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>2.1.1 Keyboard — requires explicit <code class="sn-ic">page.keyboard</code> tests</span></li>
+<li><span class="icon">🌟</span><span>2.1.2 No Keyboard Trap — modal focus trap tests</span></li>
+<li><span class="icon">📦</span><span>2.4.3 Focus Order — sequential <code class="sn-ic">Tab</code> tests</span></li>
+</ul>
+<p class="sn-para"><strong class="k-blue">Requires manual testing:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>1.1.1 Alt text meaningfulness (axe checks presence, not quality)</span></li>
+<li><span class="icon">🎪</span><span>1.4.4 Resize Text (zoom behaviour)</span></li>
+<li><span class="icon">🔹</span><span>2.4.6 Headings and Labels (labels are descriptive)</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>3.1.1 Language of Page (can be auto-detected but meaning requires review)</span></li>
+<li><span class="icon">💡</span><span>3.3.1 Error Identification (description quality)</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q806.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.10</span>
+      <h2 class="sn-q-text">How do you present a visual + accessibility strategy in an interview?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An interviewer asking for your strategy expects a framework, not a list of tool names. Use the three-layer structure:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Layer 1 — Automated gates (preventive):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>axe-core scans in CI blocking on critical violations</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">toHaveScreenshot()</code> in Docker blocking on pixel diffs</span></li>
+<li><span class="icon">⚡</span><span>These run automatically on every PR — no human judgment required</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Layer 2 — Automated advisory (detective):</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Moderate/minor accessibility violations — reported but not blocking</span></li>
+<li><span class="icon">📌</span><span>Visual changes flagged to a review dashboard (Percy/Applitools) — human approval</span></li>
+<li><span class="icon">🔑</span><span>These run automatically but require human decision</span></li>
+</ul>
+<p class="sn-para"><strong class="k-green">Layer 3 — Manual verification (validation):</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Manual screen reader testing (VoiceOver, NVDA) quarterly</span></li>
+<li><span class="icon">🌟</span><span>Design review against WCAG checklist for new features</span></li>
+<li><span class="icon">📦</span><span>User testing with disabled users annually</span></li>
+</ul>
+<p class="sn-para">Present the layers as investment levels: Layer 1 is cheap and high-ROI, always do it. Layer 2 costs more but handles scale. Layer 3 is the deepest validation — proportionate to compliance requirements and user impact.</p>
+    </div>
+  </div>
+
+  <!-- Q806.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.11</span>
+      <h2 class="sn-q-text">What CI pipeline design supports both visual and accessibility testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Quality Gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - <span class="tc-str">'src/**'</span>
+      - <span class="tc-str">'tests/**'</span>
+  schedule:
+    - cron: <span class="tc-str">'0 3 * * *'</span>  <span class="tc-cm"># nightly at 3 AM UTC</span>
+
+jobs:
+  functional:
+    name: Functional Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
+      - run: npx playwright <span class="tc-kw">test</span> --project=chromium
+
+  accessibility:
+    name: Accessibility Gate
+    runs-on: ubuntu-latest
+    needs: functional          <span class="tc-cm"># only if functional passes</span>
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
+      - run: npx playwright <span class="tc-kw">test</span> --project=accessibility
+      - name: Upload a11y violations
+        <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-violations
+          path: playwright-report/
+
+  visual:
+    name: Visual Regression
+    runs-on: ubuntu-latest
+    <span class="tc-cm"># Visual runs in parallel with accessibility — both need functional to pass</span>
+    needs: functional
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci &amp;&amp; npx playwright install --with-deps chromium
+      - run: npx playwright <span class="tc-kw">test</span> --project=visual
+      - name: Upload visual diffs
+        <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: <span class="tc-kw">test</span>-results/</div>
+      </div>
+<p class="sn-para">The pipeline: functional tests first (fast feedback), then accessibility and visual run in parallel (both depend on functional passing). This separates failure domains — a functional failure does not trigger visual and accessibility runs.</p>
+    </div>
+  </div>
+
+  <!-- Q806.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.12</span>
+      <h2 class="sn-q-text">What are the most common visual testing mistakes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">Mistake 1: Running <code class="sn-ic">--update-snapshots</code> on a Mac then committing.</strong> Result: CI always fails because Mac and Linux render fonts differently. Fix: script-enforced Docker-only baseline updates.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Mistake 2: Setting <code class="sn-ic">threshold: 0</code>.</strong> Result: anti-aliasing differences cause failures on every run. Fix: <code class="sn-ic">threshold: 0.2</code> as the global default, <code class="sn-ic">threshold: 0</code> only for pixel-perfect elements like logos.</p>
+<p class="sn-para"><strong class="k-orange">Mistake 3: Visual testing SPAs without waiting for the full render.</strong> Result: screenshots capture loading spinners or skeleton screens. Fix: <code class="sn-ic">waitForLoadState('networkidle')</code> + component-specific visibility waits.</p>
+<p class="sn-para"><strong class="k-orange">Mistake 4: Committing <code class="sn-ic">test-results/</code> directory.</strong> Result: actual and diff screenshots bloat the repository. Fix: add <code class="sn-ic">test-results/</code> to <code class="sn-ic">.gitignore</code>.</p>
+<p class="sn-para"><strong class="k-orange">Mistake 5: Visual tests in the same CI job as functional tests.</strong> Result: a slow visual test run delays functional test feedback. Fix: separate CI jobs with path-based triggers for visual tests.</p>
+    </div>
+  </div>
+
+  <!-- Q806.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.13</span>
+      <h2 class="sn-q-text">What are the most common accessibility testing mistakes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Mistake 1: Using <code class="sn-ic">disableRules</code> without documentation.</strong> Result: permanent blind spots with no recovery path. Fix: every <code class="sn-ic">disableRules</code> call requires a comment with ticket number and ETA.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Mistake 2: Only running axe on page load.</strong> Result: accessibility violations introduced by user interactions are missed. Fix: run axe after opening modals, submitting forms, and navigating tabs.</p>
+<p class="sn-para"><strong class="k-teal">Mistake 3: Failing on all four impact levels from day one.</strong> Result: hundreds of violations block all builds; team abandons the gate. Fix: start with critical only, introduce serious after the first wave is fixed, then moderate.</p>
+<p class="sn-para"><strong class="k-teal">Mistake 4: Not testing keyboard navigation.</strong> Result: axe passes but the site is unusable for keyboard-only users. Fix: dedicated keyboard navigation test file with <code class="sn-ic">page.keyboard.press('Tab')</code>.</p>
+<p class="sn-para"><strong class="k-teal">Mistake 5: Treating accessibility as a QA-only concern.</strong> Result: developers ship new inaccessible code faster than QA can flag it. Fix: include accessibility review in the definition of done; use <code class="sn-ic">getByRole</code> as the standard locator (which forces accessible markup from the start).</p>
+    </div>
+  </div>
+
+  <!-- Q806.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.14</span>
+      <h2 class="sn-q-text">How do you calculate the coverage and ROI of your visual and accessibility suites?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">Visual coverage metrics:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Pages covered / total pages (page-level coverage)</span></li>
+<li><span class="icon">💡</span><span>Components covered / total components (component-level coverage)</span></li>
+<li><span class="icon">⚡</span><span>Target: 100% of high-risk pages, 80% of shared components</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">Visual ROI measurement:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Track the number of visual regressions caught per quarter</span></li>
+<li><span class="icon">📌</span><span>Estimate the cost of each regression if it had reached production</span></li>
+</ul>
+<p class="sn-para">  (user impact × hours to detect and fix × brand risk)</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>Compare against maintenance hours spent on the visual suite</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">Accessibility coverage metrics:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Pages scanned / total pages (automated axe coverage)</span></li>
+<li><span class="icon">🌟</span><span>WCAG criteria covered manually vs total applicable criteria</span></li>
+<li><span class="icon">📦</span><span>Current violation count by impact level (trend over time)</span></li>
+</ul>
+<p class="sn-para"><strong class="k-pink">Accessibility ROI measurement:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔶</span><span>Legal risk reduction (ADA compliance, EN 301 549 compliance)</span></li>
+<li><span class="icon">🎪</span><span>Support ticket reduction for users reporting usability issues</span></li>
+<li><span class="icon">🔹</span><span>Developer time per violation caught in CI vs production (typically 10:1 ratio)</span></li>
+</ul>
+<p class="sn-para">Report both suites to stakeholders monthly: number of tests, number of violations caught, violation trend over time, and time saved vs estimated manual audit cost.</p>
+    </div>
+  </div>
+
+  <!-- Q806.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.15</span>
+      <h2 class="sn-q-text">Write a visual + accessibility fixture that both disciplines share.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/quality.fixture.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, Page } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> AxeBuilder <span class="tc-kw">from</span> <span class="tc-str">'@axe-core/playwright'</span>;
+
+<span class="tc-kw">type</span> QualityFixtures = {
+  a11y:    (scope?: <span class="tc-kw">string</span>) =&gt; Promise&lt;<span class="tc-kw">void</span>&gt;;
+  stable:  () =&gt; Promise&lt;<span class="tc-kw">void</span>&gt;;  <span class="tc-cm">// prepares page for visual snapshot</span>
+};
+
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;QualityFixtures&gt;({
+
+  a11y: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">async</span> (scope?: <span class="tc-kw">string</span>) =&gt; {
+      <span class="tc-kw">let</span> builder = <span class="tc-kw">new</span> AxeBuilder({ page })
+        .<span class="tc-fn">withTags</span>([<span class="tc-str">'wcag2a'</span>, <span class="tc-str">'wcag2aa'</span>, <span class="tc-str">'wcag21aa'</span>])
+        .<span class="tc-fn">exclude</span>(<span class="tc-str">' S2 
+        .exclude('</span><span class="tc-cm">#analytics-widget');</span>
+
+      <span class="tc-kw">if</span> (scope) builder = builder.<span class="tc-fn">include</span>(scope);
+
+      <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> builder.<span class="tc-fn">analyze</span>();
+      <span class="tc-kw">const</span> blocking = results.violations.<span class="tc-fn">filter</span>(
+        v =&gt; v.impact === <span class="tc-str">'critical'</span> || v.impact === <span class="tc-str">'serious'</span>
+      );
+      <span class="tc-kw">if</span> (blocking.length &gt; <span class="tc-num">0</span>) {
+        <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(
+          <span class="tc-str">`A11y: ${blocking.length} blocking violations\n`</span> +
+          blocking.<span class="tc-fn">map</span>(v =&gt; <span class="tc-str">`  [${v.impact}] ${v.id}: ${v.nodes[0]?.html?.substring(0, 60)}`</span>).<span class="tc-fn">join</span>(<span class="tc-str">'\n'</span>)
+        );
+      }
+    });
+  },
+
+  stable: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">async</span> () =&gt; {
+      <span class="tc-cm">// Standard pre-snapshot stabilisation</span>
+      <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; document.fonts.ready);
+      <span class="tc-kw">await</span> page.<span class="tc-fn">addStyleTag</span>({
+        content: <span class="tc-str">`
+          *, *::before, *::after {
+            animation-duration:  0s !important;
+            transition-duration: 0s !important;
+          }
+        `</span>,
+      });
+    });
+  },
+});
+
+<span class="tc-kw">export</span> { <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;</div>
+      </div>
+<p class="sn-para">Usage:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/quality.fixture'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'login page quality gate @visual @a11y'</span>, <span class="tc-kw">async</span> ({ page, a11y, stable }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> <span class="tc-fn">stable</span>();  <span class="tc-cm">// stabilise for visual</span>
+
+  <span class="tc-kw">await</span> <span class="tc-fn">a11y</span>();                                       <span class="tc-cm">// accessibility gate</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'login.png'</span>);   <span class="tc-cm">// visual gate</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q806.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.16</span>
+      <h2 class="sn-q-text">How do you handle visual and accessibility testing for dark mode?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'dark mode quality'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ colorScheme: <span class="tc-str">'dark'</span> });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dark mode layout @visual'</span>, <span class="tc-kw">async</span> ({ page, stable }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-fn">stable</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'dashboard-dark.png'</span>, {
+      animations: <span class="tc-str">'disabled'</span>,
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dark mode colour contrast @a11y'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-cm">// Contrast check is especially important in dark mode —</span>
+    <span class="tc-cm">// many themes have insufficient contrast for light text on dark backgrounds</span>
+    <span class="tc-kw">const</span> results = <span class="tc-kw">await</span> <span class="tc-kw">new</span> AxeBuilder({ page })
+      .<span class="tc-fn">withTags</span>([<span class="tc-str">'wcag2aa'</span>])
+      .<span class="tc-fn">analyze</span>();
+    <span class="tc-kw">const</span> contrastViolations = results.violations.<span class="tc-fn">filter</span>(
+      v =&gt; v.id === <span class="tc-str">'color-contrast'</span>
+    );
+    <span class="tc-kw">expect</span>(contrastViolations).<span class="tc-fn">toHaveLength</span>(<span class="tc-num">0</span>);
+  });
+});</div>
+      </div>
+<p class="sn-para">Dark mode testing is a good example of where visual and accessibility tests are run together: the visual test verifies the theme looks correct and the accessibility test verifies the contrast ratios meet WCAG 1.4.3 in the dark palette (many dark themes fail contrast despite looking fine to sighted users).</p>
+    </div>
+  </div>
+
+  <!-- Q806.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.17</span>
+      <h2 class="sn-q-text">What does a mature visual and accessibility programme look like in a large team?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A mature programme has five characteristics:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">1. Ownership is defined.</strong> The QA/automation team owns the test infrastructure. The design team owns baseline approval for visual changes. The development team owns accessibility remediation. Responsibilities do not overlap.</p>
+<p class="sn-para"><strong class="k-blue">2. Both gates run in CI.</strong> Critical accessibility violations block merges. Visual regressions require approval before merge (via Percy/Applitools workflow or a designated reviewer). No bypass is available for either gate.</p>
+<p class="sn-para"><strong class="k-blue">3. Metrics are tracked.</strong> Monthly dashboard: accessibility violation count by impact (trending down), visual test failure rate (trending toward zero), and baseline update frequency (tracked to detect high-churn areas).</p>
+<p class="sn-para"><strong class="k-blue">4. The suite is curated.</strong> Not every page has visual and accessibility tests. Coverage decisions are documented and reviewed quarterly. High-risk, stable pages are covered; low-risk, high-churn pages are excluded.</p>
+<p class="sn-para"><strong class="k-blue">5. Manual testing complements automation.</strong> Quarterly screen reader testing sessions. Annual WCAG audit by a specialist. User testing with disabled users for the most critical flows. Automation handles breadth; humans handle depth.</p>
+    </div>
+  </div>
+
+  <!-- Q806.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q806.18</span>
+      <h2 class="sn-q-text">In your project, how did you combine visual and accessibility testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, visual and accessibility tests share a fixture file (<code class="sn-ic">quality.fixture.ts</code>) and are co-located by page in the <code class="sn-ic">tests/quality/</code> directory. This was a deliberate structural decision: when a developer changes a page, they look in one place and see both the visual and the accessibility test for that page — not two separate files in two different directories.</p>
+      </div>
+<p class="sn-para">For most pages, we run accessibility first and visual second within the same test. If the axe scan fails, the visual test does not run — no point capturing a screenshot of a page with critical accessibility violations, because the accessibility issue is the blocking problem.</p>
+<p class="sn-para">The two disciplines found different classes of bugs in our OrangeHRM suite. Visual tests found: a missing table border after a CSS reset was updated, a left-aligned heading that should be centred on the Leave Calendar, and a truncated employee name column at 1024px width. Accessibility tests found: the icon-only delete button with no <code class="sn-ic">aria-label</code>, the date picker without an associated <code class="sn-ic">&lt;label&gt;</code>, and a form section using <code class="sn-ic">&lt;div&gt;</code> for its legend instead of <code class="sn-ic">&lt;fieldset&gt;/&lt;legend&gt;</code> (causing axe's <code class="sn-ic">group-label</code> rule to fire).</p>
+<p class="sn-para">The most important lesson: start both suites earlier than feels necessary. We added them at Level 7 of our POM progression. In retrospect, the accessibility fixture and a page-level axe scan should be in Level 1 — the cost is near-zero and the violations it catches from the start would never accumulate into a backlog.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Visual testing catches appearance regressions; accessibility testing catches usability barriers — they are complementary, not substitutable.</span></li>
+            <li><span class="icon">⭐</span><span>The ten visual rules centre on: Docker for rendering, animation disabling, font waiting, dynamic content masking, and Docker-only baseline updates.</span></li>
+            <li><span class="icon">⭐</span><span>The ten accessibility rules centre on: gating on critical first, documenting suppressions, keyboard testing, scoping scans, and treating violations as blocking defects.</span></li>
+            <li><span class="icon">⭐</span><span>Structure visual and accessibility tests in separate directories and CI jobs — separate failure domains, separate triggers, separate report sections.</span></li>
+            <li><span class="icon">⭐</span><span>Both suites benefit from shared fixtures: <code class="sn-ic">stable()</code> for pre-snapshot stabilisation, <code class="sn-ic">a11y()</code> for accessibility scanning.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Dark mode requires both visual tests (does it look correct?) and accessibility tests (do contrast ratios still meet WCAG 1.4.3?).</span></li>
+            <li><span class="icon">⭐</span><span>CI pipeline: functional → (accessibility + visual) in parallel, all as separate jobs; visual and accessibility run on path-based triggers and nightly.</span></li>
+            <li><span class="icon">⭐</span><span>Track violation counts and visual failure rates as monthly quality metrics — both should trend downward.</span></li>
+            <li><span class="icon">⭐</span><span>A mature programme has defined ownership (QA for infrastructure, design for visual approval, dev for remediation), CI gates for both disciplines, and quarterly manual audits to complement automation.</span></li>
+            <li><span class="icon">⭐</span><span>The most valuable recommendation: add basic axe scans and visual snapshots at the earliest possible stage of framework development — retroactive remediation costs 5–10× more than prevention.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

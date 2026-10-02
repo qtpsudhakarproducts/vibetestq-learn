@@ -1,0 +1,756 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 206 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Advanced</span> <span class="w2">Actions</span> <span class="w3">—</span> <span class="w4">Drag,</span> <span class="w5">Hover</span> <span class="w6">&amp;</span> <span class="w7">Keys</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers interactions that go beyond clicking and filling — hover, keyboard shortcuts, drag and drop, mouse control, and scrolling. Interviewers test this topic at mid-level and above, where complex UIs with custom components require more than basic actions.</span>
+  </div>
+
+
+  <!-- Q206.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.1</span>
+      <h2 class="sn-q-text">What advanced interaction methods does Playwright provide?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Beyond basic click and fill, Playwright provides:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Method</th><th class="sn-th-blue">Action</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">locator.hover()</code></td><td>Move mouse over element without clicking</td></tr>
+          <tr><td><code class="sn-ic">locator.press(key)</code></td><td>Press a key while element is focused</td></tr>
+          <tr><td><code class="sn-ic">locator.dragTo(target)</code></td><td>Drag element to target</td></tr>
+          <tr><td><code class="sn-ic">page.keyboard.press(key)</code></td><td>Press a key globally</td></tr>
+          <tr><td><code class="sn-ic">page.keyboard.type(text)</code></td><td>Type text globally character by character</td></tr>
+          <tr><td><code class="sn-ic">page.keyboard.down(key)</code></td><td>Hold a key down</td></tr>
+          <tr><td><code class="sn-ic">page.keyboard.up(key)</code></td><td>Release a held key</td></tr>
+          <tr><td><code class="sn-ic">page.mouse.move(x, y)</code></td><td>Move mouse to coordinates</td></tr>
+          <tr><td><code class="sn-ic">page.mouse.down()</code></td><td>Press mouse button</td></tr>
+          <tr><td><code class="sn-ic">page.mouse.up()</code></td><td>Release mouse button</td></tr>
+          <tr><td><code class="sn-ic">page.mouse.click(x, y)</code></td><td>Click at coordinates</td></tr>
+          <tr><td><code class="sn-ic">page.mouse.wheel(x, y)</code></td><td>Scroll with mouse wheel</td></tr>
+          <tr><td><code class="sn-ic">locator.scrollIntoViewIfNeeded()</code></td><td>Scroll element into viewport</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q206.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.2</span>
+      <h2 class="sn-q-text">What is the difference between hover and click?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">hover()</code> moves the mouse cursor over the element's centre point and dispatches <code class="sn-ic">mouseover</code>, <code class="sn-ic">mouseenter</code>, and <code class="sn-ic">mousemove</code> events. It does NOT click. It does NOT dispatch <code class="sn-ic">mousedown</code>, <code class="sn-ic">mouseup</code>, or <code class="sn-ic">click</code> events.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">click()</code> moves the mouse to the element, dispatches <code class="sn-ic">mousedown</code>, <code class="sn-ic">mouseup</code>, <code class="sn-ic">click</code>, and related events.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Reveal a dropdown menu by hovering</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>).<span class="tc-fn">getByText</span>(<span class="tc-str">'Products'</span>).<span class="tc-fn">hover</span>();
+<span class="tc-cm">// Menu appears — now click an item inside it</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'link'</span>, { name: <span class="tc-str">'Electronics'</span> }).<span class="tc-fn">click</span>();
+
+<span class="tc-cm">// versus</span>
+<span class="tc-cm">// Regular click on a button — triggers the click event</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">hover()</code> when the UI requires a hover state to reveal content (dropdown menus, tooltips, hover cards). Use <code class="sn-ic">click()</code> for all other interactions.</p>
+    </div>
+  </div>
+
+  <!-- Q206.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.3</span>
+      <h2 class="sn-q-text">When do you need keyboard interactions in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Keyboard interactions are needed in three situations:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Keyboard accessibility testing</strong> — verify that users who navigate by keyboard (Tab, Enter, Arrow keys, Escape) can complete all critical flows.</p>
+<p class="sn-para"><strong class="k-purple">Rich text editors</strong> — editors like Quill, Draft.js, and TipTap often require keyboard shortcuts (Ctrl+B for bold, Ctrl+Z for undo) that are not exposed through standard click/fill actions.</p>
+<p class="sn-para"><strong class="k-purple">Custom component interactions</strong> — date pickers, autocomplete lists, tree views, and drag-and-drop interfaces often require arrow key navigation after the component is opened.</p>
+    </div>
+  </div>
+
+  <!-- Q206.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.4</span>
+      <h2 class="sn-q-text">How do you handle drag and drop in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, drag and drop is used in a Kanban board feature. We tested three approaches and settled on <code class="sn-ic">dragTo()</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Method 1 — dragTo() (recommended for most cases)</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'card-ORD-001'</span>).<span class="tc-fn">dragTo</span>(
+  page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'column-done'</span>)
+);
+
+<span class="tc-cm">// Method 2 — dragTo with position options (when default centre point fails)</span>
+<span class="tc-kw">await</span> source.<span class="tc-fn">dragTo</span>(target, {
+  sourcePosition: { x: <span class="tc-num">15</span>, y: <span class="tc-num">15</span> },
+  targetPosition: { x: <span class="tc-num">50</span>, y: <span class="tc-num">50</span> },
+});
+
+<span class="tc-cm">// Method 3 — Manual mouse control (for libraries that don't respond to dragTo)</span>
+<span class="tc-kw">await</span> source.<span class="tc-fn">hover</span>();
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">down</span>();
+<span class="tc-kw">await</span> target.<span class="tc-fn">hover</span>();
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">up</span>();</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">dragTo()</code> works for standard HTML5 drag and drop. For custom JavaScript drag libraries (React DnD, Sortable.js), the manual mouse method or <code class="sn-ic">dispatchEvent</code> with a <code class="sn-ic">DataTransfer</code> object is sometimes needed.</p>
+    </div>
+  </div>
+
+  <!-- Q206.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.5</span>
+      <h2 class="sn-q-text">What is the keyboard API and what are the most useful keyboard actions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <code class="sn-ic">page.keyboard</code> API dispatches keyboard events globally — without needing a specific focused element.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Press a single key</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Enter'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Escape'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'ArrowDown'</span>);
+
+<span class="tc-cm">// Key combination (modifier + key)</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+a'</span>);  <span class="tc-cm">// select all</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+c'</span>);  <span class="tc-cm">// copy</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+v'</span>);  <span class="tc-cm">// paste</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+z'</span>);  <span class="tc-cm">// undo</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Meta+s'</span>);     <span class="tc-cm">// save (Mac)</span>
+
+<span class="tc-cm">// Hold key for a sequence of presses</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">down</span>(<span class="tc-str">'Shift'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);        <span class="tc-cm">// shift+tab (go backward)</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Tab'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">up</span>(<span class="tc-str">'Shift'</span>);
+
+<span class="tc-cm">// Type text globally</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-kw">type</span>(<span class="tc-str">'Hello World'</span>, { delay: <span class="tc-num">50</span> });</div>
+      </div>
+<p class="sn-para">On macOS, use <code class="sn-ic">Meta</code> for Cmd. On Windows/Linux, use <code class="sn-ic">Control</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q206.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.6</span>
+      <h2 class="sn-q-text">What is the mouse API and how do you perform custom mouse movements?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.mouse</code> provides low-level mouse control for scenarios that need precise coordinate-based interaction.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Move mouse to specific coordinates</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">move</span>(<span class="tc-num">300</span>, <span class="tc-num">400</span>);
+
+<span class="tc-cm">// Click at coordinates</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">click</span>(<span class="tc-num">300</span>, <span class="tc-num">400</span>);
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">click</span>(<span class="tc-num">300</span>, <span class="tc-num">400</span>, { button: <span class="tc-str">'right'</span> }); <span class="tc-cm">// right click</span>
+
+<span class="tc-cm">// Manual drag</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">move</span>(<span class="tc-num">100</span>, <span class="tc-num">100</span>);    <span class="tc-cm">// starting position</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">down</span>();            <span class="tc-cm">// press mouse button</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">move</span>(<span class="tc-num">300</span>, <span class="tc-num">300</span>, { steps: <span class="tc-num">10</span> }); <span class="tc-cm">// move in steps (smoother drag)</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">up</span>();              <span class="tc-cm">// release</span>
+
+<span class="tc-cm">// Scroll at position</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">wheel</span>(<span class="tc-num">0</span>, <span class="tc-num">500</span>); <span class="tc-cm">// scroll down 500px</span></div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">steps</code> option in <code class="sn-ic">mouse.move()</code> makes the move happen in discrete increments — useful for drag-and-drop libraries that track mouse movement events and need intermediate positions.</p>
+<p class="sn-para">Use <code class="sn-ic">page.mouse</code> for: canvas interactions, custom drawing components, games, or any component that responds to specific coordinate-based events.</p>
+    </div>
+  </div>
+
+  <!-- Q206.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.7</span>
+      <h2 class="sn-q-text">What is the difference between page.keyboard.press and page.keyboard.type?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.keyboard.press(key)</code> presses a single key or key combination. It dispatches <code class="sn-ic">keydown</code>, <code class="sn-ic">keypress</code> (for printable keys), and <code class="sn-ic">keyup</code> events.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.keyboard.type(text, options?)</code> types a string character by character. Each character dispatches its own keydown/keypress/keyup cycle.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// press — single key or combination</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Enter'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+a'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Escape'</span>);
+
+<span class="tc-cm">// type — multiple characters, character by character</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-kw">type</span>(<span class="tc-str">'Hello World'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-kw">type</span>(<span class="tc-str">'Alice Johnson'</span>, { delay: <span class="tc-num">50</span> }); <span class="tc-cm">// 50ms between keys</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">press</code> for control keys and shortcuts. Use <code class="sn-ic">type</code> when you need character-by-character input (for example, testing an autocomplete that requires each keystroke to trigger a search).</p>
+<p class="sn-para">For standard form inputs, neither is usually needed — use <code class="sn-ic">locator.fill()</code> instead. It is faster and more reliable.</p>
+    </div>
+  </div>
+
+  <!-- Q206.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.8</span>
+      <h2 class="sn-q-text">What is drag and drop in Playwright — what methods are available?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three methods are available for drag and drop:</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow"><code class="sn-ic">locator.dragTo(target)</code></strong> — the high-level helper. Moves the element to the target locator's position. Handles the full drag lifecycle automatically.</p>
+<p class="sn-para"><strong class="k-yellow"><code class="sn-ic">locator.dragTo(target, options)</code></strong> — same but with control over source and target positions within each element.</p>
+<p class="sn-para"><strong class="k-yellow">Manual drag using <code class="sn-ic">page.mouse</code></strong> — full control, necessary when <code class="sn-ic">dragTo</code> does not work with a specific drag library.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// High-level (preferred)</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'item-1'</span>).<span class="tc-fn">dragTo</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'zone-B'</span>));
+
+<span class="tc-cm">// With positions</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'item-1'</span>).<span class="tc-fn">dragTo</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'zone-B'</span>), {
+  sourcePosition: { x: <span class="tc-num">10</span>, y: <span class="tc-num">10</span> },
+  targetPosition: { x: <span class="tc-num">200</span>, y: <span class="tc-num">50</span> },
+});
+
+<span class="tc-cm">// Manual</span>
+<span class="tc-kw">const</span> source = page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'item-1'</span>);
+<span class="tc-kw">const</span> target = page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'zone-B'</span>);
+<span class="tc-kw">await</span> source.<span class="tc-fn">hover</span>();
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">down</span>();
+<span class="tc-kw">await</span> target.<span class="tc-fn">hover</span>();
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">up</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q206.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.9</span>
+      <h2 class="sn-q-text">What is the difference between dragTo and the manual mouse drag approach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">dragTo()</code> is a high-level abstraction. It:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Waits for source actionability</span></li>
+<li><span class="icon">💡</span><span>Moves to the element centre</span></li>
+<li><span class="icon">⚡</span><span>Dispatches the full drag event sequence (<code class="sn-ic">dragstart</code>, <code class="sn-ic">drag</code>, <code class="sn-ic">dragenter</code>,</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">dragover</code>, <code class="sn-ic">drop</code>, <code class="sn-ic">dragend</code>)</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Handles the entire lifecycle in one operation</span></li>
+</ul>
+<p class="sn-para">The manual approach (<code class="sn-ic">mouse.down/move/up</code>) dispatches raw mouse events. Some JavaScript drag libraries (like React DnD) respond to HTML5 drag events (<code class="sn-ic">dragstart</code>, <code class="sn-ic">drop</code>). Others respond to mouse events (<code class="sn-ic">mousedown</code>, <code class="sn-ic">mousemove</code>, <code class="sn-ic">mouseup</code>). The two are different event systems.</p>
+<p class="sn-para"><strong class="k-blue">Decision rule:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Try <code class="sn-ic">dragTo()</code> first — it is cleaner and handles most HTML5 drag scenarios</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>If <code class="sn-ic">dragTo()</code> does not work with a specific library, switch to manual</span></li>
+</ul>
+<p class="sn-para">  mouse control</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>If neither works, the component may need <code class="sn-ic">dispatchEvent</code> with a</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">DataTransfer</code> object</p>
+    </div>
+  </div>
+
+  <!-- Q206.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.10</span>
+      <h2 class="sn-q-text">When should you use dispatchEvent instead of the built-in interaction methods?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">dispatchEvent</code> fires a synthetic JavaScript event directly on the element without going through Playwright's actionability checks or the browser's natural event dispatching path.</p>
+      </div>
+<p class="sn-para">Use it only when:</p>
+<ol class="sn-olist">
+<li><strong class="k-green">The element is intentionally non-interactive for visual users</strong> — a</li>
+</ol>
+<p class="sn-para">   hidden input that receives programmatic events but is not visually actionable.</p>
+<ol class="sn-olist">
+<li><strong class="k-green">You need a custom event</strong> — firing a custom event that the application</li>
+</ol>
+<p class="sn-para">   listens for but that cannot be triggered by normal user interaction.</p>
+<ol class="sn-olist">
+<li><strong class="k-green">Testing event handlers directly</strong> — unit-test-style verification that</li>
+</ol>
+<p class="sn-para">   a specific event handler responds correctly.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Custom event</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'chart'</span>).<span class="tc-fn">dispatchEvent</span>(<span class="tc-str">'chartUpdated'</span>, {
+  detail: { dataPoint: { x: <span class="tc-num">5</span>, y: <span class="tc-num">10</span> } }
+});
+
+<span class="tc-cm">// Drag with DataTransfer for HTML5 DnD</span>
+<span class="tc-kw">const</span> dataTransfer = <span class="tc-kw">await</span> page.<span class="tc-fn">evaluateHandle</span>(() =&gt; <span class="tc-kw">new</span> DataTransfer());
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'drop-zone'</span>).<span class="tc-fn">dispatchEvent</span>(<span class="tc-str">'drop'</span>, { dataTransfer });</div>
+      </div>
+<p class="sn-para">Do NOT use <code class="sn-ic">dispatchEvent</code> to bypass an actionability failure. If <code class="sn-ic">click()</code> times out, the problem is the element state — not the event system.</p>
+    </div>
+  </div>
+
+  <!-- Q206.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.11</span>
+      <h2 class="sn-q-text">What is wrong with relying on hover to reveal elements before clicking them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Hover-revealed UI (menus that appear on hover) creates a fragile dependency in tests:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Fragile — the second getByRole must locate within the hover-revealed state</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Products'</span>).<span class="tc-fn">hover</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'link'</span>, { name: <span class="tc-str">'Electronics'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-cm">// If hover state disappears before click executes, the link is not found</span></div>
+      </div>
+<p class="sn-para">Problems:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Timing-sensitive — the hover must remain active long enough for the click</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Not accessible — a keyboard user cannot hover with a mouse</span></li>
+<li><span class="icon">⚡</span><span>Fragile in headless mode — some hover effects behave differently without</span></li>
+</ul>
+<p class="sn-para">  a visible browser window</p>
+<p class="sn-para">Better approaches:</p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>Use <code class="sn-ic">getByRole('menu')</code> or <code class="sn-ic">getByRole('navigation')</code> to scope to the</span></li>
+</ul>
+<p class="sn-para">  revealed container, then chain to the item</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Request the developer add a keyboard-accessible version of the same</span></li>
+</ul>
+<p class="sn-para">  navigation — if it is not keyboard accessible, it is an accessibility bug</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-orange)">⚠️</span><span>If hover is unavoidable, verify the menu container is visible before</span></li>
+</ul>
+<p class="sn-para">  proceeding: <code class="sn-ic">await expect(dropdownMenu).toBeVisible()</code></p>
+    </div>
+  </div>
+
+  <!-- Q206.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.12</span>
+      <h2 class="sn-q-text">How do advanced Playwright interactions compare to Selenium Actions class?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Selenium uses an <code class="sn-ic">ActionChains</code> (Python) or <code class="sn-ic">Actions</code> class (Java) object to chain complex interactions: <code class="sn-ic">Actions.moveToElement().click().build().perform()</code>.</p>
+      </div>
+<p class="sn-para">Playwright does not have a chain builder — each method is awaited individually:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Selenium Actions (Java)</span>
+<span class="tc-kw">new</span> Actions(driver)
+  .<span class="tc-fn">moveToElement</span>(element)
+  .<span class="tc-fn">click</span>()
+  .<span class="tc-fn">sendKeys</span>(&quot;text&quot;)
+  .<span class="tc-fn">perform</span>();
+
+<span class="tc-cm">// Playwright — sequential awaits</span>
+<span class="tc-kw">await</span> element.<span class="tc-fn">hover</span>();
+<span class="tc-kw">await</span> element.<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> element.<span class="tc-fn">fill</span>(<span class="tc-str">'text'</span>);</div>
+      </div>
+<p class="sn-para">Playwright's approach is simpler and more readable. The downside is no built-in action batching — each action is a separate protocol round-trip. In practice this is not a performance problem because each action is fast.</p>
+<p class="sn-para">For keyboard modifiers during a click, Playwright supports inline options rather than a chain:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Item'</span>).<span class="tc-fn">click</span>({ modifiers: [<span class="tc-str">'Control'</span>] }); <span class="tc-cm">// Ctrl+Click</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Item'</span>).<span class="tc-fn">click</span>({ button: <span class="tc-str">'right'</span> });        <span class="tc-cm">// Right click</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q206.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.13</span>
+      <h2 class="sn-q-text">Write code to drag an item from one list to another</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can move item between kanban columns'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/kanban'</span>);
+
+  <span class="tc-cm">// Verify item is in the &amp;quot;To Do&amp;quot; column before dragging</span>
+  <span class="tc-kw">const</span> todoColumn = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'region'</span>, { name: <span class="tc-str">'To Do'</span> });
+  <span class="tc-kw">const</span> doneColumn = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'region'</span>, { name: <span class="tc-str">'Done'</span> });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(todoColumn.<span class="tc-fn">getByText</span>(<span class="tc-str">'Write tests'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Drag the item card to the Done column</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Write tests'</span>)
+    .<span class="tc-fn">dragTo</span>(doneColumn);
+
+  <span class="tc-cm">// Verify the item moved to Done and is no longer in To Do</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(doneColumn.<span class="tc-fn">getByText</span>(<span class="tc-str">'Write tests'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(todoColumn.<span class="tc-fn">getByText</span>(<span class="tc-str">'Write tests'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">0</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q206.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.14</span>
+      <h2 class="sn-q-text">Write code to use keyboard shortcuts in a rich text editor</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can format text with keyboard shortcuts'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/editor'</span>);
+
+  <span class="tc-kw">const</span> editor = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'textbox'</span>, { name: <span class="tc-str">'Document content'</span> });
+
+  <span class="tc-cm">// Click to focus the editor</span>
+  <span class="tc-kw">await</span> editor.<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Type some content</span>
+  <span class="tc-kw">await</span> editor.<span class="tc-fn">fill</span>(<span class="tc-str">'This text should be bold.'</span>);
+
+  <span class="tc-cm">// Select all content</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+a'</span>);
+
+  <span class="tc-cm">// Apply bold formatting</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+b'</span>);
+
+  <span class="tc-cm">// Assert the bold button is now active (toggled state)</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Bold'</span> })
+  ).<span class="tc-fn">toHaveAttribute</span>(<span class="tc-str">'aria-pressed'</span>, <span class="tc-str">'true'</span>);
+
+  <span class="tc-cm">// Undo the bold formatting</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+z'</span>);
+
+  <span class="tc-cm">// Type at the end of the text</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'End'</span>);
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-kw">type</span>(<span class="tc-str">' And this is italic.'</span>);
+
+  <span class="tc-cm">// Select the last sentence</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Home'</span>);
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">down</span>(<span class="tc-str">'Shift'</span>);
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'End'</span>);
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">up</span>(<span class="tc-str">'Shift'</span>);
+
+  <span class="tc-cm">// Apply italic</span>
+  <span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Control+i'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q206.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.15</span>
+      <h2 class="sn-q-text">Describe an advanced interaction challenge you solved</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had a test for a reorder page where users drag products to sort them by priority. The page used a custom React drag library (react-beautiful-dnd) that dispatched custom JavaScript events rather than native HTML5 drag events.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">dragTo()</code> moved the element visually but the list did not reorder because the library was not listening to HTML5 <code class="sn-ic">dragstart</code>/<code class="sn-ic">drop</code> — it used pointer events and a custom event system.</p>
+<p class="sn-para">We solved it using keyboard accessibility: react-beautiful-dnd supports keyboard drag:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Keyboard drag — works reliably with react-beautiful-dnd</span>
+<span class="tc-kw">const</span> item = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'listitem'</span>, { name: <span class="tc-str">'Product Alpha'</span> });
+
+<span class="tc-cm">// Start drag by pressing Space</span>
+<span class="tc-kw">await</span> item.<span class="tc-fn">focus</span>();
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Space'</span>); <span class="tc-cm">// initiates keyboard drag</span>
+
+<span class="tc-cm">// Move down with arrow keys</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'ArrowDown'</span>);
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'ArrowDown'</span>);
+
+<span class="tc-cm">// Drop by pressing Space again</span>
+<span class="tc-kw">await</span> page.keyboard.<span class="tc-fn">press</span>(<span class="tc-str">'Space'</span>);
+
+<span class="tc-cm">// Verify new position</span>
+<span class="tc-kw">const</span> listItems = <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'listitem'</span>).<span class="tc-fn">all</span>();
+<span class="tc-kw">const</span> texts = <span class="tc-kw">await</span> Promise.<span class="tc-fn">all</span>(listItems.<span class="tc-fn">map</span>(i =&gt; i.<span class="tc-fn">textContent</span>()));
+<span class="tc-kw">expect</span>(texts[<span class="tc-num">2</span>]).<span class="tc-fn">toContain</span>(<span class="tc-str">'Product Alpha'</span>); <span class="tc-cm">// moved from position 0 to 2</span></div>
+      </div>
+<p class="sn-para">This was also a better test — it verified the accessibility of the reorder feature, not just the mouse interaction.</p>
+    </div>
+  </div>
+
+  <!-- Q206.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.16</span>
+      <h2 class="sn-q-text">What is scrollIntoViewIfNeeded and when does Playwright call it automatically?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">scrollIntoViewIfNeeded()</code> scrolls the page until the element is within the visible viewport. Playwright calls it automatically as part of its actionability check — before clicking or filling, it ensures the element is in view.</p>
+      </div>
+<p class="sn-para">You rarely need to call it manually. The automatic scroll happens as part of every action.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Playwright auto-scrolls before click</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-cm">// No need to scroll manually first</span>
+
+<span class="tc-cm">// Manual scroll — only when you need the element to be visible for a visual</span>
+<span class="tc-cm">// assertion, not for an action</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'lazy-image'</span>).<span class="tc-fn">scrollIntoViewIfNeeded</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'lazy-image'</span>)).<span class="tc-fn">toBeInViewport</span>();</div>
+      </div>
+<p class="sn-para">Manual use cases: checking that lazy-loaded content appears when scrolled into view, verifying sticky elements' behaviour, or capturing a screenshot of a specific element that is below the fold.</p>
+    </div>
+  </div>
+
+  <!-- Q206.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.17</span>
+      <h2 class="sn-q-text">How do you scroll to a specific position on a page?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Scroll to coordinates</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; window.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, <span class="tc-num">500</span>)); <span class="tc-cm">// x, y in pixels</span>
+
+<span class="tc-cm">// Scroll to bottom of page</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; window.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, document.body.scrollHeight));
+
+<span class="tc-cm">// Scroll using mouse wheel at a position</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">wheel</span>(<span class="tc-num">0</span>, <span class="tc-num">300</span>); <span class="tc-cm">// scroll down 300px</span>
+
+<span class="tc-cm">// Scroll a specific scrollable container</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; {
+  <span class="tc-kw">const</span> container = document.<span class="tc-fn">querySelector</span>(<span class="tc-str">'.scroll-container'</span>);
+  container?.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, <span class="tc-num">200</span>);
+});
+
+<span class="tc-cm">// Scroll element into view</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'footer-element'</span>).<span class="tc-fn">scrollIntoViewIfNeeded</span>();</div>
+      </div>
+<p class="sn-para">For most test scenarios — clicking elements below the fold — Playwright's automatic <code class="sn-ic">scrollIntoViewIfNeeded</code> before actions handles scrolling. Manual scroll is only needed for testing scroll-triggered behaviour (lazy loading, infinite scroll, sticky headers).</p>
+    </div>
+  </div>
+
+  <!-- Q206.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q206.18</span>
+      <h2 class="sn-q-text">What is the difference between page.mouse.move and locator.hover?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">locator.hover()</code> is the semantic, high-level approach. It:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Waits for the element to be visible (actionability check)</span></li>
+<li><span class="icon">💡</span><span>Scrolls the element into view if needed</span></li>
+<li><span class="icon">⚡</span><span>Moves the mouse to the element's centre (by default)</span></li>
+<li><span class="icon">🎯</span><span>Dispatches <code class="sn-ic">mouseover</code>, <code class="sn-ic">mouseenter</code>, <code class="sn-ic">mousemove</code> events</span></li>
+</ul>
+<p class="sn-para"><code class="sn-ic">page.mouse.move(x, y)</code> is the raw, coordinate-based approach. It:</p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Moves the mouse to the exact pixel coordinates</span></li>
+<li><span class="icon">🔑</span><span>Dispatches <code class="sn-ic">mousemove</code> events at intermediate positions</span></li>
+<li><span class="icon">🚀</span><span>Performs no actionability checks</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Does not auto-scroll</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// locator.hover — semantic, preferred</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>).<span class="tc-fn">getByText</span>(<span class="tc-str">'Products'</span>).<span class="tc-fn">hover</span>();
+
+<span class="tc-cm">// page.mouse.move — coordinate-based, for precise control</span>
+<span class="tc-kw">await</span> page.mouse.<span class="tc-fn">move</span>(<span class="tc-num">450</span>, <span class="tc-num">230</span>); <span class="tc-cm">// specific pixel position</span></div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">locator.hover()</code> for application testing. Use <code class="sn-ic">page.mouse.move()</code> for canvas interactions, drawing tools, or precise coordinate-dependent tests.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">hover()</code> reveals hover-dependent UI. <code class="sn-ic">click()</code> triggers the click event. Use hover only when the UI explicitly requires it.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">keyboard.press()</code> for single keys and combinations. <code class="sn-ic">keyboard.type()</code> for character-by-character typing. For standard forms, use <code class="sn-ic">fill()</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">dragTo()</code> for standard HTML5 drag. Manual <code class="sn-ic">mouse.down/move/up</code> for custom drag libraries. If the library uses keyboard drag, that is the most reliable approach.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">dispatchEvent</code> bypasses actionability — use only for custom events or programmatic testing, never to bypass a failing <code class="sn-ic">click()</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Playwright auto-scrolls elements into view before actions. Manual <code class="sn-ic">scrollIntoViewIfNeeded</code> is only needed for visual verification of scroll-triggered behaviour.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

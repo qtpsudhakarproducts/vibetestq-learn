@@ -1,0 +1,596 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 204 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Locators</span> <span class="w2">&amp;</span> <span class="w3">Auto-Waiting</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This is the most interview-tested chapter in Part 2. Interviewers ask locator questions to determine how deeply a candidate understands Playwright versus just having memorised commands. Questions progress from what a locator is through the priority order to chaining, filtering, and real locator problems.</span>
+  </div>
+
+
+  <!-- Q204.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.1</span>
+      <h2 class="sn-q-text">What is a locator in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A locator is a description of how to find one or more elements on a page. It is not a reference to an element — it is a query that finds the element fresh every time an action runs.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// A locator — lazy, finds element on action</span>
+<span class="tc-kw">const</span> button = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> });
+
+<span class="tc-cm">// Action — locator finds the element NOW and clicks it</span>
+<span class="tc-kw">await</span> button.<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">Locators have three key properties:</p>
+<p class="sn-para"><strong class="k-blue">Lazy evaluation</strong> — the element is not found until you perform an action. This means locators never go stale — even if the page re-renders between when you defined the locator and when you use it.</p>
+<p class="sn-para"><strong class="k-blue">Auto-waiting</strong> — every action on a locator waits for the element to be actionable before proceeding.</p>
+<p class="sn-para"><strong class="k-blue">Strict mode</strong> — if a locator matches more than one element, Playwright throws an error. This prevents accidentally acting on the wrong element.</p>
+    </div>
+  </div>
+
+  <!-- Q204.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.2</span>
+      <h2 class="sn-q-text">What is the recommended locator strategy in Playwright and why?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright's recommended priority order, from most to least preferred:</p>
+      </div>
+<ol class="sn-olist">
+<li><strong class="k-green"><code class="sn-ic">getByRole()</code></strong> — query by ARIA role and accessible name</li>
+<li><strong class="k-green"><code class="sn-ic">getByLabel()</code></strong> — for form inputs associated with a label</li>
+<li><strong class="k-green"><code class="sn-ic">getByPlaceholder()</code></strong> — for inputs identified by placeholder text</li>
+<li><strong class="k-green"><code class="sn-ic">getByText()</code></strong> — for non-interactive elements by their visible text</li>
+<li><strong class="k-green"><code class="sn-ic">getByAltText()</code></strong> — for images by their alt attribute</li>
+<li><strong class="k-green"><code class="sn-ic">getByTitle()</code></strong> — by title attribute</li>
+<li><strong class="k-green"><code class="sn-ic">getByTestId()</code></strong> — by <code class="sn-ic">data-testid</code> attribute</li>
+<li><strong class="k-green"><code class="sn-ic">page.locator(css/xpath)</code></strong> — last resort for structural queries</li>
+</ol>
+<p class="sn-para">The priority order reflects how users find elements: by what something IS (role, label) rather than what the developer called it (CSS class, ID).</p>
+<p class="sn-para">Role-based locators are the most robust because:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>They survive CSS refactors (class names change, roles do not)</span></li>
+<li><span class="icon">💡</span><span>They test accessibility simultaneously — if the test finds the element,</span></li>
+</ul>
+<p class="sn-para">  a screen reader user can too</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>They read like user intentions: "click the Submit button", not "click .btn-primary"</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q204.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.3</span>
+      <h2 class="sn-q-text">When do you use getByRole vs getByLabel vs getByTestId?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple"><code class="sn-ic">getByRole</code></strong> — for any interactive element that has an ARIA role and a visible name: buttons, links, headings, checkboxes, menus, dialogs.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'link'</span>,   { name: <span class="tc-str">'Dashboard'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { level: <span class="tc-num">1</span> }).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Welcome'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">getByLabel</code></strong> — for form inputs that are labelled. It finds the input associated with the label text, not the label itself.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email address'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'pass123'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-purple"><code class="sn-ic">getByTestId</code></strong> — when the element has no natural semantic role or label, and the developer has added a <code class="sn-ic">data-testid</code> attribute specifically for testing.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'submit-button'</span>).<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">Decision rule: try <code class="sn-ic">getByRole</code> first. If the element is a form field, use <code class="sn-ic">getByLabel</code>. If neither works (custom widgets, canvas elements, SVG components without ARIA), use <code class="sn-ic">getByTestId</code> if it exists, CSS as last resort.</p>
+    </div>
+  </div>
+
+  <!-- Q204.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.4</span>
+      <h2 class="sn-q-text">What locator strategy does your project use and why?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, we follow a strict locator priority policy documented in our contributing guide:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">80% of locators use <code class="sn-ic">getByRole</code> or <code class="sn-ic">getByLabel</code>.</strong> Our application is built with React and standard HTML form elements. These almost always have accessible roles and labels.</p>
+<p class="sn-para"><strong class="k-orange">15% use <code class="sn-ic">getByTestId</code>.</strong> For complex custom components — date pickers, rich text editors, drag-and-drop lists — we coordinate with the development team to add <code class="sn-ic">data-testid</code> attributes. This is documented in our definition of done.</p>
+<p class="sn-para"><strong class="k-orange">5% use CSS selectors.</strong> Only for structural queries that cannot be expressed any other way — table cells by column position, or elements with a specific attribute value that has no accessible equivalent.</p>
+<p class="sn-para">XPath is banned by our ESLint config. Any locator using an XPath expression fails the lint check.</p>
+<p class="sn-para">We chose this strategy because our team's metrics showed locator maintenance was the biggest cause of test failures after deployments. Role-based locators survived 90% of UI refactors without any change. CSS class locators broke on every Tailwind or CSS module rename.</p>
+    </div>
+  </div>
+
+  <!-- Q204.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.5</span>
+      <h2 class="sn-q-text">What is getByRole and what accessibility roles can you use?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">getByRole(role, options?)</code> finds elements by their ARIA role. ARIA roles describe what an element IS in terms of user interaction, not its appearance.</p>
+      </div>
+<p class="sn-para">Common roles used in test automation:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Role</th><th class="sn-th-blue">Matches</th><th class="sn-th-green">Example</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">button</code></td><td><code class="sn-ic">&lt;button&gt;</code>, <code class="sn-ic">[role=button]</code></td><td><code class="sn-ic">getByRole('button', { name: 'Submit' })</code></td></tr>
+          <tr><td><code class="sn-ic">link</code></td><td><code class="sn-ic">&lt;a href&gt;</code></td><td><code class="sn-ic">getByRole('link', { name: 'Home' })</code></td></tr>
+          <tr><td><code class="sn-ic">textbox</code></td><td><code class="sn-ic">&lt;input type=text&gt;</code> (generic)</td><td><code class="sn-ic">getByRole('textbox', { name: 'Search' })</code></td></tr>
+          <tr><td><code class="sn-ic">checkbox</code></td><td><code class="sn-ic">&lt;input type=checkbox&gt;</code></td><td><code class="sn-ic">getByRole('checkbox', { name: 'Remember me' })</code></td></tr>
+          <tr><td><code class="sn-ic">radio</code></td><td><code class="sn-ic">&lt;input type=radio&gt;</code></td><td><code class="sn-ic">getByRole('radio', { name: 'Option A' })</code></td></tr>
+          <tr><td><code class="sn-ic">combobox</code></td><td><code class="sn-ic">&lt;select&gt;</code> or custom select</td><td><code class="sn-ic">getByRole('combobox', { name: 'Country' })</code></td></tr>
+          <tr><td><code class="sn-ic">heading</code></td><td><code class="sn-ic">&lt;h1&gt;–&lt;h6&gt;</code></td><td><code class="sn-ic">getByRole('heading', { level: 1 })</code></td></tr>
+          <tr><td><code class="sn-ic">dialog</code></td><td><code class="sn-ic">[role=dialog]</code>, <code class="sn-ic">&lt;dialog&gt;</code></td><td><code class="sn-ic">getByRole('dialog', { name: 'Confirm' })</code></td></tr>
+          <tr><td><code class="sn-ic">row</code></td><td><code class="sn-ic">&lt;tr&gt;</code> in a table</td><td><code class="sn-ic">getByRole('row', { name: 'Alice' })</code></td></tr>
+          <tr><td><code class="sn-ic">tab</code></td><td>Tab in a tab panel</td><td><code class="sn-ic">getByRole('tab', { name: 'Settings' })</code></td></tr>
+          <tr><td><code class="sn-ic">alert</code></td><td><code class="sn-ic">[role=alert]</code></td><td><code class="sn-ic">getByRole('alert')</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Options: <code class="sn-ic">name</code> (accessible name, string or regex), <code class="sn-ic">exact</code> (boolean), <code class="sn-ic">level</code> (for headings), <code class="sn-ic">checked</code>, <code class="sn-ic">disabled</code>, <code class="sn-ic">expanded</code>, <code class="sn-ic">selected</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q204.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.6</span>
+      <h2 class="sn-q-text">What is the difference between getByText and getByLabel?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">getByText</code> finds elements by their visible text content. It looks at the element itself, not an associated label. It matches any element type.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">getByLabel</code> finds form inputs by the text of an associated <code class="sn-ic">&lt;label&gt;</code> element (or <code class="sn-ic">aria-label</code> / <code class="sn-ic">aria-labelledby</code>). It returns the input, not the label.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// getByText — finds the element containing the text</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Submit Order'</span>).<span class="tc-fn">click</span>(); <span class="tc-cm">// finds Submit Order</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Error: invalid email'</span>)  <span class="tc-cm">// finds any element with this text</span>
+
+<span class="tc-cm">// getByLabel — finds the INPUT associated with the label</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email address'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);
+<span class="tc-cm">// Email address</span>
+<span class="tc-cm">//  ← this is what getByLabel returns</span></div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Decision rule:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Form inputs → <code class="sn-ic">getByLabel</code> (finds the input, not the label)</span></li>
+<li><span class="icon">💡</span><span>Non-interactive content, buttons with text → <code class="sn-ic">getByText</code> (or better, <code class="sn-ic">getByRole</code>)</span></li>
+<li><span class="icon">⚡</span><span>Never use <code class="sn-ic">getByText</code> as the primary locator for a button you are clicking —</span></li>
+</ul>
+<p class="sn-para">  use <code class="sn-ic">getByRole('button', { name: 'text' })</code> instead. Text locators are   fragile when copy changes.</p>
+    </div>
+  </div>
+
+  <!-- Q204.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.7</span>
+      <h2 class="sn-q-text">What is getByTestId and when is it appropriate to use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">getByTestId(id)</code> finds elements with a <code class="sn-ic">data-testid</code> attribute matching the given ID. By default it looks for <code class="sn-ic">data-testid</code>, but this is configurable:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts — change the attribute name</span>
+use: { testIdAttribute: <span class="tc-str">'data-pw'</span> }
+
+<span class="tc-cm">// Test code</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'submit-button'</span>).<span class="tc-fn">click</span>();
+<span class="tc-cm">// Finds:</span></div>
+      </div>
+<p class="sn-para"><strong class="k-red">When to use <code class="sn-ic">getByTestId</code>:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The element has no natural ARIA role or label</span></li>
+<li><span class="icon">💡</span><span>It is a custom component (date picker, carousel, tree view) with complex</span></li>
+</ul>
+<p class="sn-para">  internal structure</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>The developer has explicitly added a test ID for automation purposes</span></li>
+</ul>
+<p class="sn-para"><strong class="k-red">When NOT to use <code class="sn-ic">getByTestId</code>:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>The element is a standard HTML input, button, or link — use semantic locators</span></li>
+<li><span class="icon">📌</span><span>The test ID duplicates semantic information — <code class="sn-ic">getByTestId('submit-button')</code></span></li>
+</ul>
+<p class="sn-para">  when <code class="sn-ic">getByRole('button', { name: 'Submit' })</code> also works</p>
+<p class="sn-para">Over-reliance on <code class="sn-ic">getByTestId</code> means your tests are not testing accessibility — an element with a test ID but no accessible role or label is invisible to screen reader users.</p>
+    </div>
+  </div>
+
+  <!-- Q204.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.8</span>
+      <h2 class="sn-q-text">What is the difference between a strict locator and a non-strict one?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright locators are <strong class="k-yellow">strict by default</strong>: if a locator matches more than one element, any action on it throws an error.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Throws if multiple buttons with name &amp;quot;Save&amp;quot; exist</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-cm">// Error: strict mode violation: getByRole('button', { name: 'Save' })</span>
+<span class="tc-cm">// resolved to 3 elements</span>
+
+<span class="tc-cm">// ✅ Disambiguate by scoping to a parent</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>).<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+
+<span class="tc-cm">// ✅ Or explicitly take the first</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">first</span>().<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">Strict mode is a feature, not a bug. It prevents tests from silently clicking the wrong element. When a strict locator fails, it means there is ambiguity in the page that the test needs to resolve explicitly.</p>
+<p class="sn-para">Non-strict behaviour can be accessed with <code class="sn-ic">.first()</code>, <code class="sn-ic">.last()</code>, <code class="sn-ic">.nth(n)</code>, or <code class="sn-ic">.all()</code> — but these should only be used when position is semantically meaningful (e.g., "click the first result in the search results list").</p>
+    </div>
+  </div>
+
+  <!-- Q204.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.9</span>
+      <h2 class="sn-q-text">What is the difference between CSS selectors and semantic locators?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">CSS selectors query the DOM by structure, class names, IDs, and attributes. Semantic locators (<code class="sn-ic">getByRole</code>, <code class="sn-ic">getByLabel</code>) query the accessibility tree by what the element means and what it is called.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// CSS selector — depends on DOM structure and class names</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'form.login-form input.email-field'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);
+
+<span class="tc-cm">// Semantic locator — depends on the element's role and label</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);</div>
+      </div>
+<p class="sn-para">CSS selectors break when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Class names are renamed (CSS modules, Tailwind config change)</span></li>
+<li><span class="icon">💡</span><span>The element moves to a different position in the DOM</span></li>
+<li><span class="icon">⚡</span><span>The developer restructures the HTML</span></li>
+</ul>
+<p class="sn-para">Semantic locators survive these changes because they query what the element IS (role) and what it says (accessible name) — neither of which typically changes during a UI refactor.</p>
+<p class="sn-para">The rule: CSS selectors test implementation details. Semantic locators test user-visible behaviour. Prefer semantic locators.</p>
+    </div>
+  </div>
+
+  <!-- Q204.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.10</span>
+      <h2 class="sn-q-text">What is the difference between page.locator() and page.getByRole()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.locator(selector)</code> takes a CSS selector string (or XPath with <code class="sn-ic">xpath=</code> prefix). It is a general-purpose DOM query.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.getByRole(role, options)</code> queries the accessibility tree. It is a specialised semantic locator.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// page.locator — CSS</span>
+<span class="tc-kw">const</span> button1 = page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]'</span>);
+<span class="tc-kw">const</span> button2 = page.<span class="tc-fn">locator</span>(<span class="tc-str">'.btn-primary'</span>);
+
+<span class="tc-cm">// page.getByRole — semantic</span>
+<span class="tc-kw">const</span> button3 = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> });</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.getByRole()</code> is a specific, preferred locator for finding elements by their accessibility role. Use <code class="sn-ic">getByRole</code> when possible because it is more readable, accessibility-aligned, and resilient to styling changes.</p>
+<p class="sn-para"><code class="sn-ic">page.locator()</code> is for cases where the semantic APIs cannot express the query — structural selectors, attribute value matches, CSS pseudo-classes.</p>
+    </div>
+  </div>
+
+  <!-- Q204.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.11</span>
+      <h2 class="sn-q-text">What is wrong with using XPath in a modern Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">XPath is not wrong in every case, but it has three problems that make it a poor default choice:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Fragility</strong> — XPath paths that include position (e.g., <code class="sn-ic">//div[3]/span[2]</code>) break whenever the surrounding HTML structure changes. Position-based XPath is the most brittle locator in any framework.</p>
+<p class="sn-para"><strong class="k-purple">Readability</strong> — <code class="sn-ic">//form[@class='login-form']//input[@type='email']</code> is much harder to read and maintain than <code class="sn-ic">page.getByLabel('Email')</code>.</p>
+<p class="sn-para"><strong class="k-purple">Semantic alternative exists</strong> — for almost every case where XPath is used in modern Playwright, a semantic locator or CSS selector expresses the same query more clearly.</p>
+<p class="sn-para">XPath still has legitimate uses:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Parent-axis traversal — XPath can navigate to a parent element, which CSS</span></li>
+</ul>
+<p class="sn-para">  cannot do natively (before <code class="sn-ic">:has()</code> was widely supported)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Text matching with normalisation — <code class="sn-ic">normalize-space()</code> in XPath</span></li>
+<li><span class="icon">⚡</span><span>Attribute comparison — checking that an attribute contains a value</span></li>
+</ul>
+<p class="sn-para">When you do use XPath in a page object, always add a comment explaining why no semantic locator worked.</p>
+    </div>
+  </div>
+
+  <!-- Q204.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.12</span>
+      <h2 class="sn-q-text">How does Playwright's locator approach compare to Selenium's By strategies?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Selenium's <code class="sn-ic">By</code> strategies return an <code class="sn-ic">WebElement</code> immediately — a direct reference to the DOM element at that moment. If the DOM re-renders, the element reference goes stale and throws <code class="sn-ic">StaleElementReferenceException</code>.</p>
+      </div>
+<p class="sn-para">Playwright's <code class="sn-ic">Locator</code> is a lazy query. It never holds a direct element reference. Each action re-queries the DOM. Stale element errors do not exist in Playwright.</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue">Playwright Locator</th><th class="sn-th-green">Selenium By / WebElement</th></tr></thead>
+          <tbody>
+          <tr><td>Type</td><td>Lazy query</td><td>Direct element reference</td></tr>
+          <tr><td>Staleness</td><td>Never stale</td><td>Can throw StaleElementReferenceException</td></tr>
+          <tr><td>Auto-waiting</td><td>Yes — built into every action</td><td>No — must use <code class="sn-ic">WebDriverWait</code> explicitly</td></tr>
+          <tr><td>Strict mode</td><td>Yes — error on multiple matches</td><td>No — returns first match silently</td></tr>
+          <tr><td>Semantic APIs</td><td><code class="sn-ic">getByRole</code>, <code class="sn-ic">getByLabel</code></td><td>By.xpath, By.cssSelector</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The practical result: Playwright tests rarely need explicit waits. Selenium tests routinely need <code class="sn-ic">WebDriverWait</code> around every action involving dynamic content.</p>
+    </div>
+  </div>
+
+  <!-- Q204.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.13</span>
+      <h2 class="sn-q-text">Write locators for a login form using best-practice semantic locators</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can log in with valid credentials'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+
+  <span class="tc-cm">// Form fields — getByLabel finds the input associated with each label</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email address'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Test1234!'</span>);
+
+  <span class="tc-cm">// Checkbox with visible label</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Remember me'</span>).<span class="tc-fn">check</span>();
+
+  <span class="tc-cm">// Submit button — getByRole is preferred for interactive elements</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Assertion — wait for redirect to dashboard</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// Assert welcome heading appears</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: /Welcome/ })
+  ).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q204.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.14</span>
+      <h2 class="sn-q-text">Write code using chaining and filter to locate a specific item in a list</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'user can delete a specific order'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/orders'</span>);
+
+  <span class="tc-cm">// Locate the table row that contains order &amp;quot;ORD-00456&amp;quot;</span>
+  <span class="tc-cm">// getByRole('row') finds all rows, filter narrows to the one we need</span>
+  <span class="tc-kw">const</span> targetRow = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>).<span class="tc-fn">filter</span>({ hasText: <span class="tc-str">'ORD-00456'</span> });
+
+  <span class="tc-cm">// Verify the row shows the expected status before acting</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(targetRow.<span class="tc-fn">getByRole</span>(<span class="tc-str">'cell'</span>, { name: <span class="tc-str">'Pending'</span> })).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Click the Delete button specifically inside that row</span>
+  <span class="tc-cm">// Chaining ensures we click Delete in the correct row, not any Delete button</span>
+  <span class="tc-kw">await</span> targetRow.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Delete'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Handle the confirm dialog</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>, { name: <span class="tc-str">'Confirm Delete'</span> })
+    .<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Confirm'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Verify the row is gone from the table</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>).<span class="tc-fn">filter</span>({ hasText: <span class="tc-str">'ORD-00456'</span> }))
+    .<span class="tc-fn">toHaveCount</span>(<span class="tc-num">0</span>);
+});</div>
+      </div>
+<p class="sn-para">Key patterns demonstrated:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">filter({ hasText })</code> — narrow a set of locators by text content</span></li>
+<li><span class="icon">💡</span><span>Chaining <code class="sn-ic">.getByRole()</code> on a row locator — scope to that specific row</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">filter({ hasText }).toHaveCount(0)</code> — verify deletion</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q204.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q204.15</span>
+      <h2 class="sn-q-text">Describe a locator problem you solved in a real project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project we had a product listing page where each product card had an "Add to Cart" button. The original test used:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Brittle — clicks first matching button, ignores which product</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Add to Cart'</span> }).<span class="tc-fn">click</span>();</div>
+      </div>
+<p class="sn-para">This worked when there was only one product visible but failed in strict mode when the page loaded multiple products. We were also not testing the right thing — we needed to add a specific product, not just any product.</p>
+<p class="sn-para">The developer added <code class="sn-ic">data-testid=&quot;product-card&quot;</code> to each card. The fix:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ Find the specific product, then click its button</span>
+<span class="tc-kw">const</span> productCard = page
+  .<span class="tc-fn">getByTestId</span>(<span class="tc-str">'product-card'</span>)
+  .<span class="tc-fn">filter</span>({ hasText: <span class="tc-str">'Premium Widget X'</span> });
+
+<span class="tc-kw">await</span> productCard.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Add to Cart'</span> }).<span class="tc-fn">click</span>();
+
+<span class="tc-cm">// Verify that specific product is in the cart</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/cart'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>).<span class="tc-fn">filter</span>({ hasText: <span class="tc-str">'Premium Widget X'</span> }))
+  .<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+<p class="sn-para">After the fix, strict mode actually helped us find two more places in other test files where the same brittle pattern was used. The strict mode error surfaced a real coverage gap — tests were not specifying which product they were adding.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>A locator is a lazy query — it finds elements on action, not on creation. This means locators never go stale.</span></li>
+            <li><span class="icon">⭐</span><span>Priority order: <code class="sn-ic">getByRole</code> → <code class="sn-ic">getByLabel</code> → <code class="sn-ic">getByPlaceholder</code> → <code class="sn-ic">getByText</code> → <code class="sn-ic">getByTestId</code> → CSS/XPath.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">getByRole</code> tests both automation AND accessibility. If the locator can't find the element, a screen reader user can't either.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Strict mode is a feature. Multiple matches cause an error — resolve ambiguity with <code class="sn-ic">filter()</code>, scoping, or explicit <code class="sn-ic">.first()</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">filter({ hasText })</code> and locator chaining to locate elements in tables and lists without fragile index-based selectors.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Network Mocking Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive Playwright network mocking MCQ challenges. Master page.route, route.fulfill, HAR replay, waitForResponse, and offline simulation with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #dc2626;
+            --primary-dark: #991b1b;
+            --primary-light: #fff1f2;
+            --accent: #ef4444;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #fca5a5; transition: all 0.3s; }
+        .score-pill.bump { background: #fee2e2; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #dc2626, #ef4444); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #fff1f2; color: #991b1b; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #991b1b; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #fca5a5; background: #fee2e2; color: #991b1b; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #fca5a5; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #fff1f2; border: 1px solid #fca5a5; color: #991b1b; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">Network Mocking Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. page.route glob pattern</span>    <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. route.fulfill mock</span>          <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. route.abort() use case</span>      <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. route.continue() modify</span>     <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. waitForResponse()</span>           <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. waitForRequest()</span>            <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. intercept all requests</span>      <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. routeFromHAR replay</span>         <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. simulate offline</span>            <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. addCookies()</span>               <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. on vs route difference</span>     <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. mock with delay</span>            <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-wifi"></i> Playwright Network Mocking</h1>
+        <p>12 challenges covering page.route, route handlers, HAR replay, waitForResponse, and network simulation.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">page.route</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does ** match in a page.route glob pattern?</div>
+            <div class="ch-desc">You write <code>page.route('**/api/**', handler)</code>. What does the <code>**</code> glob match?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> Exactly one URL path segment</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> Any number of URL segments (zero or more), including slashes</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> Only the protocol and domain portion of the URL</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> A literal ** in the URL</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — any number of segments including slashes</strong><br>In Playwright's URL glob syntax, <code>**</code> matches any sequence of characters, including path separators (slashes). So <code>'**/api/**'</code> matches any URL containing <code>/api/</code> at any depth: <code>https://app.com/api/users</code>, <code>https://app.com/v2/api/orders/123</code>, etc. A single <code>*</code> matches any characters but NOT slashes — so <code>*/api/*</code> would only match URLs with exactly one segment before and after <code>/api/</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint"><code>**</code> = cross-segment wildcard (matches slashes). <code>*</code> = within-segment wildcard (no slashes). Use <code>**</code> for broad URL matching.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge beginner">Beginner</span><span class="topic-badge">route.fulfill</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does route.fulfill() do?</div>
+            <div class="ch-desc">You call <code>route.fulfill({ status: 200, body: JSON.stringify({ users: [] }) })</code>. What happens to the intercepted request?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> The request is forwarded to the server but the response is modified</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> The request is fulfilled with the mock response; the real server is never called</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> The request is delayed and then forwarded with extra headers</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> The response is cached and the server is only called on first request</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: B — mock response returned, server never called</strong><br><code>route.fulfill()</code> returns a synthetic HTTP response from Playwright itself — the real server is never contacted. You control: <code>status</code> (number), <code>headers</code> (object), <code>body</code> (string/Buffer), <code>contentType</code>. This is the primary pattern for mocking API responses in UI tests: no real backend needed, tests run faster and are fully deterministic.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint"><code>fulfill()</code> = completely mock the response. The server is bypassed. Use for controlled testing without a live backend.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge beginner">Beginner</span><span class="topic-badge">route.abort</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does route.abort() simulate?</div>
+            <div class="ch-desc">You call <code>route.abort()</code> in a route handler. What does the page experience?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> A 500 Internal Server Error response</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> A network-level failure — the request never completes (like a connection refused)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> A timeout after 30 seconds</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> A 404 Not Found response from the server</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — network-level failure, not an HTTP error</strong><br><code>route.abort()</code> causes the request to fail at the network level — the browser sees a network error, not an HTTP response with an error status code. This simulates scenarios like: server unreachable, DNS failure, or connection refused. You can pass an error reason: <code>route.abort('failed')</code> or <code>route.abort('connectionrefused')</code>. Use this to test how your app handles network failures, like showing "offline" messages.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint"><code>abort()</code> = network error (not an HTTP status). The browser's fetch/XHR will reject with a network error, not get a 500 response.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">route.continue</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does route.continue() with modifications do?</div>
+            <div class="ch-desc">You call <code>route.continue({ headers: { ...route.request().headers(), 'X-Test': 'true' } })</code>. What happens?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> The request is blocked and a mock response is returned with the headers</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> The request is forwarded to the real server with the additional header added</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> The request continues but the response headers are modified</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> The request is replayed twice — once original, once with modifications</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — forwarded to real server with modifications</strong><br><code>route.continue(overrides)</code> forwards the request to the actual server but with the specified overrides applied — you can change: <code>url</code>, <code>method</code>, <code>headers</code>, <code>postData</code>. The server still processes the request and returns a real response. This is useful for injecting test headers, redirecting requests, or changing request bodies before they reach the server.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint"><code>continue()</code> = forward to real server. Pass overrides to modify before forwarding. Unlike <code>fulfill()</code>, the server IS called.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Waiting</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does page.waitForResponse() return?</div>
+            <div class="ch-desc">You use <code>const response = await page.waitForResponse('**/api/users')</code>. What is <code>response</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> A boolean: true if the response was 200, false otherwise</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> A Response object you can call .json(), .status(), .headers() on</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> The parsed JSON body of the response directly</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> A Request object representing what was sent</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: B — a Response object</strong><br><code>page.waitForResponse()</code> resolves with a <code>Response</code> object once a matching response is received. You can then inspect: <code>response.status()</code>, <code>await response.json()</code>, <code>response.headers()</code>, <code>response.url()</code>. The typical pattern is to start the wait <em>before</em> the action that triggers it: <code>const [response] = await Promise.all([page.waitForResponse('**/api/users'), page.click('#load-users')])</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint">Start <code>waitForResponse()</code> BEFORE triggering the action. Use <code>Promise.all()</code> to avoid race conditions.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Waiting</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When does page.waitForRequest() resolve?</div>
+            <div class="ch-desc">What is the key timing difference between <code>waitForRequest()</code> and <code>waitForResponse()</code>?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> waitForRequest resolves after the response is received</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> waitForRequest resolves when the request is sent; waitForResponse resolves when the response is received</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> They both resolve at the same time — when the full round trip completes</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> waitForRequest only works with intercepted routes; waitForResponse works with all</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — request resolves on send; response resolves on receive</strong><br><code>waitForRequest()</code> resolves as soon as the matching request is sent by the browser — before the server has responded. You get a <code>Request</code> object. <code>waitForResponse()</code> resolves when the full response is received back from the server. Use <code>waitForRequest()</code> when you want to inspect what the browser sends (headers, body). Use <code>waitForResponse()</code> when you want to inspect what the server returns.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint">Request = outgoing (sent). Response = incoming (received). Request resolves earlier in the cycle.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge beginner">Beginner</span><span class="topic-badge">page.route</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you intercept ALL requests from a page?</div>
+            <div class="ch-desc">You want to log every outgoing request from a page without blocking any of them. What pattern achieves this?</div>
+            <div class="code-block"><pre><code class="language-typescript">await page.route('???', route => {
+  console.log(route.request().url());
+  route.continue();
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> 'http://**'</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> '**/*'</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> '*'</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> '/.*/'  (regex)</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: B — '**/*' matches every URL</strong><br><code>'**/*'</code> is the catch-all glob pattern — <code>**</code> matches any prefix (protocol + domain + path segments) and <code>*</code> ensures at least one character at the end. This intercepts every network request from the page. You must call <code>route.continue()</code>, <code>route.fulfill()</code>, or <code>route.abort()</code> on every intercepted request — otherwise the request hangs forever. You can also pass a RegExp to <code>page.route()</code> for more precise matching.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint">Catch-all glob: <code>'**/*'</code>. Remember: every intercepted route MUST be handled — call <code>continue()</code>, <code>fulfill()</code>, or <code>abort()</code>.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge advanced">Advanced</span><span class="topic-badge">HAR</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does page.routeFromHAR() do?</div>
+            <div class="ch-desc">You call <code>await page.routeFromHAR('./fixtures/api.har')</code>. What is the effect?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> Records all network traffic to a HAR file during the test</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> Replays previously recorded network responses from the HAR file instead of making real requests</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> Validates all network calls against the HAR schema</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> Imports HAR file entries as mock test data</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: B — replays recorded responses from HAR</strong><br>A HAR (HTTP Archive) file records all network activity. <code>page.routeFromHAR('./api.har')</code> intercepts requests that match entries in the HAR file and returns the recorded responses — no real network calls made. To record a HAR: <code>await context.recordHAR({ path: './api.har' })</code>. This is powerful for: testing with external APIs (no API key needed), creating deterministic tests, and running tests offline. Use <code>{ update: true }</code> to re-record.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint">HAR = record once, replay forever. <code>routeFromHAR()</code> plays back saved responses. Great for third-party API testing without live dependencies.</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Simulation</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you simulate an offline network in Playwright?</div>
+            <div class="ch-desc">You want to test how your app behaves when the user loses internet connection. Which Playwright API achieves this?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> page.route('**/*', r => r.abort())</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> context.setOffline(true)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> page.emulateNetworkConditions({ offline: true })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> browser.setNetworkMode('offline')</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — context.setOffline(true)</strong><br><code>context.setOffline(true)</code> puts the browser context into offline mode — all network requests fail immediately with a network error, simulating a complete loss of connectivity. Restore with <code>context.setOffline(false)</code>. This is cleaner than aborting routes individually because it truly simulates the OS-level offline state. Use it to test offline-first features, service worker fallbacks, or error states.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">Use <code>context.setOffline(true)</code> for full offline simulation. Undo with <code>context.setOffline(false)</code>. This is a BrowserContext method, not Page.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge beginner">Beginner</span><span class="topic-badge">Cookies</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you programmatically add a cookie to a browser context?</div>
+            <div class="ch-desc">You want to add a session cookie before navigating to a page. Which API call is correct?</div>
+            <div class="code-block"><pre><code class="language-typescript">await context.addCookies([
+  {
+    name: 'session',
+    value: 'abc123',
+    url: 'https://app.example.com'
+  }
+]);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> page.setCookie({ name: 'session', value: 'abc123' })</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> context.addCookies([{ name, value, url }])</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> page.evaluate(() => document.cookie = 'session=abc123')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> browser.setCookies([{ name, value }])</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — context.addCookies()</strong><br><code>context.addCookies()</code> is the Playwright API for setting cookies on a browser context. Each cookie object requires at minimum <code>name</code>, <code>value</code>, and either <code>url</code> or <code>domain</code> + <code>path</code>. Cookies can be set before any navigation. To remove all cookies: <code>context.clearCookies()</code>. To read cookies: <code>await context.cookies()</code>. Setting cookies via <code>document.cookie</code> in page.evaluate only works after navigation.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">Cookies are a <strong>context</strong>-level concept, not page-level. Use <code>context.addCookies()</code> — note the array syntax even for a single cookie.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Events vs Routes</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the key difference between page.on('request') and page.route()?</div>
+            <div class="ch-desc">Both <code>page.on('request', handler)</code> and <code>page.route('**/*', handler)</code> receive requests. What is the fundamental difference?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> page.on works for HTTP only; page.route works for WebSockets too</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> page.on('request') is read-only observation; page.route() can intercept and modify/block/mock requests</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> page.on fires before the request is sent; page.route fires after the response is received</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> They are identical — page.route is just a shortcut for page.on('request')</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — on() observes; route() intercepts</strong><br><code>page.on('request', handler)</code> is a passive event listener — you can read request data but cannot change or block the request. The request continues regardless. <code>page.route(pattern, handler)</code> actively intercepts the request — execution pauses and you MUST handle it by calling <code>fulfill()</code>, <code>continue()</code>, or <code>abort()</code>. Use <code>on('request')</code> for logging/monitoring. Use <code>route()</code> for mocking/modifying.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint"><code>on('request')</code> = spy (read-only). <code>route()</code> = interceptor (must handle). Route handlers have power; event handlers are passive.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge advanced">Advanced</span><span class="topic-badge">Simulation</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you add a delay to a mocked response?</div>
+            <div class="ch-desc">You want to simulate slow API responses (e.g., 2-second delay) using <code>route.fulfill()</code>. What is the correct approach in Playwright?</div>
+            <div class="code-block"><pre><code class="language-typescript">await page.route('**/api/data', async route => {
+  // Add 2-second delay before responding
+  ???
+  await route.fulfill({ status: 200, body: '{"data": []}' });
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> route.delay(2000)</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> await new Promise(r => setTimeout(r, 2000))</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> await page.waitForTimeout(2000)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> route.fulfill({ status: 200, delay: 2000, body: '...' })</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — await new Promise(r => setTimeout(r, 2000))</strong><br>Playwright's route handler is an async function, so you can use any async delay before calling <code>fulfill()</code>. The standard approach is <code>await new Promise(resolve => setTimeout(resolve, 2000))</code>. Note: <code>page.waitForTimeout()</code> is a page method and doesn't work inside route handlers. There is no <code>route.delay()</code> API. Adding delays simulates slow network conditions without needing actual slow servers — useful for testing loading spinners and skeleton screens.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint">Route handlers are async functions. Use <code>await new Promise(r => setTimeout(r, ms))</code> before calling <code>fulfill()</code> to add a delay.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const STORAGE_KEY = 'vtq-pw-network';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

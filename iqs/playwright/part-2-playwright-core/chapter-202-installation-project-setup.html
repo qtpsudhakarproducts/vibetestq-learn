@@ -1,0 +1,581 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎭 Part 2 &nbsp;·&nbsp; Chapter 202 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Installation</span> <span class="w2">&amp;</span> <span class="w3">Directory</span> <span class="w4">Structure</span></h1>
+    <p class="sn-title-sub">Playwright Core — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers setting up a Playwright project from scratch. Interviewers test this because setup mistakes cause real problems in teams — wrong Node.js versions, missing browser installs, missing <code class="sn-ic">package-lock.json</code> in CI. Questions build from install commands through folder structure to a real setup story.</span>
+  </div>
+
+
+  <!-- Q202.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.1</span>
+      <h2 class="sn-q-text">How do you install Playwright in a new project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">There are two ways: the interactive init command and manual installation.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">The init command (recommended for new projects):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm init playwright@latest</div>
+      </div>
+<p class="sn-para">This starts an interactive prompt. It asks:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>JavaScript or TypeScript</span></li>
+<li><span class="icon">💡</span><span>Where to put tests</span></li>
+<li><span class="icon">⚡</span><span>Whether to add a GitHub Actions workflow</span></li>
+<li><span class="icon">🎯</span><span>Whether to download browsers</span></li>
+</ul>
+<p class="sn-para">After completing, the project is ready to run.</p>
+<p class="sn-para"><strong class="k-blue">Manual installation (for adding to an existing project):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @playwright/test
+npx playwright install</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">npm install --save-dev @playwright/test</code> installs the package. <code class="sn-ic">npx playwright install</code> downloads the browser binaries (Chromium, Firefox, WebKit). Without this second step, tests will fail with a browser-not-found error.</p>
+    </div>
+  </div>
+
+  <!-- Q202.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.2</span>
+      <h2 class="sn-q-text">What does npm init playwright@latest create?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The init command creates a minimal but complete project structure:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">playwright.config.ts     — test runner configuration
+tests/
+  example.spec.ts        — sample test to verify the setup works
+tests-examples/
+  demo-todo-app.spec.ts  — example tests against a real demo app
+package.json             — project manifest with @playwright/test as a devDependency
+.gitignore               — ignores node_modules, playwright-report, test-results</div>
+      </div>
+<p class="sn-para">If you chose GitHub Actions, it also creates:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">.github/workflows/playwright.yml  — a complete GitHub Actions CI workflow</div>
+      </div>
+<p class="sn-para">The sample tests run against <code class="sn-ic">https://playwright.dev</code> and <code class="sn-ic">https://demo.playwright.dev/todomvc</code> — both public URLs so they work immediately after install.</p>
+    </div>
+  </div>
+
+  <!-- Q202.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.3</span>
+      <h2 class="sn-q-text">When do you need to run playwright install?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You need <code class="sn-ic">npx playwright install</code> in three situations:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">After first installing @playwright/test.</strong> The npm package does not include browser binaries — they are downloaded separately by this command.</p>
+<p class="sn-para"><strong class="k-purple">After upgrading Playwright.</strong> New Playwright versions require new browser builds. Run <code class="sn-ic">npx playwright install</code> after every version update.</p>
+<p class="sn-para"><strong class="k-purple">On a fresh CI machine.</strong> CI runners do not have Playwright's browsers pre-installed. Your CI workflow must call <code class="sn-ic">npx playwright install --with-deps</code> before running tests. The <code class="sn-ic">--with-deps</code> flag also installs system-level dependencies (fonts, libraries) that the browsers need on Linux.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Install Playwright browsers
+  run: npx playwright install --with-deps</div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">--with-deps</code> on Ubuntu/Debian CI runners, browser launches often fail with missing shared library errors.</p>
+    </div>
+  </div>
+
+  <!-- Q202.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.4</span>
+      <h2 class="sn-q-text">How did you set up Playwright in your current project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our project, Playwright was set up with <code class="sn-ic">npm init playwright@latest</code> choosing TypeScript, and then immediately customised:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange"><code class="sn-ic">playwright.config.ts</code></strong> was updated with our baseURL, per-environment configuration read from environment variables, and <code class="sn-ic">retries: process.env.CI ? 2 : 0</code>.</p>
+<p class="sn-para"><strong class="k-orange">Folder structure</strong> was adjusted from the default: tests under <code class="sn-ic">tests/e2e/</code>, page objects under <code class="sn-ic">tests/pages/</code>, helpers under <code class="sn-ic">tests/helpers/</code>, data factories under <code class="sn-ic">tests/data/</code>.</p>
+<p class="sn-para"><strong class="k-orange">CI workflow</strong> was extended with browser caching to avoid downloading browsers on every run:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- uses: actions/cache@v4
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ <span class="tc-fn">hashFiles</span>(<span class="tc-str">'package-lock.json'</span>) }}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">ESLint</strong> was configured with <code class="sn-ic">@typescript-eslint/no-floating-promises</code> and the custom <code class="sn-ic">no-restricted-syntax</code> rule for <code class="sn-ic">forEach(async</code>. These run in CI before tests.</p>
+    </div>
+  </div>
+
+  <!-- Q202.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.5</span>
+      <h2 class="sn-q-text">What is the folder structure of a standard Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A well-organised Playwright project structure:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">playwright.config.ts          — runner configuration
+package.json
+package-lock.json
+tsconfig.json
+
+tests/
+  e2e/                        — test files (*.spec.ts)
+    auth.spec.ts
+    checkout.spec.ts
+  pages/                      — page object classes
+    BasePage.ts
+    LoginPage.ts
+    CheckoutPage.ts
+    index.ts                  — barrel re-export
+  helpers/                    — shared utility functions
+    api.ts
+    text.ts
+    retry.ts
+  fixtures/                   — custom fixture definitions
+    index.ts
+  data/                       — test data factories
+    users.ts
+    orders.ts
+  config/                     — environment config reader
+    env.ts
+
+test-results/                 — playwright output (gitignored)
+playwright-report/            — HTML report (gitignored)</div>
+      </div>
+<p class="sn-para">The key principle: tests only import from <code class="sn-ic">pages/</code>, <code class="sn-ic">helpers/</code>, <code class="sn-ic">fixtures/</code>, and <code class="sn-ic">data/</code>. No test file directly instantiates page objects — fixtures do that.</p>
+    </div>
+  </div>
+
+  <!-- Q202.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.6</span>
+      <h2 class="sn-q-text">What is playwright.config.ts used for?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">playwright.config.ts</code> is the central configuration file for the entire test suite. It controls:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-pink"><code class="sn-ic">baseURL</code></strong> — the base URL all relative <code class="sn-ic">page.goto()</code> calls resolve against</span></li>
+<li><span class="icon">💡</span><span><strong class="k-pink"><code class="sn-ic">testDir</code></strong> — where to find test files</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-pink"><code class="sn-ic">timeout</code></strong> — maximum time per test</span></li>
+<li><span class="icon">🎯</span><span><strong class="k-pink"><code class="sn-ic">retries</code></strong> — how many times to retry a failing test</span></li>
+<li><span class="icon">📌</span><span><strong class="k-pink"><code class="sn-ic">workers</code></strong> — how many parallel worker processes to use</span></li>
+<li><span class="icon">🔑</span><span><strong class="k-pink"><code class="sn-ic">use</code></strong> — global browser/context settings (viewport, screenshot, video, trace)</span></li>
+<li><span class="icon">🚀</span><span><strong class="k-pink"><code class="sn-ic">projects</code></strong> — run the same tests in multiple browser/device configurations</span></li>
+<li><span class="icon">🌟</span><span><strong class="k-pink"><code class="sn-ic">reporter</code></strong> — which reporters to use and where to save output</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">import</span> { defineConfig, devices } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  testDir: <span class="tc-str">'./tests/e2e'</span>,
+  timeout: 30_000,
+  retries: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,
+  workers: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">4</span>,
+  reporter: [[<span class="tc-str">'html'</span>], [<span class="tc-str">'list'</span>]],
+  use: {
+    baseURL: process.env.BASE_URL ?? <span class="tc-str">'https: S1 
+    screenshot: '</span>only-on-failure<span class="tc-str">',
+    trace: '</span>on-first-retry<span class="tc-str">',
+  },
+  projects: [
+    { name: '</span>chromium<span class="tc-str">', use: { ...devices['</span>Desktop Chrome<span class="tc-str">'] } },
+    { name: '</span>firefox<span class="tc-str">',  use: { ...devices['</span>Desktop Firefox'] } },
+  ],
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q202.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.7</span>
+      <h2 class="sn-q-text">What is the purpose of package.json in a Playwright project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">package.json</code> serves three purposes in a Playwright project:</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Dependency management</strong> — declares <code class="sn-ic">@playwright/test</code> as a devDependency so any developer (or CI machine) can install the exact same version with <code class="sn-ic">npm install</code>.</p>
+<p class="sn-para"><strong class="k-red">Script shortcuts</strong> — defines convenient aliases for common commands:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;scripts&quot;: {
+    &quot;test&quot;:        &quot;playwright test&quot;,
+    &quot;test:headed&quot;: &quot;playwright test --headed&quot;,
+    &quot;test:ui&quot;:     &quot;playwright test --ui&quot;,
+    &quot;test:debug&quot;:  &quot;playwright test --debug&quot;,
+    &quot;report&quot;:      &quot;playwright show-report&quot;
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Project metadata</strong> — name, version, and <code class="sn-ic">engines</code> to specify the minimum Node.js version required.</p>
+    </div>
+  </div>
+
+  <!-- Q202.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.8</span>
+      <h2 class="sn-q-text">What does the node_modules folder contain and should you commit it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">node_modules</code> contains all installed npm packages — the compiled code of <code class="sn-ic">@playwright/test</code> and every other dependency. It is rebuilt from <code class="sn-ic">package.json</code> and <code class="sn-ic">package-lock.json</code> by <code class="sn-ic">npm install</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Never commit <code class="sn-ic">node_modules</code> to version control.</strong> It is large (hundreds of MB), platform-specific in some packages, and completely reproducible from <code class="sn-ic">package-lock.json</code>. The <code class="sn-ic">.gitignore</code> created by <code class="sn-ic">npm init playwright@latest</code> includes <code class="sn-ic">node_modules</code> by default.</p>
+<p class="sn-para">Similarly, the <code class="sn-ic">playwright-report/</code> directory and <code class="sn-ic">test-results/</code> directory (where screenshots, videos, and traces are saved) should also be gitignored — they are generated output, not source code.</p>
+    </div>
+  </div>
+
+  <!-- Q202.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.9</span>
+      <h2 class="sn-q-text">What is the difference between npm install and npm ci?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue"><code class="sn-ic">npm install</code></strong> — reads <code class="sn-ic">package.json</code>, resolves versions, installs packages, and updates <code class="sn-ic">package-lock.json</code> if any version resolutions changed.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue"><code class="sn-ic">npm ci</code></strong> — reads <code class="sn-ic">package-lock.json</code> exactly and installs the exact versions locked there. It fails if <code class="sn-ic">package.json</code> and <code class="sn-ic">package-lock.json</code> are out of sync. It also deletes <code class="sn-ic">node_modules</code> and reinstalls from scratch.</p>
+<p class="sn-para"><strong class="k-blue">Use <code class="sn-ic">npm ci</code> in CI pipelines.</strong> It is deterministic — guaranteed to install the exact same versions that passed locally. <code class="sn-ic">npm install</code> might silently upgrade a transitive dependency and introduce a subtle difference.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- run: npm ci</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q202.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.10</span>
+      <h2 class="sn-q-text">When should you use --save-dev vs --save when installing packages?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green"><code class="sn-ic">--save-dev</code> (<code class="sn-ic">-D</code>)</strong> — adds the package to <code class="sn-ic">devDependencies</code>. Use this for tools that are only needed during development and testing — <code class="sn-ic">@playwright/test</code>, <code class="sn-ic">typescript</code>, <code class="sn-ic">eslint</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">--save</code> (or no flag)</strong> — adds the package to <code class="sn-ic">dependencies</code>. Use this for packages that the application needs at runtime — web frameworks, database clients, utility libraries used by the application code.</p>
+<p class="sn-para">In a test automation project, almost everything is a devDependency:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @playwright/test typescript @types/node eslint</div>
+      </div>
+<p class="sn-para">The distinction matters because <code class="sn-ic">npm install --production</code> (used to install only what a production server needs) skips devDependencies. A test automation project is entirely devDependencies because the tests never run in production.</p>
+    </div>
+  </div>
+
+  <!-- Q202.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.11</span>
+      <h2 class="sn-q-text">What is wrong with not committing package-lock.json?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">package-lock.json</code> locks every dependency to an exact version — including transitive dependencies (dependencies of dependencies).</p>
+      </div>
+<p class="sn-para">Without it:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">npm install</code> on two machines may produce different <code class="sn-ic">node_modules</code> trees</span></li>
+<li><span class="icon">💡</span><span>A transitive dependency could be silently upgraded between developer installs</span></li>
+<li><span class="icon">⚡</span><span>A Playwright upgrade in a transitive dependency could change browser behaviour</span></li>
+</ul>
+<p class="sn-para"><strong class="k-purple">Always commit <code class="sn-ic">package-lock.json</code>.</strong> It is the contract that guarantees every developer and every CI run uses the same package versions.</p>
+<p class="sn-para">If you are using <code class="sn-ic">yarn</code>, commit <code class="sn-ic">yarn.lock</code>. If using <code class="sn-ic">pnpm</code>, commit <code class="sn-ic">pnpm-lock.yaml</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q202.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.12</span>
+      <h2 class="sn-q-text">How do you upgrade Playwright to a newer version safely?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @playwright/test@latest
+
+npx playwright install
+
+npx playwright test
+
+npx playwright test --update-snapshots
+
+git add package.json package-lock.json tests/  # include updated snapshots
+git commit -m &quot;chore: upgrade Playwright to 1.x.y&quot;</div>
+      </div>
+<p class="sn-para">Read the Playwright changelog before upgrading. Breaking changes are documented there. Most version bumps are safe, but new browser builds occasionally change visual rendering slightly — update snapshots when that happens.</p>
+    </div>
+  </div>
+
+  <!-- Q202.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.13</span>
+      <h2 class="sn-q-text">Write the commands to set up a new Playwright project from scratch</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">mkdir my-playwright-project &amp;&amp; cd my-playwright-project
+
+npm init -y
+
+npm init playwright@latest
+
+npx playwright test
+
+npx playwright show-report
+
+code .</div>
+      </div>
+<p class="sn-para">After this you have a working TypeScript Playwright project with sample tests, a config file, and a GitHub Actions workflow. Customise <code class="sn-ic">playwright.config.ts</code> with your <code class="sn-ic">baseURL</code> and any project-specific settings.</p>
+    </div>
+  </div>
+
+  <!-- Q202.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.14</span>
+      <h2 class="sn-q-text">Write a .gitignore file for a Playwright project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gitignore</span>
+        </div>
+        <div class="sn-terminal-code">node_modules/
+npm-debug.log*
+
+<span class="tc-kw">test</span>-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+/ms-playwright/
+
+.env
+.env.local
+.env.*.local
+
+dist/
+*.js.map
+
+.DS_Store
+Thumbs.db
+
+.vscode/settings.json
+.idea/</div>
+      </div>
+<p class="sn-para">Note: <code class="sn-ic">*.spec.ts-snapshots/</code> directories containing visual baselines should be committed. They are the source of truth for visual regression tests.</p>
+    </div>
+  </div>
+
+  <!-- Q202.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q202.15</span>
+      <h2 class="sn-q-text">Describe a setup or dependency issue you encountered when starting a Playwright project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When we set up Playwright on our Ubuntu CI runners, the first test run failed with:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Error: browserType.launch: Host system is missing dependencies!
+    chromium
+      ✗ libnss3.so
+      ✗ libnspr4.so</div>
+      </div>
+<p class="sn-para">The browsers were installed (we ran <code class="sn-ic">npx playwright install</code>) but the required system libraries were missing on the fresh Ubuntu runner.</p>
+<p class="sn-para">The fix was changing from <code class="sn-ic">npx playwright install</code> to <code class="sn-ic">npx playwright install --with-deps</code>. The <code class="sn-ic">--with-deps</code> flag calls the system package manager (<code class="sn-ic">apt-get</code>) to install every OS-level dependency the browser needs.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- run: npx playwright install
+
+- run: npx playwright install --with-deps</div>
+      </div>
+<p class="sn-para">We also added browser caching to avoid the 2-minute download on every CI run:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- uses: actions/cache@v4
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ <span class="tc-fn">hashFiles</span>(<span class="tc-str">'package-lock.json'</span>) }}
+- run: npx playwright install --with-deps</div>
+      </div>
+<p class="sn-para">With caching, if <code class="sn-ic">package-lock.json</code> has not changed, the browser download is skipped and only the OS dependencies are reinstalled. This cut our CI setup time from 3 minutes to 20 seconds.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npm init playwright@latest</code> creates a complete project. <code class="sn-ic">npx playwright install</code> downloads the browsers. Both are required for a working setup.</span></li>
+            <li><span class="icon">⭐</span><span>On CI, always use <code class="sn-ic">npx playwright install --with-deps</code> (system dependencies) and <code class="sn-ic">npm ci</code> (deterministic install).</span></li>
+            <li><span class="icon">⭐</span><span>Always commit <code class="sn-ic">package-lock.json</code>. Never commit <code class="sn-ic">node_modules</code>.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">playwright.config.ts</code> controls everything — baseURL, timeouts, retries, workers, browsers, reporters.</span></li>
+            <li><span class="icon">⭐</span><span>All test tooling is a <code class="sn-ic">devDependency</code>. Use <code class="sn-ic">npm install --save-dev</code> for test packages.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Practice Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive Playwright multiple-choice challenges. Test locators, assertions, fixtures, network interception, config and CI patterns — with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #ecfdf5;
+            --accent: #10b981;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+        header {
+            position: fixed; top: 0; left: 0; right: 0;
+            height: var(--header-height);
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1.5rem; gap: 1rem;
+        }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark);
+            text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+            transition: all 0.2s; white-space: nowrap;
+        }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo {
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem;
+            color: #1e40af; text-decoration: none;
+        }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill {
+            background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 700;
+            border: 1px solid #6ee7b7; transition: all 0.3s;
+        }
+        .score-pill.bump { background: #d1fae5; transform: scale(1.1); }
+
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+
+        aside {
+            width: var(--sidebar-width); background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: calc(100vh - var(--header-height));
+            position: fixed; top: var(--header-height); left: 0;
+            overflow-y: auto; padding: 1.25rem 0.9rem;
+        }
+        .sidebar-title {
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em;
+            color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem;
+            font-weight: 700;
+        }
+        .nav-item {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.5rem 0.6rem; border-radius: 8px;
+            text-decoration: none; color: var(--text); font-size: 0.82rem;
+            transition: all 0.2s; margin-bottom: 0.15rem;
+        }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot {
+            width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0;
+            background: var(--border); margin-left: auto; transition: background 0.3s;
+        }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #059669, #10b981); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark);
+            display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem;
+        }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+
+        .challenge-card {
+            background: var(--card-bg); border-radius: 16px;
+            border: 2px solid var(--border); margin-bottom: 2rem;
+            overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05);
+            scroll-margin-top: calc(var(--header-height) + 1rem);
+            transition: border-color 0.4s;
+        }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header {
+            padding: 0.9rem 1.4rem;
+            background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;
+        }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner     { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced     { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #f0f9ff; color: #0369a1; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code {
+            background: #f1f5f9; padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em; color: #7c3aed;
+        }
+
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn {
+            padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px;
+            background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif;
+            text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem;
+            line-height: 1.5;
+        }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter {
+            width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9;
+            color: #475569; font-size: 0.72rem; font-weight: 700; display: flex;
+            align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+        }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+
+        .explanation {
+            display: none; padding: 1rem 1.1rem; border-radius: 10px;
+            background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d;
+            font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem;
+        }
+        .explanation code {
+            background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em;
+        }
+        .explanation strong { color: #065f46; }
+
+        .ch-footer {
+            padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border);
+            display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap;
+        }
+        .hint-btn {
+            padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600;
+            cursor: pointer; border: 1px solid #a7f3d0; background: #d1fae5; color: #065f46;
+            transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .hint-btn:hover { background: #6ee7b7; }
+        .hint-box {
+            display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem;
+            width: 100%; background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857;
+            line-height: 1.65; margin-top: 0.25rem;
+        }
+        .hint-box code {
+            background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px;
+            font-family: 'Fira Code', monospace; font-size: 0.85em;
+        }
+
+        @media (max-width: 860px) {
+            aside { display: none; }
+            main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+
+<aside>
+    <div class="sidebar-title">Playwright Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Locator Priority</span>      <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. getByRole Button</span>      <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. toHaveText vs Contain</span> <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. Auto-Waiting</span>          <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. Strict Mode</span>           <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. page Fixture</span>          <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. Default Timeout</span>       <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. beforeEach Scope</span>      <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. page.route()</span>          <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. Custom Fixtures</span>      <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. toHaveURL</span>            <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. Parallel vs Serial</span>   <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-theater-masks"></i> Playwright Challenges</h1>
+        <p>Pick the correct answer for each Playwright question. Instant feedback with detailed explanations. Covers real interview topics.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 1</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Locators</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Which locator should you prefer first?</div>
+            <div class="ch-desc">Playwright recommends a priority order for choosing locators. Which is the most preferred option for resilient tests?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> CSS selector — page.locator('.submit-btn')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">B</span> XPath — page.locator('//button[@type="submit"]')</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">C</span> Role — page.getByRole('button', { name: 'Submit' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> Test ID — page.getByTestId('submit')</button>
+            </div>
+            <div class="explanation" id="c1-exp">
+                <strong>Answer: C — getByRole</strong><br>
+                Playwright's official recommendation: prefer user-facing attributes in this order: 1) <code>getByRole</code> (most resilient — mirrors how users and screen readers interact), 2) <code>getByLabel</code>, 3) <code>getByPlaceholder</code>, 4) <code>getByText</code>, 5) <code>getByTestId</code>. CSS selectors and XPath are brittle because they depend on implementation details that change with styling refactors.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c1-hint">Think about which locator mirrors how a real user (or screen reader) interacts with the page — by role and visible label, not by DOM structure.</div>
+        </div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 2</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Locators</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">How do you locate a "Sign In" submit button?</div>
+            <div class="ch-desc">Using <code>getByRole</code>, which call correctly targets a button with the visible text "Sign In"?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;button type="submit"&gt;Sign In&lt;/button&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> page.getByRole('submit', { name: 'Sign In' })</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">B</span> page.getByRole('button', { name: 'Sign In' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">C</span> page.getByRole('button', { type: 'submit' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> page.getByText('Sign In').getByRole('button')</button>
+            </div>
+            <div class="explanation" id="c2-exp">
+                <strong>Answer: B — page.getByRole('button', { name: 'Sign In' })</strong><br>
+                <code>getByRole</code> uses ARIA roles. A <code>&lt;button&gt;</code> element always has the implicit ARIA role of <code>'button'</code> — not <code>'submit'</code> (that's a type attribute, not a role). The <code>name</code> option matches the accessible name, which for a button is its text content. Option A fails because <code>'submit'</code> is not a valid ARIA role.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c2-hint">The first argument to <code>getByRole</code> is the ARIA role — not the HTML attribute. What ARIA role does a <code>&lt;button&gt;</code> element have?</div>
+        </div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 3</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Assertions</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">toHaveText vs toContainText — which passes?</div>
+            <div class="ch-desc">An element contains the text <code>"Welcome, Alice!"</code>. Which assertion passes?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Element inner text: "Welcome, Alice!"
+
+await expect(heading).toHaveText('Alice');       // (A)
+await expect(heading).toContainText('Alice');    // (B)
+await expect(heading).toHaveText(/Alice/);       // (C)
+await expect(heading).toContainText('Welcome'); // (D)</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> Only A passes</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">B</span> Only B passes</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">C</span> B, C and D pass; A fails</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> All four pass</button>
+            </div>
+            <div class="explanation" id="c3-exp">
+                <strong>Answer: C — B, C and D pass; A fails</strong><br>
+                <code>toHaveText('Alice')</code> requires the element's full text to equal <code>'Alice'</code> exactly — it fails because the text is <code>'Welcome, Alice!'</code>.<br>
+                <code>toContainText('Alice')</code> only requires a substring match — passes.<br>
+                <code>toHaveText(/Alice/)</code> uses a regex — matches anywhere in the text — passes.<br>
+                <code>toContainText('Welcome')</code> — substring match — passes.<br>
+                Use <code>toContainText</code> for partial matches; <code>toHaveText</code> for exact full-text.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c3-hint"><code>toHaveText(string)</code> requires the full text to match. <code>toContainText(string)</code> only needs a substring match. A regex in <code>toHaveText</code> allows partial matching.</div>
+        </div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 4</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Auto-Waiting</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does Playwright automatically wait for before clicking?</div>
+            <div class="ch-desc">Playwright's auto-wait mechanism checks several conditions before performing an action. Which set is correct?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> Only that the element exists in the DOM</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">B</span> That the element is visible and has a non-zero size</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">C</span> Attached, visible, stable, enabled — and receives events</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> Only that network requests have completed</button>
+            </div>
+            <div class="explanation" id="c4-exp">
+                <strong>Answer: C — Attached, visible, stable, enabled, and receives events</strong><br>
+                Before a <code>click()</code>, Playwright automatically waits for the element to be:
+                <strong>1) Attached</strong> to the DOM,
+                <strong>2) Visible</strong> (not hidden/display:none),
+                <strong>3) Stable</strong> (not animating),
+                <strong>4) Enabled</strong> (not disabled),
+                <strong>5) Receives pointer events</strong> (not obscured by another element).
+                This eliminates most flaky test patterns that require manual <code>waitForSelector</code> calls. The default action timeout is 30 seconds.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c4-hint">Playwright uses the term "actionability checks." Think about all the things that could go wrong if you tried to click an element too early — what conditions prevent a real click?</div>
+        </div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 5</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Strict Mode</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What happens when a locator matches 2 elements?</div>
+            <div class="ch-desc">Playwright locators are strict by default. What happens when you call <code>click()</code> on a locator that resolves to two elements?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Page has two &lt;button class="save"&gt; elements
+await page.locator('button.save').click();</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> Clicks the first matching element</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">B</span> Clicks both elements</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">C</span> Throws an error — strict mode violation</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> Waits until only one element matches</button>
+            </div>
+            <div class="explanation" id="c5-exp">
+                <strong>Answer: C — Throws an error</strong><br>
+                Playwright locators are strict: if an action targets more than one element, it throws <code>Error: strict mode violation: locator('button.save') resolved to 2 elements</code>. This prevents accidental interactions with the wrong element. To target a specific one, use <code>.first()</code>, <code>.last()</code>, <code>.nth(n)</code>, or a more specific locator. This is intentional — ambiguity is a test design smell.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c5-hint">Playwright prioritises test reliability over convenience. What happens when it can't determine <em>which</em> element you meant?</div>
+        </div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 6</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Fixtures</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does the page fixture provide?</div>
+            <div class="ch-desc">Playwright's built-in <code>page</code> fixture is injected into every test. What does it represent?</div>
+            <div class="code-block"><pre><code class="language-typescript">test('example', async ({ page }) => {
+  // What is page?
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> A shared browser instance used across all tests</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> An isolated browser tab (Page) scoped to this one test</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> The browser context shared per test file</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> A mock page object that doesn't open a real browser</button>
+            </div>
+            <div class="explanation" id="c6-exp">
+                <strong>Answer: B — An isolated browser tab scoped to this one test</strong><br>
+                The <code>page</code> fixture is a <code>Page</code> object — a single browser tab. Each test gets its own <code>page</code> in a fresh browser context (isolated cookies, localStorage, etc.). After the test finishes, Playwright closes it automatically. This isolation is why Playwright tests don't interfere with each other even when run in parallel. The hierarchy is: Browser → BrowserContext → Page.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c6-hint">Playwright's test isolation model: each test gets its own browser context. The <code>page</code> fixture is created fresh for each individual test.</div>
+        </div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 7</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Configuration</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">Where do you set the default action timeout globally?</div>
+            <div class="ch-desc">You want all actions (click, fill, etc.) to time out after 10 seconds by default. Where is the correct place in <code>playwright.config.ts</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">export default defineConfig({
+  timeout: 60_000,          // (A) top-level
+  use: {
+    actionTimeout: 10_000,  // (B) inside use
+    navigationTimeout: 15_000,
+  },
+  expect: {
+    timeout: 5_000,         // (C) inside expect
+  }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> timeout: 60_000 (top-level) — controls all timeouts</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> use.actionTimeout — controls individual action timeouts</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> expect.timeout — controls all assertion and action timeouts</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> You cannot set a global action timeout</button>
+            </div>
+            <div class="explanation" id="c7-exp">
+                <strong>Answer: B — use.actionTimeout</strong><br>
+                Playwright config has separate timeout controls: <code>timeout</code> (top-level) = max time per entire test. <code>use.actionTimeout</code> = max time for each individual action (click, fill, etc.). <code>use.navigationTimeout</code> = max time for navigation actions (goto, waitForNavigation). <code>expect.timeout</code> = max time for assertions. They are independent — setting one does not affect the others.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c7-hint">There are different timeouts for different things in Playwright. The top-level <code>timeout</code> is for the whole test. What key inside <code>use: {}</code> controls individual element interactions?</div>
+        </div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 8</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Test Hooks</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the scope of test.beforeEach?</div>
+            <div class="ch-desc">You have a <code>test.beforeEach</code> inside a <code>test.describe</code> block. Which tests does it run before?</div>
+            <div class="code-block"><pre><code class="language-typescript">test.describe('Login', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/login');
+  });
+
+  test('valid login', async ({ page }) => { /* ... */ });
+  test('invalid login', async ({ page }) => { /* ... */ });
+});
+
+test('homepage', async ({ page }) => { /* ... */ });</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> Before every test in the entire file</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">B</span> Only before 'valid login' and 'invalid login'</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">C</span> Only before the first test in the describe block</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> Before all tests including 'homepage'</button>
+            </div>
+            <div class="explanation" id="c8-exp">
+                <strong>Answer: B — Only the two tests inside the describe block</strong><br>
+                <code>test.beforeEach</code> defined inside a <code>test.describe</code> block has that describe block as its scope. It runs before <em>each</em> test within that block only — not before tests outside it. The <code>'homepage'</code> test is outside the <code>'Login'</code> describe, so the hook does not run for it. To apply a hook globally, define it at the top level of the file.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c8-hint">Hooks in Playwright (like in Jest/Vitest) are scoped to the block they are defined in. A hook inside a <code>describe</code> only affects tests inside that same <code>describe</code>.</div>
+        </div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 9</span>
+            <span class="badge advanced">Advanced</span>
+            <span class="topic-badge">Network</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does this page.route() call do?</div>
+            <div class="ch-desc">Read the code and identify what happens when the app makes an API request to <code>/api/users</code>.</div>
+            <div class="code-block"><pre><code class="language-typescript">await page.route('**/api/users', async route => {
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify([{ id: 1, name: 'Alice' }])
+  });
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> Blocks the request so it never reaches the server</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">B</span> Forwards the request and records the response</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">C</span> Intercepts the request and returns a mock response without hitting the server</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> Throws an error — you cannot mock JSON responses this way</button>
+            </div>
+            <div class="explanation" id="c9-exp">
+                <strong>Answer: C — Intercepts and returns a mock response</strong><br>
+                <code>page.route(pattern, handler)</code> intercepts matching network requests. <code>route.fulfill()</code> responds with synthetic data — the real server is never called. This is perfect for testing UI behaviour with controlled data, testing error states (e.g., <code>status: 500</code>), or running tests without a backend. Use <code>route.continue()</code> to pass through to the real server, or <code>route.abort()</code> to simulate network failure.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c9-hint"><code>route.fulfill()</code> provides a complete fake response. <code>route.continue()</code> passes through. <code>route.abort()</code> fails the request. Which one are we using here?</div>
+        </div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 10</span>
+            <span class="badge intermediate">Intermediate</span>
+            <span class="topic-badge">Fixtures</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">How do you create a custom fixture in Playwright?</div>
+            <div class="ch-desc">Which pattern correctly extends Playwright's <code>test</code> with a custom <code>loginPage</code> fixture?</div>
+            <div class="code-block"><pre><code class="language-typescript">// fixtures.ts
+import { test as base } from '@playwright/test';
+
+export const test = base.extend&lt;{ loginPage: LoginPage }&gt;({
+  loginPage: async ({ page }, use) => {
+    const lp = new LoginPage(page);
+    await use(lp);       // value available inside test
+    // teardown here if needed
+  }
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> This pattern is wrong — fixtures only support primitive values</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> Correct — test.extend() creates a new test object with the custom fixture</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> Correct only if LoginPage extends Playwright's Page class</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> Wrong — you must use beforeEach to inject page objects</button>
+            </div>
+            <div class="explanation" id="c10-exp">
+                <strong>Answer: B — Correct pattern</strong><br>
+                <code>base.extend()</code> creates a new test object with additional fixtures. The fixture function receives built-in fixtures (like <code>page</code>) and a <code>use</code> callback. Everything <em>before</em> <code>await use(value)</code> is setup; everything <em>after</em> is teardown. The exported <code>test</code> is used in test files instead of Playwright's default <code>test</code>. This is the official Playwright pattern for Page Object injection and is far cleaner than <code>beforeEach</code>.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c10-hint">Playwright fixtures are like dependency injection. The <code>use(value)</code> call is the boundary between setup and teardown. The value is available inside the test body.</div>
+        </div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 11</span>
+            <span class="badge beginner">Beginner</span>
+            <span class="topic-badge">Assertions</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What does this assertion verify?</div>
+            <div class="ch-desc">After a login action, you want to confirm the user landed on the dashboard. Which assertion is correct and why?</div>
+            <div class="code-block"><pre><code class="language-typescript">await expect(page).toHaveURL('/dashboard');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> Checks the page title equals '/dashboard'</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> Waits (auto-retry) until the URL matches, then passes</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> Checks the URL immediately — fails if not yet navigated</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> Navigates to '/dashboard' then checks</button>
+            </div>
+            <div class="explanation" id="c11-exp">
+                <strong>Answer: B — Auto-retries until URL matches</strong><br>
+                Playwright's <code>expect(page).toHaveURL()</code> is a <em>web-first assertion</em>. It automatically retries — polling the current URL — until it matches or the timeout expires. This means you don't need a manual <code>waitForURL()</code> before the assertion. The string <code>'/dashboard'</code> is matched as a substring by default (or you can pass a regex for full control). It does not navigate — it only asserts.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c11-hint">Playwright's <code>expect</code> assertions are "web-first" — they automatically retry and wait, unlike normal synchronous assertions.</div>
+        </div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header">
+            <span class="ch-num">Challenge 12</span>
+            <span class="badge advanced">Advanced</span>
+            <span class="topic-badge">Parallelism</span>
+            <div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div>
+        </div>
+        <div class="ch-body">
+            <div class="ch-title">What is the difference between parallel and default execution?</div>
+            <div class="ch-desc">Playwright has two modes for running tests inside a <code>describe</code> block. What is the key difference?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Mode A
+test.describe('Suite', () => {
+  test('test 1', async ({ page }) => { ... });
+  test('test 2', async ({ page }) => { ... });
+});
+
+// Mode B
+test.describe.parallel('Suite', () => {
+  test('test 1', async ({ page }) => { ... });
+  test('test 2', async ({ page }) => { ... });
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> No difference — both run serially by default</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">B</span> Mode B runs in a separate process; Mode A shares the process</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">C</span> Mode A runs tests in the describe serially; Mode B runs them in parallel within workers</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> Mode B only affects the order, not the parallelism</button>
+            </div>
+            <div class="explanation" id="c12-exp">
+                <strong>Answer: C — Serial vs parallel within workers</strong><br>
+                By default (Mode A), tests inside a <code>describe</code> run <em>serially</em> (one after another) in the same worker. <code>test.describe.parallel</code> (Mode B) allows the tests in the block to run <em>concurrently</em> across available workers. This reduces total test time but requires tests to be fully independent (no shared state). Note: file-level parallelism is controlled by the <code>workers</code> config option — <code>.parallel</code> applies within a single describe block.
+            </div>
+        </div>
+        <div class="ch-footer">
+            <button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button>
+            <div class="hint-box" id="c12-hint">Think about what "parallel" means for test isolation. Tests that share state cannot run in parallel safely. What does <code>.parallel</code> change about how tests within the block are scheduled?</div>
+        </div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem('vtq-pw-practice') || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) card.classList.add('solved');
+                const exp = document.getElementById(id + '-exp');
+                if (exp) exp.style.display = 'block';
+                const btns = card ? card.querySelectorAll('.option-btn') : [];
+                btns.forEach(b => {
+                    b.disabled = true;
+                    if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                    else b.classList.add('opt-wrong');
+                });
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+
+        document.getElementById(cardId + '-exp').style.display = 'block';
+
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem('vtq-pw-practice', JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

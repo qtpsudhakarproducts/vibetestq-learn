@@ -1,0 +1,873 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">👁️ Part 7 &nbsp;·&nbsp; Chapter 704 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Authentication</span> <span class="w2">—</span> <span class="w3">Basics</span></h1>
+    <p class="sn-title-sub">API &amp; Network — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's <code class="sn-ic">storageState</code> approach to authentication — the pattern that eliminates login overhead across test suites. Interviewers ask these questions to judge whether candidates understand why repeated UI login is a test smell, how <code class="sn-ic">storageState</code> works at the browser level, and how to implement the setup project pattern correctly. Questions at senior level focus on multi-role setup, session expiry, and the decision between UI login vs API login for generating auth state.</span>
+  </div>
+
+
+  <!-- Q704.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.1</span>
+      <h2 class="sn-q-text">What is the authentication problem in test automation?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every test that needs to verify a protected page must establish an authenticated session first. The naive approach is to log in at the start of every test:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Naive — login in every test</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'user@test.com'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'pass123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+});</div>
+      </div>
+<p class="sn-para">This fails at scale. If login takes 5 seconds and you have 200 tests, that is over 16 minutes spent on login alone — time that adds nothing to test coverage. More critically, if the authentication provider (OAuth, SSO, Okta, Auth0) has a brief outage, every test in the suite fails on the login step — none of them ever reach the actual feature under test.</p>
+<p class="sn-para">Playwright's answer is <code class="sn-ic">storageState</code>: log in once, save the session to a file, inject it into every test context.</p>
+    </div>
+  </div>
+
+  <!-- Q704.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.2</span>
+      <h2 class="sn-q-text">What is storageState in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">storageState</code> is a JSON file that captures a browser context's authentication state — cookies and local storage. When you load a <code class="sn-ic">storageState</code> file into a new browser context, that context is instantly authenticated as if the login had already happened.</p>
+      </div>
+<p class="sn-para">The file structure:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;cookies&quot;: [
+    {
+      &quot;name&quot;:     &quot;session_id&quot;,
+      &quot;value&quot;:    &quot;eyJhbGciOiJIUzI1NiJ9...&quot;,
+      &quot;domain&quot;:   &quot;example.com&quot;,
+      &quot;path&quot;:     &quot;/&quot;,
+      &quot;httpOnly&quot;: true,
+      &quot;secure&quot;:   true,
+      &quot;sameSite&quot;: &quot;Lax&quot;
+    }
+  ],
+  &quot;origins&quot;: [
+    {
+      &quot;origin&quot;: &quot;https://example.com&quot;,
+      &quot;localStorage&quot;: [
+        { &quot;name&quot;: &quot;auth_token&quot;, &quot;value&quot;: &quot;Bearer abc123...&quot; }
+      ]
+    }
+  ]
+}</div>
+      </div>
+<p class="sn-para">When Playwright injects this state into a new context, the browser treats it as if the user had logged in normally. The application's auth middleware sees a valid session cookie or token on the first request.</p>
+    </div>
+  </div>
+
+  <!-- Q704.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.3</span>
+      <h2 class="sn-q-text">How do you generate a storageState file?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Generate it in a setup test that logs in via the UI and then calls <code class="sn-ic">context.storageState({ path: '...' })</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/auth.setup.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as setup, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">const</span> authFile = path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'../playwright/.auth/user.json'</span>);
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'authenticate as user'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(process.env.USER_EMAIL!);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(process.env.USER_PASSWORD!);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Wait until login is fully complete — not just the redirect</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Save the authenticated state</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: authFile });
+});</div>
+      </div>
+<p class="sn-para">The wait after <code class="sn-ic">waitForURL</code> is important. If you call <code class="sn-ic">storageState()</code> before the server has set all auth cookies, the saved state is incomplete. Waiting for a visible element that only appears when auth is fully established ensures the state is complete.</p>
+    </div>
+  </div>
+
+  <!-- Q704.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.4</span>
+      <h2 class="sn-q-text">How do you use storageState in tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Once generated, inject the storageState via <code class="sn-ic">playwright.config.ts</code> using the <code class="sn-ic">use</code> option:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">import</span> { defineConfig } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  projects: [
+    {
+      name: <span class="tc-str">'setup'</span>,
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
+      name: <span class="tc-str">'chromium'</span>,
+      use: {
+        storageState: <span class="tc-str">'playwright/.auth/user.json'</span>,
+      },
+      dependencies: [<span class="tc-str">'setup'</span>],
+    },
+  ],
+});</div>
+      </div>
+<p class="sn-para">Every test in the <code class="sn-ic">chromium</code> project starts with an authenticated context. The login step is skipped entirely:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/profile.spec.ts — no login needed</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'user can update their profile'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Goes directly to the protected page — already authenticated</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/profile'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'My Profile'</span> })).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q704.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.5</span>
+      <h2 class="sn-q-text">How does the setup project dependency pattern work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The setup project runs before the main test project. The <code class="sn-ic">dependencies</code> array ensures the main project does not start until all setup projects pass:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  {
+    name:      <span class="tc-str">'setup'</span>,
+    testMatch: /.*\.setup\.ts/,
+    <span class="tc-cm">// No dependencies — runs first</span>
+  },
+  {
+    name:      <span class="tc-str">'chromium'</span>,
+    use: { storageState: <span class="tc-str">'playwright/.auth/user.json'</span> },
+    dependencies: [<span class="tc-str">'setup'</span>],  <span class="tc-cm">// Waits for 'setup' to complete successfully</span>
+  },
+]</div>
+      </div>
+<p class="sn-para">If the setup project fails (login is broken), the main project does not run. This is correct behaviour — there is no point running 200 tests if auth is broken.</p>
+<p class="sn-para">The setup project is a better approach than <code class="sn-ic">globalSetup</code>. A setup project:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Runs in the same test runner process</span></li>
+<li><span class="icon">💡</span><span>Appears in the HTML report as a normal test</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Can be retried with <code class="sn-ic">--retries</code></span></li>
+<li><span class="icon">🎯</span><span>Supports fixtures (unlike <code class="sn-ic">globalSetup</code>)</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q704.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.6</span>
+      <h2 class="sn-q-text">How do you set up multiple user roles?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Create one setup test per role, each writing to a separate file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/auth.setup.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as setup } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">const</span> adminFile  = <span class="tc-str">'playwright/.auth/admin.json'</span>;
+<span class="tc-kw">const</span> userFile   = <span class="tc-str">'playwright/.auth/user.json'</span>;
+<span class="tc-kw">const</span> viewerFile = <span class="tc-str">'playwright/.auth/viewer.json'</span>;
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'authenticate admin'</span>,  <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">loginAs</span>(page, process.env.ADMIN_EMAIL!,  process.env.ADMIN_PASS!,  adminFile);
+});
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'authenticate user'</span>,   <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">loginAs</span>(page, process.env.USER_EMAIL!,   process.env.USER_PASS!,   userFile);
+});
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'authenticate viewer'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">loginAs</span>(page, process.env.VIEWER_EMAIL!, process.env.VIEWER_PASS!, viewerFile);
+});
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">loginAs</span>(page: Page, email: <span class="tc-kw">string</span>, pass: <span class="tc-kw">string</span>, file: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(email);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(pass);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: file });
+}</div>
+      </div>
+<p class="sn-para">Configure each role as a separate project:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  { name: <span class="tc-str">'setup'</span>,          testMatch: /.*\.setup\.ts/ },
+  { name: <span class="tc-str">'admin-tests'</span>,    use: { storageState: adminFile },  dependencies: [<span class="tc-str">'setup'</span>] },
+  { name: <span class="tc-str">'user-tests'</span>,     use: { storageState: userFile },   dependencies: [<span class="tc-str">'setup'</span>] },
+  { name: <span class="tc-str">'viewer-tests'</span>,   use: { storageState: viewerFile }, dependencies: [<span class="tc-str">'setup'</span>] },
+]</div>
+      </div>
+<p class="sn-para">Each project's tests run as their respective role without any login code in the test files.</p>
+    </div>
+  </div>
+
+  <!-- Q704.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.7</span>
+      <h2 class="sn-q-text">How do you override storageState for a specific test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Some tests verify that a feature is inaccessible to certain roles, or need to be run without authentication. Override <code class="sn-ic">storageState</code> per test with <code class="sn-ic">test.use()</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Override to use admin auth for this entire file</span>
+<span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ storageState: <span class="tc-str">'playwright/.auth/admin.json'</span> });
+
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can access user management'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/admin/users'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'User Management'</span> })).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Completely unauthenticated test — empty state</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'login page redirects authenticated users'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Override with empty state — no cookies, no localStorage</span>
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ storageState: { cookies: [], origins: [] } });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-cm">// When already logged in, /login should redirect to dashboard</span>
+  <span class="tc-cm">// Using empty state means we are definitely not logged in</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q704.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.8</span>
+      <h2 class="sn-q-text">What is the difference between UI login and API login for setup?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">UI login</strong> — navigate to the login page, fill the form, click submit, wait for redirect. Exactly what a real user does. Generates a realistic auth state with all cookies and tokens the server sets.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// UI login — slow but guaranteed to match real user session</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(email);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(password);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: authFile });</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">API login</strong> — call the login endpoint directly, then manually set the returned token or cookie on the browser context. Much faster.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// API login — fast, bypasses UI entirely</span>
+<span class="tc-fn">setup</span>(<span class="tc-str">'api login'</span>, <span class="tc-kw">async</span> ({ request, context }) =&gt; {
+  <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+    data: { email, password },
+  });
+  <span class="tc-kw">const</span> { token } = <span class="tc-kw">await</span> res.<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// For JWT in localStorage</span>
+  <span class="tc-kw">await</span> context.<span class="tc-fn">addInitScript</span>(() =&gt; {
+    localStorage.<span class="tc-fn">setItem</span>(<span class="tc-str">'auth_token'</span>, token);
+  });
+  <span class="tc-kw">await</span> context.<span class="tc-fn">storageState</span>({ path: authFile });
+});</div>
+      </div>
+<p class="sn-para">Use UI login when: the application uses complex auth flows (CSRF tokens, form challenges, captchas) that the API bypasses. Use API login when: the auth endpoint is accessible and the test environment has no UI-based protections. API login is typically 5–10× faster.</p>
+    </div>
+  </div>
+
+  <!-- Q704.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.9</span>
+      <h2 class="sn-q-text">How does storageState handle session expiry?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">storageState</code> saves cookies and tokens at a point in time. If the session expires before all tests complete, tests start failing with 401 responses.</p>
+      </div>
+<p class="sn-para">Mitigation strategies:</p>
+<p class="sn-para"><strong class="k-blue">Long-lived test sessions.</strong> Configure the test environment to issue sessions that last 24 hours or the duration of a full CI run. Never use production session policies for test accounts.</p>
+<p class="sn-para"><strong class="k-blue">Re-generate before each CI run.</strong> The setup project runs at the start of every CI job. As long as the job completes within the session lifetime, there is no issue.</p>
+<p class="sn-para"><strong class="k-blue">Detect and handle expiry.</strong> Add a <code class="sn-ic">beforeEach</code> that checks whether the current session is still valid and re-authenticates if not:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Quick API ping — if 401, re-run auth</span>
+  <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> page.request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/user/me'</span>);
+  <span class="tc-kw">if</span> (res.<span class="tc-fn">status</span>() === <span class="tc-num">401</span>) {
+    <span class="tc-kw">await</span> <span class="tc-fn">runAuthSetup</span>(page); <span class="tc-cm">// re-authenticate</span>
+  }
+});</div>
+      </div>
+<p class="sn-para">The cleanest solution is always the first: test environment sessions should outlast any test run.</p>
+    </div>
+  </div>
+
+  <!-- Q704.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.10</span>
+      <h2 class="sn-q-text">Why should storageState files be gitignored?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">storageState</code> files contain live session tokens — the same as having the user's cookies. Anyone with the file can authenticate as that user without knowing the password.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">playwright/.auth/</div>
+      </div>
+<p class="sn-para">Add the auth directory to <code class="sn-ic">.gitignore</code>. In CI, the files are generated fresh by the setup project at the start of each run. They never need to be committed.</p>
+<p class="sn-para">If <code class="sn-ic">storageState</code> files are accidentally committed:</p>
+<ol class="sn-olist">
+<li>Revoke all session tokens for the affected accounts immediately</li>
+<li>Rotate the account passwords</li>
+<li>Remove the files from git history with <code class="sn-ic">git filter-branch</code> or BFG</li>
+<li>Add <code class="sn-ic">.gitignore</code> entry to prevent recurrence</li>
+</ol>
+    </div>
+  </div>
+
+  <!-- Q704.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.11</span>
+      <h2 class="sn-q-text">What is sessionStorage and why does storageState not capture it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">localStorage</code> persists across browser tabs and sessions until explicitly cleared. <code class="sn-ic">sessionStorage</code> is tab-scoped and cleared when the tab closes.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">context.storageState()</code> captures cookies and <code class="sn-ic">localStorage</code> but not <code class="sn-ic">sessionStorage</code>, because session storage is tied to the tab's lifecycle — when the old page that generated it closes, the session storage is gone. Saving it to a file and loading it into a new context would not work the same way.</p>
+<p class="sn-para">If your application stores auth state in <code class="sn-ic">sessionStorage</code>, inject it manually via a fixture before each test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.<span class="tc-fn">extend</span>({
+  page: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);  <span class="tc-cm">// Navigate first — sessionStorage is origin-bound</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; {
+      sessionStorage.<span class="tc-fn">setItem</span>(<span class="tc-str">'session_key'</span>, <span class="tc-str">'abc123'</span>);
+    });
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+  },
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q704.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.12</span>
+      <h2 class="sn-q-text">How do you test that unauthenticated users cannot access protected pages?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Access control'</span>, () =&gt; {
+
+  <span class="tc-cm">// These tests must NOT use the project's storageState</span>
+  <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ storageState: { cookies: [], origins: [] } });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'redirects to login when accessing dashboard unauthenticated'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/login/);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'returns 401 for API calls without auth'</span>, <span class="tc-kw">async</span> ({ request }) =&gt; {
+    <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> request.<span class="tc-fn">get</span>(<span class="tc-str">'/api/users'</span>);
+    <span class="tc-kw">expect</span>(response.<span class="tc-fn">status</span>()).<span class="tc-fn">toBe</span>(<span class="tc-num">401</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'cannot access admin panel'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/admin'</span>);
+    <span class="tc-cm">// Should redirect to login, not show 403 message to anonymous users</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/\/login/);
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">test.use({ storageState: { cookies: [], origins: [] } })</code> at the describe level overrides the project's auth state for all tests in this block. They run without any session cookies.</p>
+    </div>
+  </div>
+
+  <!-- Q704.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.13</span>
+      <h2 class="sn-q-text">How does storageState compare to the old globalSetup approach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">Old approach — <code class="sn-ic">globalSetup</code>:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+globalSetup: <span class="tc-str">'./global-setup.ts'</span>
+
+<span class="tc-cm">// global-setup.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">globalSetup</span>(config) {
+  <span class="tc-kw">const</span> browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>();
+  <span class="tc-kw">const</span> page    = <span class="tc-kw">await</span> browser.<span class="tc-fn">newPage</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-cm">// ... login steps ...</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'./auth.json'</span> });
+  <span class="tc-kw">await</span> browser.<span class="tc-fn">close</span>();
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">Modern approach — setup project with <code class="sn-ic">dependencies</code>:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  { name: <span class="tc-str">'setup'</span>, testMatch: /.*\.setup\.ts/ },
+  { name: <span class="tc-str">'chromium'</span>, dependencies: [<span class="tc-str">'setup'</span>], use: { storageState: authFile } },
+]</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">Why the setup project approach is better:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>The setup test appears in the HTML report — you can see if it passed or failed</span></li>
+<li><span class="icon">💡</span><span>It supports <code class="sn-ic">--retries</code> if the setup test is flaky</span></li>
+<li><span class="icon">⚡</span><span>It uses fixtures (the old <code class="sn-ic">globalSetup</code> runs outside the fixture system)</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>It can be debugged with <code class="sn-ic">--headed</code> and the trace viewer</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Multiple setup steps can be parallelised</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q704.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.14</span>
+      <h2 class="sn-q-text">How do you inject an API-obtained JWT into the browser for testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When the application stores the JWT in <code class="sn-ic">localStorage</code> rather than a cookie:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-fn">setup</span>(<span class="tc-str">'authenticate via API'</span>, <span class="tc-kw">async</span> ({ request, page }) =&gt; {
+  <span class="tc-cm">// Get the token via API</span>
+  <span class="tc-kw">const</span> res = <span class="tc-kw">await</span> request.<span class="tc-fn">post</span>(<span class="tc-str">'/api/auth/login'</span>, {
+    data: { email: process.env.USER_EMAIL!, password: process.env.USER_PASS! },
+  });
+  <span class="tc-kw">expect</span>(res.<span class="tc-fn">ok</span>()).<span class="tc-fn">toBe</span>(<span class="tc-kw">true</span>);
+  <span class="tc-kw">const</span> { accessToken } = <span class="tc-kw">await</span> res.<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// Navigate to the app domain — localStorage is origin-bound</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+  <span class="tc-cm">// Set the token in localStorage</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(token =&gt; {
+    localStorage.<span class="tc-fn">setItem</span>(<span class="tc-str">'accessToken'</span>, token);
+  }, accessToken);
+
+  <span class="tc-cm">// Save the state (localStorage is now included)</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: authFile });
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">page.evaluate()</code> call runs JavaScript in the browser context. You must navigate to the correct origin first — localStorage is domain-scoped. Setting <code class="sn-ic">localStorage.setItem</code> on <code class="sn-ic">example.com</code> while on <code class="sn-ic">about:blank</code> does nothing.</p>
+    </div>
+  </div>
+
+  <!-- Q704.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.15</span>
+      <h2 class="sn-q-text">Write a complete auth setup for a two-role application.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/auth.setup.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as setup, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">const</span> ADMIN_FILE = path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'../playwright/.auth/admin.json'</span>);
+<span class="tc-kw">const</span> USER_FILE  = path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'../playwright/.auth/user.json'</span>);
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">loginAs</span>(
+  page: <span class="tc-kw">typeof</span> setup.prototype[<span class="tc-str">'page'</span>],
+  email: <span class="tc-kw">string</span>,
+  password: <span class="tc-kw">string</span>,
+  outputFile: <span class="tc-kw">string</span>
+) {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>).<span class="tc-fn">fill</span>(email);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(password);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Sign In'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Wait for full auth completion</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'user-menu'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Save</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: outputFile });
+}
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'admin auth'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">loginAs</span>(page, process.env.ADMIN_EMAIL!, process.env.ADMIN_PASS!, ADMIN_FILE);
+});
+
+<span class="tc-fn">setup</span>(<span class="tc-str">'user auth'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">loginAs</span>(page, process.env.USER_EMAIL!, process.env.USER_PASS!, USER_FILE);
+});</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts (projects section)</span>
+projects: [
+  { name: <span class="tc-str">'setup'</span>,         testMatch: /.*\.setup\.ts/ },
+  { name: <span class="tc-str">'admin-chrome'</span>,  use: { storageState: ADMIN_FILE },  dependencies: [<span class="tc-str">'setup'</span>] },
+  { name: <span class="tc-str">'user-chrome'</span>,   use: { storageState: USER_FILE },   dependencies: [<span class="tc-str">'setup'</span>] },
+]</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q704.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.16</span>
+      <h2 class="sn-q-text">How do you handle authentication in a test that needs both roles?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a single test needs to verify two roles (for example: admin creates a task, user sees it), use a custom fixture that provides a second context:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/index.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{
+  adminPage: Page;
+  userPage:  Page;
+}&gt;({
+  adminPage: <span class="tc-kw">async</span> ({ browser }, use) =&gt; {
+    <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+      storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,
+    });
+    <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+    <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();
+  },
+
+  userPage: <span class="tc-kw">async</span> ({ browser }, use) =&gt; {
+    <span class="tc-kw">const</span> context = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>({
+      storageState: <span class="tc-str">'playwright/.auth/user.json'</span>,
+    });
+    <span class="tc-kw">const</span> page = <span class="tc-kw">await</span> context.<span class="tc-fn">newPage</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(page);
+    <span class="tc-kw">await</span> context.<span class="tc-fn">close</span>();
+  },
+});
+
+<span class="tc-cm">// Test using both roles</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin creates task, user sees it'</span>, <span class="tc-kw">async</span> ({ adminPage, userPage }) =&gt; {
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/tasks/new'</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Title'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Review document'</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Create'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-kw">await</span> userPage.<span class="tc-fn">goto</span>(<span class="tc-str">'/tasks'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(userPage.<span class="tc-fn">getByText</span>(<span class="tc-str">'Review document'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q704.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.17</span>
+      <h2 class="sn-q-text">What should you do if the auth setup test is flaky?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Auth setup flakiness is high-impact because it fails the entire suite. Steps to diagnose and fix:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Add retries to the setup project.</strong> The setup project can use <code class="sn-ic">retries</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">{ name: <span class="tc-str">'setup'</span>, testMatch: /.*\.setup\.ts/, retries: <span class="tc-num">2</span> }</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Wait more explicitly.</strong> The most common cause is calling <code class="sn-ic">context.storageState()</code> before the server has set all auth cookies. Add explicit element visibility waits after login:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'/dashboard'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'nav-bar'</span>)).<span class="tc-fn">toBeVisible</span>();  <span class="tc-cm">// fully loaded</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">storageState</span>({ path: authFile });</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Use API login.</strong> If the login form itself is unreliable (slow to render, CAPTCHA, third-party auth service), switch to API login. No UI means no UI-related flakiness.</p>
+<p class="sn-para"><strong class="k-blue">Separate auth from test-data setup.</strong> If the setup test also creates test data, an API failure during data creation can make the whole setup appear as "auth broken." Split them into separate setup steps.</p>
+    </div>
+  </div>
+
+  <!-- Q704.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q704.18</span>
+      <h2 class="sn-q-text">In your OrangeHRM project, how was authentication handled?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, authentication was implemented at Level 3 using <code class="sn-ic">storageState</code> and the setup project pattern.</p>
+      </div>
+<p class="sn-para">The setup step (<code class="sn-ic">global-setup.ts</code>) logs in as Admin and as an ESS user via the UI, waiting for the dashboard navigation to confirm each login is complete. It writes <code class="sn-ic">playwright/.auth/admin.json</code> and <code class="sn-ic">playwright/.auth/ess.json</code>. Both files are gitignored.</p>
+<p class="sn-para">Three Playwright projects use these files:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The Admin project uses <code class="sn-ic">admin.json</code> for all PIM and Admin module tests</span></li>
+<li><span class="icon">💡</span><span>The ESS project uses <code class="sn-ic">ess.json</code> for Leave module tests where an employee</span></li>
+</ul>
+<p class="sn-para">  must be the actor</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>A shared utilities project uses no storageState for purely setup/API calls</span></li>
+</ul>
+<p class="sn-para">The key improvement from adding <code class="sn-ic">storageState</code> at Level 3: the suite went from 15+ seconds of login overhead per test to zero. For a 40-test suite, this saved approximately 10 minutes per run.</p>
+<p class="sn-para">The gotcha we hit: the first version of the setup called <code class="sn-ic">storageState()</code>  immediately after <code class="sn-ic">waitForURL('/dashboard')</code>. On slow CI machines, the session cookie was not yet fully committed and some tests started with partial auth. Adding <code class="sn-ic">await expect(page.getByTestId('main-menu')).toBeVisible()</code> before saving the state fixed it completely.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">storageState</code> saves cookies and <code class="sn-ic">localStorage</code> to a JSON file; injecting it into a browser context instantly authenticates it — no login UI needed.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">storageState</code> does NOT capture <code class="sn-ic">sessionStorage</code> — inject it manually via <code class="sn-ic">page.evaluate()</code> in a fixture if required.</span></li>
+            <li><span class="icon">⭐</span><span>Use the setup project + <code class="sn-ic">dependencies</code> pattern instead of <code class="sn-ic">globalSetup</code> — it shows in the report, supports retries, and works with fixtures.</span></li>
+            <li><span class="icon">⭐</span><span>Every test project loads the auth file via <code class="sn-ic">use: { storageState: 'path/to/auth.json' }</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Multi-role testing: one setup test per role, one auth file per role, one project per role.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Override <code class="sn-ic">storageState</code> per test or per describe block with <code class="sn-ic">test.use({ storageState: ... })</code>.</span></li>
+            <li><span class="icon">⭐</span><span>For unauthenticated tests use <code class="sn-ic">test.use({ storageState: { cookies: [], origins: [] } })</code> to reset the project default.</span></li>
+            <li><span class="icon">⭐</span><span>UI login vs API login: use UI login for complex auth flows; use API login for speed (5–10× faster) in environments where the auth endpoint is directly accessible.</span></li>
+            <li><span class="icon">⭐</span><span>Always <code class="sn-ic">gitignore</code> auth files — they contain live session tokens.</span></li>
+            <li><span class="icon">⭐</span><span>Auth flakiness is most often caused by calling <code class="sn-ic">storageState()</code> before all cookies are set — add an element visibility assertion after login before saving.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

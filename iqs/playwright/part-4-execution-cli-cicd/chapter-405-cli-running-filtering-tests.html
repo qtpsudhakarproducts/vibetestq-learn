@@ -1,0 +1,707 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🔄 Part 4 &nbsp;·&nbsp; Chapter 405 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">CLI</span> <span class="w2">—</span> <span class="w3">Running</span> <span class="w4">&amp;</span> <span class="w5">Filtering</span> <span class="w6">Tests</span></h1>
+    <p class="sn-title-sub">Execution &amp; CI/CD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the Playwright CLI — the command-line interface used to run, filter, debug, and inspect tests. Interviewers ask about the CLI to gauge workflow efficiency: a candidate who reaches for <code class="sn-ic">--headed --debug</code> the moment a test fails, and can chain <code class="sn-ic">--grep</code>, <code class="sn-ic">--project</code>, and <code class="sn-ic">--workers</code> without hesitation, demonstrates the professional fluency that separates daily practitioners from occasional users.</span>
+  </div>
+
+
+  <!-- Q405.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.1</span>
+      <h2 class="sn-q-text">What is the base Playwright command and what does it do with no flags?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test</div>
+      </div>
+<p class="sn-para">With no flags, this runs every test in every project as defined in <code class="sn-ic">playwright.config.ts</code>. It uses the configured <code class="sn-ic">workers</code>, <code class="sn-ic">retries</code>, <code class="sn-ic">reporter</code>, <code class="sn-ic">timeout</code>, and all other config settings.</p>
+<p class="sn-para">Everything else in the CLI is a flag that modifies this base command. You can think of the CLI as the runtime override layer — it lets you change any config setting for a single run without editing the config file.</p>
+    </div>
+  </div>
+
+  <!-- Q405.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.2</span>
+      <h2 class="sn-q-text">How do you run a specific file, directory, or pattern from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test tests/leave/apply-leave.spec.ts
+
+npx playwright test tests/leave/
+
+npx playwright test tests/leave/apply-leave.spec.ts tests/leave/approve-leave.spec.ts
+
+npx playwright test leave</div>
+      </div>
+<p class="sn-para">The path argument is matched against test file paths — it does not need to be an exact path. <code class="sn-ic">npx playwright test leave</code> matches any file with "leave" in its path: <code class="sn-ic">tests/leave/apply.spec.ts</code>, <code class="sn-ic">tests/admin/leave-config.spec.ts</code>, and so on.</p>
+<p class="sn-para">File-based filtering is the fastest targeting method when you know which file you changed. Faster to type than <code class="sn-ic">--grep</code> and unambiguous.</p>
+    </div>
+  </div>
+
+  <!-- Q405.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.3</span>
+      <h2 class="sn-q-text">How does --grep work and what regex patterns does it support?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--grep</code> filters tests by their full title — the describe block path joined to the test name. It accepts a regular expression:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;apply leave&quot;
+
+npx playwright test --grep @smoke
+npx playwright test --grep @leave
+
+npx playwright test --grep &quot;@smoke|@regression&quot;
+
+npx playwright test --grep &quot;(?=.*@smoke)(?=.*@leave)&quot;
+
+npx playwright test --grep &quot;Apply Leave &gt; valid request submits successfully&quot;</div>
+      </div>
+<p class="sn-para">The full title Playwright matches against is: <code class="sn-ic">describe title &gt; test title</code>. So for a test <code class="sn-ic">test('valid request submits successfully')</code> inside <code class="sn-ic">describe('Apply Leave')</code>, the full title is: <code class="sn-ic">Apply Leave &gt; valid request submits successfully</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q405.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.4</span>
+      <h2 class="sn-q-text">What is --grep-invert and how do you combine it with --grep?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--grep-invert</code> excludes tests whose title matches the pattern. It is the complement of <code class="sn-ic">--grep</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep-invert @e2e
+
+npx playwright test --grep @regression --grep-invert @slow
+
+npx playwright test --grep-invert @payroll</div>
+      </div>
+<p class="sn-para">When <code class="sn-ic">--grep</code> and <code class="sn-ic">--grep-invert</code> are combined, Playwright first applies <code class="sn-ic">--grep</code> (keep matching) then applies <code class="sn-ic">--grep-invert</code> (remove matching from the result). The effect is AND NOT logic: run tests that match the grep pattern AND do not match the invert pattern.</p>
+    </div>
+  </div>
+
+  <!-- Q405.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.5</span>
+      <h2 class="sn-q-text">How do you target specific projects from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --project=chromium
+
+npx playwright test --project=chromium --project=firefox
+
+npx playwright test tests/leave/ --project=chromium
+
+npx playwright test --project=firefox --grep @smoke</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">--project</code> value must match the <code class="sn-ic">name</code> field in the <code class="sn-ic">projects</code> array exactly. You can stack multiple <code class="sn-ic">--project</code> flags — each adds another project to run. Without <code class="sn-ic">--project</code>, all projects run.</p>
+    </div>
+  </div>
+
+  <!-- Q405.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.6</span>
+      <h2 class="sn-q-text">What is --headed and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--headed</code> opens a visible browser window during the test run. By default, Playwright runs headless — no visible UI.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --headed
+npx playwright test --grep &quot;apply leave&quot; --headed --workers=1</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">When to use it:</strong> The moment a test fails and the error message does not explain why. Watch the browser — you will usually see the problem immediately: the element is not there, a modal is covering the button, the page is still loading, a validation message appeared. Headed mode provides the visual context that log messages cannot.</p>
+<p class="sn-para"><strong class="k-pink">Combine with <code class="sn-ic">--workers=1</code></strong> when debugging a specific test — multiple headed browser windows opening simultaneously is disorienting.</p>
+    </div>
+  </div>
+
+  <!-- Q405.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.7</span>
+      <h2 class="sn-q-text">What is --slow-mo and when does it help?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--slow-mo=N</code> adds a fixed delay of N milliseconds between every action:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --headed --slow-mo=500  # 500ms between each action
+npx playwright test --headed --slow-mo=200  # 200ms — slightly faster</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">--slow-mo</code> when <code class="sn-ic">--headed</code> is still too fast to follow. At default speed, Playwright can complete dozens of actions per second — difficult to watch. At 500ms per action you can follow each click, fill, and navigation, understand the flow, and see exactly where the failure occurs.</p>
+<p class="sn-para"><code class="sn-ic">--slow-mo</code> is a debugging tool only. Never use it in a committed config — it multiplies suite run time by the number of actions.</p>
+    </div>
+  </div>
+
+  <!-- Q405.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.8</span>
+      <h2 class="sn-q-text">What is --debug and what does it open?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--debug</code> opens the Playwright Inspector — a graphical tool that lets you step through test execution one action at a time:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --debug
+npx playwright test --grep &quot;apply leave&quot; --debug
+PWDEBUG=1 npx playwright test --grep &quot;apply leave&quot;  # environment variable equivalent</div>
+      </div>
+<p class="sn-para">The Inspector shows:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The current action being executed and its code location</span></li>
+<li><span class="icon">💡</span><span>The list of upcoming actions</span></li>
+<li><span class="icon">⚡</span><span>The browser in a headed window</span></li>
+<li><span class="icon">🎯</span><span>A DOM inspection panel with locator highlighting</span></li>
+<li><span class="icon">📌</span><span>A console for running Playwright commands interactively</span></li>
+</ul>
+<p class="sn-para"><code class="sn-ic">--debug</code> automatically implies <code class="sn-ic">--headed</code> and <code class="sn-ic">--workers=1</code> — you do not need to add those flags separately.</p>
+<p class="sn-para">Use <code class="sn-ic">--debug</code> when <code class="sn-ic">--headed --slow-mo=500</code> is not enough to understand the failure. It gives you complete control: pause at any point, inspect the DOM, try alternative locators, resume.</p>
+    </div>
+  </div>
+
+  <!-- Q405.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.9</span>
+      <h2 class="sn-q-text">What does --list do and when should you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--list</code> shows the tests that would run without actually running them:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --list
+npx playwright test --list --grep @smoke
+npx playwright test --list --project=chromium
+npx playwright test --list tests/leave/apply-leave.spec.ts</div>
+      </div>
+<p class="sn-para">Output:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Listing tests:
+  [chromium] › leave/apply-leave.spec.ts:8:5 › Apply Leave › valid request submits
+  [chromium] › leave/apply-leave.spec.ts:22:5 › Apply Leave › past date is rejected
+  [chromium] › leave/apply-leave.spec.ts:35:5 › Apply Leave › overlapping request rejected
+  3 tests total</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Use it before a long run to verify the filter is correct.</strong> If you meant to run 20 smoke tests but <code class="sn-ic">--list</code> shows 200, the filter has an error. Better to discover this in a second with <code class="sn-ic">--list</code> than after 18 minutes of running the wrong tests.</p>
+    </div>
+  </div>
+
+  <!-- Q405.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.10</span>
+      <h2 class="sn-q-text">What is --last-failed and when does it save the most time?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--last-failed</code> re-runs only the tests that failed in the previous run. It reads the results from the last run's output and targets only the failures:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test
+
+npx playwright test --last-failed</div>
+      </div>
+<p class="sn-para"><strong class="k-green">When it saves the most time:</strong> After a partial CI failure where most tests pass. Instead of re-running the full suite to confirm your fix, run only the failed tests. With a 200-test suite taking 18 minutes, if 5 tests fail and those 5 take 30 seconds total, <code class="sn-ic">--last-failed</code> gives you verification in 30 seconds instead of 18 minutes.</p>
+<p class="sn-para">It is also the fastest iteration loop when fixing multiple failures: fix, <code class="sn-ic">--last-failed</code>, see which ones now pass, fix the next, repeat.</p>
+    </div>
+  </div>
+
+  <!-- Q405.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.11</span>
+      <h2 class="sn-q-text">What is --max-failures and when do you use it in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">--max-failures=N</code> stops the run after N tests have failed:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --max-failures=1   # stop on first failure
+npx playwright test --max-failures=5   # stop after 5 failures</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Use case in CI:</strong> When a fundamental failure (broken login, wrong environment URL, server is down) will cause every test to fail, there is no value in running all 200 tests. <code class="sn-ic">--max-failures=1</code> stops the run immediately, provides a fast signal that something fundamental is broken, and saves the CI worker resources.</p>
+<p class="sn-para"><strong class="k-purple">Trade-off:</strong> With <code class="sn-ic">--max-failures=1</code>, you only see one failure per run. If multiple independent features are broken, you will need multiple runs to discover all of them. For targeted fault discovery, use <code class="sn-ic">--max-failures=5</code> or <code class="sn-ic">--max-failures=10</code> to get a broader picture while still stopping before wasting full suite time.</p>
+    </div>
+  </div>
+
+  <!-- Q405.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.12</span>
+      <h2 class="sn-q-text">How do you override execution settings from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --workers=4
+npx playwright test -j 4          # shorthand for --workers=4
+npx playwright test --workers=1   # sequential
+
+npx playwright test --retries=3
+npx playwright test --retries=0   # disable retries for this run
+
+npx playwright test --timeout=60000
+npx playwright test --timeout=0   # disable timeout (debugging only)
+
+npx playwright test --repeat-each=20 --workers=1 --grep &quot;employee search&quot;</div>
+      </div>
+<p class="sn-para">CLI overrides take precedence over <code class="sn-ic">playwright.config.ts</code>. Running <code class="sn-ic">--retries=0</code> on the CLI disables retries even if the config has <code class="sn-ic">retries: 2</code>. This lets you debug failures without the safety net of retries — if a test fails once with <code class="sn-ic">--retries=0</code>, it is genuinely failing right now, not intermittently.</p>
+    </div>
+  </div>
+
+  <!-- Q405.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.13</span>
+      <h2 class="sn-q-text">How do you open the HTML report and view a trace from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-report
+
+npx playwright show-report playwright-report
+
+npx playwright show-trace test-results/leave-apply-chromium/trace.zip
+
+npx playwright test --trace=on
+npx playwright test --trace=on-first-retry  # only on retry (CI default)</div>
+      </div>
+<p class="sn-para">The HTML report opens in a local web server in your default browser. The trace viewer is a separate full-featured tool — it lets you scrub through a test timeline, see the browser state at each step, inspect network requests and console output, and identify exactly where a failure occurred.</p>
+    </div>
+  </div>
+
+  <!-- Q405.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.14</span>
+      <h2 class="sn-q-text">How do you use a different config file from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --config=playwright.smoke.config.ts
+
+npx playwright test --config=./configs/staging.config.ts
+
+npx playwright test --config=playwright.api.config.ts</div>
+      </div>
+<p class="sn-para">Multiple config files are useful for significantly different test profiles that would be awkward to manage with projects and <code class="sn-ic">--project</code> flags alone. For example: a smoke config with one project and 5 tests for pre-deploy gates, and a full regression config with 5 projects and 200 tests for nightly runs.</p>
+    </div>
+  </div>
+
+  <!-- Q405.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.15</span>
+      <h2 class="sn-q-text">What environment variables does Playwright use from the CLI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">PWDEBUG=1 npx playwright test --grep &quot;apply leave&quot;
+
+BASE_URL=https://staging.example.com npx playwright test
+
+CI=true npx playwright test
+
+NO_COLOR=1 npx playwright test</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">BASE_URL</code> and <code class="sn-ic">CI</code> are not Playwright-specific — they are environment variables that the config reads with <code class="sn-ic">process.env.BASE_URL</code> and <code class="sn-ic">process.env.CI</code>. The convention is established in the config:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  baseURL: process.env.BASE_URL ?? 'https:<span class="tc-cm">//demo.orangehrmlive.com',</span>
+},
+retries: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,
+forbidOnly: !!process.env.CI,</div>
+      </div>
+<p class="sn-para">Setting <code class="sn-ic">BASE_URL</code> on the command line changes the environment for that run. Setting <code class="sn-ic">CI=true</code> activates all the CI-conditional config values without being in a real CI environment — useful for testing what CI will do before pushing.</p>
+    </div>
+  </div>
+
+  <!-- Q405.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.16</span>
+      <h2 class="sn-q-text">What is the CLI command for each common scenario?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">"I just fixed a bug — verify my fix quickly"</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test tests/leave/apply-leave.spec.ts
+npx playwright test --grep @leave --project=chromium</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Pre-deployment smoke check"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep @smoke --project=chromium --workers=4</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Debug a failing test — step through it"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;apply leave with past date&quot; --debug</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Debug a failing test — watch it run"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;apply leave with past date&quot; --headed --slow-mo=500 --workers=1</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Full regression before a release"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --workers=4 --reporter=html</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Investigate a flaky test"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;employee search&quot; --repeat-each=20 --workers=1</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Run against staging"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">BASE_URL=https://staging.example.com npx playwright test --grep @smoke</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Verify filters before a long run"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --list --grep @smoke --project=chromium</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"Re-run only what just failed"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --last-failed</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">"CI full run"</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">CI=true npx playwright test --reporter=github --reporter=junit</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q405.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.17</span>
+      <h2 class="sn-q-text">How do you combine multiple CLI flags effectively?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Flags compose. There is no limit to how many you combine — each flag narrows or modifies the run independently:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test \
+  tests/leave/ \
+  --grep @smoke \
+  --project=firefox \
+  --headed \
+  --workers=1 \
+  --max-failures=1
+
+CI=true npx playwright test \
+  --project=chromium \
+  --project=firefox \
+  --workers=2 \
+  --retries=2 \
+  --reporter=github \
+  --reporter=junit \
+  --reporter=html
+
+npx playwright test \
+  --grep &quot;employee search&quot; \
+  --project=chromium \
+  --workers=1 \
+  --repeat-each=20 \
+  --retries=0</div>
+      </div>
+<p class="sn-para">When composing flags, the general pattern is:</p>
+<ol class="sn-olist">
+<li>What to run (file/directory, <code class="sn-ic">--grep</code>, <code class="sn-ic">--project</code>)</li>
+<li>How to run it (<code class="sn-ic">--workers</code>, <code class="sn-ic">--retries</code>, <code class="sn-ic">--timeout</code>)</li>
+<li>How to observe it (<code class="sn-ic">--headed</code>, <code class="sn-ic">--slow-mo</code>, <code class="sn-ic">--debug</code>, <code class="sn-ic">--reporter</code>)</li>
+</ol>
+    </div>
+  </div>
+
+  <!-- Q405.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q405.18</span>
+      <h2 class="sn-q-text">What is the most useful CLI flag you use in daily work and why?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">For daily development: <code class="sn-ic">--last-failed</code>.</strong></p>
+      </div>
+<p class="sn-para">The workflow that makes the biggest difference:</p>
+<ol class="sn-olist">
+<li>Run the full suite to find failures: <code class="sn-ic">npx playwright test</code></li>
+<li>Start fixing the first failure</li>
+<li>Verify the fix: <code class="sn-ic">npx playwright test --last-failed</code></li>
+<li>If it passes, move to the next failure and repeat</li>
+</ol>
+<p class="sn-para">Without <code class="sn-ic">--last-failed</code>, you either re-run the full suite (slow) or manually filter by file or grep (fragile — easy to accidentally run the wrong tests). <code class="sn-ic">--last-failed</code> is precise and requires no thought — it always runs exactly the tests that were failing last time.</p>
+<p class="sn-para"><strong class="k-green">For debugging: <code class="sn-ic">--debug</code>.</strong></p>
+<p class="sn-para">When a test fails in CI and the screenshot does not explain why, the path is: <code class="sn-ic">npx playwright test --grep &quot;test title&quot; --debug</code>. The Playwright Inspector makes the failure visible in seconds. Without it, the debugging cycle is: read logs, guess, add console.log, re-run, repeat. With it: step through, see the DOM state at each action, find the problem in one run.</p>
+<p class="sn-para">Together, these two flags define the core of an efficient test debugging workflow: <code class="sn-ic">--last-failed</code> to target what is broken, <code class="sn-ic">--debug</code> to understand why it is broken.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npx playwright test</code> — runs everything as configured. All flags modify this base command.</span></li>
+            <li><span class="icon">⭐</span><span>File/directory argument — fastest targeting when you know which file changed.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--grep</code> — regex filter on full test title. <code class="sn-ic">|</code> for OR, <code class="sn-ic">(?=.*@a)(?=.*@b)</code> for AND.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--grep-invert</code> — excludes matching tests. Combine with <code class="sn-ic">--grep</code> for AND NOT logic.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--project</code> — run one or more specific projects. Stacks: <code class="sn-ic">--project=a --project=b</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--headed</code> — opens a real browser window. First thing to try when a test fails unexpectedly.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--slow-mo=N</code> — adds N milliseconds between every action. Use with <code class="sn-ic">--headed</code> to follow what happens.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--debug</code> — opens Playwright Inspector for step-through debugging. Implies <code class="sn-ic">--headed</code> and <code class="sn-ic">--workers=1</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--list</code> — shows matching tests without running. Verify filters before committing to a long run.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--last-failed</code> — re-runs only previously failed tests. Fastest way to verify fixes.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--max-failures=N</code> — stops after N failures. Use in CI to fail fast on a broken suite.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--workers=1</code> — sequential mode. Always use when debugging a specific test.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--repeat-each=N</code> — runs every test N times. For flakiness investigation, not production CI.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--retries=0</code> — disables retries for this run. Useful to confirm a test is genuinely passing.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npx playwright show-report</code> — opens the HTML report in a browser.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">npx playwright show-trace trace.zip</code> — opens the trace viewer for a specific trace file.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--config=file.ts</code> — use a different config file for this run.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">BASE_URL=...</code> and <code class="sn-ic">CI=true</code> — environment variables read by the config, not built-in Playwright flags.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

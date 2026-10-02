@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Testing with Playwright — Complete Guide | Playwright Mastery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/docs/playwright/shared/sketchnote-styles.css">
+  <style>
+    :root {
+      --primary: #c2410c;
+      --primary-dark: #9a3412;
+      --primary-light: #fff7ed;
+      --primary-mid: #ffedd5;
+      --primary-border: #fed7aa;
+      --secondary: #7c3aed;
+      --accent: #f59e0b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --text-light: #64748b;
+      --border: #e2e8f0;
+      --sidebar-width: 300px;
+      --header-height: 60px;
+      --glass: rgba(255,255,255,0.95);
+      --shadow: 0 2px 8px rgba(0,0,0,.07),0 1px 3px rgba(0,0,0,.05);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+    h1,h2,h3,h4{font-family:'Outfit',sans-serif;color:var(--text);margin-bottom:.75rem;margin-top:1.75rem}
+    h1{font-size:2.2rem;color:var(--primary-dark)}
+    h2{font-size:1.5rem;border-bottom:2px solid var(--border);padding-bottom:.4rem;margin-top:2.5rem}
+    h3{font-size:1.15rem;color:var(--secondary)}
+    p{margin-bottom:1rem}
+    code{background:#f1f5f9;padding:.15rem .4rem;border-radius:4px;font-family:'Fira Code',monospace;font-size:.88em;color:#c2410c}
+    a{color:var(--primary);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ── Layout ── */
+    .app-container{display:flex;min-height:100vh}
+
+    /* ── Header ── */
+    header{position:fixed;top:0;right:0;left:0;height:var(--header-height);background:var(--glass);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;gap:1rem}
+    .logo{display:flex;align-items:center;gap:.6rem;font-family:'Outfit',sans-serif;font-weight:700;font-size:1.1rem;color:var(--primary-dark);text-decoration:none;white-space:nowrap}
+    .logo i{color:var(--primary);font-size:1.2rem}
+    .header-links{display:flex;align-items:center;gap:.75rem}
+    .hub-link{display:inline-flex;align-items:center;gap:.35rem;padding:.3rem .85rem;border-radius:7px;font-size:.77rem;font-weight:700;background:var(--primary-mid);color:var(--primary-dark);border:1.5px solid var(--primary-border);transition:background .15s,transform .12s;white-space:nowrap;text-decoration:none}
+    .hub-link:hover{background:var(--primary-border);transform:translateX(-2px);text-decoration:none}
+
+    /* ── Breadcrumb ── */
+    .breadcrumb{position:fixed;top:var(--header-height);right:0;left:0;background:var(--card-bg);border-bottom:1px solid var(--border);padding:.45rem 1.5rem .45rem calc(var(--sidebar-width) + 1.5rem);z-index:990;font-size:.82rem;color:var(--text-light)}
+    .breadcrumb a{color:var(--primary);text-decoration:none}
+    .breadcrumb a:hover{text-decoration:underline}
+
+    /* ── Sidebar ── */
+    aside{width:var(--sidebar-width);background:var(--card-bg);border-right:1px solid var(--border);height:100vh;position:fixed;top:0;left:0;padding-top:calc(var(--header-height) + 2.4rem);overflow-y:auto;z-index:900}
+    .sidebar-content{padding:1.25rem 1.1rem}
+    .nav-section{margin-bottom:1.5rem}
+    .nav-section h4{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-light);margin-bottom:.6rem;margin-top:0;font-family:'Outfit',sans-serif;font-weight:700;padding:0 .4rem}
+    .nav-list{list-style:none}
+    .nav-item{margin-bottom:.2rem}
+    .nav-link{display:flex;align-items:center;gap:.6rem;padding:.5rem .65rem;color:var(--text);text-decoration:none;border-radius:7px;transition:all .15s;font-size:.84rem;font-weight:500;line-height:1.3}
+    .nav-link:hover{background:var(--primary-light);color:var(--primary);text-decoration:none}
+    .nav-link.active{background:var(--primary);color:#fff;box-shadow:0 3px 10px rgba(194,65,12,.22)}
+    .nav-link i{font-size:.8rem;opacity:.75;width:16px;text-align:center;flex-shrink:0}
+    .nav-link .ch-num{font-size:.68rem;font-weight:700;opacity:.6;min-width:22px}
+    .nav-link.appendix-link{font-style:italic;opacity:.8}
+    .nav-link.appendix-link:hover{opacity:1}
+
+    /* ── Main ── */
+    main{flex:1;margin-left:var(--sidebar-width);padding-top:calc(var(--header-height) + 2.4rem);min-height:100vh}
+    .content-area{max-width:860px;margin:0 auto;padding:2.5rem 1.75rem}
+
+    /* ── Hero Banner ── */
+    .hero-banner{background:linear-gradient(135deg,#431407 0%,#7c2d12 45%,#9a3412 100%);color:#fff;border-radius:14px;padding:2.25rem 2rem;margin-bottom:2rem;position:relative;overflow:hidden}
+    .hero-banner::after{content:'';position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.05)}
+    .hero-banner h1{color:#fff;margin-top:0;font-size:1.9rem;line-height:1.2}
+    .hero-banner h1 em{color:#fb923c;font-style:normal}
+    .hero-banner p{color:rgba(255,255,255,.82);font-size:.95rem;margin-bottom:0}
+    .hero-stats{display:flex;flex-wrap:wrap;gap:1.5rem;margin-top:1.25rem}
+    .hero-stat b{display:block;font-size:1.6rem;font-weight:900;color:#fb923c;line-height:1}
+    .hero-stat s{display:block;font-size:.65rem;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.06em;margin-top:.2rem;text-decoration:none}
+
+    /* ── Chapter Cards ── */
+    .chapters-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:.85rem;margin-top:1.25rem}
+    .ch-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:1rem 1.15rem;display:flex;gap:.85rem;align-items:flex-start;text-decoration:none;color:inherit;box-shadow:var(--shadow);transition:transform .13s,box-shadow .13s,border-color .13s}
+    .ch-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09);border-color:var(--primary-border);text-decoration:none}
+    .ch-badge{width:40px;height:40px;border-radius:8px;background:var(--primary-mid);color:var(--primary-dark);display:flex;align-items:center;justify-content:center;font-family:'Outfit',sans-serif;font-weight:900;font-size:.85rem;flex-shrink:0}
+    .ch-badge.appendix{background:#e0f2fe;color:#0369a1;font-size:.7rem}
+    .ch-info{flex:1;min-width:0}
+    .ch-title{font-weight:700;font-size:.9rem;line-height:1.3;color:var(--text)}
+    .ch-desc{font-size:.78rem;color:var(--text-light);margin-top:.25rem;line-height:1.45}
+    .ch-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.45rem}
+    .ch-tag{font-size:.62rem;font-weight:700;padding:.14rem .45rem;border-radius:4px;background:var(--primary-mid);color:var(--primary-dark)}
+    .ch-tag.blue{background:#dbeafe;color:#1d4ed8}
+    .ch-tag.violet{background:#ede9fe;color:#6d28d9}
+    .ch-tag.green{background:#d1fae5;color:#065f46}
+    .ch-tag.slate{background:#f1f5f9;color:#475569}
+
+    /* ── Section Headings inside content ── */
+    .section-label{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-light);margin-bottom:.65rem;margin-top:2rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+
+    /* ── Quick-Start Card ── */
+    .quickstart{background:var(--primary-light);border:1.5px solid var(--primary-border);border-radius:10px;padding:1.25rem 1.4rem;margin-bottom:1.75rem}
+    .quickstart h3{margin-top:0;color:var(--primary-dark);font-size:1rem}
+    .quickstart ol{margin-left:1.25rem;font-size:.88rem;color:var(--text)}
+    .quickstart ol li{margin-bottom:.5rem}
+    .quickstart ol li code{background:#ffedd5;color:#9a3412}
+
+    /* ── Info Alert ── */
+    .alert{padding:.9rem 1.2rem;border-radius:10px;margin:1.5rem 0;display:flex;gap:.9rem;border-left:4px solid;font-size:.88rem}
+    .alert i{margin-top:.1rem;flex-shrink:0}
+    .alert-info{background:#eff6ff;border-color:#3b82f6;color:#1e40af}
+    .alert-tip{background:var(--primary-light);border-color:var(--primary);color:var(--primary-dark)}
+
+    /* ── Global markdown content styles ── */
+    ul,ol{margin-left:1.5rem;margin-bottom:1.25rem}
+    li{margin-bottom:.4rem}
+    blockquote{padding:.9rem 1.25rem;background:var(--primary-light);border-left:4px solid var(--primary);border-radius:0 8px 8px 0;margin:1.5rem 0;font-style:italic;color:var(--primary-dark)}
+    blockquote p{margin-bottom:0}
+    table{width:100%;border-collapse:collapse;margin:1.75rem 0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+    th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    th{background:var(--primary-mid);color:var(--primary-dark);font-weight:600}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    section{display:none;animation:fadeIn .35s ease-out}
+    section.active{display:block}
+    /* ── Nav buttons ── */
+    .btn-group{display:flex;justify-content:space-between;margin-top:3.5rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+    .btn-group.top-nav{margin-top:0;margin-bottom:2.5rem;padding-top:0;padding-bottom:1.5rem;border-top:none;border-bottom:1px solid var(--border)}
+    .btn-nav{padding:.5rem 1rem;border-radius:8px;text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:.5rem;transition:all .15s;font-size:.87rem;cursor:pointer}
+    .btn-nav:hover{text-decoration:none}
+    .btn-prev{color:var(--text-light);background:#f1f5f9;border:1px solid var(--border)}
+    .btn-prev:hover{color:var(--text);background:#e2e8f0}
+    .btn-next{background:var(--primary);color:#fff;border:1px solid var(--primary)}
+    .btn-next:hover{background:var(--primary-dark)}
+    /* ── Intro feature cards ── */
+    .feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin:1.25rem 0 2rem}
+    .feature-card{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.2rem;cursor:pointer;text-decoration:none;color:inherit;transition:all .14s;display:block}
+    .feature-card:hover{border-color:var(--primary-border);box-shadow:var(--shadow);transform:translateY(-2px);text-decoration:none}
+    .feature-card i{font-size:1.5rem;color:var(--primary);margin-bottom:.55rem;display:block}
+    .feature-card h3{margin-top:0;margin-bottom:.35rem;font-size:.92rem;color:var(--text)}
+    .feature-card p{margin-bottom:0;color:var(--text-light);font-size:.8rem}
+    /* ── Code copy button ── */
+    pre[class*="language-"]{position:relative;border-radius:10px;margin:1.5rem 0;box-shadow:var(--shadow);font-size:.88rem}
+    .copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#cbd5e1;padding:3px 8px;border-radius:4px;font-size:.68rem;cursor:pointer;transition:all .18s;font-family:'Inter',sans-serif;z-index:10;opacity:0}
+    pre:hover .copy-btn{opacity:1}
+    .copy-btn:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+    /* ── Footer ── */
+    footer{margin-top:4rem;padding:1.5rem;text-align:center;border-top:1px solid var(--border);color:var(--text-light);font-size:.82rem}
+
+    /* ── Back to top ── */
+    #btt{position:fixed;bottom:1.25rem;right:1.25rem;width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.78rem;box-shadow:0 4px 14px rgba(194,65,12,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:300}
+    #btt.show{opacity:1;pointer-events:auto}
+
+    /* ── Responsive ── */
+    .mobile-menu-btn{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--primary)}
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:850;backdrop-filter:blur(3px)}
+    .sidebar-overlay.active{display:block}
+    @media(max-width:1024px){
+      aside{transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:10px 0 30px rgba(0,0,0,.18)}
+      aside.open{transform:translateX(0)}
+      main{margin-left:0}
+      .mobile-menu-btn{display:block}
+      .breadcrumb{padding-left:1.5rem}
+    }
+    @media(max-width:768px){
+      .header-links{display:none}
+      .hero-banner h1{font-size:1.5rem}
+      .chapters-grid{grid-template-columns:1fr}
+      .content-area{padding:1.5rem 1rem}
+    }
+  </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body id="top">
+
+<!-- ── Sidebar overlay ── -->
+<div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- ── Header ── -->
+<header>
+  <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+  <a class="logo" href="#top"><i class="fas fa-plug"></i> API Testing with Playwright</a>
+  <div class="header-links">
+    <a class="hub-link" href="/docs/playwright"><i class="fas fa-th-large"></i> Playwright Hub</a>
+  </div>
+</header>
+
+<!-- ── Breadcrumb ── -->
+<div class="breadcrumb">
+  <a href="/">Home</a> &rsaquo;
+  <a href="/docs">Docs</a> &rsaquo;
+  <a href="/docs/playwright">Playwright</a> &rsaquo;
+  <span>API Testing Guide</span>
+</div>
+
+<div class="app-container">
+
+  <!-- ── Sidebar ── -->
+  <aside id="sidebar">
+    <div class="sidebar-content">
+
+      <div class="nav-section">
+        <h4>Overview</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#intro" class="nav-link active" onclick="showSection('intro')"><i class="fas fa-rocket"></i> About This Guide</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <h4>Foundations</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#ch01" class="nav-link" onclick="showSection('ch01')"><span class="ch-num">01</span><i class="fas fa-network-wired"></i> What Is an API?</a></li>
+          <li class="nav-item"><a href="#ch02" class="nav-link" onclick="showSection('ch02')"><span class="ch-num">02</span><i class="fas fa-folder-open"></i> Project Setup</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <h4>CRUD Operations</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#ch03" class="nav-link" onclick="showSection('ch03')"><span class="ch-num">03</span><i class="fas fa-plus-circle"></i> POST — Creating Resources</a></li>
+          <li class="nav-item"><a href="#ch04" class="nav-link" onclick="showSection('ch04')"><span class="ch-num">04</span><i class="fas fa-search"></i> GET — Reading Resources</a></li>
+          <li class="nav-item"><a href="#ch05" class="nav-link" onclick="showSection('ch05')"><span class="ch-num">05</span><i class="fas fa-edit"></i> PUT &amp; PATCH — Updating</a></li>
+          <li class="nav-item"><a href="#ch06" class="nav-link" onclick="showSection('ch06')"><span class="ch-num">06</span><i class="fas fa-trash-alt"></i> DELETE — Removing Resources</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <h4>Hybrid &amp; Mocking</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#ch07" class="nav-link" onclick="showSection('ch07')"><span class="ch-num">07</span><i class="fas fa-object-group"></i> UI + API Hybrid Testing</a></li>
+          <li class="nav-item"><a href="#ch08" class="nav-link" onclick="showSection('ch08')"><span class="ch-num">08</span><i class="fas fa-mask"></i> API Mocking — page.route()</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <h4>Authentication</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#ch09" class="nav-link" onclick="showSection('ch09')"><span class="ch-num">09</span><i class="fas fa-key"></i> API Key &amp; Basic Auth</a></li>
+          <li class="nav-item"><a href="#ch10" class="nav-link" onclick="showSection('ch10')"><span class="ch-num">10</span><i class="fas fa-shield-alt"></i> Bearer Token &amp; JWT</a></li>
+          <li class="nav-item"><a href="#ch11" class="nav-link" onclick="showSection('ch11')"><span class="ch-num">11</span><i class="fas fa-cookie"></i> Cookie, Session &amp; OAuth 2.0</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <h4>Advanced Topics</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#ch12" class="nav-link" onclick="showSection('ch12')"><span class="ch-num">12</span><i class="fas fa-layer-group"></i> Advanced Patterns</a></li>
+          <li class="nav-item"><a href="#ch13" class="nav-link" onclick="showSection('ch13')"><span class="ch-num">13</span><i class="fas fa-award"></i> Best Practices &amp; Mistakes</a></li>
+          <li class="nav-item"><a href="#ch14" class="nav-link" onclick="showSection('ch14')"><span class="ch-num">14</span><i class="fas fa-sitemap"></i> Test Organization &amp; Structure</a></li>
+          <li class="nav-item"><a href="#ch15" class="nav-link" onclick="showSection('ch15')"><span class="ch-num">15</span><i class="fas fa-recycle"></i> Fixtures &amp; Reusability</a></li>
+          <li class="nav-item"><a href="#ch16" class="nav-link" onclick="showSection('ch16')"><span class="ch-num">16</span><i class="fas fa-sliders-h"></i> Environment Configuration</a></li>
+          <li class="nav-item"><a href="#ch17" class="nav-link" onclick="showSection('ch17')"><span class="ch-num">17</span><i class="fas fa-exclamation-triangle"></i> Error Handling &amp; Edge Cases</a></li>
+          <li class="nav-item"><a href="#ch18" class="nav-link" onclick="showSection('ch18')"><span class="ch-num">18</span><i class="fas fa-file-contract"></i> Contract Testing</a></li>
+          <li class="nav-item"><a href="#ch19" class="nav-link" onclick="showSection('ch19')"><span class="ch-num">19</span><i class="fas fa-infinity"></i> CI/CD Integration</a></li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <h4>Appendix</h4>
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#appendix-debug" class="nav-link" onclick="showSection('appendix-debug')"><i class="fas fa-bug"></i> Debugging API Tests</a></li>
+          <li class="nav-item"><a href="#appendix-glossary" class="nav-link" onclick="showSection('appendix-glossary')"><i class="fas fa-book"></i> Glossary</a></li>
+        </ul>
+      </div>
+
+    </div>
+  </aside>
+
+  <!-- ── Main Content ── -->
+  <main>
+    <div class="content-area">
+
+      <section id="intro" class="active">
+
+        <!-- Hero -->
+        <div class="hero-banner">
+          <h1>API Testing with <em>Playwright</em></h1>
+          <p>A complete guide — from zero to production. Build every API endpoint, understand how it works, then test it.</p>
+          <div class="hero-stats">
+            <div class="hero-stat"><b>19</b><s>Chapters</s></div>
+            <div class="hero-stat"><b>2</b><s>Appendices</s></div>
+            <div class="hero-stat"><b>3</b><s>Auth Strategies</s></div>
+            <div class="hero-stat"><b>100%</b><s>Hands-On</s></div>
+          </div>
+        </div>
+
+        <!-- Quick-Start -->
+        <div class="quickstart">
+          <h3><i class="fas fa-bolt" style="color:var(--primary);margin-right:.4rem"></i>How This Guide Works</h3>
+          <p style="font-size:.87rem;color:var(--text-light);margin-bottom:.75rem">Every chapter follows the same three-step pattern:</p>
+          <ol>
+            <li><strong>Build it</strong> — write the Express.js server code that makes the endpoint work</li>
+            <li><strong>Understand it</strong> — see what it accepts, what it returns, and why</li>
+            <li><strong>Test it</strong> — write the Playwright test that verifies it</li>
+          </ol>
+        </div>
+
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i>
+          <div>Interview questions are included at the end of each chapter, written at increasing difficulty levels, to help you prepare for real engineering interviews.</div>
+        </div>
+
+        <!-- Chapter Cards -->
+        <p class="section-label">All Chapters</p>
+
+        <!-- Foundations -->
+        <p class="section-label" style="margin-top:.5rem">Foundations</p>
+        <div class="chapters-grid">
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch01')">
+            <div class="ch-badge">01</div>
+            <div class="ch-info">
+              <div class="ch-title">What Is an API?</div>
+              <div class="ch-desc">HTTP methods, status codes, JSON, REST principles and request headers — everything you need before writing your first test.</div>
+              <div class="ch-tags"><span class="ch-tag">HTTP</span><span class="ch-tag">REST</span><span class="ch-tag blue">JSON</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch02')">
+            <div class="ch-badge">02</div>
+            <div class="ch-info">
+              <div class="ch-title">Project Setup</div>
+              <div class="ch-desc">Initialise the Node.js + Express server, configure Playwright, and establish a clean folder structure for API test projects.</div>
+              <div class="ch-tags"><span class="ch-tag">Node.js</span><span class="ch-tag">Express</span><span class="ch-tag blue">Config</span></div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- CRUD -->
+        <p class="section-label">CRUD Operations</p>
+        <div class="chapters-grid">
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch03')">
+            <div class="ch-badge">03</div>
+            <div class="ch-info">
+              <div class="ch-title">POST — Creating Resources</div>
+              <div class="ch-desc">Send request bodies, handle 201 responses, validate created records and test input validation rules.</div>
+              <div class="ch-tags"><span class="ch-tag">POST</span><span class="ch-tag green">201 Created</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch04')">
+            <div class="ch-badge">04</div>
+            <div class="ch-info">
+              <div class="ch-title">GET — Reading Resources</div>
+              <div class="ch-desc">Retrieve single records and collections, use query parameters, assert pagination and 404 responses.</div>
+              <div class="ch-tags"><span class="ch-tag">GET</span><span class="ch-tag blue">Query Params</span><span class="ch-tag">Pagination</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch05')">
+            <div class="ch-badge">05</div>
+            <div class="ch-info">
+              <div class="ch-title">PUT &amp; PATCH — Updating Resources</div>
+              <div class="ch-desc">Understand the difference between full replacement and partial update, test both methods and verify field-level changes.</div>
+              <div class="ch-tags"><span class="ch-tag">PUT</span><span class="ch-tag">PATCH</span><span class="ch-tag blue">200 OK</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch06')">
+            <div class="ch-badge">06</div>
+            <div class="ch-info">
+              <div class="ch-title">DELETE — Removing Resources</div>
+              <div class="ch-desc">Delete records by ID, verify 204 No Content and confirm the resource is gone with a follow-up GET.</div>
+              <div class="ch-tags"><span class="ch-tag">DELETE</span><span class="ch-tag green">204 No Content</span></div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Hybrid & Mocking -->
+        <p class="section-label">Hybrid Testing &amp; Mocking</p>
+        <div class="chapters-grid">
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch07')">
+            <div class="ch-badge">07</div>
+            <div class="ch-info">
+              <div class="ch-title">UI + API Hybrid Testing</div>
+              <div class="ch-desc">Set up state via API, verify via the browser UI. Trigger UI actions and validate results via the API. The three-step hybrid pattern.</div>
+              <div class="ch-tags"><span class="ch-tag violet">Hybrid</span><span class="ch-tag blue">page</span><span class="ch-tag">request</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch08')">
+            <div class="ch-badge">08</div>
+            <div class="ch-info">
+              <div class="ch-title">API Mocking with page.route()</div>
+              <div class="ch-desc">Intercept and mock network requests in the browser, simulate error states, slow responses and custom payloads.</div>
+              <div class="ch-tags"><span class="ch-tag violet">Mocking</span><span class="ch-tag blue">page.route()</span><span class="ch-tag">Intercept</span></div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Authentication -->
+        <p class="section-label">Authentication Strategies</p>
+        <div class="chapters-grid">
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch09')">
+            <div class="ch-badge">09</div>
+            <div class="ch-info">
+              <div class="ch-title">API Key &amp; Basic Auth</div>
+              <div class="ch-desc">Pass API keys via headers and query params, implement HTTP Basic Authentication, and test both authorised and unauthorised scenarios.</div>
+              <div class="ch-tags"><span class="ch-tag">API Key</span><span class="ch-tag blue">Basic Auth</span><span class="ch-tag">401</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch10')">
+            <div class="ch-badge">10</div>
+            <div class="ch-info">
+              <div class="ch-title">Bearer Token &amp; JWT</div>
+              <div class="ch-desc">Login to get a token, attach it as a Bearer header, decode JWTs and test token expiry edge cases.</div>
+              <div class="ch-tags"><span class="ch-tag">JWT</span><span class="ch-tag blue">Bearer</span><span class="ch-tag violet">Token</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch11')">
+            <div class="ch-badge">11</div>
+            <div class="ch-info">
+              <div class="ch-title">Cookie/Session &amp; OAuth 2.0</div>
+              <div class="ch-desc">Manage session cookies, persist authentication state across tests, and implement OAuth 2.0 client credentials flow.</div>
+              <div class="ch-tags"><span class="ch-tag">Cookies</span><span class="ch-tag blue">Session</span><span class="ch-tag violet">OAuth 2.0</span></div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Advanced -->
+        <p class="section-label">Advanced Topics</p>
+        <div class="chapters-grid">
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch12')">
+            <div class="ch-badge">12</div>
+            <div class="ch-info">
+              <div class="ch-title">Advanced Patterns</div>
+              <div class="ch-desc">Schema validation with Ajv, API chaining (CMRV pattern), parallel calls with Promise.all, data-driven tests, header and timing validation.</div>
+              <div class="ch-tags"><span class="ch-tag violet">Ajv</span><span class="ch-tag">CMRV</span><span class="ch-tag blue">Promise.all</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch13')">
+            <div class="ch-badge">13</div>
+            <div class="ch-info">
+              <div class="ch-title">Best Practices &amp; Common Mistakes</div>
+              <div class="ch-desc">Naming conventions, test isolation, avoiding flakiness, secrets management and the most frequent mistakes to avoid in API tests.</div>
+              <div class="ch-tags"><span class="ch-tag green">Best Practices</span><span class="ch-tag">Isolation</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch14')">
+            <div class="ch-badge">14</div>
+            <div class="ch-info">
+              <div class="ch-title">Test Organization &amp; Structure</div>
+              <div class="ch-desc">Folder layouts, test IDs, tagging strategies, grouping by resource and separating smoke from regression suites.</div>
+              <div class="ch-tags"><span class="ch-tag">Structure</span><span class="ch-tag blue">Tags</span><span class="ch-tag">Suites</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch15')">
+            <div class="ch-badge">15</div>
+            <div class="ch-info">
+              <div class="ch-title">Fixtures &amp; Reusability</div>
+              <div class="ch-desc">Build custom Playwright fixtures for authenticated clients, shared base URLs, test data factories and teardown helpers.</div>
+              <div class="ch-tags"><span class="ch-tag violet">Fixtures</span><span class="ch-tag green">Reusability</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch16')">
+            <div class="ch-badge">16</div>
+            <div class="ch-info">
+              <div class="ch-title">Environment Configuration</div>
+              <div class="ch-desc">Manage .env files, environment-aware base URLs, secrets in CI variables and switching between dev/staging/production safely.</div>
+              <div class="ch-tags"><span class="ch-tag">.env</span><span class="ch-tag blue">CI Secrets</span><span class="ch-tag">Multi-env</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch17')">
+            <div class="ch-badge">17</div>
+            <div class="ch-info">
+              <div class="ch-title">Error Handling &amp; Edge Cases</div>
+              <div class="ch-desc">Test 4xx and 5xx responses, timeouts, network errors, large payloads and boundary value conditions.</div>
+              <div class="ch-tags"><span class="ch-tag">4xx/5xx</span><span class="ch-tag blue">Timeouts</span><span class="ch-tag">Edge Cases</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch18')">
+            <div class="ch-badge">18</div>
+            <div class="ch-info">
+              <div class="ch-title">Contract Testing</div>
+              <div class="ch-desc">Consumer-driven contracts, keeping frontend and backend in sync, using Ajv schemas as lightweight contracts and integrating into CI.</div>
+              <div class="ch-tags"><span class="ch-tag violet">Contracts</span><span class="ch-tag blue">Ajv</span><span class="ch-tag green">Consumer-Driven</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('ch19')">
+            <div class="ch-badge">19</div>
+            <div class="ch-info">
+              <div class="ch-title">CI/CD Integration</div>
+              <div class="ch-desc">Run API tests in GitHub Actions, generate HTML reports, use environment variables in pipelines and gate deployments on test results.</div>
+              <div class="ch-tags"><span class="ch-tag">GitHub Actions</span><span class="ch-tag blue">CI/CD</span><span class="ch-tag green">Reports</span></div>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Appendices -->
+        <p class="section-label">Appendices</p>
+        <div class="chapters-grid">
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('appendix-debug')">
+            <div class="ch-badge appendix"><i class="fas fa-bug"></i></div>
+            <div class="ch-info">
+              <div class="ch-title">Debugging API Tests</div>
+              <div class="ch-desc">Techniques for diagnosing failing API tests — verbose logging, response inspection, Playwright inspector and network tracing.</div>
+              <div class="ch-tags"><span class="ch-tag slate">Appendix</span><span class="ch-tag blue">Debug</span></div>
+            </div>
+          </a>
+
+          <a class="ch-card" href="javascript:void(0)" onclick="showSection('appendix-glossary')">
+            <div class="ch-badge appendix"><i class="fas fa-book"></i></div>
+            <div class="ch-info">
+              <div class="ch-title">Glossary</div>
+              <div class="ch-desc">Definitions of all key terms used throughout the guide — from HTTP verbs to JWT claims and contract testing vocabulary.</div>
+              <div class="ch-tags"><span class="ch-tag slate">Appendix</span><span class="ch-tag">Reference</span></div>
+            </div>
+          </a>
+
+        </div>
+
+      </section><!-- /intro -->
+
+      <!-- Chapter sections loaded dynamically here -->
+      <div id="docs-content"></div>
+
+      <div class="btn-group" id="nav-btns-bottom" style="display:none;">
+        <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i> Previous</a>
+        <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <footer>API Testing with Playwright &nbsp;·&nbsp; 19 Chapters &nbsp;·&nbsp; Playwright Mastery &nbsp;·&nbsp; March 2026</footer>
+
+    </div><!-- /content-area -->
+  </main>
+
+</div><!-- /app-container -->
+
+<button id="btt" onclick="scrollTo({top:0,behavior:'smooth'})" title="Back to top"><i class="fas fa-chevron-up"></i></button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+  const sectionOrder = [
+    'intro',
+    'ch01','ch02',
+    'ch03','ch04','ch05','ch06',
+    'ch07','ch08',
+    'ch09','ch10','ch11',
+    'ch12','ch13','ch14','ch15','ch16','ch17','ch18','ch19',
+    'appendix-debug','appendix-glossary'
+  ];
+
+  const sections = {
+    'ch01': 'chapter-01-what-is-an-api.md',
+    'ch02': 'chapter-02-project-setup.md',
+    'ch03': 'chapter-03-post-creating-resources.md',
+    'ch04': 'chapter-04-get-reading-resources.md',
+    'ch05': 'chapter-05-put-and-patch-updating-resources.md',
+    'ch06': 'chapter-06-delete-removing-resources.md',
+    'ch07': 'chapter-07-ui-api-hybrid-testing.md',
+    'ch08': 'chapter-08-api-mocking-page-route.md',
+    'ch09': 'chapter-09-auth-api-key-and-basic-auth.md',
+    'ch10': 'chapter-10-auth-bearer-token-and-jwt.md',
+    'ch11': 'chapter-11-auth-cookie-session-and-oauth.md',
+    'ch12': 'chapter-12-advanced-patterns.md',
+    'ch13': 'chapter-13-best-practices-and-common-mistakes.md',
+    'ch14': 'chapter-14-test-organization-and-structure.md',
+    'ch15': 'chapter-15-fixtures-and-reusability.md',
+    'ch16': 'chapter-16-environment-configuration.md',
+    'ch17': 'chapter-17-error-handling-and-edge-cases.md',
+    'ch18': 'chapter-18-contract-testing.md',
+    'ch19': 'chapter-19-cicd-integration.md',
+    'appendix-debug': 'appendix-debugging-api-tests.md',
+    'appendix-glossary': 'appendix-glossary.md'
+  };
+
+  const loadedSections = {};
+
+  async function loadSection(id) {
+    if (id === 'intro' || loadedSections[id]) return;
+    const filename = sections[id];
+    if (!filename) return;
+    try {
+      const url = window.SketchnoteRenderer && typeof window.SketchnoteRenderer.resolveDocUrl === 'function'
+        ? window.SketchnoteRenderer.resolveDocUrl(filename, window.location)
+        : filename;
+      let text;
+      if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.fetchMarkdown === 'function') {
+        text = await window.SketchnoteRenderer.fetchMarkdown(url, { cache: 'no-store' });
+      } else {
+        const response = await fetch(url, { cache: 'no-store' });
+        if (!response.ok) throw new Error('Not found: ' + filename);
+        text = await response.text();
+      }
+      const section = document.createElement('section');
+      section.id = id;
+      section.innerHTML = marked.parse(
+        window.SketchnoteRenderer && typeof window.SketchnoteRenderer.normalizeMarkdown === 'function'
+          ? window.SketchnoteRenderer.normalizeMarkdown(text)
+          : text
+      );
+      section.querySelectorAll('pre code').forEach(block => {
+        if (!block.className) block.className = 'language-typescript';
+      });
+      document.getElementById('docs-content').appendChild(section);
+      loadedSections[id] = true;
+      if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.postProcess === 'function') {
+        window.SketchnoteRenderer.postProcess(section);
+      }
+      if (window.SketchnoteRenderer && typeof window.SketchnoteRenderer.addCopyButtons === 'function') {
+        window.SketchnoteRenderer.addCopyButtons(section);
+      } else {
+        addCopyButtons(section);
+      }
+      Prism.highlightAllUnder(section);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  function addCopyButtons(root) {
+    root.querySelectorAll('pre').forEach(pre => {
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.innerHTML = '<i class="far fa-copy"></i> Copy';
+      btn.onclick = () => copyCode(btn);
+      pre.appendChild(btn);
+    });
+  }
+
+  async function copyCode(btn) {
+    const code = btn.parentElement.querySelector('code').innerText;
+    try {
+      await navigator.clipboard.writeText(code);
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => { btn.innerHTML = '<i class="far fa-copy"></i> Copy'; }, 2000);
+    } catch (e) { console.error(e); }
+  }
+
+  async function showSection(id) {
+    if (id !== 'intro') await loadSection(id);
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    const link = document.querySelector('a[href="#' + id + '"]');
+    if (link) link.classList.add('active');
+    updateNavButtons(id);
+    history.pushState(null, null, '#' + id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar.classList.contains('open')) {
+      sidebar.classList.remove('open');
+      document.getElementById('overlay').classList.remove('active');
+    }
+  }
+
+  function updateNavButtons(currentId) {
+    const index = sectionOrder.indexOf(currentId);
+    const bottomNav = document.getElementById('nav-btns-bottom');
+    if (index === 0) { bottomNav.style.display = 'none'; return; }
+    bottomNav.style.display = 'flex';
+    [bottomNav].forEach(nav => {
+      const prevBtn = nav.querySelector('.prev-btn');
+      const nextBtn = nav.querySelector('.next-btn');
+      if (index > 0) {
+        prevBtn.style.visibility = 'visible';
+        prevBtn.onclick = () => showSection(sectionOrder[index - 1]);
+        prevBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + getSectionName(sectionOrder[index - 1]);
+      } else {
+        prevBtn.style.visibility = 'hidden';
+      }
+      if (index < sectionOrder.length - 1) {
+        nextBtn.style.visibility = 'visible';
+        nextBtn.onclick = () => showSection(sectionOrder[index + 1]);
+        nextBtn.innerHTML = getSectionName(sectionOrder[index + 1]) + ' <i class="fas fa-arrow-right"></i>';
+      } else {
+        nextBtn.style.visibility = 'hidden';
+      }
+    });
+  }
+
+  function getSectionName(id) {
+    const link = document.querySelector('a[href="#' + id + '"]');
+    return link ? link.innerText.trim() : 'Next';
+  }
+
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('active');
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('btt').classList.toggle('show', scrollY > 300);
+  });
+
+  window.addEventListener('load', async () => {
+    const hash = window.location.hash.slice(1) || 'intro';
+    await showSection(hash);
+  });
+</script>
+</body>
+</html>

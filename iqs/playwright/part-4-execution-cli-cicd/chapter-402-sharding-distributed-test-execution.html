@@ -1,0 +1,869 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🔄 Part 4 &nbsp;·&nbsp; Chapter 402 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Sharding</span> <span class="w2">—</span> <span class="w3">Distributed</span> <span class="w4">Test</span> <span class="w5">Execution</span></h1>
+    <p class="sn-title-sub">Execution &amp; CI/CD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's sharding system — splitting a test suite across multiple CI machines to reduce run time from tens of minutes to single digits. Interviewers ask about sharding to test scale thinking: a candidate who can design a sharded GitHub Actions workflow with blob report merging, explain why <code class="sn-ic">fail-fast: false</code> matters, and describe when sharding is and is not worth the complexity, is ready for large-scale test engineering roles.</span>
+  </div>
+
+
+  <!-- Q402.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.1</span>
+      <h2 class="sn-q-text">What is sharding in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Sharding splits your test suite into N equal slices and runs one slice per machine. Each machine is completely independent — its own browser, its own workers, its own environment. All machines run in parallel. When they all finish, their results are merged into a single unified report.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --shard=1/4   # Machine 1 — tests 1–25%
+npx playwright test --shard=2/4   # Machine 2 — tests 26–50%
+npx playwright test --shard=3/4   # Machine 3 — tests 51–75%
+npx playwright test --shard=4/4   # Machine 4 — tests 76–100%</div>
+      </div>
+<p class="sn-para">A 28-minute suite on one machine runs in ~7 minutes across 4 shards. The ceiling is no longer CPU cores on one machine — it is however many machines your CI budget allows.</p>
+    </div>
+  </div>
+
+  <!-- Q402.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.2</span>
+      <h2 class="sn-q-text">What is the difference between sharding and workers?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">They are different levels of parallelism that work together:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Workers</strong> (<code class="sn-ic">--workers=4</code>) — parallel test execution within a <strong class="k-green">single machine</strong>. Tests run in parallel processes on the same machine's CPUs. Limited by that machine's CPU count and memory.</p>
+<p class="sn-para"><strong class="k-green">Shards</strong> (<code class="sn-ic">--shard=1/4</code>) — distributes the suite across <strong class="k-green">multiple separate machines</strong>. Each machine is its own independent environment with its own browser install, its own Node.js process, and its own filesystem.</p>
+<p class="sn-para">In a typical setup both are active simultaneously:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">4 shards × 4 workers each = 16 parallel test processes across 4 machines</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts — controls workers per machine</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  workers: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">4</span>,
+  <span class="tc-cm">// --shard is set via CLI flag, not here — each machine gets a different value</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Decision rule:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Hit the workers ceiling on one machine → add shards (more machines)</span></li>
+<li><span class="icon">💡</span><span>Have only one machine → tune workers (more processes)</span></li>
+<li><span class="icon">⚡</span><span>Have both → tune workers per machine AND shard across machines</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q402.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.3</span>
+      <h2 class="sn-q-text">How are tests distributed across shards?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright distributes tests by <strong class="k-purple">file</strong>, not by individual test. An entire test file goes to one shard — the tests within that file run on that machine.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Suite: 12 files, --shard=1/4
+
+Shard 1: files 1, 5, 9          (3 files × their tests)
+Shard 2: files 2, 6, 10         (3 files × their tests)
+Shard 3: files 3, 7, 11         (3 files × their tests)
+Shard 4: files 4, 8, 12         (3 files × their tests)</div>
+      </div>
+<p class="sn-para">The distribution is deterministic — the same test always lands on the same shard for a given total. This matters for reproducibility: if shard 2 fails, the same tests run on shard 2 when you re-run it.</p>
+<p class="sn-para"><strong class="k-purple">Implication:</strong> If one test file has 100 tests and all others have 10, the shard that gets the large file is much slower than the others. Keep test files reasonably balanced for even shard durations.</p>
+    </div>
+  </div>
+
+  <!-- Q402.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.4</span>
+      <h2 class="sn-q-text">What is the blob reporter and why is it needed for sharding?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Each shard produces its own results on its own machine. To get a single unified report covering all shards, each shard outputs a <strong class="k-orange">blob file</strong> — a binary archive containing the full run data — which is then merged after all shards complete.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Step 1 — Configure blob reporter for CI:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  reporter: process.env.CI
+    ? [[<span class="tc-str">'blob'</span>, { outputDir: <span class="tc-str">'blob-report'</span> }]]
+    : [[<span class="tc-str">'html'</span>, { open: <span class="tc-str">'on-failure'</span> }], [<span class="tc-str">'list'</span>]],
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Step 2 — Each shard writes its blob:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --shard=1/4   # → blob-report/report-1.zip
+npx playwright test --shard=2/4   # → blob-report/report-2.zip
+npx playwright test --shard=3/4   # → blob-report/report-3.zip
+npx playwright test --shard=4/4   # → blob-report/report-4.zip</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Step 3 — Merge all blobs into one HTML report:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright merge-reports --reporter html ./blob-report</div>
+      </div>
+<p class="sn-para">The merge command reads all <code class="sn-ic">.zip</code> files in <code class="sn-ic">blob-report/</code> and produces <code class="sn-ic">playwright-report/index.html</code> — one report showing every test, every browser, every retry, and every trace from all four shards in one place.</p>
+    </div>
+  </div>
+
+  <!-- Q402.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.5</span>
+      <h2 class="sn-q-text">Write the complete GitHub Actions workflow for a sharded Playwright suite.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Playwright Tests
+
+on: [push, pull_request]
+
+jobs:
+  playwright-shards:
+    name: Shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: <span class="tc-kw">false</span>        <span class="tc-cm"># ← all shards run even if one fails</span>
+      matrix:
+        shardIndex: [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>]
+        shardTotal: [<span class="tc-num">4</span>]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: <span class="tc-str">'20'</span>
+          cache: <span class="tc-str">'npm'</span>
+
+      - run: npm ci
+
+      - run: npx playwright install --with-deps
+
+      - name: Run shard ${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        run: npx playwright <span class="tc-kw">test</span> --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env:
+          CI: <span class="tc-kw">true</span>
+
+      - name: Upload blob report
+        uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()            <span class="tc-cm"># ← upload even if tests failed</span>
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          retention-days: <span class="tc-num">1</span>    <span class="tc-cm"># only needed until the merge job runs</span>
+
+  merge-reports:
+    name: Merge Shard Reports
+    runs-on: ubuntu-latest
+    needs: playwright-shards   <span class="tc-cm"># runs after ALL shards finish</span>
+    <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()               <span class="tc-cm"># runs even if some shards failed</span>
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: <span class="tc-str">'20'</span>
+          cache: <span class="tc-str">'npm'</span>
+
+      - run: npm ci
+
+      - name: Download all blob reports
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: <span class="tc-kw">true</span>
+
+      - name: Merge into HTML report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload merged HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: <span class="tc-num">30</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q402.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.6</span>
+      <h2 class="sn-q-text">Why must fail-fast be false in a sharded CI matrix?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Without <code class="sn-ic">fail-fast: false</code>, GitHub Actions cancels all remaining matrix jobs the moment any one job fails. With a sharded test run this means:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Shard 2 fails at t=3 minutes</span></li>
+<li><span class="icon">💡</span><span>GitHub immediately cancels shards 3 and 4</span></li>
+<li><span class="icon">⚡</span><span>Shard 1 finishes but shards 3 and 4 never produce their blobs</span></li>
+<li><span class="icon">🎯</span><span>The merge job downloads incomplete blob data</span></li>
+<li><span class="icon">📌</span><span>The merged report shows only partial results</span></li>
+</ul>
+<p class="sn-para">With <code class="sn-ic">fail-fast: false</code>:</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>All four shards run to completion</span></li>
+<li><span class="icon">🚀</span><span>All four blobs are produced</span></li>
+<li><span class="icon">🌟</span><span>The merge job has complete data</span></li>
+<li><span class="icon">📦</span><span>The merged report shows all failures across all shards</span></li>
+</ul>
+<p class="sn-para">You want the full picture of what broke — not just the first shard that found a failure. <code class="sn-ic">fail-fast: false</code> is mandatory for sharded test runs.</p>
+    </div>
+  </div>
+
+  <!-- Q402.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.7</span>
+      <h2 class="sn-q-text">Why must the merge job use if: always()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The merge job depends on (<code class="sn-ic">needs:</code>) the shard jobs. By default, GitHub Actions skips a dependent job when its dependencies fail. If any shard fails, the merge job would be skipped without <code class="sn-ic">if: always()</code>.</p>
+      </div>
+<p class="sn-para">The result: the very run where you have failures — the one where you most need the report — produces no report at all.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">merge-reports:
+  needs: playwright-shards
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()    <span class="tc-cm"># runs even when playwright-shards has failures</span></div>
+      </div>
+<p class="sn-para">This same principle applies to uploading the blob artefacts from each shard — they also need <code class="sn-ic">if: always()</code> to ensure the blob is uploaded even when that shard's tests fail:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Upload blob report
+  uses: actions/upload-artifact@v4
+  <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()    <span class="tc-cm"># essential — this is the data the merge job needs</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q402.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.8</span>
+      <h2 class="sn-q-text">How do you choose the right number of shards?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">More shards reduce run time but add overhead and cost. Each shard has startup cost: checkout, <code class="sn-ic">npm ci</code>, browser install, process start. For short suites this overhead dominates.</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Suite run time (1 machine)</th><th class="sn-th-blue">Recommended shards</th></tr></thead>
+          <tbody>
+          <tr><td>Under 5 minutes</td><td>No sharding needed</td></tr>
+          <tr><td>5–15 minutes</td><td>2 shards</td></tr>
+          <tr><td>15–30 minutes</td><td>4 shards</td></tr>
+          <tr><td>30–60 minutes</td><td>4–8 shards</td></tr>
+          <tr><td>Over 60 minutes</td><td>8+ shards</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Practical guidance:</strong> Start with 4. Measure actual CI time after sharding. Add more shards only if the time saving justifies the extra CI cost and workflow complexity. Beyond 8 shards, the overhead-to-saving ratio deteriorates for most suites.</p>
+<p class="sn-para">The goal is <strong class="k-yellow">feedback within 10 minutes</strong> for PR checks. Work backwards from your suite size and per-test average time to find the shard count that achieves this.</p>
+    </div>
+  </div>
+
+  <!-- Q402.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.9</span>
+      <h2 class="sn-q-text">How do you combine sharding with multiple browser projects?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When the config has multiple projects (chromium, firefox, webkit), sharding distributes across all of them. Shard 1 might get chromium tests from files A–G, shard 2 gets firefox tests from files A–G, and so on — Playwright interleaves projects and files to distribute evenly.</p>
+      </div>
+<p class="sn-para">To control which browsers run on which shards, combine <code class="sn-ic">--project</code> with <code class="sn-ic">--shard</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --project=chromium --shard=1/2
+npx playwright test --project=chromium --shard=2/2
+
+npx playwright test --project=firefox --grep @smoke</div>
+      </div>
+<p class="sn-para">In GitHub Actions you can set this up with separate job strategies:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">strategy:
+  matrix:
+    include:
+      - project: chromium
+        shardIndex: <span class="tc-num">1</span>
+        shardTotal: <span class="tc-num">4</span>
+      - project: chromium
+        shardIndex: <span class="tc-num">2</span>
+        shardTotal: <span class="tc-num">4</span>
+      - project: chromium
+        shardIndex: <span class="tc-num">3</span>
+        shardTotal: <span class="tc-num">4</span>
+      - project: chromium
+        shardIndex: <span class="tc-num">4</span>
+        shardTotal: <span class="tc-num">4</span>
+      - project: firefox
+        shardIndex: <span class="tc-num">1</span>
+        shardTotal: <span class="tc-num">1</span>  <span class="tc-cm"># Firefox on one machine, smoke only</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q402.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.10</span>
+      <h2 class="sn-q-text">What is browser caching and why does it matter for sharding?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Each shard installs browsers with <code class="sn-ic">npx playwright install --with-deps</code>. Without caching, each of 4 shards downloads ~100–300 MB of browser binaries. At 4 shards, that is 400–1200 MB of redundant downloads per run.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Cache the browser installation in GitHub Actions:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Cache Playwright browsers
+  uses: actions/cache@v4
+  id: playwright-cache
+  with:
+    path: ~/.cache/ms-playwright
+    key: playwright-${{ runner.os }}-${{ <span class="tc-fn">hashFiles</span>(<span class="tc-str">'package-lock.json'</span>) }}
+
+- name: Install <span class="tc-fn">browsers</span> (only <span class="tc-kw">if</span> cache miss)
+  <span class="tc-kw">if</span>: steps.playwright-cache.outputs.cache-hit != <span class="tc-str">'true'</span>
+  run: npx playwright install --with-deps</div>
+      </div>
+<p class="sn-para">With browser caching:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>First run: installs and caches browsers (~2 minutes per shard)</span></li>
+<li><span class="icon">💡</span><span>Subsequent runs: cache hit, skip install (~10 seconds per shard)</span></li>
+</ul>
+<p class="sn-para">Across 4 shards and 10 CI runs per day, caching saves approximately 80–120 minutes of install time daily. For large teams with many CI runs, this is significant.</p>
+    </div>
+  </div>
+
+  <!-- Q402.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.11</span>
+      <h2 class="sn-q-text">How does sharding affect test distribution when files are uneven?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright distributes tests by file. If files are very uneven in size, shards end up uneven in run time:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Suite: 4 shards
+File A: 100 tests  → goes to Shard 1
+Files B–D: 10 each → distributed across Shards 2–4
+
+Result:
+Shard 1: 100 tests — 8 minutes
+Shard 2: 10 tests  — 1 minute  (idle 7 minutes)
+Shard 3: 10 tests  — 1 minute  (idle 7 minutes)
+Shard 4: 10 tests  — 1 minute  (idle 7 minutes)
+
+Total CI time: 8 minutes (bottlenecked on Shard 1)</div>
+      </div>
+<p class="sn-para">With 4 shards but only getting ~2× speedup instead of the expected 4×.</p>
+<p class="sn-para"><strong class="k-purple">Fix:</strong> Keep test files roughly equal in size. As a guideline:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Aim for 15–30 tests per file for balanced sharding</span></li>
+<li><span class="icon">💡</span><span>Split files that grow beyond 50 tests</span></li>
+<li><span class="icon">⚡</span><span>Use consistent naming (<code class="sn-ic">auth.spec.ts</code>, <code class="sn-ic">leave-apply.spec.ts</code>, etc.) so</span></li>
+</ul>
+<p class="sn-para">  file size is predictable and distributable</p>
+    </div>
+  </div>
+
+  <!-- Q402.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.12</span>
+      <h2 class="sn-q-text">Can you shard without the blob reporter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Yes — each shard can use any reporter independently. The blob reporter is just the most convenient path to a unified report. Alternative approaches:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">JUnit XML on each shard:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- run: npx playwright <span class="tc-kw">test</span> --shard=${{ matrix.shardIndex }}/<span class="tc-num">4</span> --reporter=junit</div>
+      </div>
+<p class="sn-para">Then configure the CI tool to consume all JUnit files:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- task: PublishTestResults@<span class="tc-num">2</span>
+  inputs:
+    testResultsFiles: <span class="tc-str">'results/junit-*.xml'</span>  <span class="tc-cm"># Azure DevOps picks up all files</span></div>
+      </div>
+<p class="sn-para">Azure DevOps, Jenkins, and GitLab CI can all aggregate multiple JUnit files natively.</p>
+<p class="sn-para"><strong class="k-orange">Tradeoff:</strong> JUnit gives you test counts and pass/fail in the CI tool's native UI. The blob + HTML approach gives you screenshots, videos, traces, and the full Playwright report experience. For serious debugging, the blob approach is superior. For simple pass/fail CI integration, JUnit is simpler.</p>
+    </div>
+  </div>
+
+  <!-- Q402.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.13</span>
+      <h2 class="sn-q-text">How does sharding interact with project dependencies?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Project dependencies (auth setup projects) need special handling with sharding. An auth setup project must run before the test projects that depend on it — but with sharding, each shard is independent.</p>
+      </div>
+<p class="sn-para">The cleanest solution: run auth setup as a separate pre-sharding job:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">jobs:
+  auth-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - run: npx playwright <span class="tc-kw">test</span> --project=admin-auth --project=employee-auth
+      - uses: actions/upload-artifact@v4
+        with:
+          name: auth-state
+          path: .auth/
+
+  playwright-shards:
+    needs: auth-setup
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: auth-state
+          path: .auth/
+      - run: npx playwright <span class="tc-kw">test</span> --shard=${{ matrix.shardIndex }}/<span class="tc-num">4</span>
+        <span class="tc-cm"># Each shard loads auth state from the downloaded .auth/ directory</span></div>
+      </div>
+<p class="sn-para">The auth setup runs once. All shards download the saved auth state and use it. This is more efficient than each shard independently re-running auth setup before its tests.</p>
+    </div>
+  </div>
+
+  <!-- Q402.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.14</span>
+      <h2 class="sn-q-text">What is the typical speedup from sharding and how do you measure it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink">Measure the baseline first:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">time npx playwright test --workers=4</div>
+      </div>
+<p class="sn-para">Then measure with shards (simulate locally with sequential runs):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">time npx playwright test --shard=1/4 &amp;
+time npx playwright test --shard=2/4 &amp;
+time npx playwright test --shard=3/4 &amp;
+time npx playwright test --shard=4/4 &amp;
+wait</div>
+      </div>
+<p class="sn-para">The bottleneck is always the slowest shard — total CI time equals the longest shard, not the average.</p>
+<p class="sn-para"><strong class="k-pink">Typical speedup curve:</strong></p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Shards</th><th class="sn-th-blue">Expected speedup</th><th class="sn-th-green">Actual (overhead included)</th></tr></thead>
+          <tbody>
+          <tr><td>2</td><td>2×</td><td>1.7–1.9×</td></tr>
+          <tr><td>4</td><td>4×</td><td>3–3.5×</td></tr>
+          <tr><td>8</td><td>8×</td><td>5–6×</td></tr>
+          <tr><td>16</td><td>16×</td><td>8–10×</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">Overhead (checkout, install, startup) reduces actual speedup from theoretical. Beyond 8 shards, the overhead-to-benefit ratio degrades significantly for most suites unless browsers are well-cached.</p>
+    </div>
+  </div>
+
+  <!-- Q402.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.15</span>
+      <h2 class="sn-q-text">What are the common sharding mistakes and how do you avoid them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Mistake 1 — Forgetting <code class="sn-ic">fail-fast: false</code>:</strong> One shard failure cancels the others. Incomplete blob data. Merge job fails. Fix: always add <code class="sn-ic">fail-fast: false</code> to the matrix strategy.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Mistake 2 — No <code class="sn-ic">if: always()</code> on blob upload or merge job:</strong> Blobs are not uploaded when shards fail. Merge job is skipped when shards fail. You have no report exactly when you need it. Fix: add <code class="sn-ic">if: always()</code> to every step that produces or processes blobs.</p>
+<p class="sn-para"><strong class="k-red">Mistake 3 — Installing browsers on every shard without caching:</strong> 4 shards × 3 browsers × 100MB = 1.2GB downloaded per run. Fix: cache <code class="sn-ic">~/.cache/ms-playwright</code> keyed to <code class="sn-ic">package-lock.json</code> hash.</p>
+<p class="sn-para"><strong class="k-red">Mistake 4 — Not accounting for auth setup:</strong> Each shard tries to run auth setup independently. 4 shards × 4 login flows hitting the server simultaneously, each writing to <code class="sn-ic">.auth/admin.json</code>. Race condition — all four write different sessions to the same file. Fix: run auth setup as a separate pre-shard job, upload <code class="sn-ic">.auth/</code> as an artefact, download in each shard.</p>
+<p class="sn-para"><strong class="k-red">Mistake 5 — Large test files causing uneven sharding:</strong> One shard gets a 100-test file and runs for 10 minutes while other shards finish in 2. The CI time is limited by the slowest shard. Fix: keep files balanced at 15–30 tests each.</p>
+    </div>
+  </div>
+
+  <!-- Q402.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.16</span>
+      <h2 class="sn-q-text">Write a sharded configuration that runs all browsers efficiently.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Playwright Tests — Sharded
+
+on: [push, pull_request]
+
+jobs:
+  auth-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: <span class="tc-str">'20'</span>, cache: <span class="tc-str">'npm'</span> }
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - run: npx playwright <span class="tc-kw">test</span> --project=admin-auth --project=employee-auth
+        env: { CI: <span class="tc-kw">true</span>, BASE_URL: ${{ vars.TEST_BASE_URL }} }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: auth-state
+          path: .auth/
+          retention-days: <span class="tc-num">1</span>
+
+  chromium-shards:
+    needs: auth-setup
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: <span class="tc-kw">false</span>
+      matrix:
+        shardIndex: [<span class="tc-num">1</span>, <span class="tc-num">2</span>, <span class="tc-num">3</span>, <span class="tc-num">4</span>]
+        shardTotal: [<span class="tc-num">4</span>]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: <span class="tc-str">'20'</span>, cache: <span class="tc-str">'npm'</span> }
+      - run: npm ci
+      - name: Cache browsers
+        uses: actions/cache@v4
+        id: cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ <span class="tc-fn">hashFiles</span>(<span class="tc-str">'package-lock.json'</span>) }}
+      - <span class="tc-kw">if</span>: steps.cache.outputs.cache-hit != <span class="tc-str">'true'</span>
+        run: npx playwright install --with-deps
+      - uses: actions/download-artifact@v4
+        with: { name: auth-state, path: .auth/ }
+      - run: &gt;
+          npx playwright <span class="tc-kw">test</span>
+          --project=chromium
+          --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        env: { CI: <span class="tc-kw">true</span>, BASE_URL: ${{ vars.TEST_BASE_URL }} }
+      - uses: actions/upload-artifact@v4
+        <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+        with:
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report/
+          retention-days: <span class="tc-num">1</span>
+
+  merge-and-smoke-browsers:
+    needs: chromium-shards
+    runs-on: ubuntu-latest
+    <span class="tc-kw">if</span>: <span class="tc-fn">always</span>()
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: <span class="tc-str">'20'</span>, cache: <span class="tc-str">'npm'</span> }
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: <span class="tc-kw">true</span>
+      - run: npx playwright merge-reports --reporter html ./all-blob-reports
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: <span class="tc-num">30</span>
+      <span class="tc-cm"># Run Firefox and Safari smoke tests on the merge machine</span>
+      - uses: actions/download-artifact@v4
+        with: { name: auth-state, path: .auth/ }
+      - run: npx playwright install --with-deps
+      - run: npx playwright <span class="tc-kw">test</span> --project=firefox --project=webkit --grep @smoke
+        env: { CI: <span class="tc-kw">true</span> }</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q402.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.17</span>
+      <h2 class="sn-q-text">When should you NOT use sharding?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Sharding adds complexity: blob reporters, merge jobs, artefact management, auth-state coordination, browser caching configuration. This complexity is only worth it when the benefit is clear.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Do not shard when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The suite runs in under 10 minutes on one machine — the overhead of</span></li>
+</ul>
+<p class="sn-para">  sharding setup may save less time than it costs</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>The team lacks CI/CD maintenance experience — a broken shard workflow</span></li>
+</ul>
+<p class="sn-para">  is harder to debug than a slow single-machine run</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>The suite is unstable — fixing flakiness first is a better investment</span></li>
+</ul>
+<p class="sn-para">  than distributing flaky tests across more machines</p>
+<p class="sn-para"><strong class="k-blue">Shard when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎯</span><span>PR check feedback takes longer than 10–15 minutes</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>The suite has grown beyond what more workers can fix (you are already</span></li>
+</ul>
+<p class="sn-para">  at <code class="sn-ic">workers: 8</code> and the machine is saturated)</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>CI cost per minute is lower than engineering time spent waiting</span></li>
+</ul>
+<p class="sn-para">A simple rule: if engineers are complaining about CI being slow and you cannot reduce suite time by 50% just by fixing flakiness and tuning workers, sharding is the right next step.</p>
+    </div>
+  </div>
+
+  <!-- Q402.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q402.18</span>
+      <h2 class="sn-q-text">How did you implement sharding in your project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Our OrangeHRM suite grew from 80 tests to 600 (200 tests × 3 browsers) over six months. Single-machine CI took 28 minutes. Engineers were pushing batches of changes to avoid triggering multiple slow runs — a sign the feedback loop was broken.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">The implementation:</strong></p>
+<ol class="sn-olist">
+<li>Added the blob reporter to the config behind <code class="sn-ic">process.env.CI</code>.</li>
+<li>Created the sharded GitHub Actions workflow with 4 shards and a merge job.</li>
+<li>Extracted auth setup into a pre-shard job to avoid race conditions on</li>
+</ol>
+<p class="sn-para">   <code class="sn-ic">.auth/admin.json</code>.</p>
+<ol class="sn-olist">
+<li>Added browser caching keyed to <code class="sn-ic">package-lock.json</code> — this alone saved</li>
+</ol>
+<p class="sn-para">   2 minutes per shard per run.</p>
+<ol class="sn-olist">
+<li>Found that one test file had 120 tests (the full employee module) while</li>
+</ol>
+<p class="sn-para">   all others had 10–20. Split it into four focused files. Shard balance    improved from a 3:1 imbalance to near-even.</p>
+<p class="sn-para"><strong class="k-green">Results:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>CI time: 28 minutes → 9 minutes</span></li>
+<li><span class="icon">💡</span><span>Engineers resumed pushing individual changes without batching</span></li>
+<li><span class="icon">⚡</span><span>The merge job's HTML report replaced our previous manual log-trawling</span></li>
+</ul>
+<p class="sn-para">  for cross-shard failures</p>
+<p class="sn-para"><strong class="k-green">The unexpected lesson:</strong> Splitting the large test file into focused files improved local development even more than CI. Running <code class="sn-ic">npx playwright test tests/pim/add-employee.spec.ts</code> now takes 90 seconds instead of 15 minutes for the monolithic file. Sharding forced good file structure discipline that benefited the whole workflow.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Sharding splits the suite across multiple CI machines via <code class="sn-ic">--shard=N/M</code> CLI flag.</span></li>
+            <li><span class="icon">⭐</span><span>Tests are distributed by file — a whole file goes to one shard, not split between shards.</span></li>
+            <li><span class="icon">⭐</span><span>Blob reporter collects shard results. <code class="sn-ic">npx playwright merge-reports</code> combines all blobs into one HTML report.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">fail-fast: false</code> in the CI matrix — lets all shards run even if one fails.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">if: always()</code> on blob upload and the merge job — ensures the report is produced even when tests fail.</span></li>
+            <li><span class="icon">⭐</span><span>Sharding vs workers: workers parallelize within one machine; shards distribute across machines. Both are used simultaneously.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Browser caching (key on <code class="sn-ic">package-lock.json</code> hash) is essential — without it each shard reinstalls browsers redundantly.</span></li>
+            <li><span class="icon">⭐</span><span>Auth setup should run as a separate pre-shard job — parallel shard auth attempts cause race conditions on <code class="sn-ic">.auth/*.json</code> files.</span></li>
+            <li><span class="icon">⭐</span><span>Uneven test files cause uneven shards. Keep files at 15–30 tests each for balanced distribution.</span></li>
+            <li><span class="icon">⭐</span><span>Start with 4 shards. Only increase after measuring that the time saving justifies the added complexity.</span></li>
+            <li><span class="icon">⭐</span><span>Do not shard suites that run in under 10 minutes — the overhead negates the benefit.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

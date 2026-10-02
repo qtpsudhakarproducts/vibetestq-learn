@@ -1,0 +1,934 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 507 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Reusable</span> <span class="w2">Web</span> <span class="w3">Action</span> <span class="w4">Helpers</span> <span class="w5">(L6)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the five helper classes — <code class="sn-ic">WaitHelpers</code>, <code class="sn-ic">WebActions</code>, <code class="sn-ic">OrangeHRMControls</code>, <code class="sn-ic">AssertionHelpers</code>, and <code class="sn-ic">DateHelpers</code> — that eliminate duplicated interaction patterns across page objects. Interviewers ask about helpers to distinguish engineers who understand composition from those who default to inheritance, and to probe whether candidates can explain why a single seam like <code class="sn-ic">WebActions</code> matters for cross-cutting concerns like self-healing and error classification. The <code class="sn-ic">execute()</code> wrapper pattern and the three custom error classes are particularly strong differentiators at senior level.</span>
+  </div>
+
+
+  <!-- Q507.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.1</span>
+      <h2 class="sn-q-text">What problem does the helper layer solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">After Level 5, page objects each implement their own version of the same interaction patterns. The OrangeHRM dropdown interaction appears three times across <code class="sn-ic">AddUserPage</code>, <code class="sn-ic">ApplyLeavePage</code>, and <code class="sn-ic">PersonalDetailsPage</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// AddUserPage.ts</span>
+<span class="tc-kw">async</span> <span class="tc-fn">selectUserRole</span>(role: <span class="tc-str">'Admin'</span> | <span class="tc-str">'ESS'</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.userRoleDropdown.<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: role }).<span class="tc-fn">click</span>();
+}
+
+<span class="tc-cm">// ApplyLeavePage.ts</span>
+<span class="tc-kw">async</span> <span class="tc-fn">selectLeaveType</span>(leaveType: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.leaveTypeDropdown.<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: leaveType }).<span class="tc-fn">click</span>();
+}</div>
+      </div>
+<p class="sn-para">Identical pattern, three copies. The same duplication exists for autocomplete fields, date inputs, table row actions, and confirmation dialogs.</p>
+<p class="sn-para">When OrangeHRM upgrades its Vue component library and the dropdown selector changes from <code class="sn-ic">.oxd-select-option</code> to something else, every page object with a dropdown needs updating. The helper layer reduces that to a single change in <code class="sn-ic">OrangeHRMControls</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q507.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.2</span>
+      <h2 class="sn-q-text">What are the five helpers and what does each one own?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Helper</th><th class="sn-th-blue">Responsibility</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">WaitHelpers</code></td><td>Targeted waits for OrangeHRM's async UI patterns — spinner, toast, dropdown, autocomplete, URL change</td></tr>
+          <tr><td><code class="sn-ic">WebActions</code></td><td>Generic browser interactions — click, fill, check, hover, upload, scroll — with centralised error classification via <code class="sn-ic">execute()</code></td></tr>
+          <tr><td><code class="sn-ic">OrangeHRMControls</code></td><td>Application-specific UI components — custom dropdown, autocomplete, date input, confirmation dialog, table row action, file upload</td></tr>
+          <tr><td><code class="sn-ic">AssertionHelpers</code></td><td>Composite assertions — table row count, table cell content with soft assertions, dropdown value, toast message, form validation errors</td></tr>
+          <tr><td><code class="sn-ic">DateHelpers</code></td><td>Date formatting — converts between ISO (<code class="sn-ic">yyyy-mm-dd</code>) and OrangeHRM's expected format (<code class="sn-ic">yyyy-dd-mm</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">The interaction stack:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Page Objects
+    ↓ calls
+OrangeHRMControls   ← OrangeHRM-specific sequences
+    ↓ calls
+WebActions          ← generic interactions + error classification
+    ↓ calls
+Playwright API      ← browser automation</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">WebActions</code> is the single seam between the framework and the browser. Any cross-cutting concern — error classification, logging, self-healing — added here benefits every page object automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q507.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.3</span>
+      <h2 class="sn-q-text">Why do helpers use composition instead of inheritance?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Inheritance</strong> — the class IS-A base class (<code class="sn-ic">LoginPage extends BasePage</code>). Use when the child is a more specific version of the parent.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Composition</strong> — the class HAS-A helper (<code class="sn-ic">AddUserPage</code> has a <code class="sn-ic">WebActions</code>). Use when the child uses something as a tool rather than categorically being it.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Inheritance — LoginPage IS-A BasePage</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage <span class="tc-kw">extends</span> BasePage { ... }
+
+<span class="tc-cm">// Composition — AddUserPage HAS-A WebActions</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AddUserPage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> actions:  WebActions;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> controls: OrangeHRMControls;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);
+    <span class="tc-kw">this</span>.actions  = <span class="tc-kw">new</span> WebActions(page);     <span class="tc-cm">// tool, not a base class</span>
+    <span class="tc-kw">this</span>.controls = <span class="tc-kw">new</span> OrangeHRMControls(page);
+  }
+}</div>
+      </div>
+<p class="sn-para">A page object is a page — it IS-A <code class="sn-ic">BasePage</code>. It is not a <code class="sn-ic">WebActions</code>. <code class="sn-ic">WebActions</code> is a tool it uses. Inheriting from <code class="sn-ic">WebActions</code> would mean "a page is a kind of action set", which is not true. Composition expresses the right relationship and avoids the rigidity of deep inheritance chains.</p>
+<p class="sn-para">TypeScript only allows single inheritance — a class that extends <code class="sn-ic">BasePage</code> cannot also extend <code class="sn-ic">WebActions</code>. Composition removes this constraint: a page object can use any combination of helpers regardless of inheritance.</p>
+    </div>
+  </div>
+
+  <!-- Q507.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.4</span>
+      <h2 class="sn-q-text">What is the execute() wrapper in WebActions and why does it matter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">execute()</code> is a private generic method that every public <code class="sn-ic">WebActions</code> method routes through. It provides centralised error classification:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/WebActions.ts</span>
+<span class="tc-kw">private</span> <span class="tc-kw">async</span> execute&lt;T&gt;(
+  action:  <span class="tc-kw">string</span>,
+  locator: Locator,
+  fn:      () =&gt; Promise&lt;T&gt;
+): Promise&lt;T&gt; {
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">return</span> <span class="tc-kw">await</span> <span class="tc-fn">fn</span>();
+  } <span class="tc-kw">catch</span> (error) {
+    <span class="tc-kw">const</span> cause       = error as Error;
+    <span class="tc-kw">const</span> locatorDesc = locator.<span class="tc-fn">toString</span>();
+
+    <span class="tc-kw">if</span> (cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'Timeout'</span>) || cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'timeout'</span>)) {
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> TimeoutError(action, locatorDesc, cause);
+    }
+    <span class="tc-kw">if</span> (
+      cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'not found'</span>)   ||
+      cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'not visible'</span>) ||
+      cause.message.<span class="tc-fn">includes</span>(<span class="tc-str">'not attached'</span>)
+    ) {
+      <span class="tc-kw">throw</span> <span class="tc-kw">new</span> ElementNotFoundError(action, locatorDesc, cause);
+    }
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> ActionError(action, locatorDesc, cause);
+  }
+}
+
+<span class="tc-cm">// Usage — every public method uses execute()</span>
+<span class="tc-kw">async</span> <span class="tc-fn">click</span>(locator: Locator): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">execute</span>(<span class="tc-str">'click'</span>, locator, () =&gt; locator.<span class="tc-fn">click</span>());
+}
+
+<span class="tc-kw">async</span> <span class="tc-fn">fill</span>(locator: Locator, value: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">execute</span>(<span class="tc-str">'fill'</span>, locator, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> locator.<span class="tc-fn">clear</span>();
+    <span class="tc-kw">await</span> locator.<span class="tc-fn">fill</span>(value);
+  });
+}</div>
+      </div>
+<p class="sn-para">Without <code class="sn-ic">execute()</code>, each page object and helper method would need its own try/catch. With it, error classification is defined once and applied everywhere automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q507.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.5</span>
+      <h2 class="sn-q-text">What are the three custom error classes and why does each one matter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/errors.ts</span>
+
+<span class="tc-cm">// Base class — preserves the original Playwright stack trace</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> ActionError <span class="tc-kw">extends</span> Error {
+  <span class="tc-fn">constructor</span>(
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> action:  <span class="tc-kw">string</span>,
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> locator: <span class="tc-kw">string</span>,
+    <span class="tc-kw">public</span> <span class="tc-kw">readonly</span> cause:   Error,
+  ) {
+    <span class="tc-fn">super</span>(<span class="tc-str">`[${action}] failed on &amp;quot;${locator}&amp;quot;: ${cause.message}`</span>);
+    <span class="tc-kw">this</span>.name  = <span class="tc-str">'ActionError'</span>;
+    <span class="tc-kw">this</span>.stack = cause.stack;  <span class="tc-cm">// preserves original trace — not the rethrow trace</span>
+  }
+}
+
+<span class="tc-cm">// Thrown when Playwright's action timeout expires</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> TimeoutError <span class="tc-kw">extends</span> ActionError {
+  <span class="tc-fn">constructor</span>(action: <span class="tc-kw">string</span>, locator: <span class="tc-kw">string</span>, cause: Error) {
+    <span class="tc-fn">super</span>(action, locator, cause);
+    <span class="tc-kw">this</span>.name = <span class="tc-str">'TimeoutError'</span>;
+  }
+}
+
+<span class="tc-cm">// Thrown when the locator cannot find the element in the DOM</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> ElementNotFoundError <span class="tc-kw">extends</span> ActionError {
+  <span class="tc-fn">constructor</span>(action: <span class="tc-kw">string</span>, locator: <span class="tc-kw">string</span>, cause: Error) {
+    <span class="tc-fn">super</span>(action, locator, cause);
+    <span class="tc-kw">this</span>.name = <span class="tc-str">'ElementNotFoundError'</span>;
+  }
+}</div>
+      </div>
+<p class="sn-para">Why three classes matter:</p>
+<p class="sn-para"><strong class="k-teal">For debugging:</strong> <code class="sn-ic">ElementNotFoundError</code> means the locator is wrong — check the selector. <code class="sn-ic">TimeoutError</code> means the element exists but the page is slow — check timing or add a wait. A generic <code class="sn-ic">Error</code> tells you neither.</p>
+<p class="sn-para"><strong class="k-teal">For self-healing (Level 9):</strong> when the healer sees <code class="sn-ic">ElementNotFoundError</code> it looks for a new locator. When it sees <code class="sn-ic">TimeoutError</code> it suggests increasing the timeout. Different error types drive different healing strategies.</p>
+<p class="sn-para"><strong class="k-teal">For Allure reporting:</strong> categories can be configured to separate <code class="sn-ic">ElementNotFoundError</code> failures (locator defects) from <code class="sn-ic">TimeoutError</code> failures (environment issues) in the report — keeping them visually distinct.</p>
+    </div>
+  </div>
+
+  <!-- Q507.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.6</span>
+      <h2 class="sn-q-text">What does WaitHelpers provide and why is it built first?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">WaitHelpers</code> is built first because both <code class="sn-ic">WebActions</code> and <code class="sn-ic">OrangeHRMControls</code> depend on it. The key methods:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Waits for OrangeHRM's loading spinner to disappear</span>
+<span class="tc-kw">async</span> <span class="tc-fn">waitForSpinnerToDisappear</span>(timeout = 10_000): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> spinner = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-loading-spinner'</span>);
+  <span class="tc-kw">try</span> {
+    <span class="tc-kw">await</span> spinner.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'hidden'</span>, timeout });
+  } <span class="tc-kw">catch</span> {
+    <span class="tc-cm">// Spinner was not in the DOM at all — that is fine</span>
+  }
+}
+
+<span class="tc-cm">// Waits for table rows OR the &amp;quot;No Records Found&amp;quot; message — whichever comes first</span>
+<span class="tc-kw">async</span> <span class="tc-fn">waitForTableToLoad</span>(tableLocator: Locator, timeout = 10_000): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">waitForSpinnerToDisappear</span>(timeout);
+  <span class="tc-kw">const</span> noRecords = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByText</span>(<span class="tc-str">'No Records Found'</span>);
+  <span class="tc-kw">await</span> Promise.<span class="tc-fn">race</span>([
+    tableLocator.<span class="tc-fn">locator</span>(<span class="tc-str">'role=row'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout }),
+    noRecords.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout }),
+  ]).<span class="tc-kw">catch</span>(() =&gt; {});  <span class="tc-cm">// if neither appears, proceed — assertion will catch it</span>
+}
+
+<span class="tc-cm">// Returns the toast locator so callers can chain assertions</span>
+<span class="tc-kw">async</span> <span class="tc-fn">waitForToastToAppear</span>(timeout = 10_000): Promise&lt;Locator&gt; {
+  <span class="tc-kw">const</span> toast = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-toast-content'</span>);
+  <span class="tc-kw">await</span> toast.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout });
+  <span class="tc-kw">return</span> toast;
+}
+
+<span class="tc-cm">// Waits for dropdown options to become visible after a dropdown is clicked</span>
+<span class="tc-kw">async</span> <span class="tc-fn">waitForDropdownOptionsToAppear</span>(timeout = 10_000): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-options'</span>).<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout });
+}
+
+<span class="tc-cm">// Waits for the URL to change — useful after form submissions with unpredictable redirects</span>
+<span class="tc-kw">async</span> <span class="tc-fn">waitForURLChange</span>(timeout = 10_000): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> currentURL = <span class="tc-kw">this</span>.page.<span class="tc-fn">url</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForFunction</span>(
+    (url: <span class="tc-kw">string</span>) =&gt; window.location.href !== url,
+    currentURL,
+    { timeout }
+  );
+}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">BasePage.waitForPageLoad()</code> uses <code class="sn-ic">networkidle</code> — it waits for all network traffic to stop. <code class="sn-ic">WaitHelpers</code> provides targeted waits tied to specific UI elements, which is faster and more reliable on OrangeHRM's shared demo site.</p>
+    </div>
+  </div>
+
+  <!-- Q507.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.7</span>
+      <h2 class="sn-q-text">What does OrangeHRMControls cover and how does the dropdown flow work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/OrangeHRMControls.ts</span>
+
+<span class="tc-cm">// Custom Vue dropdown — NOT a native &amp;lt;select&amp;gt;</span>
+<span class="tc-kw">async</span> <span class="tc-fn">selectDropdown</span>(dropdownLocator: Locator, optionText: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">click</span>(dropdownLocator);              <span class="tc-cm">// 1. open</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForDropdownOptionsToAppear</span>();      <span class="tc-cm">// 2. wait for options</span>
+  <span class="tc-kw">const</span> option = <span class="tc-kw">this</span>.page
+    .<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-option'</span>)
+    .<span class="tc-fn">filter</span>({ hasText: optionText })
+    .<span class="tc-kw">describe</span>(<span class="tc-str">`&amp;quot;${optionText}&amp;quot; option in dropdown`</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">click</span>(option);                      <span class="tc-cm">// 3. select</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForDropdownOptionsToDisappear</span>();  <span class="tc-cm">// 4. confirm closed</span>
+}
+
+<span class="tc-cm">// Autocomplete field — types, waits for suggestions, clicks first match</span>
+<span class="tc-kw">async</span> <span class="tc-fn">fillAutocomplete</span>(inputLocator: Locator, searchText: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">fill</span>(inputLocator, searchText);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForAutocompleteToAppear</span>();
+  <span class="tc-kw">const</span> firstOption = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-autocomplete-option'</span>).<span class="tc-fn">first</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">click</span>(firstOption);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForAutocompleteToDisappear</span>();
+}
+
+<span class="tc-cm">// Date input — fills then presses Tab (OrangeHRM reverts without Tab)</span>
+<span class="tc-cm">// Verifies the value was accepted (OrangeHRM clears invalid dates silently)</span>
+<span class="tc-kw">async</span> <span class="tc-fn">fillDateInput</span>(inputLocator: Locator, formattedDate: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">fill</span>(inputLocator, formattedDate);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">pressKey</span>(inputLocator, <span class="tc-str">'Tab'</span>);
+  <span class="tc-kw">const</span> actualValue = <span class="tc-kw">await</span> inputLocator.<span class="tc-fn">inputValue</span>();
+  <span class="tc-kw">if</span> (!actualValue) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(
+      <span class="tc-str">`fillDateInput: date field rejected &amp;quot;${formattedDate}&amp;quot;. `</span> +
+      <span class="tc-str">`OrangeHRM expects format yyyy-dd-mm. `</span> +
+      <span class="tc-str">`Use DateHelpers.formatToOrangeHRM() to produce the correct string.`</span>
+    );
+  }
+}
+
+<span class="tc-cm">// Confirmation dialog — waits for modal, clicks confirm, waits for modal to close</span>
+<span class="tc-kw">async</span> <span class="tc-fn">handleConfirmationDialog</span>(confirmButtonName = <span class="tc-str">'Ok'</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> modal = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-dialog-container'</span>);
+  <span class="tc-kw">await</span> modal.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span> });
+  <span class="tc-kw">const</span> confirmButton = modal.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: confirmButtonName });
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">click</span>(confirmButton);
+  <span class="tc-kw">await</span> modal.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'hidden'</span> });
+}
+
+<span class="tc-cm">// Table row action — scopes button to the correct row by row identifier</span>
+<span class="tc-kw">async</span> <span class="tc-fn">clickTableRowAction</span>(
+  tableLocator: Locator, rowIdentifier: <span class="tc-kw">string</span>, actionName: <span class="tc-kw">string</span>
+): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> row = tableLocator
+    .<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>, { name: <span class="tc-kw">new</span> RegExp(rowIdentifier, <span class="tc-str">'i'</span>) });
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">scrollIntoView</span>(row);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">click</span>(row.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: actionName }));
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q507.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.8</span>
+      <h2 class="sn-q-text">How does DateHelpers handle OrangeHRM's non-standard date format?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">OrangeHRM date inputs expect <code class="sn-ic">yyyy-dd-mm</code> — day and month are swapped compared to standard ISO 8601 (<code class="sn-ic">yyyy-mm-dd</code>). This is a source of silent failures: filling <code class="sn-ic">2025-01-15</code> when the field expects <code class="sn-ic">2025-15-01</code> causes OrangeHRM to silently clear the field with no error message.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/DateHelpers.ts</span>
+
+<span class="tc-cm">// JavaScript Date → OrangeHRM format</span>
+<span class="tc-kw">static</span> <span class="tc-fn">formatToOrangeHRM</span>(date: Date): <span class="tc-kw">string</span> {
+  <span class="tc-kw">const</span> year  = date.<span class="tc-fn">getFullYear</span>();
+  <span class="tc-kw">const</span> month = String(date.<span class="tc-fn">getMonth</span>() + <span class="tc-num">1</span>).<span class="tc-fn">padStart</span>(<span class="tc-num">2</span>, <span class="tc-str">'0'</span>);
+  <span class="tc-kw">const</span> day   = String(date.<span class="tc-fn">getDate</span>()).<span class="tc-fn">padStart</span>(<span class="tc-num">2</span>, <span class="tc-str">'0'</span>);
+  <span class="tc-kw">return</span> <span class="tc-str">`${year}-${day}-${month}`</span>;  <span class="tc-cm">// ← day before month</span>
+}
+
+<span class="tc-cm">// ISO string → OrangeHRM format</span>
+<span class="tc-kw">static</span> <span class="tc-fn">fromISO</span>(isoDateString: <span class="tc-kw">string</span>): <span class="tc-kw">string</span> {
+  <span class="tc-kw">const</span> [year, month, day] = isoDateString.<span class="tc-fn">split</span>(<span class="tc-str">'-'</span>);
+  <span class="tc-kw">if</span> (!year || !month || !day) {
+    <span class="tc-kw">throw</span> <span class="tc-kw">new</span> Error(<span class="tc-str">`DateHelpers.fromISO: &amp;quot;${isoDateString}&amp;quot; is not a valid ISO date.`</span>);
+  }
+  <span class="tc-kw">return</span> <span class="tc-str">`${year}-${day}-${month}`</span>;  <span class="tc-cm">// ← swap day and month</span>
+}
+
+<span class="tc-cm">// Validates a string is in OrangeHRM's format (with calendar-aware day checking)</span>
+<span class="tc-kw">static</span> <span class="tc-fn">isValidOrangeHRMDate</span>(dateString: <span class="tc-kw">string</span>): <span class="tc-kw">boolean</span> {
+  <span class="tc-kw">if</span> (!/^\d{<span class="tc-num">4</span>}-\d{<span class="tc-num">2</span>}-\d{<span class="tc-num">2</span>}$/.<span class="tc-kw">test</span>(dateString)) <span class="tc-kw">return</span> <span class="tc-kw">false</span>;
+  <span class="tc-kw">const</span> [year, day, month] = dateString.<span class="tc-fn">split</span>(<span class="tc-str">'-'</span>).<span class="tc-fn">map</span>(Number);
+  <span class="tc-kw">if</span> (month &lt; <span class="tc-num">1</span> || month &gt; <span class="tc-num">12</span>) <span class="tc-kw">return</span> <span class="tc-kw">false</span>;
+  <span class="tc-kw">if</span> (day &lt; <span class="tc-num">1</span> || day &gt; <span class="tc-num">31</span>)     <span class="tc-kw">return</span> <span class="tc-kw">false</span>;
+  <span class="tc-kw">const</span> maxDays = <span class="tc-kw">new</span> Date(year, month, <span class="tc-num">0</span>).<span class="tc-fn">getDate</span>();  <span class="tc-cm">// last day of month</span>
+  <span class="tc-kw">return</span> day &lt;= maxDays;
+}</div>
+      </div>
+<p class="sn-para">Usage in a page object that accepts ISO dates from the test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// PersonalDetailsPage.ts</span>
+<span class="tc-kw">async</span> <span class="tc-fn">fillDateOfBirth</span>(isoDate: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> orangeHRMDate = DateHelpers.<span class="tc-fn">fromISO</span>(isoDate);  <span class="tc-cm">// '2025-01-15' → '2025-15-01'</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">fillDateInput</span>(<span class="tc-kw">this</span>.dobInput, orangeHRMDate);
+}</div>
+      </div>
+<p class="sn-para">The test passes ISO format (human-readable). The page object converts it to OrangeHRM format before filling. The conversion happens in exactly one place; tests never think about date format details.</p>
+    </div>
+  </div>
+
+  <!-- Q507.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.9</span>
+      <h2 class="sn-q-text">What does AssertionHelpers provide and when should you use soft assertions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/AssertionHelpers.ts</span>
+
+<span class="tc-cm">// Composite table row assertion using soft assertions</span>
+<span class="tc-kw">async</span> <span class="tc-fn">assertTableRowContains</span>(
+  tableLocator:   Locator,
+  rowIdentifier:  <span class="tc-kw">string</span>,
+  expectedValues: Record&lt;<span class="tc-kw">string</span>, <span class="tc-kw">string</span>&gt;
+): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForTableToLoad</span>(tableLocator);
+  <span class="tc-kw">const</span> row = tableLocator
+    .<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>, { name: <span class="tc-kw">new</span> RegExp(rowIdentifier, <span class="tc-str">'i'</span>) });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(row).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-kw">for</span> (<span class="tc-kw">const</span> [key, value] <span class="tc-kw">of</span> Object.<span class="tc-fn">entries</span>(expectedValues)) {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(
+      row.<span class="tc-fn">getByText</span>(value),
+      <span class="tc-str">`Expected row &amp;quot;${rowIdentifier}&amp;quot; to contain ${key}: &amp;quot;${value}&amp;quot;`</span>
+    ).<span class="tc-fn">toBeVisible</span>();
+  }
+}
+
+<span class="tc-cm">// Toast message assertion — checks text, not just visibility</span>
+<span class="tc-kw">async</span> <span class="tc-fn">assertToastMessage</span>(expectedMessage: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> toast = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForToastToAppear</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(toast.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-toast-content-text'</span>)).<span class="tc-fn">toHaveText</span>(expectedMessage);
+}
+
+<span class="tc-cm">// Form validation error — finds error by field label</span>
+<span class="tc-kw">async</span> <span class="tc-fn">assertFormValidationError</span>(fieldLabel: <span class="tc-kw">string</span>, expectedError: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> formGroup = <span class="tc-kw">this</span>.page
+    .<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-input-group'</span>)
+    .<span class="tc-fn">filter</span>({ has: <span class="tc-kw">this</span>.page.<span class="tc-fn">getByText</span>(fieldLabel) });
+  <span class="tc-kw">const</span> errorMessage = formGroup.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-input-field-error-message'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(errorMessage).<span class="tc-fn">toHaveText</span>(expectedError);
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">When to use <code class="sn-ic">expect.soft()</code>:</strong> when verifying multiple independent fields on the same page — form values, table cell contents, profile details. If the first field fails, <code class="sn-ic">expect.soft()</code> continues and reports all failures together. Use standard <code class="sn-ic">expect()</code> for sequential steps where a failure on step 1 makes step 2 meaningless.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Standard — stops at first failure</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(firstNameInput).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Alice'</span>);    <span class="tc-cm">// fails → test stops</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(lastNameInput).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Johnson'</span>);   <span class="tc-cm">// never reached</span>
+
+<span class="tc-cm">// Soft — all run, all reported</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(firstNameInput).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Alice'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(lastNameInput).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'Johnson'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>.<span class="tc-fn">soft</span>(employeeIdInput).<span class="tc-fn">toHaveValue</span>(<span class="tc-str">'EMP-001'</span>);
+<span class="tc-cm">// All three failures shown in the report simultaneously</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q507.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.10</span>
+      <h2 class="sn-q-text">How do page objects use helpers through composition?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Page objects that need generic and OrangeHRM-specific interactions use both <code class="sn-ic">WebActions</code> and <code class="sn-ic">OrangeHRMControls</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/admin/AddUserPage.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AddUserPage <span class="tc-kw">extends</span> BasePage {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> actions:  WebActions;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> controls: OrangeHRMControls;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> waits:    WaitHelpers;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);
+    <span class="tc-kw">this</span>.actions  = <span class="tc-kw">new</span> WebActions(page);
+    <span class="tc-kw">this</span>.controls = <span class="tc-kw">new</span> OrangeHRMControls(page);
+    <span class="tc-kw">this</span>.waits    = <span class="tc-kw">new</span> WaitHelpers(page);
+  }
+
+  <span class="tc-cm">// Generic text input — uses WebActions directly</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">fillUsername</span>(username: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">fill</span>(<span class="tc-kw">this</span>.usernameInput, username);
+  }
+
+  <span class="tc-cm">// OrangeHRM custom dropdown — uses OrangeHRMControls</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">selectUserRole</span>(role: <span class="tc-str">'Admin'</span> | <span class="tc-str">'ESS'</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">selectDropdown</span>(<span class="tc-kw">this</span>.userRoleDropdown, role);
+  }
+
+  <span class="tc-cm">// OrangeHRM autocomplete — uses OrangeHRMControls</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">fillEmployeeName</span>(employeeName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">fillAutocomplete</span>(<span class="tc-kw">this</span>.employeeNameInput, employeeName);
+  }
+}</div>
+      </div>
+<p class="sn-para">The rule: generic interactions (<code class="sn-ic">fill</code>, <code class="sn-ic">click</code>, <code class="sn-ic">check</code>) go through <code class="sn-ic">actions</code>. OrangeHRM-specific components (dropdown, autocomplete, date, dialog) go through <code class="sn-ic">controls</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q507.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.11</span>
+      <h2 class="sn-q-text">How does the refactored AddUserPage compare to Level 3?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Level 3 — inline interaction logic:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-fn">selectUserRole</span>(role: <span class="tc-str">'Admin'</span> | <span class="tc-str">'ESS'</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.userRoleDropdown.<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: role }).<span class="tc-fn">click</span>();
+  <span class="tc-cm">// No wait for dropdown to close — intermittent failures</span>
+}
+
+<span class="tc-kw">async</span> <span class="tc-fn">fillEmployeeName</span>(employeeName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.employeeNameInput.<span class="tc-fn">fill</span>(employeeName);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-autocomplete-option'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">click</span>();
+  <span class="tc-cm">// No wait for suggestions to appear — race condition risk</span>
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Level 6 — single-line delegations:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-fn">selectUserRole</span>(role: <span class="tc-str">'Admin'</span> | <span class="tc-str">'ESS'</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">selectDropdown</span>(<span class="tc-kw">this</span>.userRoleDropdown, role);
+  <span class="tc-cm">// OrangeHRMControls: opens → waits → selects → waits for close</span>
+}
+
+<span class="tc-kw">async</span> <span class="tc-fn">fillEmployeeName</span>(employeeName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">fillAutocomplete</span>(<span class="tc-kw">this</span>.employeeNameInput, employeeName);
+  <span class="tc-cm">// OrangeHRMControls: fills → waits for suggestions → clicks first → waits for close</span>
+}</div>
+      </div>
+<p class="sn-para">The page object methods become single-line delegations. The interaction logic — with all its waiting and error handling — lives in one place. A race condition in the autocomplete is fixed once in <code class="sn-ic">OrangeHRMControls</code> and the fix applies to every page object that uses autocomplete.</p>
+    </div>
+  </div>
+
+  <!-- Q507.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.12</span>
+      <h2 class="sn-q-text">What does PersonalDetailsPage look like fully using the helper layer?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/pim/PersonalDetailsPage.ts</span>
+<span class="tc-kw">import</span> { BasePage }           <span class="tc-kw">from</span> <span class="tc-str">'../BasePage'</span>;
+<span class="tc-kw">import</span> { WebActions }         <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/WebActions'</span>;
+<span class="tc-kw">import</span> { OrangeHRMControls }  <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/OrangeHRMControls'</span>;
+<span class="tc-kw">import</span> { WaitHelpers }        <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/WaitHelpers'</span>;
+<span class="tc-kw">import</span> { DateHelpers }        <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/DateHelpers'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> PersonalDetailsPage <span class="tc-kw">extends</span> BasePage {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> actions:  WebActions;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> controls: OrangeHRMControls;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> waits:    WaitHelpers;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-fn">super</span>(page);
+    <span class="tc-kw">this</span>.actions  = <span class="tc-kw">new</span> WebActions(page);
+    <span class="tc-kw">this</span>.controls = <span class="tc-kw">new</span> OrangeHRMControls(page);
+    <span class="tc-kw">this</span>.waits    = <span class="tc-kw">new</span> WaitHelpers(page);
+    <span class="tc-cm">// locators...</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(empNumber: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">navigate</span>(<span class="tc-str">`/web/index.php/pim/viewPersonalDetails/empNumber/${empNumber}`</span>);
+  }
+
+  <span class="tc-cm">// Test passes ISO date ('2025-01-15') → DateHelpers converts → OrangeHRMControls fills</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">fillDateOfBirth</span>(isoDate: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">const</span> orangeHRMDate = DateHelpers.<span class="tc-fn">fromISO</span>(isoDate);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">fillDateInput</span>(<span class="tc-kw">this</span>.dobInput, orangeHRMDate);
+  }
+
+  <span class="tc-cm">// OrangeHRM custom dropdown</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">selectNationality</span>(nationality: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">selectDropdown</span>(<span class="tc-kw">this</span>.nationalityDropdown, nationality);
+  }
+
+  <span class="tc-cm">// Gender radio button — generic interaction via WebActions</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">selectGender</span>(gender: <span class="tc-str">'Male'</span> | <span class="tc-str">'Female'</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">const</span> radio = gender === <span class="tc-str">'Male'</span> ? <span class="tc-kw">this</span>.genderMaleRadio : <span class="tc-kw">this</span>.genderFemaleRadio;
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">check</span>(radio);
+  }
+
+  <span class="tc-cm">// File upload with preview confirmation</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">uploadProfilePhoto</span>(filePath: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.controls.<span class="tc-fn">uploadFile</span>(<span class="tc-kw">this</span>.photoUploadInput, filePath);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">savePersonalDetails</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.actions.<span class="tc-fn">click</span>(<span class="tc-kw">this</span>.saveButton);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.waits.<span class="tc-fn">waitForToastToAppear</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para">This page object uses four helpers in one class. The helpers are invisible to the test — tests see only <code class="sn-ic">fillDateOfBirth('2025-01-15')</code>, <code class="sn-ic">selectGender('Female')</code>, and <code class="sn-ic">uploadProfilePhoto('test-data/photos/profile.jpg')</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q507.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.13</span>
+      <h2 class="sn-q-text">What is the helpers/index.ts barrel export and why does it matter?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// helpers/index.ts</span>
+<span class="tc-kw">export</span> { WaitHelpers }        <span class="tc-kw">from</span> <span class="tc-str">'./WaitHelpers'</span>;
+<span class="tc-kw">export</span> { WebActions }         <span class="tc-kw">from</span> <span class="tc-str">'./WebActions'</span>;
+<span class="tc-kw">export</span> { OrangeHRMControls }  <span class="tc-kw">from</span> <span class="tc-str">'./OrangeHRMControls'</span>;
+<span class="tc-kw">export</span> { AssertionHelpers }   <span class="tc-kw">from</span> <span class="tc-str">'./AssertionHelpers'</span>;
+<span class="tc-kw">export</span> { DateHelpers }        <span class="tc-kw">from</span> <span class="tc-str">'./DateHelpers'</span>;
+<span class="tc-kw">export</span> { ActionError, TimeoutError, ElementNotFoundError } <span class="tc-kw">from</span> <span class="tc-str">'./errors'</span>;</div>
+      </div>
+<p class="sn-para">Without the barrel export, page objects import from individual files:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { WebActions }        <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/WebActions'</span>;
+<span class="tc-kw">import</span> { OrangeHRMControls } <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/OrangeHRMControls'</span>;
+<span class="tc-kw">import</span> { WaitHelpers }       <span class="tc-kw">from</span> <span class="tc-str">'../../helpers/WaitHelpers'</span>;</div>
+      </div>
+<p class="sn-para">With the barrel export, they import from one path:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { WebActions, OrangeHRMControls, WaitHelpers } <span class="tc-kw">from</span> <span class="tc-str">'../../helpers'</span>;</div>
+      </div>
+<p class="sn-para">If <code class="sn-ic">WebActions.ts</code> is ever renamed or moved, updating the barrel export fixes all page objects. Without it, every page object's import path must be updated individually.</p>
+    </div>
+  </div>
+
+  <!-- Q507.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.14</span>
+      <h2 class="sn-q-text">Why is WebActions application-agnostic while OrangeHRMControls is not?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-pink"><code class="sn-ic">WebActions</code></strong> covers Playwright browser interactions — clicking, filling, checking, uploading. These work on any web application. Nothing in <code class="sn-ic">WebActions</code> knows about OrangeHRM's Vue component library, class names, or behaviour.</p>
+      </div>
+<p class="sn-para"><strong class="k-pink"><code class="sn-ic">OrangeHRMControls</code></strong> covers OrangeHRM-specific components — <code class="sn-ic">.oxd-select-option</code>, <code class="sn-ic">.oxd-autocomplete-option</code>, <code class="sn-ic">.oxd-dialog-container</code>. These class names are OrangeHRM-specific. If you move to a different application, <code class="sn-ic">WebActions</code> is unchanged; <code class="sn-ic">OrangeHRMControls</code> is replaced with <code class="sn-ic">NewAppControls</code>.</p>
+<p class="sn-para">The separation means: when OrangeHRM upgrades its component library and <code class="sn-ic">.oxd-select-option</code> changes, only <code class="sn-ic">OrangeHRMControls</code> needs updating. <code class="sn-ic">WebActions</code>, all page objects, and all tests are untouched.</p>
+    </div>
+  </div>
+
+  <!-- Q507.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.15</span>
+      <h2 class="sn-q-text">How does WebActions.fill() differ from calling locator.fill() directly?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Direct Playwright call — no error classification, no consistent clearing</span>
+<span class="tc-kw">await</span> <span class="tc-kw">this</span>.usernameInput.<span class="tc-fn">fill</span>(username);
+
+<span class="tc-cm">// WebActions.fill() — clears first, then fills, with error classification</span>
+<span class="tc-kw">async</span> <span class="tc-fn">fill</span>(locator: Locator, value: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">execute</span>(<span class="tc-str">'fill'</span>, locator, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> locator.<span class="tc-fn">clear</span>();
+    <span class="tc-kw">await</span> locator.<span class="tc-fn">fill</span>(value);
+  });
+}</div>
+      </div>
+<p class="sn-para">Differences:</p>
+<p class="sn-para"><strong class="k-red">Clear before fill:</strong> <code class="sn-ic">WebActions.fill()</code> always clears the field first. Calling <code class="sn-ic">fill()</code> directly on a field with existing content appends in some OrangeHRM inputs. Clearing first ensures consistent behaviour.</p>
+<p class="sn-para"><strong class="k-red">Error classification:</strong> if the field is not found, <code class="sn-ic">ElementNotFoundError</code> is thrown with the field name and action. If the fill times out, <code class="sn-ic">TimeoutError</code> is thrown. A direct call throws Playwright's raw error — less descriptive.</p>
+<p class="sn-para"><strong class="k-red">Single responsibility:</strong> all fill logic — clear, fill, error handling — lives in one place. When a clearing issue is discovered on a specific input type, the fix goes in <code class="sn-ic">WebActions.fill()</code> and applies everywhere.</p>
+    </div>
+  </div>
+
+  <!-- Q507.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.16</span>
+      <h2 class="sn-q-text">How does waitForTableToLoad() prevent intermittent test failures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">OrangeHRM tables load asynchronously after search. Asserting on the table immediately after triggering a search risks an assertion against an empty, still-loading table:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Fragile — asserts before table finishes loading</span>
+<span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByEmployeeName</span>(<span class="tc-str">'Alice'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(tableBody.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">1</span>);  <span class="tc-cm">// intermittent fail</span>
+
+<span class="tc-cm">// Stable — waits for table OR &amp;quot;No Records Found&amp;quot; before asserting</span>
+<span class="tc-kw">async</span> <span class="tc-fn">waitForTableToLoad</span>(tableLocator: Locator, timeout = 10_000): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">waitForSpinnerToDisappear</span>(timeout);
+  <span class="tc-kw">const</span> noRecords = <span class="tc-kw">this</span>.page.<span class="tc-fn">getByText</span>(<span class="tc-str">'No Records Found'</span>);
+  <span class="tc-kw">await</span> Promise.<span class="tc-fn">race</span>([
+    tableLocator.<span class="tc-fn">locator</span>(<span class="tc-str">'role=row'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout }),
+    noRecords.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout }),
+  ]).<span class="tc-kw">catch</span>(() =&gt; {});
+}</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">Promise.race()</code> resolves as soon as either the first row appears or the no-records message appears. This handles both cases: a successful search (rows appear) and an empty search (no-records message appears). The test never asserts against a mid-load empty state.</p>
+    </div>
+  </div>
+
+  <!-- Q507.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.17</span>
+      <h2 class="sn-q-text">What changes at the page object level but not at the test level?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Page objects are refactored to use helpers; tests are not changed at all. This is a fundamental property of the POM pattern: the "HOW" of interaction lives in page objects (and now in helpers); the "WHAT" of the scenario lives in tests.</p>
+      </div>
+<p class="sn-para">Before refactoring (Level 5 test):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'admin can add user'</span>, <span class="tc-kw">async</span> ({ addUserPage }) =&gt; {
+  <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(user);
+  <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertUserSavedSuccessfully</span>();
+});</div>
+      </div>
+<p class="sn-para">After refactoring (Level 6 test — identical):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'admin can add user'</span>, <span class="tc-kw">async</span> ({ addUserPage }) =&gt; {
+  <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">addUser</span>(user);
+  <span class="tc-kw">await</span> addUserPage.<span class="tc-fn">assertUserSavedSuccessfully</span>();
+});</div>
+      </div>
+<p class="sn-para">The test cannot tell whether <code class="sn-ic">addUser()</code> calls <code class="sn-ic">this.page.getByRole().click()</code> directly or delegates through <code class="sn-ic">OrangeHRMControls.selectDropdown()</code>. It does not need to know. The helper refactoring is invisible to tests — this is the correct signal that the abstraction boundary is in the right place.</p>
+    </div>
+  </div>
+
+  <!-- Q507.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q507.18</span>
+      <h2 class="sn-q-text">What does Level 6 not solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 6 eliminates duplicated interaction patterns. The remaining problems:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">No test organisation at scale:</strong> with the full framework in place the suite has 40+ tests. When 10 fail in CI there is no immediate way to see whether they are smoke tests, all in one module, or all related to one component. Level 7 introduces tagging by module and severity, structured subset runs (<code class="sn-ic">@smoke</code>, <code class="sn-ic">@regression</code>, <code class="sn-ic">@pim</code>), and custom reporters producing output shaped for different audiences.</p>
+<p class="sn-para"><strong class="k-green">No Allure integration:</strong> the error class hierarchy (<code class="sn-ic">ElementNotFoundError</code>, <code class="sn-ic">TimeoutError</code>) is defined but not yet wired to Allure's failure categorisation. Level 7 configures Allure to map error types to categories and adds the Allure reporter alongside the HTML reporter.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>The helper layer eliminates duplicated interaction patterns — the same dropdown selection logic had three copies before Level 6; after, it lives once in <code class="sn-ic">OrangeHRMControls</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Helpers use <strong>composition</strong> (page object HAS-A helper) not inheritance — helpers are tools, not categories; TypeScript's single-inheritance limit makes composition the only viable option for using multiple helpers.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">WebActions</code> is application-agnostic; <code class="sn-ic">OrangeHRMControls</code> knows OrangeHRM's Vue component class names — separating them means <code class="sn-ic">WebActions</code> is reusable across applications.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">execute()</code> in <code class="sn-ic">WebActions</code> is the central seam — all interactions route through it; cross-cutting concerns (error classification, logging, self-healing) are added once and apply everywhere.</span></li>
+            <li><span class="icon">⭐</span><span>Three error classes: <code class="sn-ic">ElementNotFoundError</code> (wrong locator), <code class="sn-ic">TimeoutError</code> (element exists but slow), <code class="sn-ic">ActionError</code> (base catch-all); each drives a different debugging and self-healing strategy.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">WaitHelpers</code> provides targeted waits (<code class="sn-ic">waitForSpinnerToDisappear</code>, <code class="sn-ic">waitForTableToLoad</code>, <code class="sn-ic">waitForToastToAppear</code>) — more targeted than <code class="sn-ic">networkidle</code>, avoiding intermittent failures on OrangeHRM's async tables.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">OrangeHRMControls.selectDropdown()</code> four-step sequence: click → wait for options → click option → wait for close; each step routes through <code class="sn-ic">WebActions</code> for error classification.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">OrangeHRMControls.fillDateInput()</code> presses <code class="sn-ic">Tab</code> after fill and verifies the value — OrangeHRM silently clears invalid dates and reverts without Tab.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">DateHelpers</code> converts between ISO (<code class="sn-ic">yyyy-mm-dd</code>) and OrangeHRM's format (<code class="sn-ic">yyyy-dd-mm</code>) — day and month are swapped; tests always pass ISO, page objects convert before filling.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">AssertionHelpers</code> uses <code class="sn-ic">expect.soft()</code> for independent field checks — all failures reported together; uses <code class="sn-ic">expect()</code> for sequential dependencies.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">helpers/index.ts</code> barrel export — page objects import from <code class="sn-ic">'../helpers'</code> not individual files; a single location to update if files move.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">PersonalDetailsPage</code> is the showcase: uses <code class="sn-ic">WebActions</code>, <code class="sn-ic">OrangeHRMControls</code>, <code class="sn-ic">WaitHelpers</code>, and <code class="sn-ic">DateHelpers</code> in one class.</span></li>
+            <li><span class="icon">⭐</span><span>Tests do not change at Level 6 — the refactoring is completely invisible to the test layer; this confirms the abstraction boundary is in the right place.</span></li>
+            <li><span class="icon">⭐</span><span>Level 6 solves interaction duplication; it leaves test organisation (Level 7) and Allure failure categorisation (Level 7) for the next level.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TestBed Documentation - VibeTestQ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1e40af;
+            --primary-light: #dbeafe;
+            --secondary: #f97316;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --text: #0f172a;
+            --text-light: #475569;
+            --text-lighter: #94a3b8;
+            --bg: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --border: #e2e8f0;
+            --shadow: rgba(15, 23, 42, 0.08);
+            --shadow-lg: rgba(15, 23, 42, 0.15);
+            --sidebar-width: 300px;
+            --header-height: 70px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--bg-secondary);
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 1px 3px var(--shadow);
+            padding: 0 2rem;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .logo img {
+            height: 45px;
+        }
+
+        .logo span {
+            display: none;
+        }
+
+        .app-container {
+            display: flex;
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        aside {
+            width: var(--sidebar-width);
+            background: var(--bg);
+            border-right: 1px solid var(--border);
+            position: fixed;
+            left: 0;
+            top: var(--header-height);
+            bottom: 0;
+            overflow-y: auto;
+            z-index: 50;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-content {
+            padding: 1.5rem 1rem;
+        }
+
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+
+        .nav-section h4 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-lighter);
+            margin-bottom: 0.75rem;
+            padding: 0 0.75rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.65rem 0.75rem;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .nav-link i {
+            width: 18px;
+            font-size: 0.9rem;
+            color: var(--text-lighter);
+        }
+
+        .nav-link:hover {
+            background: var(--bg-secondary);
+            color: var(--primary);
+        }
+
+        .nav-link:hover i {
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        .nav-link.active i {
+            color: var(--primary);
+        }
+
+        main {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .content-area {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--bg);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px var(--shadow);
+        }
+
+        section {
+            display: none;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-family: 'Outfit', sans-serif;
+            line-height: 1.3;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.875rem;
+            color: var(--dark);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text);
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        .lead {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        code {
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.4em;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.875em;
+            color: var(--secondary);
+        }
+
+        pre {
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            border-left: 4px solid var(--primary);
+            position: relative;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        ul,
+        ol {
+            margin: 1rem 0 1rem 1.5rem;
+            color: var(--text-light);
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        th,
+        td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--dark);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        td {
+            color: var(--text-light);
+        }
+
+        tr:nth-child(even) {
+            background: var(--bg-secondary);
+        }
+
+        blockquote {
+            border-left: 4px solid var(--primary);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            background: var(--primary-light);
+            border-radius: 0 8px 8px 0;
+            color: var(--text);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .alert i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            border: 1px solid #93c5fd;
+            color: #1e40af;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            border: 1px solid #6ee7b7;
+            color: #065f46;
+        }
+
+        .alert-warning {
+            background: #fed7aa;
+            border: 1px solid #fdba74;
+            color: #92400e;
+        }
+
+        .alert-danger {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+        }
+
+        .loading-indicator {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-lighter);
+        }
+
+        .loading-indicator i {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 3rem 0 0;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-nav {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            text-decoration: none;
+        }
+
+        .btn-prev {
+            background: var(--bg-tertiary);
+            color: var(--dark);
+        }
+
+        .btn-prev:hover {
+            background: var(--border);
+            text-decoration: none;
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: var(--primary-hover);
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-lighter);
+            font-size: 0.875rem;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 992px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+            }
+
+            .content-area {
+                padding: 2rem 1.5rem;
+            }
+
+            .mobile-menu-btn {
+                display: block !important;
+            }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 850;
+            backdrop-filter: blur(4px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-logo img {
+                display: none !important;
+            }
+
+            .mobile-logo {
+                display: block !important;
+                order: 3;
+            }
+
+            header {
+                padding: 0 1rem;
+                justify-content: space-between;
+                gap: 10px;
+            }
+
+            .logo {
+                flex: 1;
+                text-align: left;
+            }
+
+            .logo span {
+                font-size: 0.9rem;
+                display: block !important;
+            }
+        }
+
+        .desktop-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mobile-logo {
+            display: none;
+            height: 40px;
+        }
+
+        .mobile-logo img {
+            height: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* Copy Button Styles */
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #cbd5e1;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            z-index: 10;
+            opacity: 0;
+        }
+
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .copy-btn i {
+            margin-right: 4px;
+        }
+
+        pre[class*="language-"] {
+            position: relative;
+        }
+
+        .btn-group.top-nav {
+            margin-top: 0;
+            margin-bottom: 3rem;
+            padding-top: 0;
+            padding-bottom: 2rem;
+            border-top: none;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Mermaid Diagrams */
+        .mermaid {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="logo">
+            <div class="desktop-logo">
+                <img src="../../assets/Title with logo and box.png" alt="VibeTestQ Logo">
+                <span>TestBed Documentation</span>
+            </div>
+        </div>
+        <div class="mobile-logo">
+            <img src="../../assets/White-Logo.png" alt="VibeTestQ Mobile Logo">
+        </div>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="app-container">
+        <aside id="sidebar">
+            <div class="sidebar-content">
+                <div class="nav-section">
+                    <h4>Getting Started</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#intro" class="nav-link active" onclick="showSection('intro')"><i
+                                    class="fas fa-home"></i> Overview</a></li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Version Control</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#git-github" class="nav-link"
+                                onclick="showSection('git-github')"><i class="fab fa-git-alt"></i> Git & GitHub</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>CI/CD & Automation</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#cicd" class="nav-link" onclick="showSection('cicd')"><i
+                                    class="fas fa-infinity"></i> CI/CD & Reporting</a></li>
+                        <li class="nav-item"><a href="#github-actions" class="nav-link"
+                                onclick="showSection('github-actions')"><i class="fab fa-github"></i> GitHub Actions</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nav-section">
+                    <h4>Cloud Execution</h4>
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="#aws" class="nav-link" onclick="showSection('aws')"><i
+                                    class="fab fa-aws"></i> AWS Playwright</a></li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="content-area">
+                <div class="btn-group top-nav" id="nav-btns-top" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i>
+                        Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <section id="intro" class="active">
+                    <h1>TestBed Documentation</h1>
+                    <p class="lead">Comprehensive guides for version control, CI/CD, cloud execution, and test reporting
+                        with modern tools and best practices.</p>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <div><strong>Enterprise Ready:</strong> These guides cover everything you need to build robust,
+                            scalable test automation infrastructure from local development to cloud deployment.</div>
+                    </div>
+                    <h2>Documentation Overview</h2>
+                    <p>This collection includes comprehensive guides covering the complete test automation lifecycle:
+                    </p>
+
+                    <h3><i class="fab fa-git-alt" style="color: var(--secondary);"></i> Version Control</h3>
+                    <p>Master Git and GitHub for collaborative test automation development, including branching
+                        strategies, pull requests, and repository management.</p>
+
+                    <h3><i class="fas fa-infinity" style="color: var(--primary);"></i> CI/CD Pipeline</h3>
+                    <p>Learn to implement continuous integration and delivery pipelines with automated test execution,
+                        reporting, and quality gates.</p>
+
+                    <h3><i class="fab fa-github" style="color: var(--dark);"></i> GitHub Actions</h3>
+                    <p>Build powerful automation workflows using GitHub Actions for test execution, deployment, and
+                        orchestration across multiple environments.</p>
+
+                    <h3><i class="fab fa-aws" style="color: var(--warning);"></i> Cloud Execution</h3>
+                    <p>Deploy and scale Playwright tests on AWS infrastructure with EC2 instances, S3 storage, and
+                        cost-effective cloud automation strategies.</p>
+
+                    <div class="alert alert-success" style="margin-top: 2rem;">
+                        <i class="fas fa-rocket"></i>
+                        <div><strong>Quick Start:</strong> Begin with Git & GitHub to understand version control basics,
+                            then progress through CI/CD and GitHub Actions before moving to cloud deployment on AWS.
+                        </div>
+                    </div>
+
+                    <div class="btn-group">
+                        <div></div>
+                        <a href="javascript:void(0)" class="btn-nav btn-next" onclick="showSection('git-github')">Start
+                            Reading <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </section>
+                <div id="docs-content"></div>
+                <div class="btn-group" id="nav-btns-bottom" style="display: none;">
+                    <a href="javascript:void(0)" class="btn-nav btn-prev prev-btn"><i class="fas fa-arrow-left"></i>
+                        Previous</a>
+                    <a href="javascript:void(0)" class="btn-nav btn-next next-btn">Next <i
+                            class="fas fa-arrow-right"></i></a>
+                </div>
+                <footer>&copy; 2026 VibeTestQ. All rights reserved.</footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@15.0.7/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'neutral',
+            securityLevel: 'loose',
+            flowchart: { useMaxWidth: true, htmlLabels: true, curve: 'basis' },
+            gitGraph: {
+                showBranches: true,
+                showCommitLabel: true,
+                mainBranchName: 'main'
+            },
+            graph: { useMaxWidth: true, htmlLabels: true }
+        });
+
+        const sectionOrder = [
+            'intro', 'git-github', 'cicd', 'github-actions', 'aws'
+        ];
+
+        const sections = {
+            'git-github': 'git-github-comprehensive-guide.md',
+            'cicd': 'cicd-test-reporting-guide.md',
+            'github-actions': 'github-actions-test-automation-guide.md',
+            'aws': 'aws-playwright-guide.md'
+        };
+
+        const loadedSections = {};
+
+        async function loadSection(id) {
+            if (id === 'intro' || loadedSections[id]) return;
+            const filename = sections[id];
+            if (!filename) return;
+            try {
+                // Add cache busting parameter
+                const cacheBuster = `?v=${Date.now()}`;
+                const response = await fetch(filename + cacheBuster);
+                if (!response.ok) throw new Error(`Failed to load ${filename}`);
+                let text = await response.text();
+
+                // Strip numbers from headers like "# Chapter 01: ..." or "# 01. ..."
+                text = text.replace(/^#\s+(?:Chapter\s+)?(?:\d+[:.]?\s*)+/gim, '# ');
+                text = text.replace(/^##\s+(?:Chapter\s+)?(?:\d+[:.]?\s*)+/gim, '## ');
+
+                const section = document.createElement('section');
+                section.id = id;
+                section.innerHTML = marked.parse(text);
+                section.querySelectorAll('pre code').forEach(block => {
+                    if (!block.className) block.className = 'language-bash';
+                });
+                document.getElementById('docs-content').appendChild(section);
+                loadedSections[id] = true;
+
+                // Transform mermaid code blocks to divs (handle both class naming patterns)
+                const mermaidBlocks = section.querySelectorAll('pre code.language-mermaid, pre code.mermaid');
+                mermaidBlocks.forEach(block => {
+                    const div = document.createElement('div');
+                    div.className = 'mermaid';
+                    div.textContent = block.textContent.trim();
+                    block.parentElement.replaceWith(div);
+                });
+
+                addCopyButtons(section);
+                Prism.highlightAllUnder(section);
+
+                if (mermaidBlocks.length > 0) {
+                    // Render mermaid diagrams with error handling
+                    const mermaidDivs = section.querySelectorAll('.mermaid');
+                    for (const div of mermaidDivs) {
+                        try {
+                            await mermaid.run({ nodes: [div] });
+                        } catch (e) {
+                            console.warn('Mermaid diagram failed to render, showing code instead:', e.message);
+                            // Replace failed diagram with code block
+                            const pre = document.createElement('pre');
+                            const code = document.createElement('code');
+                            code.className = 'language-mermaid';
+                            code.textContent = div.textContent;
+                            pre.appendChild(code);
+                            const errorNote = document.createElement('div');
+                            errorNote.className = 'alert alert-warning';
+                            errorNote.innerHTML = '<i class="fas fa-exclamation-triangle"></i><div><strong>Diagram Rendering Issue:</strong> This diagram could not be rendered. Code is shown below.</div>';
+                            div.replaceWith(errorNote);
+                            errorNote.after(pre);
+                            Prism.highlightElement(code);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(`Error loading section ${id}:`, error);
+                const section = document.createElement('section');
+                section.id = id;
+                section.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div><strong>Error Loading Content:</strong> Failed to load ${filename}. Please check the file exists and try refreshing the page.</div>
+                    </div>
+                `;
+                document.getElementById('docs-content').appendChild(section);
+                loadedSections[id] = true;
+            }
+        }
+
+        function addCopyButtons(root) {
+            root.querySelectorAll('pre').forEach(pre => {
+                const button = document.createElement('button');
+                button.className = 'copy-btn';
+                button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                button.onclick = () => copyCode(button);
+                pre.appendChild(button);
+            });
+        }
+
+        async function copyCode(button) {
+            const pre = button.parentElement;
+            const code = pre.querySelector('code').innerText;
+            try {
+                await navigator.clipboard.writeText(code);
+                button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.innerHTML = '<i class="far fa-copy"></i> Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        }
+
+        async function showSection(id) {
+            // Show loading indicator
+            const contentArea = document.querySelector('.content-area');
+            if (id !== 'intro' && !loadedSections[id]) {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.className = 'loading-indicator';
+                loadingDiv.id = 'loading-temp';
+                loadingDiv.innerHTML = '<i class="fas fa-circle-notch"></i><p>Loading content...</p>';
+                contentArea.appendChild(loadingDiv);
+            }
+
+            if (id !== 'intro') await loadSection(id);
+
+            // Remove loading indicator
+            const loading = document.getElementById('loading-temp');
+            if (loading) loading.remove();
+
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            const link = document.querySelector(`a[href="#${id}"]`);
+            if (link) link.classList.add('active');
+            updateNavButtons(id);
+            history.pushState(null, null, `#${id}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close sidebar on mobile
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function updateNavButtons(currentId) {
+            const index = sectionOrder.indexOf(currentId);
+            const topNav = document.getElementById('nav-btns-top');
+            const bottomNav = document.getElementById('nav-btns-bottom');
+
+            if (index === 0) {
+                topNav.style.display = 'none';
+                bottomNav.style.display = 'none';
+                return;
+            }
+
+            topNav.style.display = 'flex';
+            bottomNav.style.display = 'flex';
+
+            [topNav, bottomNav].forEach(nav => {
+                const prevBtn = nav.querySelector('.prev-btn');
+                const nextBtn = nav.querySelector('.next-btn');
+
+                if (index > 0) {
+                    prevBtn.style.visibility = 'visible';
+                    prevBtn.onclick = () => showSection(sectionOrder[index - 1]);
+                    prevBtn.innerHTML = `<i class="fas fa-arrow-left"></i> ${getSectionName(sectionOrder[index - 1])}`;
+                } else {
+                    prevBtn.style.visibility = 'hidden';
+                }
+
+                if (index < sectionOrder.length - 1) {
+                    nextBtn.style.visibility = 'visible';
+                    nextBtn.onclick = () => showSection(sectionOrder[index + 1]);
+                    nextBtn.innerHTML = `${getSectionName(sectionOrder[index + 1])} <i class="fas fa-arrow-right"></i>`;
+                } else {
+                    nextBtn.style.visibility = 'hidden';
+                }
+            });
+        }
+
+        function getSectionName(id) {
+            const link = document.querySelector(`a[href="#${id}"]`);
+            return link ? link.innerText.trim() : 'Next';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        window.addEventListener('load', async () => {
+            const hash = window.location.hash.slice(1) || 'intro';
+            await showSection(hash);
+        });
+    </script>
+</body>
+
+</html>

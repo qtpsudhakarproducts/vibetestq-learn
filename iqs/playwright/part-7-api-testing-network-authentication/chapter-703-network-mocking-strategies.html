@@ -1,0 +1,825 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">👁️ Part 7 &nbsp;·&nbsp; Chapter 703 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Network</span> <span class="w2">Mocking</span> <span class="w3">Strategies</span></h1>
+    <p class="sn-title-sub">API &amp; Network — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the strategic layer above individual route handlers — HAR files, mock server patterns, intercept strategies, and when to use mocking vs real APIs. Interviewers ask these questions at senior level to test whether candidates can articulate a mocking strategy for a team, not just use <code class="sn-ic">route.fulfill()</code> in a single test. Questions cover HAR recording and replay, the offline testing pattern, mock organisation, and the mocking vs integration testing decision.</span>
+  </div>
+
+
+  <!-- Q703.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.1</span>
+      <h2 class="sn-q-text">What are the three main network mocking strategies in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-blue">In-test mocking with <code class="sn-ic">page.route()</code></strong> — mock individual endpoints inside test functions or <code class="sn-ic">beforeEach</code>. The mock is defined alongside the test, making it obvious what is being controlled. Best for: edge cases, error states, specific data configurations.</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">HAR recording and replay</strong> — record real network traffic once, commit the HAR file, replay in CI. The mock data matches what a real server returns, so it is realistic. Best for: stable third-party APIs, offline testing, reproducing production data shapes.</p>
+<p class="sn-para"><strong class="k-blue">Fixture files with <code class="sn-ic">route.fulfill({ path: ... })</code></strong> — store mock responses as JSON files in a <code class="sn-ic">fixtures/</code> or <code class="sn-ic">mocks/</code> directory. Load them by path in route handlers. Best for: large response payloads, reusable mock data shared across multiple tests.</p>
+<p class="sn-para">Each strategy suits different scenarios. Most frameworks use all three.</p>
+    </div>
+  </div>
+
+  <!-- Q703.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.2</span>
+      <h2 class="sn-q-text">What is a HAR file and what does it contain?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">HAR stands for HTTP Archive. It is a JSON file that records all network requests and responses made during a browser session — URLs, methods, headers, request bodies, response bodies, timing data, and cookies.</p>
+      </div>
+<p class="sn-para">Playwright can generate a HAR file while your tests run, and later replay it: instead of making real HTTP requests, Playwright reads matching entries from the HAR and returns them as responses.</p>
+<p class="sn-para">A HAR entry looks like:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">{
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;url&quot;: &quot;https://api.example.com/users&quot;,
+    &quot;headers&quot;: [{ &quot;name&quot;: &quot;Accept&quot;, &quot;value&quot;: &quot;application/json&quot; }]
+  },
+  &quot;response&quot;: {
+    &quot;status&quot;: 200,
+    &quot;headers&quot;: [{ &quot;name&quot;: &quot;content-type&quot;, &quot;value&quot;: &quot;application/json&quot; }],
+    &quot;content&quot;: {
+      &quot;mimeType&quot;: &quot;application/json&quot;,
+      &quot;text&quot;: &quot;[{\&quot;id\&quot;:1,\&quot;name\&quot;:\&quot;Alice\&quot;}]&quot;
+    }
+  }
+}</div>
+      </div>
+<p class="sn-para">HAR files are tool-agnostic — Chrome DevTools, Fiddler, and Postman all export HAR format. You can record traffic in your browser, save the HAR, and use it in Playwright tests.</p>
+    </div>
+  </div>
+
+  <!-- Q703.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.3</span>
+      <h2 class="sn-q-text">How do you record and replay a HAR file?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Record mode</strong> — run once against the real application with <code class="sn-ic">update: true</code>. The HAR file is written to disk.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'record HAR'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// update: true means record real network traffic to this file</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">routeFromHAR</span>(<span class="tc-str">'./fixtures/api-responses.har'</span>, {
+    url:    <span class="tc-str">'**/api/**'</span>,
+    update: <span class="tc-kw">true</span>,
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-cm">// All /api/** requests are recorded to api-responses.har</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Replay mode</strong> — subsequent runs use <code class="sn-ic">update: false</code> (the default). The file is read instead of contacting the real server.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'replay from HAR'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">routeFromHAR</span>(<span class="tc-str">'./fixtures/api-responses.har'</span>, {
+    url:    <span class="tc-str">'**/api/**'</span>,
+    <span class="tc-cm">// update: false is the default</span>
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-cm">// /api/** requests are served from the HAR — no real network</span>
+});</div>
+      </div>
+<p class="sn-para">Commit the HAR file to the repository. CI runs never need the real API.</p>
+    </div>
+  </div>
+
+  <!-- Q703.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.4</span>
+      <h2 class="sn-q-text">When should you use HAR replay vs explicit route.fulfill() mocks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">Use HAR replay when:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Testing against a third-party API that you do not control</span></li>
+<li><span class="icon">💡</span><span>The API response shape is large and complex — writing it manually is error-prone</span></li>
+<li><span class="icon">⚡</span><span>You want realistic test data that matches production response shapes</span></li>
+<li><span class="icon">🎯</span><span>You need offline, deterministic tests from a real user session</span></li>
+</ul>
+<p class="sn-para"><strong class="k-orange">Use explicit <code class="sn-ic">route.fulfill()</code> mocks when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Testing specific error states (500, 404, timeout) that you cannot record</span></li>
+<li><span class="icon">🔑</span><span>The response must vary based on test input</span></li>
+<li><span class="icon">🚀</span><span>Testing feature flags or conditional logic that requires specific field values</span></li>
+<li><span class="icon">🌟</span><span>The API changes frequently and HAR files would become stale quickly</span></li>
+</ul>
+<p class="sn-para"><strong class="k-orange">Use fixture JSON files when:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📦</span><span>Multiple tests share the same large mock response</span></li>
+<li><span class="icon">🔶</span><span>The mock data represents a known domain object (product catalogue, user list)</span></li>
+</ul>
+<p class="sn-para">  that is maintained separately from the tests</p>
+<p class="sn-para">In practice: use HAR for stable external APIs, explicit mocks for edge cases, fixture files for shared domain data.</p>
+    </div>
+  </div>
+
+  <!-- Q703.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.5</span>
+      <h2 class="sn-q-text">How do you update a HAR file when the API changes?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">HAR files become stale when the API changes — new fields, changed field names, different response structures. Three approaches:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Manual re-record:</strong> Set <code class="sn-ic">update: true</code> in the test, run once against the real API, commit the updated file.</p>
+<p class="sn-para"><strong class="k-teal">Scheduled CI re-record:</strong> A weekly CI job runs with <code class="sn-ic">update: true</code> against staging and commits the result. This keeps HAR files fresh without developer action.</p>
+<p class="sn-para"><strong class="k-teal">Selective invalidation:</strong> Add a HAR file age check to a CI step. If the file's last-commit date is more than 30 days ago, flag it as stale and require a review.</p>
+<p class="sn-para">For APIs that change frequently (weekly breaking changes), HAR is not suitable — use explicit <code class="sn-ic">route.fulfill()</code> mocks that you control and update explicitly.</p>
+    </div>
+  </div>
+
+  <!-- Q703.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.6</span>
+      <h2 class="sn-q-text">How do you organise mock data for a large test suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A maintainable mock organisation follows the same structure as the tests:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">tests/
+  fixtures/                 ← mock data
+    api/
+      users/
+        get-all.json        ← GET /api/users response
+        get-by-id.json      ← GET /api/users/:id response
+        create-201.json     ← POST /api/users 201 response
+        create-400.json     ← POST /api/users 400 validation error
+      products/
+        list.json
+        detail.json
+    har/
+      checkout-flow.har     ← recorded HAR for checkout
+      product-search.har    ← recorded HAR for search</div>
+      </div>
+<p class="sn-para">Load fixture files by path in route handlers:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> FIXTURES = path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'../fixtures/api'</span>);
+
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users'</span>, route =&gt;
+  route.<span class="tc-fn">fulfill</span>({
+    status: <span class="tc-num">200</span>,
+    path:   path.<span class="tc-fn">join</span>(FIXTURES, <span class="tc-str">'users/get-all.json'</span>),
+  })
+);</div>
+      </div>
+<p class="sn-para">A <code class="sn-ic">MockServer</code> helper class centralises common patterns:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> MockServer {
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> page: Page) {}
+
+  <span class="tc-kw">async</span> <span class="tc-fn">mockUsers</span>(status = <span class="tc-num">200</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users'</span>, route =&gt;
+      route.<span class="tc-fn">fulfill</span>({
+        status,
+        path: path.<span class="tc-fn">join</span>(FIXTURES, status === <span class="tc-num">200</span>
+          ? <span class="tc-str">'users/get-all.json'</span>
+          : <span class="tc-str">'users/error.json'</span>
+        ),
+      })
+    );
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">mockNetworkError</span>(pattern: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">route</span>(pattern, route =&gt;
+      route.<span class="tc-fn">abort</span>(<span class="tc-str">'connectionrefused'</span>)
+    );
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.7</span>
+      <h2 class="sn-q-text">How do you test your application in fully offline mode?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Full offline testing means no requests reach the network at all. Two levels:</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Level 1 — route-based offline:</strong> Abort all API requests. HTML, CSS, and JS still load from the real server but API calls fail:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'shows offline message when API is unreachable'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>); <span class="tc-cm">// HTML loads normally</span>
+
+  <span class="tc-cm">// Now block all API calls</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/**'</span>, route =&gt; route.<span class="tc-fn">abort</span>(<span class="tc-str">'connectionrefused'</span>));
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">reload</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Unable to load data'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Level 2 — HAR-based offline:</strong> Route all requests (including page HTML) from HAR files. The page never contacts the network:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">routeFromHAR</span>(<span class="tc-str">'./fixtures/full-session.har'</span>);
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>); <span class="tc-cm">// Everything from HAR — fully offline</span></div>
+      </div>
+<p class="sn-para">Level 2 enables running tests with zero network access — useful in air-gapped CI environments or for making tests 100% deterministic with no external dependency.</p>
+    </div>
+  </div>
+
+  <!-- Q703.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.8</span>
+      <h2 class="sn-q-text">When should you use real APIs in tests vs mocked APIs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Use real APIs for:</strong></p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Happy-path E2E tests that validate the complete integration (frontend</span></li>
+</ul>
+<p class="sn-para">  to backend to database)</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>Authentication and session management tests — mock auth often hides</span></li>
+</ul>
+<p class="sn-para">  real problems</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>Tests that verify data is persisted correctly</span></li>
+<li><span class="icon">🎯</span><span>Contract tests that confirm the frontend and backend API agree</span></li>
+</ul>
+<p class="sn-para"><strong class="k-yellow">Use mocked APIs for:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Edge cases and error states that are hard to reproduce with a real server</span></li>
+</ul>
+<p class="sn-para">  (specific 4xx/5xx responses, timeouts, partial data)</p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>Tests that run in environments without a backend (PR preview builds,</span></li>
+</ul>
+<p class="sn-para">  frontend-only deployments)</p>
+<ul class="sn-list">
+<li><span class="icon">🚀</span><span>Performance testing where API latency would make tests slow and variable</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Tests for third-party APIs where you cannot control the data</span></li>
+</ul>
+<p class="sn-para">The best strategy is not "mock everything" or "use real everything" — it is layered. The test pyramid has API tests at the base (real API, fast), hybrid tests in the middle (real setup, UI assertion), and pure UI tests at the top (mocked for specific edge cases where the backend cannot help).</p>
+    </div>
+  </div>
+
+  <!-- Q703.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.9</span>
+      <h2 class="sn-q-text">How do you handle dynamic URLs in route patterns?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.route()</code> accepts glob patterns, regular expressions, and URL predicates:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Glob with wildcard segment</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users/*/profile'</span>, handler);
+<span class="tc-cm">// Matches: /api/users/123/profile, /api/users/abc/profile</span>
+
+<span class="tc-cm">// Regular expression</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(/\/api\/orders\/\d+/, handler);
+<span class="tc-cm">// Matches: /api/orders/1, /api/orders/42</span>
+
+<span class="tc-cm">// Function predicate — most flexible</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(
+  url =&gt; url.<span class="tc-fn">includes</span>(<span class="tc-str">'/api/'</span>) &amp;&amp; url.<span class="tc-fn">includes</span>(<span class="tc-str">'/settings'</span>),
+  handler
+);
+<span class="tc-cm">// Matches any URL containing both /api/ and /settings</span></div>
+      </div>
+<p class="sn-para">For routes with IDs that vary, extract the ID from the URL inside the handler:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(/\/api\/users\/(\d+)/, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">const</span> url    = route.<span class="tc-fn">request</span>().<span class="tc-fn">url</span>();
+  <span class="tc-kw">const</span> userId = url.<span class="tc-fn">match</span>(/\/api\/users\/(\d+)/)?.[<span class="tc-num">1</span>];
+
+  <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+    status: <span class="tc-num">200</span>,
+    body:   JSON.<span class="tc-fn">stringify</span>({ id: userId, name: <span class="tc-str">`User ${userId}`</span> }),
+  });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.10</span>
+      <h2 class="sn-q-text">How do you test rate limiting and retry behaviour?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Simulate rate limit responses on the first N calls, then allow through:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'retries automatically on 429'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">let</span> callCount = <span class="tc-num">0</span>;
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/data'</span>, <span class="tc-kw">async</span> route =&gt; {
+    callCount++;
+    <span class="tc-kw">if</span> (callCount &lt;= <span class="tc-num">2</span>) {
+      <span class="tc-cm">// First two calls get rate limited</span>
+      <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+        status:  <span class="tc-num">429</span>,
+        headers: { <span class="tc-str">'Retry-After'</span>: <span class="tc-str">'1'</span> },
+        body:    <span class="tc-str">'Too Many Requests'</span>,
+      });
+    } <span class="tc-kw">else</span> {
+      <span class="tc-cm">// Third call succeeds</span>
+      <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+        status: <span class="tc-num">200</span>,
+        body:   JSON.<span class="tc-fn">stringify</span>({ data: <span class="tc-str">'success'</span> }),
+      });
+    }
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/data-page'</span>);
+
+  <span class="tc-cm">// The page should eventually show the data after retries</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'data-content'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">10000</span> });
+  <span class="tc-kw">expect</span>(callCount).<span class="tc-fn">toBe</span>(<span class="tc-num">3</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.11</span>
+      <h2 class="sn-q-text">How do you share mock handlers across multiple test files?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Define route handlers in a shared fixture or helper module and compose them:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/mocks.ts</span>
+<span class="tc-kw">import</span> { Page } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">mockUserAPI</span>(page: Page) {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">200</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>(defaultUsers),
+    })
+  );
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">mockEmptyUserAPI</span>(page: Page) {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span>, body: <span class="tc-str">'[]'</span> })
+  );
+}
+
+<span class="tc-cm">// In test files</span>
+<span class="tc-kw">import</span> { mockUserAPI } <span class="tc-kw">from</span> <span class="tc-str">'../fixtures/mocks'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">mockUserAPI</span>(page);
+});</div>
+      </div>
+<p class="sn-para">Or create a typed fixture that exposes mock helpers:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ mock: MockHelpers }&gt;({
+  mock: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> MockHelpers(page));
+  },
+});
+
+<span class="tc-cm">// In tests</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'shows user list'</span>, <span class="tc-kw">async</span> ({ page, mock }) =&gt; {
+  <span class="tc-kw">await</span> mock.<span class="tc-fn">users</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/users'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'list'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.12</span>
+      <h2 class="sn-q-text">How do you assert on request content captured by a route handler?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'POST request contains correct payload'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> capturedRequests: ReturnType&lt;<span class="tc-kw">typeof</span> route.request&gt;[] = [];
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/checkout'</span>, <span class="tc-kw">async</span> route =&gt; {
+    capturedRequests.<span class="tc-fn">push</span>(route.<span class="tc-fn">request</span>());
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span>, body: <span class="tc-str">'{&amp;quot;orderId&amp;quot;:&amp;quot;ORD-001&amp;quot;}'</span> });
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Place Order'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(<span class="tc-str">'**/api/checkout'</span>);
+
+  <span class="tc-kw">expect</span>(capturedRequests).<span class="tc-fn">toHaveLength</span>(<span class="tc-num">1</span>);
+  <span class="tc-kw">const</span> payload = capturedRequests[<span class="tc-num">0</span>].<span class="tc-fn">postDataJSON</span>();
+  <span class="tc-kw">expect</span>(payload).<span class="tc-fn">toMatchObject</span>({
+    cartId:  <span class="tc-kw">expect</span>.<span class="tc-kw">any</span>(String),
+    address: <span class="tc-kw">expect</span>.<span class="tc-fn">objectContaining</span>({ postcode: <span class="tc-kw">expect</span>.<span class="tc-kw">any</span>(String) }),
+  });
+});</div>
+      </div>
+<p class="sn-para">Capture the request inside the handler (synchronous, always available), then assert after the response is received.</p>
+    </div>
+  </div>
+
+  <!-- Q703.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.13</span>
+      <h2 class="sn-q-text">What is the fallback behaviour when a HAR entry does not match?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When <code class="sn-ic">routeFromHAR()</code> cannot find a matching entry for a request, the default behaviour depends on the <code class="sn-ic">fallback</code> option:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">routeFromHAR</span>(<span class="tc-str">'./fixtures/partial.har'</span>, {
+  url:      <span class="tc-str">'**/api/**'</span>,
+  fallback: <span class="tc-str">'abort'</span>,    <span class="tc-cm">// abort unmatched requests (default)</span>
+  <span class="tc-cm">// fallback: 'continue'  // pass unmatched requests to the real server</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">abort</code></strong> (default) — unmatched requests are aborted. Tests fail loudly if the HAR is missing an entry. Good for fully offline tests where any real network call indicates an incomplete HAR.</p>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">continue</code></strong> — unmatched requests pass through to the real server. Good for partially mocked scenarios where only some endpoints are recorded.</p>
+    </div>
+  </div>
+
+  <!-- Q703.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.14</span>
+      <h2 class="sn-q-text">How do you test authentication headers are sent correctly?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'API calls include Authorization header after login'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> capturedHeaders: Record&lt;<span class="tc-kw">string</span>, <span class="tc-kw">string</span>&gt;[] = [];
+
+  <span class="tc-cm">// Capture headers on every API call</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api S1 api/data'</span>);
+
+  <span class="tc-cm">// Assert the header is present</span>
+  <span class="tc-kw">const</span> dataCallHeaders = capturedHeaders[capturedHeaders.length - <span class="tc-num">1</span>];
+  <span class="tc-kw">expect</span>(dataCallHeaders[<span class="tc-str">'authorization'</span>]).<span class="tc-fn">toMatch</span>(/^Bearer /);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.15</span>
+      <h2 class="sn-q-text">What is the impact of not cleaning up route handlers between tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Route handlers persist on the <code class="sn-ic">page</code> until explicitly removed or the page is closed. If you register a route in a test and do not unroute it, it can leak into subsequent tests in the same worker — if Playwright reuses the same page instance (which it does not by default, but can in shared contexts).</p>
+      </div>
+<p class="sn-para">The more common problem is registering routes in <code class="sn-ic">beforeEach</code> without unregistering in <code class="sn-ic">afterEach</code> or between test phases. Best practices:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Register routes inside the test or in <code class="sn-ic">beforeEach</code> — they are scoped</span></li>
+</ul>
+<p class="sn-para">  to the page's lifetime</p>
+<ul class="sn-list">
+<li><span class="icon">💡</span><span>If using a shared <code class="sn-ic">BrowserContext</code> across tests, explicitly call</span></li>
+</ul>
+<p class="sn-para">  <code class="sn-ic">page.unroute()</code> or <code class="sn-ic">context.unroute()</code> in <code class="sn-ic">afterEach</code></p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>For the default Playwright test runner setup, each test gets a fresh page</span></li>
+</ul>
+<p class="sn-para">  and context — route handlers do not persist across tests</p>
+    </div>
+  </div>
+
+  <!-- Q703.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.16</span>
+      <h2 class="sn-q-text">Write code to mock a search API with results that vary by query.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'search returns relevant results'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> searchResults: Record&lt;<span class="tc-kw">string</span>, object[]&gt; = {
+    <span class="tc-str">'playwright'</span>: [
+      { id: <span class="tc-num">1</span>, title: <span class="tc-str">'Playwright Docs'</span>, url: <span class="tc-str">'playwright.dev'</span> },
+      { id: <span class="tc-num">2</span>, title: <span class="tc-str">'Playwright GitHub'</span>, url: <span class="tc-str">'github.com/microsoft/playwright'</span> },
+    ],
+    <span class="tc-str">'selenium'</span>: [
+      { id: <span class="tc-num">3</span>, title: <span class="tc-str">'Selenium HQ'</span>, url: <span class="tc-str">'selenium.dev'</span> },
+    ],
+    <span class="tc-str">''</span>: [],
+  };
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/search'</span>, <span class="tc-kw">async</span> route =&gt; {
+    <span class="tc-kw">const</span> url   = <span class="tc-kw">new</span> URL(route.<span class="tc-fn">request</span>().<span class="tc-fn">url</span>());
+    <span class="tc-kw">const</span> query = url.searchParams.<span class="tc-fn">get</span>(<span class="tc-str">'q'</span>) ?? <span class="tc-str">''</span>;
+    <span class="tc-kw">const</span> results = searchResults[query.<span class="tc-fn">toLowerCase</span>()] ?? [];
+
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+      status:      <span class="tc-num">200</span>,
+      contentType: <span class="tc-str">'application/json'</span>,
+      body:        JSON.<span class="tc-fn">stringify</span>({ results, total: results.length }),
+    });
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/search'</span>);
+
+  <span class="tc-cm">// Search for playwright</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Search'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'playwright'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Playwright Docs'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Selenium HQ'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Search for empty</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Search'</span>).<span class="tc-fn">clear</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'No results found'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.17</span>
+      <h2 class="sn-q-text">How do you implement a "mock server" pattern for a team?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A team-wide mock server is a shared fixture module that provides consistent mock behaviour across the entire suite:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/MockServer.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> MockServer {
+  <span class="tc-kw">private</span> routes: (() =&gt; Promise&lt;<span class="tc-kw">void</span>&gt;)[] = [];
+
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> page: Page) {}
+
+  <span class="tc-kw">async</span> <span class="tc-fn">users</span>(<span class="tc-kw">override</span>?: Partial&lt;User&gt;[]) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users'</span>, route =&gt;
+      route.<span class="tc-fn">fulfill</span>({
+        status: <span class="tc-num">200</span>,
+        body:   JSON.<span class="tc-fn">stringify</span>(<span class="tc-kw">override</span> ?? defaultUsers),
+      })
+    );
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">apiError</span>(pattern: <span class="tc-kw">string</span>, status = <span class="tc-num">500</span>, message = <span class="tc-str">'Server Error'</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">route</span>(pattern, route =&gt;
+      route.<span class="tc-fn">fulfill</span>({ status, body: JSON.<span class="tc-fn">stringify</span>({ error: message }) })
+    );
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">networkFailure</span>(pattern: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">route</span>(pattern, route =&gt; route.<span class="tc-fn">abort</span>(<span class="tc-str">'connectionrefused'</span>));
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">slowResponse</span>(pattern: <span class="tc-kw">string</span>, delayMs = <span class="tc-num">2000</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">route</span>(pattern, <span class="tc-kw">async</span> route =&gt; {
+      <span class="tc-kw">await</span> <span class="tc-kw">new</span> Promise(r =&gt; <span class="tc-fn">setTimeout</span>(r, delayMs));
+      <span class="tc-kw">await</span> route.<span class="tc-kw">continue</span>();
+    });
+  }
+}
+
+<span class="tc-cm">// In test fixture</span>
+<span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ mock: MockServer }&gt;({
+  mock: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(<span class="tc-kw">new</span> MockServer(page));
+  },
+});
+
+<span class="tc-cm">// In tests</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'shows error state'</span>, <span class="tc-kw">async</span> ({ page, mock }) =&gt; {
+  <span class="tc-kw">await</span> mock.<span class="tc-fn">apiError</span>(<span class="tc-str">'**/api/dashboard'</span>, <span class="tc-num">503</span>, <span class="tc-str">'Service Unavailable'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'alert'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Service Unavailable'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q703.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q703.18</span>
+      <h2 class="sn-q-text">In your project, how did you structure your mocking strategy?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, the mocking strategy was deliberately limited. OrangeHRM is a live demo server, so we used real API calls for the majority of tests — especially the POM framework levels 4–8 which depended on real API responses for setup and assertion.</p>
+      </div>
+<p class="sn-para">We used mocking in two specific areas:</p>
+<p class="sn-para"><strong class="k-green">Third-party blocking.</strong> A context-level route in the base fixture blocks analytics and tracking endpoints. This is not "mocking" in the traditional sense — it is performance and reliability engineering. Analytics calls were adding 2–4 seconds of network noise and causing <code class="sn-ic">waitForNetworkIdle</code> to be unreliable.</p>
+<p class="sn-para"><strong class="k-green">Error scenario tests.</strong> For tests that verify the application handles server errors gracefully, we used <code class="sn-ic">page.route()</code> to return 500 responses on specific API endpoints. These tests live in a dedicated <code class="sn-ic">error-handling/</code> folder and are tagged <code class="sn-ic">@smoke @critical</code> because if error handling is broken, the entire user experience degrades.</p>
+<p class="sn-para">For teams working against unstable or unavailable backends, we would add HAR recording as a third tier — recording realistic responses against staging and committing them for CI replay. The 30-day staleness check would be a CI step that alerts when HAR files need re-recording.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Three mocking strategies: in-test <code class="sn-ic">page.route()</code> for edge cases, HAR recording/replay for stable external APIs, fixture JSON files for shared domain data.</span></li>
+            <li><span class="icon">⭐</span><span>HAR files record all network traffic (requests, responses, headers, timing); <code class="sn-ic">routeFromHAR(path, { update: true })</code> records; <code class="sn-ic">{ update: false }</code> (default) replays.</span></li>
+            <li><span class="icon">⭐</span><span>HAR <code class="sn-ic">fallback: 'abort'</code> (default) fails loudly on unmatched requests; <code class="sn-ic">fallback: 'continue'</code> passes them to the real server.</span></li>
+            <li><span class="icon">⭐</span><span>Use real APIs for happy-path E2E tests and auth tests; use mocks for error states, third-party APIs, and frontend-only environments.</span></li>
+            <li><span class="icon">⭐</span><span>Organise mocks by mirroring the API structure: <code class="sn-ic">fixtures/api/users/get-all.json</code>, separate error and success responses.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>A <code class="sn-ic">MockServer</code> helper class centralises route patterns and makes tests read like business scenarios: <code class="sn-ic">await mock.apiError('**/api/dashboard', 503)</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Capture <code class="sn-ic">route.request()</code> inside the handler synchronously, then assert on <code class="sn-ic">postDataJSON()</code>, <code class="sn-ic">headers()</code>, or <code class="sn-ic">url()</code> after the response is received.</span></li>
+            <li><span class="icon">⭐</span><span>HAR staleness is a real maintenance concern — schedule weekly re-recording against staging or use APIs that change infrequently.</span></li>
+            <li><span class="icon">⭐</span><span>Route handlers should be registered before the navigation that triggers the requests — Playwright cannot intercept a request that has already fired.</span></li>
+            <li><span class="icon">⭐</span><span>For WebSocket mocking use <code class="sn-ic">page.routeWebSocket()</code> (Playwright 1.48+); for older versions mock the WebSocket-dependent REST polling endpoints instead.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

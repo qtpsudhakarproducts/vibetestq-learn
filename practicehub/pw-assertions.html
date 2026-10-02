@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Assertions Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="12 interactive Playwright assertions MCQ challenges. Master web-first assertions, soft assertions, expect.poll, snapshots and more with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #0891b2;
+            --primary-dark: #0e7490;
+            --primary-light: #ecfeff;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header { position: fixed; top: 0; left: 0; right: 0; height: var(--header-height); background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem; }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #a5f3fc; transition: all 0.3s; }
+        .score-pill.bump { background: #cffafe; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #0891b2, #06b6d4); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #ecfeff; color: #0e7490; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #0891b2; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #a5f3fc; background: #cffafe; color: #0e7490; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #a5f3fc; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #ecfeff; border: 1px solid #a5f3fc; color: #0e7490; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 12</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">Assertion Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Web-first auto-retry</span>    <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. toBeVisible vs Attached</span> <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. Soft assertions</span>          <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. toHaveCount</span>              <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. toHaveAttribute</span>          <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. toHaveValue</span>              <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. toBeChecked</span>              <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. expect.poll()</span>            <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. toMatchSnapshot</span>          <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. Custom timeout</span>          <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. toHaveCSS</span>               <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. not. negation</span>           <div class="nav-dot" id="dot-c12"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-check-double"></i> Playwright Assertions</h1>
+        <p>12 challenges covering web-first assertions, soft assertions, snapshots, expect.poll and CSS validation — write tests that never flake.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">Web-First</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What makes Playwright assertions "web-first"?</div>
+            <div class="ch-desc">Compare two assertion styles. What is the key advantage of the Playwright web-first approach?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Style A — traditional
+const text = await page.locator('.status').textContent();
+expect(text).toBe('Success');
+
+// Style B — web-first
+await expect(page.locator('.status')).toHaveText('Success');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> Style B is faster because it doesn't await anything</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> Style B auto-retries until the condition is met, eliminating race conditions</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> Style A is safer because it reads the value first</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> Both styles are equivalent — just different syntax</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B — auto-retry eliminates race conditions</strong><br>Web-first assertions (Style B) automatically <strong>retry</strong> — polling the element state — until the condition is met or the timeout (default 5s) expires. Style A takes a snapshot at one moment; if the element hasn't updated yet, it fails immediately. Style B is resilient to timing issues caused by animations, API calls, and async updates — it's the Playwright way to write flake-free tests.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint">The key word is "auto-retry." Traditional assertions check once. Web-first assertions keep checking until success or timeout.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Visibility</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the difference between toBeVisible and toBeAttached?</div>
+            <div class="ch-desc">An element has <code>display:none</code> but is in the DOM. Which assertion passes and which fails?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Element: &lt;div class="modal" style="display:none"&gt;Hidden&lt;/div&gt;
+
+await expect(page.locator('.modal')).toBeAttached();  // A
+await expect(page.locator('.modal')).toBeVisible();   // B</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> Both pass — the element is in the DOM</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">B</span> Both fail — display:none makes it non-existent</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">C</span> toBeAttached passes; toBeVisible fails</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> toBeVisible passes; toBeAttached fails</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: C — toBeAttached passes, toBeVisible fails</strong><br><code>toBeAttached</code> checks that the element exists in the DOM (attached to the document), regardless of visibility. <code>toBeVisible</code> additionally checks that the element is visible — not hidden by <code>display:none</code>, <code>visibility:hidden</code>, zero opacity, or zero dimensions. With <code>display:none</code>, the element is attached but not visible, so only A passes.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint">Attached = exists in DOM. Visible = in DOM AND visually rendered (not hidden). <code>display:none</code> removes visual rendering but keeps DOM presence.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Soft Assertions</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What happens after a soft assertion fails?</div>
+            <div class="ch-desc">You use <code>expect.soft()</code> for multiple checks. What is the behaviour when one fails?</div>
+            <div class="code-block"><pre><code class="language-typescript">test('check profile page', async ({ page }) => {
+  await page.goto('/profile');
+
+  await expect.soft(page.locator('h1')).toHaveText('John Doe');    // fails
+  await expect.soft(page.locator('.email')).toHaveText('john@example.com'); // runs?
+  await expect.soft(page.locator('.role')).toHaveText('Admin');   // runs?
+
+  console.log('Test continues here?');  // runs?
+});</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> Test stops at the first failure — same as normal expect</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> Test continues executing all statements; all failures are reported at the end</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> Only the failing assertion is skipped; others run normally</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> Soft assertions never fail the test — they are just warnings</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — continues executing; reports all failures together</strong><br><code>expect.soft()</code> records failures but does not throw immediately. The test continues running all remaining steps. At the end of the test, Playwright reports all accumulated soft failures together. This is useful for form validation tests where you want to check all fields in one test run. Note: the test <em>does</em> fail in the end if any soft assertion failed — they are not warnings.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint">The "soft" in soft assertions means "don't stop the test immediately." All assertions run; all failures are collected and reported at the end.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge beginner">Beginner</span><span class="topic-badge">toHaveCount</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you assert that a table has exactly 5 rows?</div>
+            <div class="ch-desc">After loading a page, a table should show exactly 5 data rows. Which assertion is correct?</div>
+            <div class="code-block"><pre><code class="language-typescript">const rows = page.locator('table tbody tr');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> expect(await rows.count()).toBe(5)</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">B</span> await expect(rows).toHaveCount(5)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">C</span> await expect(rows.length).toBe(5)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> expect(rows).toHaveLength(5)</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: B — await expect(rows).toHaveCount(5)</strong><br><code>toHaveCount</code> is a web-first assertion that auto-retries. Option A works but is not web-first — <code>count()</code> reads the value once and the traditional <code>expect().toBe()</code> does not retry. Option C is wrong because locators are not arrays with a <code>.length</code> property. Option D uses the wrong method name. Always prefer web-first assertions like <code>toHaveCount</code> over manual count reads.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint">Prefer the web-first assertion <code>toHaveCount()</code> over manually reading <code>.count()</code> — it auto-retries until the count matches or times out.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge beginner">Beginner</span><span class="topic-badge">toHaveAttribute</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you assert a link's href attribute?</div>
+            <div class="ch-desc">You want to verify that a link points to the correct URL. Which assertion is correct?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;a href="https://vibetestq.com" class="nav-link"&gt;Home&lt;/a&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> await expect(link).toHaveText('https://vibetestq.com')</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">B</span> await expect(link).toHaveAttribute('href', 'https://vibetestq.com')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">C</span> await expect(link.href).toBe('https://vibetestq.com')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> await expect(link).toContainURL('vibetestq.com')</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: B — toHaveAttribute('href', value)</strong><br><code>toHaveAttribute(name, value)</code> checks that the element has the specified attribute with the expected value. It auto-retries and is the correct web-first way to check element attributes. The <code>value</code> can also be a regex: <code>toHaveAttribute('href', /vibetestq/)</code>. Option A checks the text content (the visible link text "Home"), not the href. Option C tries to access <code>.href</code> on a Locator object, which doesn't exist.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint"><code>toHaveAttribute(attributeName, value)</code> is the web-first way to check HTML attributes. It accepts both strings and regex.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge beginner">Beginner</span><span class="topic-badge">toHaveValue</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you verify an input field's value?</div>
+            <div class="ch-desc">After filling a form field, you want to assert it contains the expected value. Which is the correct web-first assertion?</div>
+            <div class="code-block"><pre><code class="language-typescript">await page.getByLabel('Username').fill('admin');
+// Assert the input has 'admin' as its value</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> await expect(input).toHaveText('admin')</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> await expect(input).toHaveValue('admin')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> await expect(input).toContainText('admin')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> await expect(await input.inputValue()).toBe('admin')</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — toHaveValue('admin')</strong><br><code>toHaveValue</code> checks the <em>value</em> property of form elements (input, textarea, select). <code>toHaveText</code> checks text content — inputs don't have text content as such. <code>toContainText</code> is also for text content. Option D uses <code>inputValue()</code> which reads the value once (not web-first). Use <code>toHaveValue</code> for all form field value assertions.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint">Form elements have a <em>value</em> property (what you type in), not text content. Use <code>toHaveValue</code> for inputs, <code>toHaveText</code> for regular elements.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge beginner">Beginner</span><span class="topic-badge">toBeChecked</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you assert a checkbox is checked?</div>
+            <div class="ch-desc">After a user interaction enables a "Remember Me" checkbox, which assertion verifies it is checked?</div>
+            <div class="code-block"><pre><code class="language-typescript">const checkbox = page.getByRole('checkbox', { name: 'Remember Me' });</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> await expect(checkbox).toHaveAttribute('checked', 'true')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">B</span> await expect(checkbox).toHaveValue('checked')</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">C</span> await expect(checkbox).toBeChecked()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> await expect(checkbox).toBeEnabled()</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: C — toBeChecked()</strong><br><code>toBeChecked()</code> is the dedicated web-first assertion for checkbox and radio button state. It checks the <code>checked</code> property of the element (not the attribute). Option A is unreliable — the HTML <code>checked</code> attribute only reflects the default state, not the current state after user interaction. <code>toBeEnabled()</code> checks that the element is not disabled — unrelated to its checked state. Use <code>toBeChecked({ checked: false })</code> to assert unchecked.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint">Checkboxes have a <code>checked</code> DOM property (current state) distinct from the <code>checked</code> HTML attribute (default state). <code>toBeChecked()</code> checks the live property.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge advanced">Advanced</span><span class="topic-badge">expect.poll()</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When should you use expect.poll()?</div>
+            <div class="ch-desc">What is <code>expect.poll()</code> designed for, and when should you use it instead of a standard web-first assertion?</div>
+            <div class="code-block"><pre><code class="language-typescript">await expect.poll(async () => {
+  const response = await page.request.get('/api/jobs/123');
+  return (await response.json()).status;
+}, { timeout: 30_000 }).toBe('completed');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> When you need to assert multiple values at once</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">B</span> When asserting on Playwright locator elements that change slowly</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">C</span> When asserting on non-Playwright values (like API responses, custom functions, or variables)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> When you want to slow down the test for debugging</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: C — for non-Playwright values that need polling</strong><br><code>expect.poll(fn)</code> repeatedly calls the provided async function until the return value satisfies the assertion, or the timeout expires. This is for scenarios where you need auto-retry behaviour on values that are NOT Playwright locators — like an API endpoint polling, a database query, or a computed value. Standard web-first assertions (<code>toHaveText</code>, etc.) only work on Playwright locators.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint">Web-first assertions auto-retry on locators. <code>expect.poll()</code> gives you the same auto-retry capability for <em>any</em> async function — useful for API polling or custom conditions.</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Snapshots</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What happens on the first run of toMatchSnapshot()?</div>
+            <div class="ch-desc">You add a visual snapshot assertion. What happens when you run the test for the very first time?</div>
+            <div class="code-block"><pre><code class="language-typescript">await expect(page).toHaveScreenshot('login-page.png');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> The test fails because no baseline exists yet</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> A baseline snapshot is automatically captured and saved; the test passes</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> The test is skipped until you manually provide a baseline</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> The test passes immediately without comparing anything</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — baseline is created and test passes</strong><br>On the first run, Playwright creates the baseline screenshot file in the <code>__snapshots__</code> folder and the test passes. Subsequent runs compare the current screenshot to the saved baseline — failing if pixel differences exceed the threshold. To update a baseline after intentional UI changes, run with <code>--update-snapshots</code>. This is Playwright's visual regression testing workflow.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">No baseline = nothing to compare against. Playwright creates the baseline on the first run. All subsequent runs compare against it.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Timeouts</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you set a custom timeout for a single assertion?</div>
+            <div class="ch-desc">A loading indicator takes up to 15 seconds to disappear. How do you extend the timeout for just this one assertion?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Loader takes up to 15 seconds to hide
+await expect(page.locator('.loading')).toBeHidden(/* ??? */);</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> await expect(page.locator('.loading'), { timeout: 15_000 }).toBeHidden()</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> await expect(page.locator('.loading')).toBeHidden({ timeout: 15_000 })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> page.setDefaultTimeout(15_000); await expect(page.locator('.loading')).toBeHidden()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> expect.setTimeout(15_000); await expect(page.locator('.loading')).toBeHidden()</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — pass timeout option to the assertion method</strong><br>Most Playwright web-first assertion methods accept an options object as their last argument, including <code>{ timeout: ms }</code>. This overrides the global <code>expect.timeout</code> for just that one assertion. Option A is wrong — the timeout goes on the assertion method, not on <code>expect()</code>. Option C changes the <em>action</em> timeout globally (affects all following actions). Option D is not a valid Playwright API.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint">Per-assertion timeouts are passed as an options object to the assertion method itself: <code>.toBeHidden({ timeout: 15_000 })</code>.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge advanced">Advanced</span><span class="topic-badge">toHaveCSS</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does toHaveCSS check exactly?</div>
+            <div class="ch-desc">You want to verify a button's background color after it becomes active. What is correct about <code>toHaveCSS</code>?</div>
+            <div class="code-block"><pre><code class="language-typescript">await expect(page.getByRole('button', { name: 'Save' }))
+  .toHaveCSS('background-color', 'rgb(5, 150, 105)');</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> Checks the inline style attribute value</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> Checks the computed (resolved) CSS value after all stylesheets are applied</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> Checks the CSS class name applied to the element</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> toHaveCSS is not a Playwright assertion method</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — computed CSS value</strong><br><code>toHaveCSS(property, value)</code> checks the <strong>computed style</strong> — the final resolved value after all CSS rules (stylesheets, classes, inline styles) are applied by the browser. This is important: you cannot pass a CSS class name — you must pass the actual property and its resolved value. For colors, browsers return values in <code>rgb()</code> or <code>rgba()</code> format, so use those formats in your assertion.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint"><code>toHaveCSS</code> uses <code>getComputedStyle</code> — the final rendered value. Colors become <code>rgb()</code>, so <code>'green'</code> won't match. Use the browser's computed value format.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge beginner">Beginner</span><span class="topic-badge">Negation</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you assert an element is NOT visible?</div>
+            <div class="ch-desc">After closing a modal, you want to verify it is gone. Which assertion is correct?</div>
+            <div class="code-block"><pre><code class="language-typescript">await page.getByRole('button', { name: 'Close' }).click();
+// Assert modal is no longer visible</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> await expect(modal).toBeNotVisible()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">B</span> await expect(!modal).toBeVisible()</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">C</span> await expect(modal).not.toBeVisible()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> await expect(modal).toBeHidden() — toBeNotVisible doesn't exist</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: C — .not.toBeVisible() (and D is also valid)</strong><br>Playwright assertions support the <code>.not</code> modifier for negation: <code>expect(locator).not.toBeVisible()</code>. Additionally, <code>toBeHidden()</code> is a dedicated assertion that passes when the element is not visible (hidden or detached). Both C and D are correct patterns — <code>toBeHidden()</code> is the semantic equivalent of <code>not.toBeVisible()</code>. Option A (<code>toBeNotVisible</code>) does not exist as a method name.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint">Use <code>.not.</code> before any assertion to negate it. <code>toBeHidden()</code> is the dedicated positive form of "not visible" — both work.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 12;
+    const STORAGE_KEY = 'vtq-pw-assertions';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,926 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 504 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Fixtures</span> <span class="w2">&amp;</span> <span class="w3">Shared</span> <span class="w4">State</span> <span class="w5">(L3)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's custom fixture system — the mechanism that eliminates repeated login setup, injects pre-authenticated page objects directly into tests, and introduces multi-role testing via <code class="sn-ic">storageState</code>. Interviewers consistently ask about fixtures at senior level: a candidate who can explain <code class="sn-ic">test.extend()</code>, describe the <code class="sn-ic">use()</code> boundary between setup and teardown, and articulate why <code class="sn-ic">storageState</code> is faster than UI login for every test is demonstrating production-level framework knowledge.</span>
+  </div>
+
+
+  <!-- Q504.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.1</span>
+      <h2 class="sn-q-text">What problem do custom fixtures solve at Level 3?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every authenticated test at Level 2 starts with the same four-line setup:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  loginPage     = <span class="tc-kw">new</span> LoginPage(page);
+  dashboardPage = <span class="tc-kw">new</span> DashboardPage(page);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> dashboardPage.<span class="tc-fn">assertPageLoaded</span>();
+});</div>
+      </div>
+<p class="sn-para">With three test files this is manageable. With twenty test files covering PIM, Admin, Leave, and Recruitment — each with multiple describe blocks — every single test file repeats this ceremony.</p>
+<p class="sn-para">Two problems compound:</p>
+<p class="sn-para"><strong class="k-blue">Speed:</strong> driving the full login UI for every test wastes 2–4 seconds per test on the shared OrangeHRM demo site. A 50-test suite loses 2–3 minutes to repeated authentication that adds zero testing value.</p>
+<p class="sn-para"><strong class="k-blue">Noise:</strong> the login code is setup infrastructure, not test logic. It clutters every test file and makes it harder to read what the test actually tests.</p>
+<p class="sn-para">Level 3 fixes both with <code class="sn-ic">test.extend()</code> and <code class="sn-ic">storageState</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q504.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.2</span>
+      <h2 class="sn-q-text">What is a Playwright fixture?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A Playwright fixture is a dependency injection mechanism. Instead of a test creating and setting up everything it needs itself, fixtures prepare those things and inject them as parameters.</p>
+      </div>
+<p class="sn-para">The built-in <code class="sn-ic">page</code> fixture illustrates the concept:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// page is a fixture — Playwright creates it, injects it, cleans it up</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'some test'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-cm">// You never created page, never worried about closing it</span>
+});</div>
+      </div>
+<p class="sn-para">Custom fixtures work exactly the same way — but you define them:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// employeeListPage is a custom fixture — your code creates it</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'admin can add employee'</span>, <span class="tc-kw">async</span> ({ employeeListPage, addEmployeePage }) =&gt; {
+  <span class="tc-cm">// employeeListPage is already authenticated and navigated</span>
+  <span class="tc-cm">// Test starts with the page object ready — no setup needed</span>
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">clickAddEmployee</span>();
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(<span class="tc-str">'Alice'</span>, <span class="tc-str">'Johnson'</span>, <span class="tc-str">'EMP-001'</span>);
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+});</div>
+      </div>
+<p class="sn-para">The fixture handles authentication, navigation, and page object instantiation. The test focuses entirely on its scenario.</p>
+    </div>
+  </div>
+
+  <!-- Q504.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.3</span>
+      <h2 class="sn-q-text">How do you define custom fixtures with test.extend()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/index.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { EmployeeListPage }     <span class="tc-kw">from</span> <span class="tc-str">'../pages/pim/EmployeeListPage'</span>;
+<span class="tc-kw">import</span> { AddEmployeePage }      <span class="tc-kw">from</span> <span class="tc-str">'../pages/pim/AddEmployeePage'</span>;
+
+<span class="tc-cm">// Step 1 — declare the fixture types</span>
+<span class="tc-kw">type</span> OrangeHRMFixtures = {
+  employeeListPage: EmployeeListPage;
+  addEmployeePage:  AddEmployeePage;
+};
+
+<span class="tc-cm">// Step 2 — extend the base test object with your fixture implementations</span>
+<span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;OrangeHRMFixtures&gt;({
+
+  employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-cm">// SETUP — runs before the test</span>
+    <span class="tc-kw">const</span> employeeList = <span class="tc-kw">new</span> EmployeeListPage(page);
+    <span class="tc-kw">await</span> employeeList.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> employeeList.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-cm">// use() — injects the value into the test</span>
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(employeeList);
+    <span class="tc-cm">// TEARDOWN — runs after the test (add cleanup here if needed)</span>
+  },
+
+  addEmployeePage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> addEmployee = <span class="tc-kw">new</span> AddEmployeePage(page);
+    <span class="tc-kw">await</span> addEmployee.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> addEmployee.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(addEmployee);
+  },
+
+});
+
+<span class="tc-cm">// Step 3 — export as test so all test files use the same extended object</span>
+<span class="tc-kw">export</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> };</div>
+      </div>
+<p class="sn-para">Test files import <code class="sn-ic">test</code> from this file, not from <code class="sn-ic">@playwright/test</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/pim/employee.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures'</span>;  <span class="tc-cm">// ← fixture-enriched test</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q504.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.4</span>
+      <h2 class="sn-q-text">What is the use() function in a fixture definition?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">use()</code> is the boundary between setup and teardown in a fixture:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-cm">// ─── SETUP ─────────────────────────────────────────────</span>
+  <span class="tc-cm">// Everything before use() runs before the test starts</span>
+  <span class="tc-kw">const</span> employeeList = <span class="tc-kw">new</span> EmployeeListPage(page);
+  <span class="tc-kw">await</span> employeeList.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> employeeList.<span class="tc-fn">assertPageLoaded</span>();
+
+  <span class="tc-cm">// ─── INJECTION ─────────────────────────────────────────</span>
+  <span class="tc-cm">// use() hands the value to the test and waits for the test to finish</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>(employeeList);
+
+  <span class="tc-cm">// ─── TEARDOWN ──────────────────────────────────────────</span>
+  <span class="tc-cm">// Everything after use() runs after the test finishes</span>
+  <span class="tc-cm">// Add cleanup here: delete test data, reset state, etc.</span>
+  <span class="tc-cm">// For most page fixtures, no teardown is needed</span>
+};</div>
+      </div>
+<p class="sn-para">The fixture function is suspended at <code class="sn-ic">await use()</code> while the test runs. When the test finishes (pass or fail), the fixture resumes after <code class="sn-ic">use()</code> and runs teardown. This guarantees teardown always runs — even when the test throws an error.</p>
+    </div>
+  </div>
+
+  <!-- Q504.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.5</span>
+      <h2 class="sn-q-text">What is storageState and how does it eliminate UI login?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">storageState</code> is Playwright's mechanism for saving and restoring full browser authentication state — cookies, localStorage, sessionStorage — to a JSON file.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">The process:</strong></p>
+<ol class="sn-olist">
+<li>A global setup script logs in via UI once and saves the browser state</li>
+<li>Tests that need authentication load the saved state file</li>
+<li>The browser starts already authenticated — no login form, no credentials</li>
+</ol>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Level 2 flow per test:
+Browser opens → Navigate to /login → Fill username → Fill password → Click Login
+→ Assert dashboard → [Test body] ← 3-4 seconds lost per test
+
+Level 3 flow per test:
+Browser opens → Load admin.json → [Test body] ← 0 seconds lost</div>
+      </div>
+<p class="sn-para">On a 50-test suite with 3-second login per test: 150 seconds (2.5 minutes) saved. On a 200-test CI run: 10 minutes saved every run.</p>
+    </div>
+  </div>
+
+  <!-- Q504.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.6</span>
+      <h2 class="sn-q-text">What does global-setup.ts look like?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// global-setup.ts</span>
+<span class="tc-kw">import</span> { chromium, FullConfig } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">async</span> <span class="tc-kw">function</span> <span class="tc-fn">globalSetup</span>(config: FullConfig): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> { baseURL } = config.projects[<span class="tc-num">0</span>].use;
+  <span class="tc-kw">const</span> browser     = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>();
+
+  <span class="tc-cm">// ─── Save Admin Session ──────────────────────────────────────</span>
+  <span class="tc-kw">const</span> adminContext = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+  <span class="tc-kw">const</span> adminPage    = <span class="tc-kw">await</span> adminContext.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">goto</span>(<span class="tc-str">`${baseURL}/web/index.php/auth/login`</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> adminPage.<span class="tc-fn">waitForURL</span>(/dashboard/);  <span class="tc-cm">// confirm login succeeded</span>
+
+  <span class="tc-cm">// Save cookies + localStorage to file</span>
+  <span class="tc-kw">await</span> adminContext.<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'playwright/.auth/admin.json'</span> });
+  <span class="tc-kw">await</span> adminContext.<span class="tc-fn">close</span>();
+
+  <span class="tc-cm">// ─── Save ESS User Session ───────────────────────────────────</span>
+  <span class="tc-kw">const</span> essContext = <span class="tc-kw">await</span> browser.<span class="tc-fn">newContext</span>();
+  <span class="tc-kw">const</span> essPage    = <span class="tc-kw">await</span> essContext.<span class="tc-fn">newPage</span>();
+
+  <span class="tc-kw">await</span> essPage.<span class="tc-fn">goto</span>(<span class="tc-str">`${baseURL}/web/index.php/auth/login`</span>);
+  <span class="tc-kw">await</span> essPage.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'alice.johnson'</span>);
+  <span class="tc-kw">await</span> essPage.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Alice@1234'</span>);
+  <span class="tc-kw">await</span> essPage.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> essPage.<span class="tc-fn">waitForURL</span>(/dashboard/);
+
+  <span class="tc-kw">await</span> essContext.<span class="tc-fn">storageState</span>({ path: <span class="tc-str">'playwright/.auth/ess.json'</span> });
+  <span class="tc-kw">await</span> essContext.<span class="tc-fn">close</span>();
+
+  <span class="tc-kw">await</span> browser.<span class="tc-fn">close</span>();
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> globalSetup;</div>
+      </div>
+<p class="sn-para">Register it in <code class="sn-ic">playwright.config.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  globalSetup: <span class="tc-str">'./global-setup.ts'</span>,
+  <span class="tc-cm">// ...</span>
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">globalSetup</code> runs once before all tests and workers. The auth files are created once and reused by every subsequent test.</p>
+    </div>
+  </div>
+
+  <!-- Q504.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.7</span>
+      <h2 class="sn-q-text">How does the storageState reach individual tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The storage state is not loaded inside fixtures — it is loaded by the Playwright project configuration. Projects in <code class="sn-ic">playwright.config.ts</code> specify which auth file to use:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+projects: [
+  {
+    name: <span class="tc-str">'admin'</span>,
+    use: {
+      ...devices[<span class="tc-str">'Desktop Chrome'</span>],
+      storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,  <span class="tc-cm">// ← admin session</span>
+    },
+    testMatch: [<span class="tc-str">'**/tests/pim S2 tests/admin S3 tests/leave S4 apply*.spec.ts'</span>],
+  },
+  {
+    name: <span class="tc-str">'no-auth'</span>,
+    use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },          <span class="tc-cm">// ← no session</span>
+    testMatch: [<span class="tc-str">'**/tests/login.spec.ts'</span>],
+  },
+],</div>
+      </div>
+<p class="sn-para">When the <code class="sn-ic">admin</code> project runs <code class="sn-ic">tests/pim/employee.spec.ts</code>, every <code class="sn-ic">page</code> fixture in that test file starts with the admin cookies loaded. The fixtures (e.g., <code class="sn-ic">employeeListPage</code>) receive this pre-authenticated <code class="sn-ic">page</code> automatically — they do not need to know anything about how authentication happened.</p>
+    </div>
+  </div>
+
+  <!-- Q504.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.8</span>
+      <h2 class="sn-q-text">Why do login tests NOT use authenticated fixtures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Login tests test the login flow itself — they need a fresh, unauthenticated browser session:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/login.spec.ts</span>
+<span class="tc-cm">// Intentionally imports from @playwright/test, not from fixtures</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { LoginPage }    <span class="tc-kw">from</span> <span class="tc-str">'../pages/LoginPage'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">assertPageLoaded</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'invalid password shows error @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'wrongpassword'</span>);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">assertInvalidCredentialsError</span>();
+  });
+});</div>
+      </div>
+<p class="sn-para">If login tests used a pre-authenticated fixture, they would start already logged in. Tests that verify the login error message would never see the login form. The <code class="sn-ic">no-auth</code> project in <code class="sn-ic">playwright.config.ts</code> runs login tests without any <code class="sn-ic">storageState</code> — giving them the bare browser they need.</p>
+<p class="sn-para">This is the boundary: tests that verify authentication use <code class="sn-ic">@playwright/test</code> directly. Tests that verify application features use the fixture-enriched <code class="sn-ic">test</code> from <code class="sn-ic">fixtures/index.ts</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q504.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.9</span>
+      <h2 class="sn-q-text">How does multi-role testing work at Level 3?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Multi-role testing means the same test suite covers scenarios that require different user permissions. The Leave workflow needs both an ESS user (who applies) and an Admin (who approves):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/leave/leave.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave — Apply and Approve'</span>, () =&gt; {
+
+  <span class="tc-cm">// This test runs under the ESS project — uses ess.json storage state</span>
+  <span class="tc-kw">test</span>(<span class="tc-str">'ESS user can apply for leave'</span>, <span class="tc-kw">async</span> ({ applyLeavePage }) =&gt; {
+    <span class="tc-kw">await</span> applyLeavePage.<span class="tc-fn">applyForLeave</span>(<span class="tc-str">'Annual Leave'</span>, <span class="tc-str">'2025-12-01'</span>, <span class="tc-str">'2025-12-01'</span>);
+    <span class="tc-kw">await</span> applyLeavePage.<span class="tc-fn">assertLeaveApplicationSubmitted</span>();
+  });
+
+  <span class="tc-cm">// This test runs under the admin project — uses admin.json storage state</span>
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can approve pending leave request'</span>, <span class="tc-kw">async</span> ({ leaveListPage }) =&gt; {
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">assertLeaveRequestVisible</span>(<span class="tc-str">'Alice Johnson'</span>);
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">approveLeaveRequest</span>(<span class="tc-str">'Alice Johnson'</span>);
+    <span class="tc-kw">await</span> leaveListPage.<span class="tc-fn">assertLeaveApproved</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">applyLeavePage</code> fixture navigates as an ESS user (because the <code class="sn-ic">ess</code> project loaded <code class="sn-ic">ess.json</code>). The <code class="sn-ic">leaveListPage</code> fixture navigates as an Admin (because the <code class="sn-ic">admin</code> project loaded <code class="sn-ic">admin.json</code>). The fixture code is identical — the project determines which session it runs in.</p>
+    </div>
+  </div>
+
+  <!-- Q504.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.10</span>
+      <h2 class="sn-q-text">What is the complete fixtures/index.ts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// fixtures/index.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> as base, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { DashboardPage }        <span class="tc-kw">from</span> <span class="tc-str">'../pages/DashboardPage'</span>;
+<span class="tc-kw">import</span> { EmployeeListPage }     <span class="tc-kw">from</span> <span class="tc-str">'../pages/pim/EmployeeListPage'</span>;
+<span class="tc-kw">import</span> { AddEmployeePage }      <span class="tc-kw">from</span> <span class="tc-str">'../pages/pim/AddEmployeePage'</span>;
+<span class="tc-kw">import</span> { PersonalDetailsPage }  <span class="tc-kw">from</span> <span class="tc-str">'../pages/pim/PersonalDetailsPage'</span>;
+<span class="tc-kw">import</span> { UserManagementPage }   <span class="tc-kw">from</span> <span class="tc-str">'../pages/admin/UserManagementPage'</span>;
+<span class="tc-kw">import</span> { AddUserPage }          <span class="tc-kw">from</span> <span class="tc-str">'../pages/admin/AddUserPage'</span>;
+<span class="tc-kw">import</span> { ApplyLeavePage }       <span class="tc-kw">from</span> <span class="tc-str">'../pages/leave/ApplyLeavePage'</span>;
+<span class="tc-kw">import</span> { LeaveListPage }        <span class="tc-kw">from</span> <span class="tc-str">'../pages/leave/LeaveListPage'</span>;
+
+<span class="tc-kw">type</span> OrangeHRMFixtures = {
+  adminDashboard:      DashboardPage;
+  essDashboard:        DashboardPage;
+  employeeListPage:    EmployeeListPage;
+  addEmployeePage:     AddEmployeePage;
+  personalDetailsPage: PersonalDetailsPage;
+  userManagementPage:  UserManagementPage;
+  addUserPage:         AddUserPage;
+  applyLeavePage:      ApplyLeavePage;
+  leaveListPage:       LeaveListPage;
+};
+
+<span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;OrangeHRMFixtures&gt;({
+
+  adminDashboard: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> dashboard = <span class="tc-kw">new</span> DashboardPage(page);
+    <span class="tc-kw">await</span> dashboard.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(dashboard);
+  },
+
+  essDashboard: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> dashboard = <span class="tc-kw">new</span> DashboardPage(page);
+    <span class="tc-kw">await</span> dashboard.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(dashboard);
+  },
+
+  employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> employeeList = <span class="tc-kw">new</span> EmployeeListPage(page);
+    <span class="tc-kw">await</span> employeeList.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> employeeList.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(employeeList);
+  },
+
+  addEmployeePage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> addEmployee = <span class="tc-kw">new</span> AddEmployeePage(page);
+    <span class="tc-kw">await</span> addEmployee.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> addEmployee.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(addEmployee);
+  },
+
+  personalDetailsPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-cm">// No navigation — employee ID is required; test navigates explicitly</span>
+    <span class="tc-kw">const</span> personalDetails = <span class="tc-kw">new</span> PersonalDetailsPage(page);
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(personalDetails);
+  },
+
+  userManagementPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> userManagement = <span class="tc-kw">new</span> UserManagementPage(page);
+    <span class="tc-kw">await</span> userManagement.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> userManagement.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(userManagement);
+  },
+
+  addUserPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> addUser = <span class="tc-kw">new</span> AddUserPage(page);
+    <span class="tc-kw">await</span> addUser.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> addUser.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(addUser);
+  },
+
+  applyLeavePage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> applyLeave = <span class="tc-kw">new</span> ApplyLeavePage(page);
+    <span class="tc-kw">await</span> applyLeave.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> applyLeave.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(applyLeave);
+  },
+
+  leaveListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+    <span class="tc-kw">const</span> leaveList = <span class="tc-kw">new</span> LeaveListPage(page);
+    <span class="tc-kw">await</span> leaveList.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> leaveList.<span class="tc-fn">assertPageLoaded</span>();
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>(leaveList);
+  },
+
+});
+
+<span class="tc-kw">export</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> };</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q504.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.11</span>
+      <h2 class="sn-q-text">What does the employee test file look like after fixtures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/pim/employee.spec.ts — Level 3</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'../../fixtures'</span>;  <span class="tc-cm">// not @playwright/test</span>
+
+<span class="tc-kw">const</span> newEmployee = {
+  firstName:  <span class="tc-str">'Bob'</span>,
+  lastName:   <span class="tc-str">'Williams'</span>,
+  employeeId: <span class="tc-str">'EMP-L3-001'</span>,
+  fullName:   <span class="tc-str">'Bob Williams'</span>,
+};
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'PIM — Employee Management'</span>, () =&gt; {
+
+  <span class="tc-cm">// No beforeEach. No login steps. Page objects arrive ready.</span>
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'admin can add a new employee @smoke'</span>, <span class="tc-kw">async</span> ({ addEmployeePage }) =&gt; {
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(
+      newEmployee.firstName,
+      newEmployee.lastName,
+      newEmployee.employeeId
+    );
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+    <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">assertRedirectedToPersonalDetails</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'employee appears in employee list'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByEmployeeName</span>(newEmployee.firstName);
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">assertEmployeeExistsInList</span>(newEmployee.fullName);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'search with non-existent name shows no records'</span>, <span class="tc-kw">async</span> ({ employeeListPage }) =&gt; {
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByEmployeeName</span>(<span class="tc-str">'ZZZNONEXISTENT999'</span>);
+    <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">assertNoRecordsFound</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para">Compare with Level 2: the <code class="sn-ic">beforeEach</code> block is gone. Each test went from 8–12 lines to 3–5 lines of pure business logic. The noise is gone — what remains is what the test is actually testing.</p>
+    </div>
+  </div>
+
+  <!-- Q504.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.12</span>
+      <h2 class="sn-q-text">What should be in .gitignore for auth state files?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Authentication state files contain session tokens — they are effectively credentials. Committing them to version control is a security risk:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gitignore</span>
+        </div>
+        <div class="sn-terminal-code">playwright/.auth/
+
+<span class="tc-kw">test</span>-results/
+playwright-report/
+blob-report/
+node_modules/
+.env</div>
+      </div>
+<p class="sn-para">On CI, auth state files are regenerated by <code class="sn-ic">globalSetup</code> before each run. They are ephemeral — they exist for the duration of one CI run and are discarded. This also means they are always fresh; there is no risk of stale session tokens causing mysterious CI failures weeks after the initial setup.</p>
+<p class="sn-para">Create the directory so <code class="sn-ic">globalSetup</code> can write to it:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">mkdir -p playwright/.auth
+touch playwright/.auth/.gitkeep</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q504.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.13</span>
+      <h2 class="sn-q-text">What is fixture scope and when would you use a different scope?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright fixtures have a <code class="sn-ic">scope</code> property that controls their lifetime:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// 'test' scope (default) — fixture created fresh for each test</span>
+employeeListPage: [<span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-cm">// ... setup</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>(employeeListPage);
+}, { scope: <span class="tc-str">'test'</span> }],   <span class="tc-cm">// ← new instance for every test</span>
+
+<span class="tc-cm">// 'worker' scope — fixture created once per parallel worker</span>
+sharedSetup: [<span class="tc-kw">async</span> ({}, use) =&gt; {
+  <span class="tc-cm">// Runs once per worker, not once per test</span>
+  <span class="tc-cm">// Useful for expensive one-time setup like API clients</span>
+  <span class="tc-kw">const</span> apiClient = <span class="tc-kw">new</span> ApiClient(process.env.BASE_URL!);
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>(apiClient);
+}, { scope: <span class="tc-str">'worker'</span> }],</div>
+      </div>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">test</code> scope (default):</strong> fresh fixture for every test. Page objects, navigation state — anything that should not bleed between tests.</p>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">worker</code> scope:</strong> shared across all tests in one worker process. Useful for API clients, database connections, or other expensive initialisation that is safe to reuse.</p>
+<p class="sn-para">The OrangeHRM project uses <code class="sn-ic">test</code> scope for all page object fixtures — each test gets a fresh, navigated page. A shared API client at <code class="sn-ic">worker</code> scope is introduced at Level 6 when API setup enters the picture.</p>
+    </div>
+  </div>
+
+  <!-- Q504.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.14</span>
+      <h2 class="sn-q-text">How do fixtures handle teardown after a test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Code after <code class="sn-ic">await use()</code> in a fixture runs after the test completes — whether the test passed or failed:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">employeeListPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-kw">const</span> employeeList = <span class="tc-kw">new</span> EmployeeListPage(page);
+  <span class="tc-kw">await</span> employeeList.<span class="tc-fn">goto</span>();
+
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>(employeeList);  <span class="tc-cm">// test runs here</span>
+
+  <span class="tc-cm">// Teardown — runs after test regardless of pass/fail</span>
+  <span class="tc-cm">// Example: delete test data created during this test</span>
+  <span class="tc-cm">// At Level 3 this is mostly empty — Level 6 adds API cleanup here</span>
+},</div>
+      </div>
+<p class="sn-para">For most page object fixtures, no teardown is needed — the browser context is discarded after each test automatically. Teardown becomes important at Level 6 when tests use API calls to create data that must be cleaned up.</p>
+<p class="sn-para">The guarantee that teardown always runs — even when the test throws — is why fixtures are superior to <code class="sn-ic">beforeEach</code>/<code class="sn-ic">afterEach</code> pairs for setup/cleanup. With <code class="sn-ic">beforeEach</code>/<code class="sn-ic">afterEach</code>, a failure in <code class="sn-ic">beforeEach</code> can prevent <code class="sn-ic">afterEach</code> from running. Fixtures always complete their teardown.</p>
+    </div>
+  </div>
+
+  <!-- Q504.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.15</span>
+      <h2 class="sn-q-text">What are the Leave module page objects introduced at Level 3?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">ApplyLeavePage</strong> — used by the ESS user to submit a leave application:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Key methods</span>
+<span class="tc-kw">async</span> <span class="tc-fn">applyForLeave</span>(
+  leaveType: <span class="tc-kw">string</span>,
+  fromDate:  <span class="tc-kw">string</span>,
+  toDate:    <span class="tc-kw">string</span>,
+  comment?:  <span class="tc-kw">string</span>
+): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">selectLeaveType</span>(leaveType);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillFromDate</span>(fromDate);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillToDate</span>(toDate);
+  <span class="tc-kw">if</span> (comment) <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillComment</span>(comment);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">submitLeaveApplication</span>();
+}
+
+<span class="tc-kw">async</span> <span class="tc-fn">assertLeaveApplicationSubmitted</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.successToast).<span class="tc-fn">toBeVisible</span>();
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-red">LeaveListPage</strong> — used by the Admin to review and action leave requests:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Approve with row-scoped button — only clicks the button in the matching row</span>
+<span class="tc-kw">async</span> <span class="tc-fn">approveLeaveRequest</span>(employeeName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> row = <span class="tc-kw">this</span>.leaveTable
+    .<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>, { name: <span class="tc-kw">new</span> RegExp(employeeName, <span class="tc-str">'i'</span>) });
+  <span class="tc-kw">await</span> row.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Approve'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.confirmButton.<span class="tc-fn">click</span>();
+}
+
+<span class="tc-kw">async</span> <span class="tc-fn">assertLeaveRequestStatus</span>(
+  employeeName: <span class="tc-kw">string</span>,
+  expectedStatus: <span class="tc-str">'Pending'</span> | <span class="tc-str">'Approved'</span> | <span class="tc-str">'Rejected'</span>
+): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">const</span> row = <span class="tc-kw">this</span>.leaveTable
+    .<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>, { name: <span class="tc-kw">new</span> RegExp(employeeName, <span class="tc-str">'i'</span>) });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(row.<span class="tc-fn">getByText</span>(expectedStatus)).<span class="tc-fn">toBeVisible</span>();
+}</div>
+      </div>
+<p class="sn-para">The row-scoped locator pattern (<code class="sn-ic">this.leaveTable.getByRole('row', ...).getByRole('button', ...)</code>) is essential for tables with multiple rows — it avoids clicking the wrong row's button when the list contains multiple leave requests.</p>
+    </div>
+  </div>
+
+  <!-- Q504.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.16</span>
+      <h2 class="sn-q-text">When should a fixture NOT navigate, and let the test navigate instead?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When navigation requires a runtime value that the fixture cannot know:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// personalDetailsPage fixture — cannot navigate because it needs an employee ID</span>
+personalDetailsPage: <span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-kw">const</span> personalDetails = <span class="tc-kw">new</span> PersonalDetailsPage(page);
+  <span class="tc-cm">// No goto() here — the employee ID is not known until the test creates an employee</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>(personalDetails);
+},
+
+<span class="tc-cm">// In the test, the ID is known and navigation happens explicitly</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'personal details update persists'</span>, <span class="tc-kw">async</span> ({ addEmployeePage, personalDetailsPage }) =&gt; {
+  <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">addEmployee</span>(<span class="tc-str">'Alice'</span>, <span class="tc-str">'Johnson'</span>, <span class="tc-str">'EMP-001'</span>);
+  <span class="tc-kw">const</span> employeeId = <span class="tc-kw">await</span> addEmployeePage.<span class="tc-fn">getCreatedEmployeeId</span>();
+
+  <span class="tc-kw">await</span> personalDetailsPage.<span class="tc-fn">goto</span>(employeeId);  <span class="tc-cm">// test navigates with the ID</span>
+  <span class="tc-kw">await</span> personalDetailsPage.<span class="tc-fn">assertPageLoaded</span>();
+  <span class="tc-kw">await</span> personalDetailsPage.<span class="tc-fn">assertFirstName</span>(<span class="tc-str">'Alice'</span>);
+});</div>
+      </div>
+<p class="sn-para">The rule: a fixture navigates when it can — when the destination is known before the test starts. It leaves navigation to the test when the destination depends on something the test creates at runtime.</p>
+    </div>
+  </div>
+
+  <!-- Q504.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.17</span>
+      <h2 class="sn-q-text">What changed in playwright.config.ts at Level 3?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Three changes from Level 2:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">1. Register globalSetup:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">globalSetup: <span class="tc-str">'./global-setup.ts'</span>,</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">2. Split into projects by authentication role:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  {
+    name: <span class="tc-str">'admin'</span>,
+    use: {
+      ...devices[<span class="tc-str">'Desktop Chrome'</span>],
+      storageState: <span class="tc-str">'playwright/.auth/admin.json'</span>,
+    },
+    testMatch: [<span class="tc-str">'**/tests/pim S0 tests/admin S1 tests/leave S2 apply*.spec.ts'</span>],
+  },
+  {
+    name: <span class="tc-str">'no-auth'</span>,
+    use: { ...devices[<span class="tc-str">'Desktop Chrome'</span>] },
+    testMatch: [<span class="tc-str">'**/tests/login.spec.ts'</span>],
+  },
+],</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">testMatch</code> per project — controls which files each project runs. Without <code class="sn-ic">testMatch</code>, all projects would run all tests. An ESS user running admin tests would fail with permission errors. The <code class="sn-ic">no-auth</code> project runs login tests with a clean session — exactly what login tests need.</p>
+    </div>
+  </div>
+
+  <!-- Q504.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q504.18</span>
+      <h2 class="sn-q-text">What does Level 3 not solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 3 eliminates repeated login setup and introduces role-based test execution. Three problems remain:</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Test ordering dependencies:</strong> the leave approval test depends on the apply test having run first. If apply fails, approval fails for the wrong reason. Level 4 (Test Independence) ensures every test sets up its own preconditions.</p>
+<p class="sn-para"><strong class="k-green">Hardcoded test data:</strong> employee names, leave dates, and credentials remain as string literals in test files. Level 5 (Test Data) introduces factory functions that generate unique, timestamped data per run — eliminating data collision between test runs.</p>
+<p class="sn-para"><strong class="k-green">Duplicated UI interaction patterns:</strong> <code class="sn-ic">ApplyLeavePage</code> and <code class="sn-ic">AddEmployeePage</code> both implement date field filling logic independently. <code class="sn-ic">AddUserPage</code> and <code class="sn-ic">ApplyLeavePage</code> both implement dropdown selection independently. Level 6 (Web Action Helpers) extracts these into shared helpers — one implementation of "fill a date picker", "select from OrangeHRM dropdown", used by all page objects.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Fixtures are Playwright's dependency injection system — they prepare state and inject it into tests as parameters.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.extend&lt;T&gt;()</code> creates a custom test object with your fixture definitions; export this instead of <code class="sn-ic">@playwright/test</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">use()</code> is the boundary between setup and teardown in a fixture; code after <code class="sn-ic">use()</code> always runs, even when tests fail.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">storageState</code> saves full browser auth state (cookies + localStorage) to JSON; loading it gives tests a pre-authenticated session.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">global-setup.ts</code> logs in once per user role and saves auth files; registered via <code class="sn-ic">globalSetup</code> in <code class="sn-ic">playwright.config.ts</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Three projects in config: <code class="sn-ic">admin</code> (loads admin.json), <code class="sn-ic">ess</code> (loads ess.json), <code class="sn-ic">no-auth</code> (bare browser for login tests).</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">testMatch</code> per project — routes test files to the correct authentication context automatically.</span></li>
+            <li><span class="icon">⭐</span><span>Login tests import from <code class="sn-ic">@playwright/test</code> directly — they test authentication itself and need a fresh, unauthenticated session.</span></li>
+            <li><span class="icon">⭐</span><span>Fixtures that need a runtime value (e.g., employee ID) do not navigate; they let the test navigate after creating the data.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">'test'</code> scope (default): fresh fixture per test. <code class="sn-ic">'worker'</code> scope: shared across all tests in one worker process.</span></li>
+            <li><span class="icon">⭐</span><span>Auth state files contain session tokens — always add <code class="sn-ic">playwright/.auth/</code> to <code class="sn-ic">.gitignore</code>; regenerate on CI via <code class="sn-ic">globalSetup</code>.</span></li>
+            <li><span class="icon">⭐</span><span>Level 3 solves login noise and speed; it deliberately leaves test ordering (Level 4), hardcoded data (Level 5), and duplicated UI patterns (Level 6) for subsequent levels.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

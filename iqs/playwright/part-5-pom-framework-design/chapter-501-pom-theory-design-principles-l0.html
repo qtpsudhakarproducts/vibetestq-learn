@@ -1,0 +1,833 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🏗️ Part 5 &nbsp;·&nbsp; Chapter 501 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">POM</span> <span class="w2">Theory</span> <span class="w3">&amp;</span> <span class="w4">Design</span> <span class="w5">Principles</span> <span class="w6">(L0)</span></h1>
+    <p class="sn-title-sub">POM &amp; Framework Design — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers the Page Object Model design pattern — what it is, why it was created, the four software principles it applies, and how it solves the maintenance problem at enterprise scale. Interviewers test POM theory to assess design thinking: a candidate who can explain DRY, separation of concerns, and the single responsibility principle — and connect each to a real POM decision — is showing senior-level reasoning, not just pattern memorisation.</span>
+  </div>
+
+
+  <!-- Q501.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.1</span>
+      <h2 class="sn-q-text">What is Page Object Model?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Page Object Model (POM) is a design pattern for test automation where each page of the application is represented as a class. That class is the single source of truth for everything about that page: its locators, its actions, and its assertions.</p>
+      </div>
+<p class="sn-para">Tests do not interact with the browser directly — they call methods on page objects. The page object handles the browser details internally.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without POM — test knows selectors, mixes concerns</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'login works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/auth/login'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Admin'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/dashboard/);
+});
+
+<span class="tc-cm">// With POM — test knows only the business intent</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'login works'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> loginPage = <span class="tc-kw">new</span> LoginPage(page);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveURL</span>(/dashboard/);
+});</div>
+      </div>
+<p class="sn-para">When the login button selector changes, the POM version needs one fix in <code class="sn-ic">LoginPage.ts</code>. The non-POM version needs fixing in every test file that logs in.</p>
+    </div>
+  </div>
+
+  <!-- Q501.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.2</span>
+      <h2 class="sn-q-text">Who introduced POM and why?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Page Object Model was introduced and popularised by Simon Stewart, one of the creators of Selenium WebDriver. He observed a fundamental structural problem in early test automation: the same UI elements and interactions were being written directly into test cases, scattered across many files and duplicated constantly.</p>
+      </div>
+<p class="sn-para">When the application changed — a button moved, a form field was renamed, a URL changed — all those scattered references broke. Maintaining tests took more effort than writing them.</p>
+<p class="sn-para">The solution: model each page as a class. That class becomes the single point of truth for all interaction with that page. Tests become orchestrators that describe business scenarios. The mechanics of interacting with the browser become encapsulated in page objects.</p>
+<p class="sn-para">The pattern applies to Playwright exactly as it did to Selenium. The tool changes; the structural problem and its solution do not.</p>
+    </div>
+  </div>
+
+  <!-- Q501.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.3</span>
+      <h2 class="sn-q-text">What are the three responsibilities of a page object?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Every page object in a well-structured POM framework has exactly three responsibilities:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">1. Locators</strong> — every UI element the tests need, defined once. The test files never see selectors. If a selector changes, one edit in the page object updates every test that uses it.</p>
+<p class="sn-para"><strong class="k-purple">2. Actions</strong> — methods representing what a user can do on the page. <code class="sn-ic">login()</code>, <code class="sn-ic">addEmployee()</code>, <code class="sn-ic">selectLeaveType()</code>. Each action is one method. Tests call the method without knowing how it works internally.</p>
+<p class="sn-para"><strong class="k-purple">3. Assertions</strong> — methods verifying expected page state. <code class="sn-ic">assertPageLoaded()</code>, <code class="sn-ic">assertEmployeeSavedSuccessfully()</code>, <code class="sn-ic">assertInvalidCredentialsError()</code>. Assertions in page objects are reusable across multiple tests.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+  <span class="tc-cm">// Locators — defined once, never in test files</span>
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> usernameInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> passwordInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> loginButton:   Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> errorMessage:  Locator;
+
+  <span class="tc-cm">// Actions — what the user can do</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; { ... }
+
+  <span class="tc-cm">// Assertions — verifying page state</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">assertInvalidCredentialsError</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; { ... }
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; { ... }
+}</div>
+      </div>
+<p class="sn-para">What a page object is NOT responsible for: test scenarios, test data, business logic, and knowledge of other pages.</p>
+    </div>
+  </div>
+
+  <!-- Q501.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.4</span>
+      <h2 class="sn-q-text">How did you apply POM in your OrangeHRM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, each module had its own folder under <code class="sn-ic">pages/</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">pages/
+  LoginPage.ts
+  DashboardPage.ts
+  pim/
+    EmployeeListPage.ts
+    AddEmployeePage.ts
+  admin/
+    UserManagementPage.ts
+    AddUserPage.ts
+  leave/
+    ApplyLeavePage.ts
+    LeaveListPage.ts</div>
+      </div>
+<p class="sn-para">Each page class declared its locators as <code class="sn-ic">private readonly</code> fields, defined action methods for every user interaction, and included <code class="sn-ic">assertPageLoaded()</code> plus specific assertion methods.</p>
+<p class="sn-para">The test files only imported page classes and called their methods. No selector ever appeared in a test file. This meant when OrangeHRM updated their UI — they changed the Employee ID input position in the form — one fix in <code class="sn-ic">AddEmployeePage.ts</code> corrected all affected tests instantly. Without POM, the same fix would have required searching for and updating the selector in every test that added an employee.</p>
+    </div>
+  </div>
+
+  <!-- Q501.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.5</span>
+      <h2 class="sn-q-text">What is separation of concerns in POM?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Separation of concerns means each piece of code has one clearly defined job.</p>
+      </div>
+<p class="sn-para">In POM:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-teal">Page objects</strong> — concern: how to interact with the browser</span></li>
+<li><span class="icon">💡</span><span><strong class="k-teal">Test files</strong> — concern: what scenarios to test and in what order</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-teal">Fixtures</strong> — concern: preparing the state tests need to start</span></li>
+<li><span class="icon">🎯</span><span><strong class="k-teal">Data factories</strong> — concern: generating test data</span></li>
+<li><span class="icon">📌</span><span><strong class="k-teal">Helpers</strong> — concern: common UI interaction patterns</span></li>
+</ul>
+<p class="sn-para">When concerns are separated, changing one does not break another. Changing how you fill a form (page object concern) does not change what you are testing (test file concern). Changing a test scenario does not change browser interactions.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Page object concern — HOW</span>
+<span class="tc-kw">async</span> <span class="tc-fn">fillEmployeeForm</span>(firstName: <span class="tc-kw">string</span>, lastName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.firstNameInput.<span class="tc-fn">fill</span>(firstName);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.lastNameInput.<span class="tc-fn">fill</span>(lastName);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.saveButton.<span class="tc-fn">click</span>();
+}
+
+<span class="tc-cm">// Test file concern — WHAT</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'PIM admin can create an employee record @smoke'</span>, <span class="tc-kw">async</span> ({ pimPage }) =&gt; {
+  <span class="tc-kw">await</span> pimPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> pimPage.<span class="tc-fn">fillEmployeeForm</span>(<span class="tc-str">'Alice'</span>, <span class="tc-str">'Johnson'</span>);
+  <span class="tc-kw">await</span> pimPage.<span class="tc-fn">assertEmployeeSavedSuccessfully</span>();
+});</div>
+      </div>
+<p class="sn-para">The test describes the scenario. The page object handles the implementation. Either can change independently without breaking the other.</p>
+    </div>
+  </div>
+
+  <!-- Q501.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.6</span>
+      <h2 class="sn-q-text">What is the Single Responsibility Principle and how does POM apply it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The Single Responsibility Principle (SRP) states that every class should have one reason to change.</p>
+      </div>
+<p class="sn-para">Applied to POM:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">LoginPage.ts</code> changes only when the login page UI changes</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">AddEmployeePage.ts</code> changes only when the Add Employee form changes</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">LoginPage.ts</code> does NOT change when the dashboard is redesigned</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">LoginPage.ts</code> does NOT change when a test scenario is updated</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Violation — LoginPage knows about dashboard navigation (two reasons to change)</span>
+<span class="tc-kw">async</span> <span class="tc-fn">loginAndGoToDashboard</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">login</span>(username, password);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.dashboardPage.<span class="tc-fn">navigateToPIM</span>(); <span class="tc-cm">// ← LoginPage should NOT know this</span>
+}
+
+<span class="tc-cm">// Correct — LoginPage has one responsibility</span>
+<span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillUsername</span>(username);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillPassword</span>(password);
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">clickLogin</span>();
+}
+<span class="tc-cm">// Navigation to PIM is the test's responsibility, not LoginPage's</span></div>
+      </div>
+<p class="sn-para">When every class has one reason to change, the impact of any change is contained and predictable. A developer changing the login form knows exactly one file needs updating.</p>
+    </div>
+  </div>
+
+  <!-- Q501.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.7</span>
+      <h2 class="sn-q-text">What is the DRY principle and where does it apply in POM?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">DRY — Don't Repeat Yourself — means every piece of knowledge should exist in exactly one place in the codebase.</p>
+      </div>
+<p class="sn-para">POM enforces DRY at multiple levels:</p>
+<p class="sn-para"><strong class="k-red">Selectors:</strong> defined once in a page class, used by all methods that need them. A selector change requires one edit.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// DRY — selector exists in one place</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> submitButton = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> })
+                                    .<span class="tc-kw">describe</span>(<span class="tc-str">'Save employee button'</span>);
+
+<span class="tc-kw">async</span> <span class="tc-fn">saveEmployee</span>(): Promise&lt;<span class="tc-kw">void</span>&gt;  { <span class="tc-kw">await</span> <span class="tc-kw">this</span>.submitButton.<span class="tc-fn">click</span>(); }
+<span class="tc-kw">async</span> <span class="tc-fn">assertSaveEnabled</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; { <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.submitButton).<span class="tc-fn">toBeEnabled</span>(); }
+<span class="tc-cm">// Both methods use the same Locator — one definition serves both</span></div>
+      </div>
+<p class="sn-para"><strong class="k-red">Actions:</strong> an <code class="sn-ic">addEmployee()</code> method wraps the individual field fills and the save click. Tests call the method, not the individual steps. If the form adds a required field, one fix in <code class="sn-ic">addEmployee()</code> updates all tests.</p>
+<p class="sn-para"><strong class="k-red">Higher levels extend DRY further:</strong> BasePage (Level 2) eliminates repeated constructor boilerplate. Fixtures (Level 3) eliminate repeated login setup. Data factories (Level 5) eliminate repeated test data. Web action helpers (Level 6) eliminate repeated interaction patterns.</p>
+    </div>
+  </div>
+
+  <!-- Q501.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.8</span>
+      <h2 class="sn-q-text">What is abstraction in POM and why does it matter for readability?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Abstraction hides implementation details behind a meaningful interface. The test knows what it wants — not how to achieve it.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without abstraction — test is a sequence of browser instructions</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'employee can apply for annual leave'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/leave/applyLeave'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-text'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'option'</span>, { name: <span class="tc-str">'Annual Leave'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">locator</span>(<span class="tc-str">'input.oxd-date-input'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">fill</span>(<span class="tc-str">'2026-06-15'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Apply'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-toast-content'</span>)).<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-cm">// With abstraction — test reads like a user story</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'employee can apply for annual leave'</span>, <span class="tc-kw">async</span> ({ leavePage }) =&gt; {
+  <span class="tc-kw">await</span> leavePage.<span class="tc-fn">applyLeave</span>({ <span class="tc-kw">type</span>: <span class="tc-str">'Annual Leave'</span>, date: <span class="tc-str">'2026-06-15'</span> });
+  <span class="tc-kw">await</span> leavePage.<span class="tc-fn">assertApplicationSubmitted</span>();
+});</div>
+      </div>
+<p class="sn-para">A non-technical stakeholder can read the abstracted test and understand what it tests without knowing anything about Playwright or the application's HTML. This matters for code review, documentation, and onboarding.</p>
+<p class="sn-para">Good abstraction also means the test survives UI changes. The OrangeHRM leave dropdown might change its implementation, but "select a leave type" remains a valid user action. The page object absorbs the change; the test is unaffected.</p>
+    </div>
+  </div>
+
+  <!-- Q501.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.9</span>
+      <h2 class="sn-q-text">What is the difference between good and bad POM?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Bad POM: a class named <code class="sn-ic">LoginPage</code> that also navigates to the dashboard, fills employee forms, and contains test assertions mixed with actions. It exists but defeats the purpose.</p>
+      </div>
+<p class="sn-para">Good POM: each class has one clearly scoped responsibility, methods are named after user intent (not browser actions), and test files read as business scenarios.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Bad POM — page object has too much knowledge</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+  <span class="tc-kw">async</span> <span class="tc-fn">loginAndCreateEmployee</span>(username: <span class="tc-kw">string</span>, empName: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">login</span>(username, <span class="tc-str">'admin123'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(<span class="tc-str">'/pim/addEmployee'</span>);   <span class="tc-cm">// knows another page's URL</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">fill</span>(<span class="tc-str">' S2 
+    await this.page.click('</span><span class="tc-cm">#save');</span>
+  }
+}
+
+<span class="tc-cm">// ✅ Good POM — each class owns one page, no leakage</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillUsername</span>(username);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">fillPassword</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginButton.<span class="tc-fn">click</span>();
+  }
+}
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AddEmployeePage {
+  <span class="tc-kw">async</span> <span class="tc-fn">addEmployee</span>(firstName: <span class="tc-kw">string</span>, lastName: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.firstNameInput.<span class="tc-fn">fill</span>(firstName);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.lastNameInput.<span class="tc-fn">fill</span>(lastName);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.saveButton.<span class="tc-fn">click</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Signs of bad POM in an interview answer:</strong> "Our page object logs in and then navigates through several pages." That is a test scenario, not a page object. A page object should never know how many other pages precede or follow it.</p>
+    </div>
+  </div>
+
+  <!-- Q501.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.10</span>
+      <h2 class="sn-q-text">Why does POM matter more as a test suite grows?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">At 10 tests, POM feels like extra work. At 500 tests, POM is the only reason the suite is still maintainable.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">The maintenance multiplication problem:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Without POM: a selector change affects every test that uses it directly</span></li>
+<li><span class="icon">💡</span><span>With 10 tests using the selector: 10 manual fixes</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>With 100 tests using the selector: a half-day of work</span></li>
+<li><span class="icon">🎯</span><span>With 500 tests: a full day, with high risk of missing some</span></li>
+</ul>
+<p class="sn-para">POM collapses the multiplication: one selector change in one page class fixes all 500 tests instantly. The cost of change is proportional to the actual scope of the change, not to how many tests happen to use it.</p>
+<p class="sn-para"><strong class="k-green">The collaboration problem:</strong> Multiple engineers contributing to one codebase without POM means duplicated selectors, inconsistent interaction patterns, and page logic scattered everywhere. With POM, the page object is the authoritative location. Two engineers editing the same page both go to the same class.</p>
+<p class="sn-para"><strong class="k-green">The onboarding problem:</strong> A new engineer joins an OrangeHRM project. Without POM, they need to understand hundreds of test files to know how login works. With POM, they read <code class="sn-ic">LoginPage.ts</code> — one file — and understand every login interaction in the entire suite.</p>
+    </div>
+  </div>
+
+  <!-- Q501.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.11</span>
+      <h2 class="sn-q-text">What is the anti-pattern of putting assertions in test files vs page objects?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both are valid, but there is a structural distinction worth knowing:</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Assertions in page objects (recommended for reusable checks):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// assertPageLoaded() used by many tests across multiple test files</span>
+<span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page).<span class="tc-fn">toHaveURL</span>(/viewEmployeeList/);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.pageHeading).<span class="tc-fn">toBeVisible</span>();
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">Assertions in test files (recommended for scenario-specific checks):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// This specific assertion only makes sense in this one test</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'search returns matching employee'</span>, <span class="tc-kw">async</span> ({ page, employeeListPage }) =&gt; {
+  <span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Alice Johnson'</span>);
+  <span class="tc-cm">// Scenario-specific assertion — belongs here, not in the page object</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">locator</span>(<span class="tc-str">'.employee-row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">1</span>);
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-purple">The rule:</strong> if the same assertion appears — or will appear — in more than one test, put it in the page object. If it is specific to one test scenario, put it in the test file.</p>
+<p class="sn-para">The anti-pattern to avoid: making test files into assertion dumps where every single <code class="sn-ic">expect()</code> is in the test rather than in reusable page object methods. This means when an assertion needs updating, you find every test that checks that UI state and update them individually.</p>
+    </div>
+  </div>
+
+  <!-- Q501.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.12</span>
+      <h2 class="sn-q-text">What is the difference between POM in Selenium vs Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The pattern is the same — the implementation differs:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Selenium POM (Java/Python):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">python</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">class</span> LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.username_input = By.ID, &quot;username&quot;
+    def <span class="tc-fn">login</span>(self, username, password):
+        self.driver.find_element(*self.username_input).send_keys(username)</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Playwright POM (TypeScript):</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Page passed to constructor, locators are Locator objects (lazy, chainable)</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> usernameInput: Locator;
+  <span class="tc-fn">constructor</span>(<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page) {
+    <span class="tc-kw">this</span>.usernameInput = page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>);
+  }
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.usernameInput.<span class="tc-fn">fill</span>(username);
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Key differences:</strong></p>
+<p class="sn-para">Playwright locators are lazy objects — they do not query the DOM when created. They query when an action or assertion is made. This means locators can be defined in the constructor safely, even if the page is not loaded yet.</p>
+<p class="sn-para">Playwright's Locator API is richer — <code class="sn-ic">getByRole()</code>, <code class="sn-ic">getByLabel()</code>, <code class="sn-ic">getByTestId()</code>, filtering, chaining — compared to Selenium's <code class="sn-ic">By</code> strategies. And Playwright has a fixture system for dependency injection (Level 3) that Selenium does not have natively — replacing the <code class="sn-ic">PageFactory</code> pattern entirely with a cleaner mechanism.</p>
+    </div>
+  </div>
+
+  <!-- Q501.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.13</span>
+      <h2 class="sn-q-text">How do you structure a Playwright POM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">orangehrm-automation/
+├── pages/                    ← all page object classes
+│   ├── LoginPage.ts
+│   ├── DashboardPage.ts
+│   ├── pim/
+│   │   ├── EmployeeListPage.ts
+│   │   └── AddEmployeePage.ts
+│   ├── admin/
+│   │   ├── UserManagementPage.ts
+│   │   └── AddUserPage.ts
+│   └── leave/
+│       └── ApplyLeavePage.ts
+├── tests/                    ← all test files
+│   ├── login.spec.ts
+│   ├── pim/
+│   │   └── employee.spec.ts
+│   └── admin/
+│       └── user.spec.ts
+├── fixtures/                 ← custom Playwright fixtures (Level 3+)
+├── data/                     ← test data factories (Level 5+)
+├── helpers/                  ← web action helpers (Level 6+)
+├── playwright.config.ts
+├── tsconfig.json
+└── .gitignore</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">One folder per module</strong> under <code class="sn-ic">pages/</code> — mirrors the application structure. Adding new pages in a module means adding files to the module folder, not restructuring the project.</p>
+<p class="sn-para"><strong class="k-teal">The one rule:</strong> if it touches the browser — it belongs in <code class="sn-ic">pages/</code>. If it describes a test scenario — it belongs in <code class="sn-ic">tests/</code>. This rule resolves every "where does this code go?" question at Level 1.</p>
+    </div>
+  </div>
+
+  <!-- Q501.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.14</span>
+      <h2 class="sn-q-text">Write a basic LoginPage page object for OrangeHRM.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/LoginPage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> LoginPage {
+
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page:          Page;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> usernameInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> passwordInput: Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> loginButton:   Locator;
+  <span class="tc-kw">private</span> <span class="tc-kw">readonly</span> errorMessage:  Locator;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.page          = page;
+    <span class="tc-kw">this</span>.usernameInput = page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Username'</span>)
+                             .<span class="tc-kw">describe</span>(<span class="tc-str">'Username input field'</span>);
+    <span class="tc-kw">this</span>.passwordInput = page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Password'</span>)
+                             .<span class="tc-kw">describe</span>(<span class="tc-str">'Password input field'</span>);
+    <span class="tc-kw">this</span>.loginButton   = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Login'</span> })
+                             .<span class="tc-kw">describe</span>(<span class="tc-str">'Login submit button'</span>);
+    <span class="tc-kw">this</span>.errorMessage  = page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-alert-content-text'</span>)
+                             .<span class="tc-kw">describe</span>(<span class="tc-str">'Login error message'</span>);
+  }
+
+  <span class="tc-cm">// Navigation</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">goto</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/auth/login'</span>);
+  }
+
+  <span class="tc-cm">// Actions</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">login</span>(username: <span class="tc-kw">string</span>, password: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.usernameInput.<span class="tc-fn">fill</span>(username);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.passwordInput.<span class="tc-fn">fill</span>(password);
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginButton.<span class="tc-fn">click</span>();
+  }
+
+  <span class="tc-cm">// Assertions</span>
+  <span class="tc-kw">async</span> <span class="tc-fn">assertPageLoaded</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page).<span class="tc-fn">toHaveURL</span>(/auth\/login/);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.usernameInput).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.loginButton).<span class="tc-fn">toBeVisible</span>();
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">assertInvalidCredentialsError</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.errorMessage).<span class="tc-fn">toBeVisible</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.errorMessage).<span class="tc-fn">toHaveText</span>(<span class="tc-str">'Invalid credentials'</span>);
+  }
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">Key decisions in this code:</strong></p>
+<p class="sn-para"><code class="sn-ic">private readonly</code> on all locators — prevents accidental mutation and signals that these are internal to the class. Tests cannot access locators directly.</p>
+<p class="sn-para"><code class="sn-ic">.describe()</code> on each locator — the description appears in failure messages, making reports readable without decoding selectors.</p>
+<p class="sn-para">Constructor defines all locators upfront — Playwright locators are lazy so this is safe. All selectors are in one place — easy to find and update.</p>
+<p class="sn-para"><code class="sn-ic">async goto()</code> separate from <code class="sn-ic">login()</code> — the test decides when to navigate. Some tests may need to navigate and then check the empty form. Others navigate and immediately login. Separating them gives tests control.</p>
+    </div>
+  </div>
+
+  <!-- Q501.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.15</span>
+      <h2 class="sn-q-text">Write a test that uses the LoginPage page object.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/login.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">import</span> { LoginPage }     <span class="tc-kw">from</span> <span class="tc-str">'../pages/LoginPage'</span>;
+<span class="tc-kw">import</span> { DashboardPage } <span class="tc-kw">from</span> <span class="tc-str">'../pages/DashboardPage'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Login'</span>, () =&gt; {
+
+  <span class="tc-kw">let</span> loginPage: LoginPage;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    loginPage = <span class="tc-kw">new</span> LoginPage(page);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">assertPageLoaded</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'valid credentials redirect to dashboard @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">const</span> dashboardPage = <span class="tc-kw">new</span> DashboardPage(page);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+    <span class="tc-kw">await</span> dashboardPage.<span class="tc-fn">assertPageLoaded</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'invalid password shows error @smoke'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'wrongpassword'</span>);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">assertInvalidCredentialsError</span>();
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'invalid username shows error'</span>, <span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'nonexistent'</span>, <span class="tc-str">'admin123'</span>);
+    <span class="tc-kw">await</span> loginPage.<span class="tc-fn">assertInvalidCredentialsError</span>();
+  });
+
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-red">What the test file does NOT contain:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>No selectors (no <code class="sn-ic">page.getByPlaceholder('Username')</code> in tests)</span></li>
+<li><span class="icon">💡</span><span>No browser navigation URLs directly</span></li>
+<li><span class="icon">⚡</span><span>No low-level click/fill calls</span></li>
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>No knowledge of how login works internally</span></li>
+</ul>
+<p class="sn-para"><strong class="k-red">What the test file DOES contain:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">📌</span><span>Business scenarios expressed in plain language</span></li>
+<li><span class="icon">🔑</span><span>Calls to page object methods that read like user actions</span></li>
+<li><span class="icon">🚀</span><span>Assertions delegated to the page object</span></li>
+</ul>
+<p class="sn-para">This is the hallmark of well-applied POM: a non-technical stakeholder can read the test file and understand what is being tested.</p>
+    </div>
+  </div>
+
+  <!-- Q501.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.16</span>
+      <h2 class="sn-q-text">What problems does Level 1 POM NOT solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Level 1 POM solves the selector duplication problem. It introduces three problems that the higher levels address:</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Problem 1 — Constructor boilerplate repeated in every class:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Every page object starts with this — 20 pages = 20 copies</span>
+<span class="tc-kw">private</span> <span class="tc-kw">readonly</span> page: Page;
+<span class="tc-fn">constructor</span>(page: Page) {
+  <span class="tc-kw">this</span>.page = page;
+}</div>
+      </div>
+<p class="sn-para">Level 2 (BasePage & Inheritance) eliminates this with a shared base class.</p>
+<p class="sn-para"><strong class="k-yellow">Problem 2 — Login repeated in every test file's beforeEach:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Every test file that needs authentication repeats this</span>
+<span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  loginPage = <span class="tc-kw">new</span> LoginPage(page);
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">goto</span>();
+  <span class="tc-kw">await</span> loginPage.<span class="tc-fn">login</span>(<span class="tc-str">'Admin'</span>, <span class="tc-str">'admin123'</span>);
+});</div>
+      </div>
+<p class="sn-para">Level 3 (Fixtures) injects pre-authenticated page objects directly into tests so login is never repeated.</p>
+<p class="sn-para"><strong class="k-yellow">Problem 3 — Tests depend on other tests:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// User test assumes employee test ran first and created the employee</span>
+<span class="tc-cm">// If employee test fails, user test fails for the wrong reason</span></div>
+      </div>
+<p class="sn-para">Level 4 (Test Independence) and Level 6 (Web Action Helpers + API setup) give each test its own data setup, removing all cross-test dependencies.</p>
+<p class="sn-para">Understanding what Level 1 does not solve is as important as knowing what it does. In interviews, describing the full progression shows architectural thinking, not just pattern knowledge.</p>
+    </div>
+  </div>
+
+  <!-- Q501.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.17</span>
+      <h2 class="sn-q-text">How do you use .describe() on Playwright locators and why?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">.describe()</code> attaches a human-readable label to a locator. It appears in failure messages, making reports immediately understandable:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Without .describe() — failure message is cryptic</span>
+<span class="tc-cm">// &amp;quot;Error: locator.fill: Timeout 30000ms exceeded</span>
+<span class="tc-cm">//  Call log: locator resolved to &amp;lt;input nth=4 class='oxd-input'&amp;gt;&amp;quot;</span>
+<span class="tc-kw">this</span>.employeeIdInput = page.<span class="tc-fn">locator</span>(<span class="tc-str">'input.oxd-input'</span>).<span class="tc-fn">nth</span>(<span class="tc-num">4</span>);
+
+<span class="tc-cm">// With .describe() — failure message is diagnostic</span>
+<span class="tc-cm">// &amp;quot;Error: locator.fill: Timeout 30000ms exceeded</span>
+<span class="tc-cm">//  locator: Employee ID input field&amp;quot;</span>
+<span class="tc-kw">this</span>.employeeIdInput = page.<span class="tc-fn">locator</span>(<span class="tc-str">'input.oxd-input'</span>).<span class="tc-fn">nth</span>(<span class="tc-num">4</span>)
+                           .<span class="tc-kw">describe</span>(<span class="tc-str">'Employee ID input field'</span>);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">.describe()</code> is most valuable on positional locators — <code class="sn-ic">.nth(4)</code>, <code class="sn-ic">.first()</code>, <code class="sn-ic">.last()</code> — where the raw selector gives no hint about what the element is. A failure on <code class="sn-ic">input.oxd-input &gt;&gt; nth=4</code> tells you nothing. A failure on <code class="sn-ic">Employee ID input field</code> tells you exactly what broke.</p>
+<p class="sn-para">Apply <code class="sn-ic">.describe()</code> consistently across all locators from the start. When an AI self-healing agent (Level 9) encounters a broken locator, it uses the description as semantic intent to find the correct element in the updated page — the description survives DOM changes in a way that raw selectors do not.</p>
+    </div>
+  </div>
+
+  <!-- Q501.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q501.18</span>
+      <h2 class="sn-q-text">What does a good POM framework look like in a senior interview?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In a senior interview on POM, the question is not "do you know what POM is?" Every candidate knows the definition. The question is "can you design it well and can you recognise when it has gone wrong?"</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Signs of strong POM design thinking:</strong></p>
+<ol class="sn-olist">
+<li>Can explain WHY each pattern exists — not just WHAT it is.</li>
+</ol>
+<p class="sn-para">   "We use private readonly locators because tests should never access    selectors directly — the page object is the API contract."</p>
+<ol class="sn-olist">
+<li>Can identify bad POM on sight.</li>
+</ol>
+<p class="sn-para">   "If a page object navigates through multiple pages, it has too many    responsibilities. If a test file contains selectors, POM is broken."</p>
+<ol class="sn-olist">
+<li>Understands the full progression.</li>
+</ol>
+<p class="sn-para">   "Level 1 POM solves selector duplication. Level 2 solves constructor    duplication. Level 3 replaces beforeEach login with fixtures. Each    level solves the problem the previous level reveals."</p>
+<ol class="sn-olist">
+<li>Has real examples of POM saving maintenance time.</li>
+</ol>
+<p class="sn-para">   "When OrangeHRM updated the leave type dropdown from a select to a    custom component, one change in <code class="sn-ic">ApplyLeavePage.ts</code> fixed all 23 tests    that applied for leave. Without POM, we would have updated 23 tests."</p>
+<p class="sn-para">A strong answer connects the theory (separation of concerns, DRY, SRP) to a concrete decision made in a real project. That connection is what separates a candidate who has read about POM from one who has built and maintained a framework with it.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>POM represents each application page as a class with three responsibilities: locators, actions, assertions.</span></li>
+            <li><span class="icon">⭐</span><span>Introduced by Simon Stewart (Selenium co-creator) to solve selector duplication and maintenance cost.</span></li>
+            <li><span class="icon">⭐</span><span>Separation of concerns: page objects handle HOW; test files handle WHAT; neither knows the other's internals.</span></li>
+            <li><span class="icon">⭐</span><span>Single Responsibility Principle: each page class has one reason to change — when its page's UI changes.</span></li>
+            <li><span class="icon">⭐</span><span>DRY: selectors defined once in page classes; action methods defined once, called many times.</span></li>
+            <li><span class="icon">⭐</span><span>Abstraction: tests read as business scenarios, not browser instructions.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">private readonly</code> locators — encapsulate selectors, expose only the method API to tests.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">.describe()</code> on locators — human-readable labels in failure messages; essential for positional selectors.</span></li>
+            <li><span class="icon">⭐</span><span>Level 1 POM solves selector duplication; it deliberately leaves constructor boilerplate (Level 2), repeated login (Level 3), and test dependencies (Level 4+) for subsequent levels.</span></li>
+            <li><span class="icon">⭐</span><span>Bad POM: page objects that navigate through multiple pages, test files that contain selectors, methods named after browser actions not user intent.</span></li>
+            <li><span class="icon">⭐</span><span>Good POM: tests readable by non-technical stakeholders, changes isolated to one file, progression toward full independence at each level.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

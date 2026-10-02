@@ -1,0 +1,794 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">👁️ Part 7 &nbsp;·&nbsp; Chapter 702 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Network</span> <span class="w2">Interception</span> <span class="w3">&amp;</span> <span class="w4">Routing</span></h1>
+    <p class="sn-title-sub">API &amp; Network — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers <code class="sn-ic">page.route()</code> — Playwright's API for intercepting, mocking, modifying, and blocking network requests. Interviewers ask about network interception to test whether candidates can isolate frontend behaviour from backend dependency, simulate error states, and write fast deterministic tests. Questions progress from basic mocking through dynamic handlers to request modification and the difference between <code class="sn-ic">fulfill</code>, <code class="sn-ic">continue</code>, and <code class="sn-ic">abort</code>.</span>
+  </div>
+
+
+  <!-- Q702.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.1</span>
+      <h2 class="sn-q-text">What is network interception in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Network interception means sitting between the browser and the server. When the browser makes a request that matches a registered route, Playwright intercepts it before it leaves. You can then:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-blue">Fulfill</strong> — return a fake response (mock the server)</span></li>
+<li><span class="icon">💡</span><span><strong class="k-blue">Continue</strong> — let the request pass through, optionally with modifications</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-blue">Abort</strong> — cancel the request entirely</span></li>
+</ul>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Register a route that intercepts ALL requests matching the pattern</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/users'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+    status:      <span class="tc-num">200</span>,
+    contentType: <span class="tc-str">'application/json'</span>,
+    body:        JSON.<span class="tc-fn">stringify</span>([{ id: <span class="tc-num">1</span>, name: <span class="tc-str">'Mock User'</span> }]),
+  });
+});
+
+<span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+<span class="tc-cm">// The page loads but /api/users returns fake data — no real server needed</span></div>
+      </div>
+<p class="sn-para">The route registration is page-scoped. It applies to all requests from that page for the lifetime of the registration (until <code class="sn-ic">page.unroute()</code> is called or the page is closed).</p>
+    </div>
+  </div>
+
+  <!-- Q702.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.2</span>
+      <h2 class="sn-q-text">What are the three actions a route handler can take?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green"><code class="sn-ic">route.fulfill()</code></strong> — return a synthetic response. The browser receives the response you provide. The real server is never contacted.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/products'</span>, route =&gt;
+  route.<span class="tc-fn">fulfill</span>({
+    status:      <span class="tc-num">200</span>,
+    contentType: <span class="tc-str">'application/json'</span>,
+    body:        JSON.<span class="tc-fn">stringify</span>(mockProducts),
+  })
+);</div>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">route.continue()</code></strong> — pass the request to the real server, optionally modifying it first. Good for injecting headers or changing the payload.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/*'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">const</span> headers = { ...route.<span class="tc-fn">request</span>().<span class="tc-fn">headers</span>(), <span class="tc-str">'X-Test-Run'</span>: <span class="tc-str">'true'</span> };
+  <span class="tc-kw">await</span> route.<span class="tc-kw">continue</span>({ headers });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">route.abort()</code></strong> — cancel the request. The browser receives a network error. Good for blocking resources or simulating connection failures.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/*.{png,jpg,jpeg,svg}'</span>, route =&gt; route.<span class="tc-fn">abort</span>());</div>
+      </div>
+<p class="sn-para">Every route handler must call exactly one of these three methods. Failing to call any of them hangs the browser indefinitely.</p>
+    </div>
+  </div>
+
+  <!-- Q702.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.3</span>
+      <h2 class="sn-q-text">How do you mock a JSON API response?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'dashboard shows mock data'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/user/profile'</span>, <span class="tc-kw">async</span> route =&gt; {
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+      status:      <span class="tc-num">200</span>,
+      contentType: <span class="tc-str">'application/json'</span>,
+      body:        JSON.<span class="tc-fn">stringify</span>({ name: <span class="tc-str">'Test User'</span>, role: <span class="tc-str">'admin'</span> }),
+    });
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Test User'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'admin'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">For large JSON payloads, load from a fixture file instead of inlining:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> path <span class="tc-kw">from</span> <span class="tc-str">'path'</span>;
+
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/products'</span>, route =&gt;
+  route.<span class="tc-fn">fulfill</span>({
+    path: path.<span class="tc-fn">join</span>(__dirname, <span class="tc-str">'../fixtures/products.json'</span>),
+  })
+);</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">path</code> option reads the file and sets <code class="sn-ic">Content-Type</code> based on the file extension automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q702.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.4</span>
+      <h2 class="sn-q-text">How do you mock different responses based on request method or body?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use a dynamic handler that inspects the request before deciding what to return:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/todos'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">const</span> req = route.<span class="tc-fn">request</span>();
+
+  <span class="tc-kw">if</span> (req.<span class="tc-fn">method</span>() === <span class="tc-str">'POST'</span>) {
+    <span class="tc-cm">// Mock creation</span>
+    <span class="tc-kw">const</span> body = req.<span class="tc-fn">postDataJSON</span>();
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">201</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>({ id: <span class="tc-num">101</span>, ...body }),
+    });
+  } <span class="tc-kw">else</span> <span class="tc-kw">if</span> (req.<span class="tc-fn">method</span>() === <span class="tc-str">'GET'</span>) {
+    <span class="tc-cm">// Mock list</span>
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">200</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>([{ id: <span class="tc-num">1</span>, title: <span class="tc-str">'First todo'</span>, done: <span class="tc-kw">false</span> }]),
+    });
+  } <span class="tc-kw">else</span> {
+    <span class="tc-cm">// Let other methods (DELETE, PUT) go to the real server</span>
+    <span class="tc-kw">await</span> route.<span class="tc-kw">continue</span>();
+  }
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">route.request()</code> exposes: <code class="sn-ic">.method()</code>, <code class="sn-ic">.url()</code>, <code class="sn-ic">.headers()</code>, <code class="sn-ic">.postDataJSON()</code>, <code class="sn-ic">.resourceType()</code>. Inspect any of these to decide which response to return.</p>
+    </div>
+  </div>
+
+  <!-- Q702.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.5</span>
+      <h2 class="sn-q-text">How do you simulate API error states?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Error state simulation is one of the most valuable uses of network interception — it tests UI error handling for scenarios that are hard to reproduce with a real backend:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'shows error message on 500'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/submit'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({
+      status:      <span class="tc-num">500</span>,
+      contentType: <span class="tc-str">'application/json'</span>,
+      body:        JSON.<span class="tc-fn">stringify</span>({ error: <span class="tc-str">'Internal Server Error'</span> }),
+    })
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Something went wrong'</span>)).<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'shows not found message on 404'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/product/99'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">404</span>, body: <span class="tc-str">'Not found'</span> })
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/products/99'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Product Not Found'</span> })).<span class="tc-fn">toBeVisible</span>();
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'shows offline banner when connection is refused'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/data'</span>, route =&gt;
+    route.<span class="tc-fn">abort</span>(<span class="tc-str">'connectionrefused'</span>)
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Connection failed'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Common <code class="sn-ic">abort()</code> reasons: <code class="sn-ic">'failed'</code>, <code class="sn-ic">'aborted'</code>, <code class="sn-ic">'timedout'</code>, <code class="sn-ic">'accessdenied'</code>, <code class="sn-ic">'connectionrefused'</code>, <code class="sn-ic">'connectionreset'</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q702.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.6</span>
+      <h2 class="sn-q-text">How do you simulate slow API responses to test loading states?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'loading spinner appears during slow API'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/dashboard/data'</span>, <span class="tc-kw">async</span> route =&gt; {
+    <span class="tc-cm">// Simulate a 2-second API response</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">new</span> Promise(resolve =&gt; <span class="tc-fn">setTimeout</span>(resolve, <span class="tc-num">2000</span>));
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">200</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>({ metrics: [] }),
+    });
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// Spinner should be visible while the request is in flight</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'loading-spinner'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Spinner should disappear once the mock resolves</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'loading-spinner'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'metrics-panel'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">Delay mocking is the only reliable way to test loading states. Using <code class="sn-ic">waitForTimeout</code> in a test is an anti-pattern — it makes tests slow and brittle. This approach makes the test fast (2 seconds of real delay only while loading is being tested) and reliable.</p>
+    </div>
+  </div>
+
+  <!-- Q702.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.7</span>
+      <h2 class="sn-q-text">How do you block resources to speed up tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Block images — speeds up page load for tests that don't test images</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'** S1 google-analytics.com S2 googletagmanager.com S3 *.{woff,woff2,ttf,eot}'</span>, route =&gt; route.<span class="tc-fn">abort</span>());</div>
+      </div>
+<p class="sn-para">Blocking in <code class="sn-ic">beforeEach</code> for a whole suite or in <code class="sn-ic">playwright.config.ts</code> is more efficient than per-test:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+use: {
+  <span class="tc-cm">// Block tracking scripts for all tests</span>
+  extraHTTPHeaders: {},
+},
+
+<span class="tc-cm">// Or block in global setup via a custom fixture</span></div>
+      </div>
+<p class="sn-para">Be careful with <code class="sn-ic">**/*</code> — it captures HTML, CSS, and JavaScript too, which breaks page loading. Always use specific patterns.</p>
+    </div>
+  </div>
+
+  <!-- Q702.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.8</span>
+      <h2 class="sn-q-text">How do you modify a request before it reaches the server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">route.continue()</code> with override options lets you change the request before it goes through:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Inject an Authorization header into every API call</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api S1 api/login'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">const</span> original = route.<span class="tc-fn">request</span>().<span class="tc-fn">postDataJSON</span>();
+  <span class="tc-kw">await</span> route.<span class="tc-kw">continue</span>({
+    postData: JSON.<span class="tc-fn">stringify</span>({ ...original, role: <span class="tc-str">'super-admin'</span> }),
+  });
+});
+
+<span class="tc-cm">// Change the URL (redirect to a different endpoint)</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/v1/users'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">await</span> route.<span class="tc-kw">continue</span>({ url: <span class="tc-str">'/api/v2/users'</span> });
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">continue()</code> options: <code class="sn-ic">url</code>, <code class="sn-ic">method</code>, <code class="sn-ic">headers</code>, <code class="sn-ic">postData</code>. Passing only the fields you want to change — the rest of the request is preserved.</p>
+    </div>
+  </div>
+
+  <!-- Q702.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.9</span>
+      <h2 class="sn-q-text">How do you modify a response after it returns from the server?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Fetch the real response and then modify it before returning to the browser:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/config'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-cm">// Fetch the real response</span>
+  <span class="tc-kw">const</span> response = <span class="tc-kw">await</span> route.<span class="tc-fn">fetch</span>();
+  <span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+
+  <span class="tc-cm">// Modify one field — enable a feature flag for this test</span>
+  body.featureFlags.darkMode = <span class="tc-kw">true</span>;
+
+  <span class="tc-cm">// Return the modified response</span>
+  <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+    response,                        <span class="tc-cm">// preserves headers, status</span>
+    body: JSON.<span class="tc-fn">stringify</span>(body),
+  });
+});</div>
+      </div>
+<p class="sn-para">This pattern is useful for:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Enabling or disabling feature flags in tests without config changes</span></li>
+<li><span class="icon">💡</span><span>Injecting specific data into an otherwise real API response</span></li>
+<li><span class="icon">⚡</span><span>Testing how the UI handles an extra or missing field</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q702.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.10</span>
+      <h2 class="sn-q-text">What is the difference between page.route and context.route?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green"><code class="sn-ic">page.route(pattern, handler)</code></strong> — intercepts requests from a single page. Does not affect other pages in the same browser context.</p>
+      </div>
+<p class="sn-para"><strong class="k-green"><code class="sn-ic">context.route(pattern, handler)</code></strong> — intercepts requests from ALL pages in the browser context, including new pages opened by the test.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Applies only to this page</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api S1 api/**'</span>, handler);</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">context.route()</code> when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>The test opens new tabs or popups that also need mocking</span></li>
+<li><span class="icon">💡</span><span>You want consistent mocking applied to an entire user session</span></li>
+</ul>
+<p class="sn-para">Use <code class="sn-ic">page.route()</code> when:</p>
+<ul class="sn-list">
+<li><span class="icon">⚡</span><span>Mocking is specific to one page</span></li>
+<li><span class="icon">🎯</span><span>You don't want it to affect other pages in the test</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q702.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.11</span>
+      <h2 class="sn-q-text">How do you remove a route handler?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">page.unroute()</code> removes a previously registered handler:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">const</span> handler = <span class="tc-kw">async</span> (route: Route) =&gt; route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span> });
+
+<span class="tc-cm">// Register</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/data'</span>, handler);
+
+<span class="tc-cm">// ... some tests use the mock ...</span>
+
+<span class="tc-cm">// Unregister — subsequent requests go to the real server</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">unroute</span>(<span class="tc-str">'**/api/data'</span>, handler);
+
+<span class="tc-cm">// Or remove all handlers for a pattern:</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">unroute</span>(<span class="tc-str">'**/api/data'</span>);</div>
+      </div>
+<p class="sn-para">This is useful when one test in a suite needs the real API while others use a mock. Register the mock in <code class="sn-ic">beforeEach</code>, unroute in the specific test that needs real network.</p>
+    </div>
+  </div>
+
+  <!-- Q702.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.12</span>
+      <h2 class="sn-q-text">How do you verify that a route was called a specific number of times?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright does not have a built-in "call count" assertion on routes, but you can track calls manually:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'submit button sends exactly one API call'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">let</span> callCount = <span class="tc-num">0</span>;
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/submit'</span>, <span class="tc-kw">async</span> route =&gt; {
+    callCount++;
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span>, body: <span class="tc-str">'{}'</span> });
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Ensure the request fired</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForResponse</span>(<span class="tc-str">'**/api/submit'</span>);
+  <span class="tc-kw">expect</span>(callCount).<span class="tc-fn">toBe</span>(<span class="tc-num">1</span>);
+
+  <span class="tc-cm">// Click again — should still only be 1 (debounced button)</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Submit'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">500</span>); <span class="tc-cm">// brief wait for any second call</span>
+  <span class="tc-kw">expect</span>(callCount).<span class="tc-fn">toBe</span>(<span class="tc-num">1</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q702.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.13</span>
+      <h2 class="sn-q-text">What is the difference between page.route and page.waitForResponse?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal"><code class="sn-ic">page.route()</code></strong> — intercepts and controls requests. You decide what the browser receives. The server may or may not be contacted.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal"><code class="sn-ic">page.waitForResponse()</code></strong> — passively waits for a response to arrive. It does not intercept or mock. It resolves when a matching response is received.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// waitForResponse — observe real network traffic</span>
+<span class="tc-kw">const</span> responsePromise = page.<span class="tc-fn">waitForResponse</span>(
+  resp =&gt; resp.<span class="tc-fn">url</span>().<span class="tc-fn">includes</span>(<span class="tc-str">'/api/save'</span>) &amp;&amp; resp.<span class="tc-fn">status</span>() === <span class="tc-num">200</span>
+);
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">const</span> response = <span class="tc-kw">await</span> responsePromise;
+<span class="tc-cm">// Assert on the real API response</span>
+<span class="tc-kw">const</span> body = <span class="tc-kw">await</span> response.<span class="tc-fn">json</span>();
+<span class="tc-kw">expect</span>(body.savedAt).<span class="tc-fn">toBeDefined</span>();</div>
+      </div>
+<p class="sn-para">Use <code class="sn-ic">page.route()</code> when you want to control what the server returns. Use <code class="sn-ic">page.waitForResponse()</code> when you want to assert on what the real server actually returned.</p>
+    </div>
+  </div>
+
+  <!-- Q702.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.14</span>
+      <h2 class="sn-q-text">How do you use network interception for offline mode testing?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Offline mode requires the Chrome DevTools Protocol (CDP) since <code class="sn-ic">page.route</code> cannot simulate a network-level disconnection:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'shows offline banner when disconnected'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+
+  <span class="tc-cm">// Create a CDP session to control network at the OS level</span>
+  <span class="tc-kw">const</span> client = <span class="tc-kw">await</span> page.<span class="tc-fn">context</span>().<span class="tc-fn">newCDPSession</span>(page);
+
+  <span class="tc-cm">// Set network to offline</span>
+  <span class="tc-kw">await</span> client.<span class="tc-fn">send</span>(<span class="tc-str">'Network.emulateNetworkConditions'</span>, {
+    offline:             <span class="tc-kw">true</span>,
+    latency:             <span class="tc-num">0</span>,
+    downloadThroughput:  <span class="tc-num">0</span>,
+    uploadThroughput:    <span class="tc-num">0</span>,
+  });
+
+  <span class="tc-cm">// Reload — no network available</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">reload</span>({ waitUntil: <span class="tc-str">'domcontentloaded'</span> });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'You are offline'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Restore network</span>
+  <span class="tc-kw">await</span> client.<span class="tc-fn">send</span>(<span class="tc-str">'Network.emulateNetworkConditions'</span>, {
+    offline:             <span class="tc-kw">false</span>,
+    latency:             <span class="tc-num">0</span>,
+    downloadThroughput: -<span class="tc-num">1</span>,
+    uploadThroughput:   -<span class="tc-num">1</span>,
+  });
+});</div>
+      </div>
+<p class="sn-para">CDP network emulation (<code class="sn-ic">offline</code>, <code class="sn-ic">Slow 3G</code>) works on Chromium only. For cross-browser offline testing, use <code class="sn-ic">page.route()</code> to abort all requests.</p>
+    </div>
+  </div>
+
+  <!-- Q702.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.15</span>
+      <h2 class="sn-q-text">What are common mistakes when using page.route?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-red">Pattern too broad.</strong> Using <code class="sn-ic">'**/*'</code> captures HTML, CSS, and JS files too. The page fails to load because the HTML itself is intercepted. Always use specific patterns like <code class="sn-ic">'**/api/**'</code>.</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Not calling fulfill/continue/abort.</strong> Every handler must call exactly one action. Forgetting this hangs the browser — the request is intercepted but never resolved. The test times out with a cryptic message.</p>
+<p class="sn-para"><strong class="k-red">Missing <code class="sn-ic">async/await</code> inside the handler.</strong> <code class="sn-ic">route.fulfill()</code> is async. Without <code class="sn-ic">await</code>, the handler returns before the fulfillment completes.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Wrong — no await on fulfill</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/data'</span>, route =&gt; {
+  route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span> }); <span class="tc-cm">// not awaited</span>
+});
+
+<span class="tc-cm">// ✅ Correct</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/data'</span>, <span class="tc-kw">async</span> route =&gt; {
+  <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({ status: <span class="tc-num">200</span> });
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-red">Route registered after navigation.</strong> Routes must be registered before the request fires. If you register a route after <code class="sn-ic">page.goto()</code>, the request may have already completed.</p>
+    </div>
+  </div>
+
+  <!-- Q702.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.16</span>
+      <h2 class="sn-q-text">Write code to mock a paginated API response.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'pagination loads next page of results'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">let</span> currentPage = <span class="tc-num">1</span>;
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/posts'</span>, <span class="tc-kw">async</span> route =&gt; {
+    <span class="tc-kw">const</span> url   = <span class="tc-kw">new</span> URL(route.<span class="tc-fn">request</span>().<span class="tc-fn">url</span>());
+    <span class="tc-kw">const</span> page  = <span class="tc-fn">parseInt</span>(url.searchParams.<span class="tc-fn">get</span>(<span class="tc-str">'page'</span>) ?? <span class="tc-str">'1'</span>);
+    <span class="tc-kw">const</span> limit = <span class="tc-fn">parseInt</span>(url.searchParams.<span class="tc-fn">get</span>(<span class="tc-str">'limit'</span>) ?? <span class="tc-str">'10'</span>);
+
+    <span class="tc-cm">// Generate mock data for the requested page</span>
+    <span class="tc-kw">const</span> items = Array.<span class="tc-kw">from</span>({ length: limit }, (_, i) =&gt; ({
+      id:    (page - <span class="tc-num">1</span>) * limit + i + <span class="tc-num">1</span>,
+      title: <span class="tc-str">`Post ${(page - 1) * limit + i + 1}`</span>,
+    }));
+
+    <span class="tc-kw">await</span> route.<span class="tc-fn">fulfill</span>({
+      status:      <span class="tc-num">200</span>,
+      contentType: <span class="tc-str">'application/json'</span>,
+      body:        JSON.<span class="tc-fn">stringify</span>({
+        items,
+        total:   <span class="tc-num">100</span>,
+        page,
+        hasMore: page &lt; <span class="tc-num">10</span>,
+      }),
+    });
+  });
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/posts'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Post 1'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Click &amp;quot;Next Page&amp;quot;</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Next'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Post 11'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Post 1'</span>)).not.<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q702.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.17</span>
+      <h2 class="sn-q-text">How do you mock WebSocket connections in Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright supports WebSocket route handlers with <code class="sn-ic">page.routeWebSocket()</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'real-time updates appear via WebSocket'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">routeWebSocket</span>(<span class="tc-str">'wss: S0 
+    ws.onMessage(message =&amp;gt; {
+       S1 
+      ws.send(JSON.stringify({ type: '</span>ack<span class="tc-str">', id: message }));
+    });
+
+     S2 
+    setTimeout(() =&amp;gt; {
+      ws.send(JSON.stringify({
+        type:    '</span>notification<span class="tc-str">',
+        message: '</span>New order received<span class="tc-str">',
+      }));
+    }, 100);
+  });
+
+  await page.goto('</span>/dashboard<span class="tc-str">');
+  await expect(page.getByText('</span>New order received')).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">routeWebSocket()</code> was introduced in Playwright 1.48. For older versions the workaround is to mock the WebSocket-dependent API endpoints that the server pushes data to, rather than the socket connection directly.</p>
+    </div>
+  </div>
+
+  <!-- Q702.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q702.18</span>
+      <h2 class="sn-q-text">In your project, how did you use network interception?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, we used <code class="sn-ic">page.route()</code> in two specific scenarios.</p>
+      </div>
+<p class="sn-para"><strong class="k-green">Blocking third-party analytics.</strong> The demo site sends requests to several analytics and tracking endpoints on every page load. These requests were causing intermittent failures in <code class="sn-ic">waitForNetworkIdle</code>-based waits because the tracking pixels sometimes took 3–4 seconds. We added a <code class="sn-ic">context.route()</code> in our base fixture that aborts all requests to <code class="sn-ic">**/*.analytics.*</code> and <code class="sn-ic">**/gtm.js</code>. This cut suite execution time by about 15% and eliminated a category of flakiness entirely.</p>
+<p class="sn-para"><strong class="k-green">Testing API error handling.</strong> The OrangeHRM demo site does not have a way to simulate server errors — it is a live application. To test that our custom <code class="sn-ic">ErrorBoundary</code> component shows the correct message when an API returns 500, we used <code class="sn-ic">page.route('**/api/v2/pim/employees', ...)</code> to return a 500 response on one specific test. The test verified the error toast appeared and the page did not crash. Without route mocking, this scenario would have been untestable against the demo application.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">page.route(pattern, handler)</code> intercepts matching requests before they leave the browser.</span></li>
+            <li><span class="icon">⭐</span><span>Every handler must call exactly one action: <code class="sn-ic">route.fulfill()</code> (mock response), <code class="sn-ic">route.continue()</code> (pass through, optionally modified), or <code class="sn-ic">route.abort()</code> (cancel).</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">route.fulfill()</code> returns a synthetic response; the real server is never contacted.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">route.continue()</code> passes the request to the server, optionally modifying headers, method, body, or URL first.</span></li>
+            <li><span class="icon">⭐</span><span>Dynamic handlers inspect <code class="sn-ic">route.request().method()</code>, <code class="sn-ic">.postDataJSON()</code>, and <code class="sn-ic">.url()</code> to return different responses based on request content.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Use <code class="sn-ic">route.abort()</code> to block resources (images, analytics) and speed up tests, or to simulate connection failures.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">page.context().route()</code> applies to all pages in the context; <code class="sn-ic">page.route()</code> applies to one page only.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">page.waitForResponse()</code> is passive observation — it waits for a real response but does not intercept. Use it with real network; use <code class="sn-ic">page.route()</code> to control what is returned.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">page.unroute()</code> removes a handler when a specific test needs real network while others use mocks.</span></li>
+            <li><span class="icon">⭐</span><span>Offline mode simulation requires CDP (<code class="sn-ic">Network.emulateNetworkConditions</code>) since <code class="sn-ic">page.route</code> cannot simulate network-level disconnection.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

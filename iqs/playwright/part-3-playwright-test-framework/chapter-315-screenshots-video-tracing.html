@@ -1,0 +1,307 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🧪 Part 3 &nbsp;·&nbsp; Chapter 315 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Screenshots,</span> <span class="w2">Video</span> <span class="w3">&amp;</span> <span class="w4">Tracing</span></h1>
+    <p class="sn-title-sub">Test Framework — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers visual debugging capabilities in Playwright. Interviewers ask about these tools to test your ability to diagnose test failures quickly in headless CI pipelines.</span>
+  </div>
+
+
+  <!-- Q315.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.1</span>
+      <h2 class="sn-q-text">What screenshot capabilities does Playwright provide?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright can capture three types of screenshots:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-blue">Page Screenshot</strong>: Captures the visible viewport.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-blue">Full Page Screenshot</strong>: Scrolls down and captures the entire page layout.</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-blue">Element Screenshot</strong>: Captures only the boundaries of a single selector locator.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q315.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.2</span>
+      <h2 class="sn-q-text">What is the Playwright trace viewer?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The <strong class="k-green">Trace Viewer</strong> is a graphical debugging tool that lets you step back and forth through your test execution. It shows a timeline, visual screenshots of every action, action logs, console messages, network requests, and source code.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.3</span>
+      <h2 class="sn-q-text">When do you enable screenshots and video in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">You configure them to capture <strong class="k-purple">only on failure</strong> in CI. Capturing screenshots and videos for every passing test wastes storage, slows execution, and adds unnecessary CI pipeline noise.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.4</span>
+      <h2 class="sn-q-text">How does your project use screenshots, video, and traces for debugging?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Our project uses the <code class="sn-ic">only-on-failure</code> config strategy. When a pipeline fails, we download the ZIP file artifact, open it with <code class="sn-ic">npx playwright show-trace</code>, and inspect the steps, network traffic, and visual state exactly at the moment of failure.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.5</span>
+      <h2 class="sn-q-text">How do you configure screenshot capture in playwright.config.ts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Set the <code class="sn-ic">use.screenshot</code> option:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { defineConfig } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  use: {
+    screenshot: <span class="tc-str">'only-on-failure'</span>,
+  },
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.6</span>
+      <h2 class="sn-q-text">What is the difference between screenshot: 'on', 'off', and 'only-on-failure'?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-pink">on</strong>: Captures a screenshot at the end of every single test.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-pink">off</strong>: Never captures screenshots.</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-pink">only-on-failure</strong>: Captures a screenshot only when a test fails.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q315.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.7</span>
+      <h2 class="sn-q-text">How do you record a trace and how do you open it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Record trace in configuration:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: { trace: <span class="tc-str">'on-first-retry'</span> }</div>
+      </div>
+<p class="sn-para">Open a recorded zip file using:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-trace path/to/trace.zip</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.8</span>
+      <h2 class="sn-q-text">What information does a trace contain?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A trace file (<code class="sn-ic">.zip</code>) contains recorded action timings, mouse positions, visual states, full network logs (HAR), console stdout, source code maps, and step execution status.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.9</span>
+      <h2 class="sn-q-text">What is the difference between page.screenshot() and toHaveScreenshot()?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><code class="sn-ic">page.screenshot()</code> is an <strong class="k-blue">imperative action</strong> that returns a buffer or writes a file.</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">toHaveScreenshot()</code> is a <strong class="k-blue">declarative assertion</strong> that compares the actual page snapshot with a baseline visual reference image.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q315.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.10</span>
+      <h2 class="sn-q-text">What is the difference between video: 'on' and video: 'retain-on-failure'?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-green">on</strong>: Saves a video file for every single test executed.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-green">retain-on-failure</strong>: Captures video for all tests but deletes the file for passing runs, keeping only failing ones.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q315.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.11</span>
+      <h2 class="sn-q-text">What is wrong with enabling trace: 'on' for all tests in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Tracing records full network payloads and DOM snapshots at every action, resulting in huge zip files. Enabling it globally on thousands of tests can cause <strong class="k-purple">out of memory exceptions, slow down execution, and exhaust disk space</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.12</span>
+      <h2 class="sn-q-text">How does Playwright tracing compare to Selenium's test recording tools?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-orange">Selenium</strong> recorders just log commands.</span></li>
+<li><span class="icon">💡</span><span><strong class="k-orange">Playwright Tracing</strong> captures the exact state of the browser, network traffic, and console messages at each millisecond, making it a complete black-box recorder.</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q315.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.13</span>
+      <h2 class="sn-q-text">Write configuration for on-failure screenshots and trace capture</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { defineConfig } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  use: {
+    screenshot: <span class="tc-str">'only-on-failure'</span>,
+    trace: <span class="tc-str">'retain-on-failure'</span>,
+  },
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.14</span>
+      <h2 class="sn-q-text">Write code to manually capture a screenshot and attach it to the test report</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'custom screenshot attach'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">const</span> buffer = <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>();
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'dashboard-state'</span>, {
+    body: buffer,
+    contentType: <span class="tc-str">'image/png'</span>
+  });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q315.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q315.15</span>
+      <h2 class="sn-q-text">Describe a time when the trace viewer helped you diagnose a test failure</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A test failed on a dynamic button click. The screenshot showed the button, but the trace viewer network panel revealed that the API returning authentication permissions had responded with 401 Unauthorized right before the click action — explaining why the locator clicked but did not navigate.</p>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+</div>
+</div>

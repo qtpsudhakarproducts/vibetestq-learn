@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 06 & 07: Project Leadership | 42-Day Mastery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-dark: #d97706;
+            --primary-light: #eff6ff;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --header-height: 80px;
+            --sidebar-width: 320px;
+            --glass: rgba(255, 255, 255, 0.9);
+            --gradient: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+            --text-light: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(15, 23, 42, 0.9);
+            --primary-light: rgba(245, 158, 11, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 35px;
+            border-radius: 4px;
+        }
+
+        aside {
+            width: var(--sidebar-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: var(--header-height);
+            overflow-y: auto;
+            z-index: 900;
+        }
+
+        .day-nav {
+            padding: 2rem 1.5rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        main {
+            margin-left: var(--sidebar-width);
+            padding-top: var(--header-height);
+            min-height: 100vh;
+        }
+
+        .content-area {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 3rem;
+        }
+
+        .day-content {
+            display: none;
+        }
+
+        .day-content.active {
+            display: block;
+        }
+
+        .day-header {
+            margin-bottom: 3rem;
+        }
+
+        .day-header .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+        }
+
+        .focus-box {
+            padding: 1.5rem;
+            background: var(--primary-light);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 12px 12px 0;
+            margin: 2rem 0;
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin: 3rem 0 1.5rem;
+            color: #fff;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .task-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .checklist li i {
+            color: #10b981;
+            margin-top: 5px;
+        }
+
+        .btn-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 4rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-prev {
+            color: var(--text-light);
+            border: 1px solid var(--border);
+        }
+
+        .btn-next {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        @media (max-width: 1024px) {
+            aside {
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+            }
+
+            aside.open {
+                transform: translateX(0);
+            }
+
+            main {
+                margin-left: 0;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 2rem 1rem;
+            }
+
+            header {
+                padding: 0 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .day-header {
+                margin-bottom: 2rem;
+            }
+
+            .task-card {
+                padding: 1.5rem;
+            }
+
+            .btn-nav {
+                flex-direction: column;
+                gap: 1rem;
+                margin-top: 3rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 850;
+            backdrop-filter: blur(4px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body data-theme="dark">
+    <header>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <a href="index.html" class="logo">
+                <img src="../../assets/ulogo.jpg" alt="VibeTestQ Logo">
+                <span style="color: var(--text);">The Capstone Phase</span>
+            </a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="index.html" class="btn" style="color: var(--text-light);">Back to Lab</a>
+        </div>
+    </header>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar">
+        <div class="day-nav">
+            <h4>Final Stretch</h4>
+            <a href="javascript:void(0)" class="nav-item active" onclick="showDay(36)"><span>DAY 36</span> SuiteCRM
+                Workflows</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(37)"><span>DAY 37</span> Asset Foundation</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(38)"><span>DAY 38</span> Asset Workflows</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(39)"><span>DAY 39</span> Framework Review</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(40)"><span>DAY 40</span> Advanced Git</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(41)"><span>DAY 41</span> Maintenance</a>
+            <a href="javascript:void(0)" class="nav-item" onclick="showDay(42)"><span>DAY 42</span> Final Capstone</a>
+        </div>
+    </aside>
+
+    <main>
+        <div class="content-area">
+            <!-- Day 36 -->
+            <div id="day36" class="day-content active">
+                <div class="day-header">
+                    <span class="tag">DAY 36</span>
+                    <h1>SuiteCRM Workflows</h1>
+                    <div class="focus-box">Automate complex lead-to-opportunity flows in SuiteCRM.</div>
+                </div>
+                <div class="task-card">
+                    <ol>
+                        <li>Build <code>LeadsPage.ts</code> and <code>OpportunitiesPage.ts</code></li>
+                        <li>Automate the Lead → Opportunity conversion flow</li>
+                        <li>Write API tests for the CRM layer</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Day 37 -->
+            <div id="day37" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 37</span>
+                    <h1>Asset Foundation</h1>
+                    <div class="focus-box">Map the third application: AssetExplorer.</div>
+                </div>
+                <div class="task-card">
+                    <ul>
+                        <li>Create Page Objects for Asset Lifecycle management</li>
+                        <li>Setup AssetExplorer project in Playwright config</li>
+                        <li>Write globalSetup for authenticated access</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Day 38 -->
+            <div id="day38" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 38</span>
+                    <h1>Asset Workflows</h1>
+                    <div class="focus-box">Consolidate all three apps into one unified framework.</div>
+                </div>
+                <div class="task-card">
+                    <ol>
+                        <li>Automate Procurement workflow: PO → Approval → Receive</li>
+                        <li>Verify license compliance across the asset pool</li>
+                        <li>Ensure consolidated reporting for all 3 apps in Report Portal</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Day 39 -->
+            <div id="day39" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 39</span>
+                    <h1>Framework Review</h1>
+                    <div class="focus-box">Shift from "Coding" to "Architecting". Review, Refactor, and Report.</div>
+                </div>
+                <div class="task-card">
+                    <ul>
+                        <li>Perform a full framework audit for DRY and SOLID violations</li>
+                        <li>Add JSDoc documentation to all core utilities</li>
+                        <li>Identify and fix flaky tests and path climbing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Day 40 -->
+            <div id="day40" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 40</span>
+                    <h1>Advanced Git</h1>
+                    <div class="focus-box">Team practices: Branch protection, Hooks, and Tagging.</div>
+                </div>
+                <div class="task-card">
+                    <ol>
+                        <li>Setup Husky pre-commit hooks for Linting</li>
+                        <li>Implement Branch Protection rules on GitHub</li>
+                        <li>Tag your framework: <code>git tag v1.0.0</code></li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Day 41 -->
+            <div id="day41" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 41</span>
+                    <h1>Suite Health</h1>
+                    <div class="focus-box">Manage the lifecycle of a professional test suite.</div>
+                </div>
+                <div class="task-card">
+                    <ul>
+                        <li>Setup Dependabot for dependency updates</li>
+                        <li>Write a <code>suite-health.ts</code> reporting script</li>
+                        <li>Clean up unused data, pages, and utilities</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Day 42 -->
+            <div id="day42" class="day-content">
+                <div class="day-header">
+                    <span class="tag">DAY 42</span>
+                    <h1>Final Capstone Delivery</h1>
+                    <div class="focus-box">Every skill, every app, every week represented in one unified, professional
+                        framework.</div>
+                </div>
+                <h2>The Standard for v1.0.0</h2>
+                <ul class="checklist">
+                    <li><i class="fas fa-check-circle"></i> <span>Zero Relative Path Climbing (All path aliases)</span>
+                    </li>
+                    <li><i class="fas fa-check-circle"></i> <span>Hybrid Execution (API setup/UI action)</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Parallel Sharding on GitHub Actions</span></li>
+                    <li><i class="fas fa-check-circle"></i> <span>Self-Healing Intelligent Locators</span></li>
+                </ul>
+                <div class="task-card" style="text-align: center; border-color: var(--primary); margin-top: 3rem;">
+                    <h2 style="border: none; margin-bottom: 1rem;">Course Complete</h2>
+                    <p>Tag your project: <code>git tag v1.0.0-capstone</code></p>
+                </div>
+            </div>
+
+            <div class="btn-nav">
+                <a href="javascript:void(0)" class="btn btn-prev" id="prevBtn" onclick="prevDay()"><i
+                        class="fas fa-chevron-left"></i> Previous Day</a>
+                <a href="javascript:void(0)" class="btn btn-next" id="nextBtn" onclick="nextDay()">Next Day <i
+                        class="fas fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script>
+        let currentDay = 36;
+        const startDay = 36;
+        const totalDays = 7;
+
+        function showDay(day) {
+            currentDay = day;
+            document.querySelectorAll('.day-content').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            const target = document.getElementById('day' + day);
+            if (target) target.classList.add('active');
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems[day - startDay].classList.add('active');
+            document.getElementById('prevBtn').style.visibility = day === 36 ? 'hidden' : 'visible';
+            document.getElementById('nextBtn').innerText = day === 42 ? 'Finish Mastery' : 'Next Day';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close sidebar on mobile
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+            }
+        }
+        function nextDay() {
+            if (currentDay < startDay + totalDays - 1) showDay(currentDay + 1);
+            else window.location.href = 'index.html';
+        }
+        function prevDay() {
+            if (currentDay > startDay) showDay(currentDay - 1);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const theme = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', theme);
+            const icon = document.querySelector('.theme-toggle i');
+            icon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+            localStorage.setItem('lab-theme', theme);
+        }
+
+        const savedTheme = localStorage.getItem('lab-theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        const toggleIcon = document.querySelector('.theme-toggle i');
+        if (toggleIcon) toggleIcon.className = savedTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    </script>
+</body>
+
+</html>

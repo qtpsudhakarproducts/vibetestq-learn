@@ -1,0 +1,927 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🌐 Part 6 &nbsp;·&nbsp; Chapter 604 &nbsp;·&nbsp; 15 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Step</span> <span class="w2">Definitions</span> <span class="w3">&amp;</span> <span class="w4">POM</span> <span class="w5">in</span> <span class="w6">BDD</span></h1>
+    <p class="sn-title-sub">Cucumber BDD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers step definitions — how they are written, matched, typed, and organised — and how the Page Object Model integrates into a BDD framework. Interviewers ask these questions to check that you understand the two-layer architecture of a BDD framework: Gherkin (the language) maps to step definitions (the glue), which delegate to page objects (the implementation). Questions progress from basic step definition structure through parameter expressions, the <code class="sn-ic">this</code> typing pattern, and the full comparison of direct-locator vs POM approaches.</span>
+  </div>
+
+
+  <!-- Q604.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.1</span>
+      <h2 class="sn-q-text">What is a step definition and how does it connect to a Gherkin step?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A step definition is a TypeScript function that Cucumber runs when it matches a step in a feature file. The connection is made by a string pattern — the text in the step definition must match the text in the feature file step.</p>
+      </div>
+<p class="sn-para">Feature file step:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">When the user enters username &quot;testadmin&quot;</div>
+      </div>
+<p class="sn-para">Step definition:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { When } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { OrangeHRMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/world'</span>;
+
+When(<span class="tc-str">'the user enters username {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, username: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;username&amp;quot;]'</span>).<span class="tc-fn">fill</span>(username);
+  }
+);</div>
+      </div>
+<p class="sn-para"><code class="sn-ic">{string}</code> in the pattern matches text in double quotes in the feature file — <code class="sn-ic">&quot;testadmin&quot;</code> in this case. Cucumber captures it and passes it as the <code class="sn-ic">username</code> parameter to the function.</p>
+<p class="sn-para">If no step definition matches a step, Cucumber prints a snippet showing you what to write and marks the scenario as <code class="sn-ic">Pending</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q604.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.2</span>
+      <h2 class="sn-q-text">What are Cucumber Expression parameters and how do they work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cucumber Expressions are the patterns inside step definition strings. They are simpler than regular expressions and easier to read.</p>
+      </div>
+<p class="sn-para">The built-in parameter types are:</p>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th>Expression</th><th class="sn-th-blue">Matches</th><th class="sn-th-green">TypeScript type</th></tr></thead>
+          <tbody>
+          <tr><td><code class="sn-ic">{string}</code></td><td>Text in double or single quotes</td><td><code class="sn-ic">string</code></td></tr>
+          <tr><td><code class="sn-ic">{int}</code></td><td>A whole number</td><td><code class="sn-ic">number</code></td></tr>
+          <tr><td><code class="sn-ic">{float}</code></td><td>A decimal number</td><td><code class="sn-ic">number</code></td></tr>
+          <tr><td><code class="sn-ic">{word}</code></td><td>A single word (no spaces)</td><td><code class="sn-ic">string</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+<p class="sn-para">In the OrangeHRM project, all parameters use <code class="sn-ic">{string}</code> because every value passed through Gherkin is quoted text:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">When the user enters username &quot;testadmin&quot;
+And the user selects user role &quot;Admin&quot;
+And the user enters <span class="tc-kw">new</span> username &quot;john.doe.admin&quot;</div>
+      </div>
+<p class="sn-para">Step definitions:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">When(<span class="tc-str">'the user enters username {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, username: <span class="tc-kw">string</span>) { ... }
+);
+
+When(<span class="tc-str">'the user selects user role {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, role: <span class="tc-kw">string</span>) { ... }
+);</div>
+      </div>
+<p class="sn-para">You can also use raw regular expressions as the pattern:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">When(/the user <span class="tc-fn">enters</span> (\w+) &quot;([^&quot;]+)&quot;/, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (field, value) { ... });</div>
+      </div>
+<p class="sn-para">Cucumber Expressions are preferred — they are more readable and the parameter types enforce correct TypeScript types automatically.</p>
+    </div>
+  </div>
+
+  <!-- Q604.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.3</span>
+      <h2 class="sn-q-text">How do you type <code class="sn-ic">this</code> in a step definition?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In TypeScript, <code class="sn-ic">this</code> inside a step definition function is typed by annotating it as the first parameter with the name <code class="sn-ic">this</code>. TypeScript treats this as a type annotation, not a real parameter — Cucumber never passes a value for it.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { OrangeHRMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/world'</span>;
+
+When(<span class="tc-str">'the user clicks the login button'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+    <span class="tc-cm">// TypeScript knows this.page, this.baseUrl, this.openBrowser() exist</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]'</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+);</div>
+      </div>
+<p class="sn-para">Without typing <code class="sn-ic">this</code>, TypeScript gives it the type <code class="sn-ic">World</code> (the base class) — which does not have <code class="sn-ic">page</code>, <code class="sn-ic">browser</code>, or any custom methods. You get type errors when trying to use <code class="sn-ic">this.page</code>.</p>
+<p class="sn-para">In the pom profile, step definitions type <code class="sn-ic">this</code> as <code class="sn-ic">POMWorld</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { POMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/pom-world'</span>;
+
+When(<span class="tc-str">'the user clicks the login button'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-cm">// TypeScript knows this.loginPage, this.dashboardPage etc. exist</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">clickLogin</span>();
+  }
+);</div>
+      </div>
+<p class="sn-para">This is why the two profiles have separate step definition folders — the <code class="sn-ic">this</code> type is different, and TypeScript would give errors if you mixed <code class="sn-ic">OrangeHRMWorld</code> and <code class="sn-ic">POMWorld</code> types in the same step definition.</p>
+    </div>
+  </div>
+
+  <!-- Q604.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.4</span>
+      <h2 class="sn-q-text">How did you organise step definitions in your OrangeHRM project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">We split step definitions by feature — one file per feature area, mirroring the feature file structure:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">step-definitions/
+  login.steps.ts           ← steps for features/login.feature
+  employee.steps.ts        ← steps for features/employee-management.feature
+  user-management.steps.ts ← steps for features/user-management.feature
+
+step-definitions-pom/
+  login.steps.ts           ← same steps, POM implementation
+  employee.steps.ts
+  user-management.steps.ts</div>
+      </div>
+<p class="sn-para">Cucumber loads all files matching <code class="sn-ic">step-definitions/**/*.ts</code> and registers all their step definitions together. There is no explicit linking between a feature file and a step definition file — Cucumber matches step text globally.</p>
+<p class="sn-para">Within each file, we grouped steps by their role using comment banners:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ─── NAVIGATION ─────────────────────────────────────────────</span>
+<span class="tc-cm">// ─── ACTIONS ────────────────────────────────────────────────</span>
+<span class="tc-cm">// ─── ASSERTIONS ─────────────────────────────────────────────</span></div>
+      </div>
+<p class="sn-para">This made it easy to find any step — navigation steps (login, module nav) at the top, interaction steps (fill, click, select) in the middle, assertion steps (verifyVisible, toContainText) at the bottom.</p>
+    </div>
+  </div>
+
+  <!-- Q604.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.5</span>
+      <h2 class="sn-q-text">What happens if a step definition pattern matches multiple steps?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Cucumber throws an error — <code class="sn-ic">Ambiguous step definitions</code>. If two step definitions could match the same step text, Cucumber cannot decide which one to use.</p>
+      </div>
+<p class="sn-para">Example of an ambiguous match:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Pattern 1 — matches &amp;quot;the user enters username &amp;quot;testadmin&amp;quot;&amp;quot;</span>
+When(<span class="tc-str">'the user enters username {string}'</span>, ...);
+
+<span class="tc-cm">// Pattern 2 — also matches &amp;quot;the user enters username &amp;quot;testadmin&amp;quot;&amp;quot;</span>
+When(/the user <span class="tc-fn">enters</span> (\w+) &quot;([^&quot;]+)&quot;/, ...);</div>
+      </div>
+<p class="sn-para">Cucumber reports both patterns and tells you which step triggered the conflict.</p>
+<p class="sn-para"><strong class="k-teal">How to fix it:</strong></p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-green)">✅</span><span>Make patterns more specific so only one can match</span></li>
+<li><span class="icon">💡</span><span>Remove the regex pattern if the Cucumber Expression covers all cases</span></li>
+<li><span class="icon">⚡</span><span>Rename one step if the intent is different</span></li>
+</ul>
+<p class="sn-para">Step definition patterns are global across all loaded files. If <code class="sn-ic">step-definitions/login.steps.ts</code> and <code class="sn-ic">step-definitions/employee.steps.ts</code> both define <code class="sn-ic">When('the user clicks the search button', ...)</code>, that is a conflict too — even though they are in different files.</p>
+    </div>
+  </div>
+
+  <!-- Q604.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.6</span>
+      <h2 class="sn-q-text">What is the difference between the direct step definition approach and the POM approach?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The direct approach puts locators inside step definition functions:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions/login.steps.ts — DIRECT approach</span>
+When(<span class="tc-str">'the user enters username {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, username: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;username&amp;quot;]'</span>).<span class="tc-fn">fill</span>(username);  <span class="tc-cm">// ← locator here</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">The POM approach puts locators inside page objects, and step definitions only call page object methods:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions-pom/login.steps.ts — POM approach</span>
+When(<span class="tc-str">'the user enters username {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, username: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.loginPage.<span class="tc-fn">enterUsername</span>(username);  <span class="tc-cm">// ← no locator here</span>
+  }
+);
+
+<span class="tc-cm">// pages/LoginPage.ts — locator lives here</span>
+<span class="tc-kw">async</span> <span class="tc-fn">enterUsername</span>(username: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'input[name=&amp;quot;username&amp;quot;]'</span>).<span class="tc-fn">fill</span>(username);  <span class="tc-cm">// ← locator here</span>
+}</div>
+      </div>
+<p class="sn-para"><strong class="k-pink">The maintenance difference is significant.</strong> If <code class="sn-ic">input[name=&quot;username&quot;]</code> changes to <code class="sn-ic">input[id=&quot;user-name&quot;]</code>, in the direct approach you find and update every step definition that uses it — potentially across multiple files. In the POM approach, you update one line in <code class="sn-ic">LoginPage.ts</code> and every step that calls <code class="sn-ic">loginPage.enterUsername()</code> is automatically fixed.</p>
+<p class="sn-para">Use the direct approach for learning. Use the POM approach for any framework you maintain.</p>
+    </div>
+  </div>
+
+  <!-- Q604.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.7</span>
+      <h2 class="sn-q-text">How does the BasePage class work and what methods does it provide?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">BasePage</code> is an abstract class that all page objects inherit from. It holds the <code class="sn-ic">page</code> instance and defines methods that are common to multiple pages, so they do not need to be duplicated in each page class.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/BasePage.ts</span>
+<span class="tc-kw">import</span> { Page, Locator, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">export</span> abstract <span class="tc-kw">class</span> BasePage {
+  <span class="tc-kw">protected</span> <span class="tc-kw">readonly</span> page: Page;
+
+  <span class="tc-fn">constructor</span>(page: Page) {
+    <span class="tc-kw">this</span>.page = page;
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">waitForPageLoad</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">verifySuccessToastVisible</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">const</span> toast = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-toast--success'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(toast).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">10000</span> });
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">verifyNoRecordsFound</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+      <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-text:has-text(&amp;quot;No Records Found&amp;quot;)'</span>)
+    ).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">10000</span> });
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">clickSearchButton</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]:has-text(&amp;quot;Search&amp;quot;)'</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">clickSaveButton</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]:has-text(&amp;quot;Save&amp;quot;)'</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">selectDropdownOption</span>(dropdownLocator: Locator, option: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> dropdownLocator.<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">`.oxd-select-option:has-text(&amp;quot;${option}&amp;quot;)`</span>).<span class="tc-fn">click</span>();
+  }
+}</div>
+      </div>
+<p class="sn-para">Page objects inherit from <code class="sn-ic">BasePage</code> and get all these methods automatically:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/AddEmployeePage.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> AddEmployeePage <span class="tc-kw">extends</span> BasePage {
+  <span class="tc-kw">async</span> <span class="tc-fn">saveEmployee</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">clickSaveButton</span>();  <span class="tc-cm">// inherited from BasePage</span>
+  }
+
+  <span class="tc-kw">async</span> <span class="tc-fn">verifySuccessToastVisible</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">await</span> super.<span class="tc-fn">verifySuccessToastVisible</span>();  <span class="tc-cm">// inherited from BasePage</span>
+  }
+}</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">selectDropdownOption</code> method in <code class="sn-ic">BasePage</code> handles the custom OrangeHRM dropdown pattern (click the wrapper, click the option) so every page that needs a dropdown does not implement the same click pattern.</p>
+    </div>
+  </div>
+
+  <!-- Q604.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.8</span>
+      <h2 class="sn-q-text">How does POMWorld instantiate page objects and give step definitions access to them?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">POMWorld</code> creates all page objects in a private <code class="sn-ic">initPages()</code> method called inside <code class="sn-ic">openBrowser()</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// support/pom-world.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">class</span> POMWorld <span class="tc-kw">extends</span> World {
+  loginPage!: LoginPage;
+  dashboardPage!: DashboardPage;
+  employeeListPage!: EmployeeListPage;
+  addEmployeePage!: AddEmployeePage;
+  userManagementPage!: UserManagementPage;
+  addUserPage!: AddUserPage;
+
+  <span class="tc-kw">async</span> <span class="tc-fn">openBrowser</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+    <span class="tc-kw">this</span>.browser = <span class="tc-kw">await</span> chromium.<span class="tc-fn">launch</span>({ headless: <span class="tc-kw">this</span>.headless, slowMo: <span class="tc-kw">this</span>.slowMo });
+    <span class="tc-kw">this</span>.context = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.browser.<span class="tc-fn">newContext</span>({ viewport: { width: <span class="tc-num">1280</span>, height: <span class="tc-num">720</span> } });
+    <span class="tc-kw">this</span>.page = <span class="tc-kw">await</span> <span class="tc-kw">this</span>.context.<span class="tc-fn">newPage</span>();
+    <span class="tc-kw">this</span>.<span class="tc-fn">initPages</span>();  <span class="tc-cm">// page must exist before page objects are created</span>
+  }
+
+  <span class="tc-kw">private</span> <span class="tc-fn">initPages</span>(): <span class="tc-kw">void</span> {
+    <span class="tc-kw">this</span>.loginPage          = <span class="tc-kw">new</span> LoginPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.dashboardPage      = <span class="tc-kw">new</span> DashboardPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.employeeListPage   = <span class="tc-kw">new</span> EmployeeListPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.addEmployeePage    = <span class="tc-kw">new</span> AddEmployeePage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.userManagementPage = <span class="tc-kw">new</span> UserManagementPage(<span class="tc-kw">this</span>.page);
+    <span class="tc-kw">this</span>.addUserPage        = <span class="tc-kw">new</span> AddUserPage(<span class="tc-kw">this</span>.page);
+  }
+}</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">!</code> (definite assignment assertion) on each property tells TypeScript "I know this will be set before it is used" — the properties are <code class="sn-ic">undefined</code> at construction time but set in <code class="sn-ic">openBrowser()</code> before any step runs.</p>
+<p class="sn-para">Step definitions access them via <code class="sn-ic">this</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions-pom/employee.steps.ts</span>
+When(<span class="tc-str">'the user clicks on Add Employee button'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.employeeListPage.<span class="tc-fn">clickAddEmployee</span>();  <span class="tc-cm">// page object from POMWorld</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">This is Cucumber's equivalent of Playwright Test's fixture injection. Instead of declaring <code class="sn-ic">{ page, employeeListPage }</code> in a test function signature, you access page objects through <code class="sn-ic">this</code> because the World holds all of them.</p>
+    </div>
+  </div>
+
+  <!-- Q604.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.9</span>
+      <h2 class="sn-q-text">What is the barrel export pattern and why is it used in pages/index.ts?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A barrel file is a module that re-exports everything from a folder. <code class="sn-ic">pages/index.ts</code> exports all page classes from one file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// pages/index.ts</span>
+<span class="tc-kw">export</span> { BasePage }           <span class="tc-kw">from</span> <span class="tc-str">'./BasePage'</span>;
+<span class="tc-kw">export</span> { LoginPage }          <span class="tc-kw">from</span> <span class="tc-str">'./LoginPage'</span>;
+<span class="tc-kw">export</span> { DashboardPage }      <span class="tc-kw">from</span> <span class="tc-str">'./DashboardPage'</span>;
+<span class="tc-kw">export</span> { EmployeeListPage }   <span class="tc-kw">from</span> <span class="tc-str">'./EmployeeListPage'</span>;
+<span class="tc-kw">export</span> { AddEmployeePage }    <span class="tc-kw">from</span> <span class="tc-str">'./AddEmployeePage'</span>;
+<span class="tc-kw">export</span> { UserManagementPage } <span class="tc-kw">from</span> <span class="tc-str">'./UserManagementPage'</span>;
+<span class="tc-kw">export</span> { AddUserPage }        <span class="tc-kw">from</span> <span class="tc-str">'./AddUserPage'</span>;</div>
+      </div>
+<p class="sn-para">Without the barrel, <code class="sn-ic">pom-world.ts</code> would need six separate import lines:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Without barrel — verbose imports</span>
+<span class="tc-kw">import</span> { LoginPage }         <span class="tc-kw">from</span> <span class="tc-str">'../pages/LoginPage'</span>;
+<span class="tc-kw">import</span> { DashboardPage }     <span class="tc-kw">from</span> <span class="tc-str">'../pages/DashboardPage'</span>;
+<span class="tc-kw">import</span> { EmployeeListPage }  <span class="tc-kw">from</span> <span class="tc-str">'../pages/EmployeeListPage'</span>;
+<span class="tc-kw">import</span> { AddEmployeePage }   <span class="tc-kw">from</span> <span class="tc-str">'../pages/AddEmployeePage'</span>;
+<span class="tc-kw">import</span> { UserManagementPage } <span class="tc-kw">from</span> <span class="tc-str">'../pages/UserManagementPage'</span>;
+<span class="tc-kw">import</span> { AddUserPage }       <span class="tc-kw">from</span> <span class="tc-str">'../pages/AddUserPage'</span>;</div>
+      </div>
+<p class="sn-para">With the barrel, one import line covers all:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ With barrel — clean single import</span>
+<span class="tc-kw">import</span> {
+  LoginPage, DashboardPage, EmployeeListPage,
+  AddEmployeePage, UserManagementPage, AddUserPage,
+} <span class="tc-kw">from</span> <span class="tc-str">'../pages'</span>;</div>
+      </div>
+<p class="sn-para">Adding a new page class means adding one line to <code class="sn-ic">pages/index.ts</code>. Every file that imports from <code class="sn-ic">'../pages'</code> automatically gets access to the new class without any import changes.</p>
+    </div>
+  </div>
+
+  <!-- Q604.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.10</span>
+      <h2 class="sn-q-text">What is wrong with step definitions that contain assertions?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ COMMON MISTAKE — step definition makes multiple assertions</span>
+Then(<span class="tc-str">'the employee search results should be correct'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-table-row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">3</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-table-body'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'John Doe'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-table-body'</span>)).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Jane Smith'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">url</span>()).<span class="tc-fn">toContain</span>(<span class="tc-str">'viewEmployeeList'</span>);
+  }
+);</div>
+      </div>
+<p class="sn-para">This puts four separate assertions in one step. When the step fails, the report says "the employee search results should be correct — FAILED" with a cryptic error. You cannot tell which assertion failed without reading the full stack trace.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ CORRECT APPROACH — one assertion per Then step</span>
+Then(<span class="tc-str">'the employee list should display results'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.employeeListPage.<span class="tc-fn">verifyResultsDisplayed</span>();
+    <span class="tc-cm">// Inside: expects rows.first() to be visible and count &amp;gt; 0</span>
+  }
+);
+
+Then(<span class="tc-str">'the employee {string} should appear in the search results'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, name: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.employeeListPage.<span class="tc-fn">verifyEmployeeInResults</span>(name);
+    <span class="tc-cm">// Inside: expects tableBody to containText(name)</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">Feature file:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Then the employee list should display results
+And the employee &quot;John&quot; should appear <span class="tc-kw">in</span> the search results</div>
+      </div>
+<p class="sn-para">Now each step is one clear assertion. When one fails, the report tells you exactly which check failed — without reading code.</p>
+    </div>
+  </div>
+
+  <!-- Q604.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.11</span>
+      <h2 class="sn-q-text">How do you reuse step definitions across multiple feature files?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Step definitions are global — once registered, they are available to all feature files Cucumber loads. There is no explicit linking. If <code class="sn-ic">step-definitions/login.steps.ts</code> defines <code class="sn-ic">Given('the user is logged in as {string} with password {string}', ...)</code>, any feature file can use that step.</p>
+      </div>
+<p class="sn-para">In the OrangeHRM project, the login step is reused across all three feature files:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Background:
+  Given the user is logged <span class="tc-kw">in</span> as &quot;testadmin&quot; with password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+  And the user navigates to PIM <span class="tc-kw">module</span>
+
+Background:
+  Given the user is logged <span class="tc-kw">in</span> as &quot;testadmin&quot; with password &quot;Vibetestq@<span class="tc-num">123</span>&quot;
+  And the user navigates to Admin <span class="tc-kw">module</span></div>
+      </div>
+<p class="sn-para">One step definition, two feature files. No duplication. If the login mechanism changes, you update one place.</p>
+<p class="sn-para">The rule for step reuse: write steps in the level of abstraction where they belong. Login steps belong in <code class="sn-ic">login.steps.ts</code>. Navigation steps that go to a specific module belong in that module's step file. But a step like "a success toast message should be visible" is used in both employee and user management scenarios — put it in a <code class="sn-ic">common.steps.ts</code> file.</p>
+    </div>
+  </div>
+
+  <!-- Q604.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.12</span>
+      <h2 class="sn-q-text">How does the POM step definition style compare to the direct approach in readability?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ─── DIRECT approach — step-definitions/employee.steps.ts ───────────────────</span>
+When(<span class="tc-str">'the user saves the new employee'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'button[type=&amp;quot;submit&amp;quot;]:has-text(&amp;quot;Save&amp;quot;)'</span>).<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  }
+);
+
+Then(<span class="tc-str">'the employee profile page should be displayed'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'**/pim/viewPersonalDetails**'</span>, { timeout: <span class="tc-num">15000</span> });
+    <span class="tc-kw">const</span> heading = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.orangehrm-main-title'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(heading).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">10000</span> });
+  }
+);
+
+<span class="tc-cm">// ─── POM approach — step-definitions-pom/employee.steps.ts ──────────────────</span>
+When(<span class="tc-str">'the user saves the new employee'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addEmployeePage.<span class="tc-fn">saveEmployee</span>();  <span class="tc-cm">// 1 line</span>
+  }
+);
+
+Then(<span class="tc-str">'the employee profile page should be displayed'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addEmployeePage.<span class="tc-fn">verifyEmployeeProfileDisplayed</span>();  <span class="tc-cm">// 1 line</span>
+  }
+);</div>
+      </div>
+<p class="sn-para">The POM step definitions are dramatically shorter and clearer. The step function body expresses intent, not implementation. Someone reading the step definition can immediately understand what it does without knowing CSS selectors or URL patterns.</p>
+<p class="sn-para">The implementation details live in <code class="sn-ic">AddEmployeePage.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">async</span> <span class="tc-fn">saveEmployee</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.<span class="tc-fn">clickSaveButton</span>();  <span class="tc-cm">// BasePage method</span>
+}
+
+<span class="tc-kw">async</span> <span class="tc-fn">verifyEmployeeProfileDisplayed</span>(): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForURL</span>(<span class="tc-str">'**/pim/viewPersonalDetails**'</span>, { timeout: <span class="tc-num">15000</span> });
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(<span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.orangehrm-main-title'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: <span class="tc-num">10000</span> });
+}</div>
+      </div>
+<p class="sn-para">The locator change radius is smaller in POM — a locator change only affects the page class method, not the step definition and not the feature file.</p>
+    </div>
+  </div>
+
+  <!-- Q604.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.13</span>
+      <h2 class="sn-q-text">Write step definitions for the user management Add User scenario</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Feature file:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">gherkin</span>
+        </div>
+        <div class="sn-terminal-code">Scenario: Create a <span class="tc-kw">new</span> Admin user
+  When the user clicks on Add User button
+  And the user selects user role &quot;Admin&quot;
+  And the user selects employee name &quot;John Doe&quot;
+  And the user enters <span class="tc-kw">new</span> username &quot;john.doe.admin&quot;
+  And the user selects status &quot;Enabled&quot;
+  And the user enters user password &quot;Admin@<span class="tc-num">1234</span>&quot;
+  And the user confirms the password &quot;Admin@<span class="tc-num">1234</span>&quot;
+  And the user saves the <span class="tc-kw">new</span> user
+  Then a success toast message should be visible
+  And the user list page should be displayed</div>
+      </div>
+<p class="sn-para">POM step definitions:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions-pom/user-management.steps.ts</span>
+<span class="tc-kw">import</span> { When, Then } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { POMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/pom-world'</span>;
+
+When(<span class="tc-str">'the user clicks on Add User button'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.userManagementPage.<span class="tc-fn">clickAddUser</span>();
+  <span class="tc-cm">// navigates to /admin/saveSystemUser, waits for networkidle</span>
+});
+
+When(<span class="tc-str">'the user selects user role {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, role: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">selectUserRole</span>(role);
+  <span class="tc-cm">// BasePage.selectDropdownOption: click wrapper, click option</span>
+});
+
+When(<span class="tc-str">'the user selects employee name {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, employeeName: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">selectEmployeeName</span>(employeeName);
+  <span class="tc-cm">// types first name, waits for autocomplete, clicks suggestion</span>
+});
+
+When(<span class="tc-str">'the user enters new username {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, username: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">enterUsername</span>(username);
+});
+
+When(<span class="tc-str">'the user selects status {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, status: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">selectStatus</span>(status);
+});
+
+When(<span class="tc-str">'the user enters user password {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, password: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">enterPassword</span>(password);
+});
+
+When(<span class="tc-str">'the user confirms the password {string}'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, password: <span class="tc-kw">string</span>) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">enterConfirmPassword</span>(password);
+});
+
+When(<span class="tc-str">'the user saves the new user'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">saveUser</span>();
+});
+
+Then(<span class="tc-str">'a success toast message should be visible'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">verifySuccessToastVisible</span>();  <span class="tc-cm">// inherited from BasePage</span>
+});
+
+Then(<span class="tc-str">'the user list page should be displayed'</span>, <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+  <span class="tc-kw">await</span> <span class="tc-kw">this</span>.userManagementPage.<span class="tc-fn">verifyUserListPageDisplayed</span>();
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q604.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.14</span>
+      <h2 class="sn-q-text">How do you handle a step that is shared between two feature files?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Make the step definition generic enough to match all uses, and put it in a shared file.</p>
+      </div>
+<p class="sn-para">Example: <code class="sn-ic">Then a success toast message should be visible</code> is used in both <code class="sn-ic">employee-management.feature</code> and <code class="sn-ic">user-management.feature</code>.</p>
+<p class="sn-para">If you put it in <code class="sn-ic">employee.steps.ts</code> only, it still works for user management — Cucumber loads all step definition files and the step is globally available. But it is misleading — a step used in user management tests should not live only in the employee steps file.</p>
+<p class="sn-para">Better approach: create <code class="sn-ic">support/common.steps.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// step-definitions-pom/common.steps.ts</span>
+<span class="tc-kw">import</span> { Then } <span class="tc-kw">from</span> <span class="tc-str">'@cucumber/cucumber'</span>;
+<span class="tc-kw">import</span> { POMWorld } <span class="tc-kw">from</span> <span class="tc-str">'../support/pom-world'</span>;
+
+Then(<span class="tc-str">'a success toast message should be visible'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-cm">// BasePage.verifySuccessToastVisible works for any page</span>
+    <span class="tc-cm">// We call it on addEmployeePage but it uses BasePage which any page inherits</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-toast--success'</span>).<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout: <span class="tc-num">10000</span> });
+  }
+);
+
+Then(<span class="tc-str">'the no records found message should be displayed'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-text:has-text(&amp;quot;No Records Found&amp;quot;)'</span>).<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span> });
+  }
+);</div>
+      </div>
+<p class="sn-para">Load this file in <code class="sn-ic">cucumber.js</code> via the glob: <code class="sn-ic">step-definitions-pom/**/*.ts</code> already picks it up if it is in that folder.</p>
+    </div>
+  </div>
+
+  <!-- Q604.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q604.15</span>
+      <h2 class="sn-q-text">Describe a real step definition challenge from your project</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM project, the dropdown fields on the Add User page used a custom OrangeHRM component — not a native <code class="sn-ic">&lt;select&gt;</code> element. The dropdown was a <code class="sn-ic">div</code> with class <code class="sn-ic">oxd-select-wrapper</code>. Clicking it opened a list of <code class="sn-ic">div.oxd-select-option</code> items.</p>
+      </div>
+<p class="sn-para">The first implementation of the user role step clicked the wrapper, waited 500ms, then clicked the option:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ First attempt — timing issues</span>
+When(<span class="tc-str">'the user selects user role {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: OrangeHRMWorld, role: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">'.oxd-select-wrapper'</span>).<span class="tc-fn">first</span>().<span class="tc-fn">click</span>();
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">500</span>);  <span class="tc-cm">// hard wait — fragile</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">`.oxd-select-option:has-text(&amp;quot;${role}&amp;quot;)`</span>).<span class="tc-fn">click</span>();
+  }
+);</div>
+      </div>
+<p class="sn-para">This failed on slow machines and in CI because the options had not rendered yet when the click happened.</p>
+<p class="sn-para">We fixed it by moving the logic into a <code class="sn-ic">BasePage.selectDropdownOption()</code> method that waits for the option to be visible before clicking:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ✅ BasePage method — waits for option to appear</span>
+<span class="tc-kw">async</span> <span class="tc-fn">selectDropdownOption</span>(dropdownLocator: Locator, option: <span class="tc-kw">string</span>): Promise&lt;<span class="tc-kw">void</span>&gt; {
+  <span class="tc-kw">await</span> dropdownLocator.<span class="tc-fn">click</span>();
+  <span class="tc-kw">const</span> optionLocator = <span class="tc-kw">this</span>.page.<span class="tc-fn">locator</span>(<span class="tc-str">`.oxd-select-option:has-text(&amp;quot;${option}&amp;quot;)`</span>);
+  <span class="tc-kw">await</span> optionLocator.<span class="tc-fn">waitFor</span>({ state: <span class="tc-str">'visible'</span>, timeout: <span class="tc-num">5000</span> });  <span class="tc-cm">// wait, no hard sleep</span>
+  <span class="tc-kw">await</span> optionLocator.<span class="tc-fn">click</span>();
+}</div>
+      </div>
+<p class="sn-para">The step definition then became one line:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">When(<span class="tc-str">'the user selects user role {string}'</span>,
+  <span class="tc-kw">async</span> <span class="tc-kw">function</span> (<span class="tc-kw">this</span>: POMWorld, role: <span class="tc-kw">string</span>) {
+    <span class="tc-kw">await</span> <span class="tc-kw">this</span>.addUserPage.<span class="tc-fn">selectUserRole</span>(role);
+  }
+);</div>
+      </div>
+<p class="sn-para">Every dropdown on every page — user role, status, employee name — used the same <code class="sn-ic">BasePage.selectDropdownOption()</code> method. One fix covered all dropdowns in the framework.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>A step definition maps a Gherkin step to a function using a pattern with <code class="sn-ic">{string}</code>, <code class="sn-ic">{int}</code>, or <code class="sn-ic">{float}</code> parameter types. The pattern must match exactly — ambiguous matches are an error.</span></li>
+            <li><span class="icon">⭐</span><span>Type <code class="sn-ic">this</code> as your custom World class to get TypeScript autocomplete and type safety in step definitions.</span></li>
+            <li><span class="icon">⭐</span><span>The direct approach (locators in step definitions) is easier to start with; the POM approach (locators in page objects) is easier to maintain.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">BasePage</code> holds shared locators and actions (save button, search button, dropdown selection, toast assertion) so page classes do not duplicate them.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">POMWorld.initPages()</code> creates all page objects once after the browser opens — step definitions access them through <code class="sn-ic">this.loginPage</code>, <code class="sn-ic">this.employeeListPage</code>, etc.</span></li>
+            <li><span class="icon">⭐</span><span>The barrel export (<code class="sn-ic">pages/index.ts</code>) lets <code class="sn-ic">POMWorld</code> import all page classes in one line.</span></li>
+            <li><span class="icon">⭐</span><span>Step definitions are global — a step defined in <code class="sn-ic">login.steps.ts</code> can be used by any feature file. Put shared steps (toast, no records) in a <code class="sn-ic">common.steps.ts</code>.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

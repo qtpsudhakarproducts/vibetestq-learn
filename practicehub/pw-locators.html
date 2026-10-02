@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playwright Locators Challenges | VibeTestQ Practice Hub</title>
+    <meta name="description" content="15 interactive Playwright locator MCQ challenges. Master getByRole, getByLabel, filters, chaining, and CSS/XPath patterns with instant feedback.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #5b21b6;
+            --primary-light: #f5f3ff;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        header {
+            position: fixed; top: 0; left: 0; right: 0; height: var(--header-height);
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; gap: 1rem;
+        }
+        .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--primary-light); color: var(--primary-dark); text-decoration: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
+        .back-btn:hover { background: var(--primary); color: white; }
+        .logo { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.3rem; color: #1e40af; text-decoration: none; }
+        .header-score { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: var(--text-light); }
+        .score-pill { background: var(--primary-light); color: var(--primary-dark); padding: 4px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; border: 1px solid #c4b5fd; transition: all 0.3s; }
+        .score-pill.bump { background: #ede9fe; transform: scale(1.1); }
+        .app-container { display: flex; padding-top: var(--header-height); min-height: 100vh; }
+        aside { width: var(--sidebar-width); background: var(--card-bg); border-right: 1px solid var(--border); height: calc(100vh - var(--header-height)); position: fixed; top: var(--header-height); left: 0; overflow-y: auto; padding: 1.25rem 0.9rem; }
+        .sidebar-title { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-light); margin-bottom: 0.75rem; padding: 0 0.25rem; font-weight: 700; }
+        .nav-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.6rem; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 0.82rem; transition: all 0.2s; margin-bottom: 0.15rem; }
+        .nav-item:hover { background: var(--primary-light); color: var(--primary-dark); }
+        .nav-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; background: var(--border); margin-left: auto; transition: background 0.3s; }
+        .nav-dot.solved { background: var(--success); }
+        .progress-section { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-light); margin-bottom: 0.4rem; }
+        .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #7c3aed, #8b5cf6); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+        main { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 2.25rem; max-width: calc(100% - var(--sidebar-width)); }
+        .page-header { margin-bottom: 2rem; }
+        .page-header h1 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: var(--primary-dark); display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.35rem; }
+        .page-header p { color: var(--text-light); font-size: 0.9rem; }
+        .challenge-card { background: var(--card-bg); border-radius: 16px; border: 2px solid var(--border); margin-bottom: 2rem; overflow: hidden; box-shadow: 0 2px 8px rgb(0 0 0 / 0.05); scroll-margin-top: calc(var(--header-height) + 1rem); transition: border-color 0.4s; }
+        .challenge-card.solved { border-color: var(--success); }
+        .ch-header { padding: 0.9rem 1.4rem; background: linear-gradient(135deg, #fafafa 0%, #f1f5f9 100%); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap; }
+        .ch-num { font-family: 'Outfit', sans-serif; font-weight: 700; color: var(--primary-dark); font-size: 0.9rem; }
+        .badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+        .badge.beginner { background: #d1fae5; color: #065f46; }
+        .badge.intermediate { background: #fef3c7; color: #92400e; }
+        .badge.advanced { background: #fce7f3; color: #831843; }
+        .topic-badge { padding: 2px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 700; background: #f5f3ff; color: #5b21b6; }
+        .solved-badge { margin-left: auto; display: none; align-items: center; gap: 5px; color: var(--success); font-size: 0.82rem; font-weight: 600; }
+        .challenge-card.solved .solved-badge { display: flex; }
+        .ch-body { padding: 1.4rem; }
+        .ch-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .ch-desc { color: var(--text-light); font-size: 0.88rem; margin-bottom: 1rem; line-height: 1.6; }
+        .ch-desc code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; color: #7c3aed; }
+        .code-block { border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem; font-size: 0.875rem; }
+        .code-block pre { margin: 0; }
+        .code-block code { font-family: 'Fira Code', monospace; font-size: 0.875rem; }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-bottom: 1rem; }
+        .option-btn { padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; background: white; cursor: pointer; font-size: 0.875rem; font-family: 'Inter', sans-serif; text-align: left; transition: all 0.2s; display: flex; align-items: flex-start; gap: 0.6rem; line-height: 1.5; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+        .option-letter { width: 22px; height: 22px; border-radius: 50%; background: #f1f5f9; color: #475569; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+        .option-btn:hover:not(:disabled) .option-letter { background: var(--primary); color: white; }
+        .option-btn.opt-correct { border-color: var(--success); background: #f0fdf4; }
+        .option-btn.opt-correct .option-letter { background: var(--success); color: white; }
+        .option-btn.opt-wrong { border-color: var(--border); background: #f8fafc; opacity: 0.5; }
+        .option-btn.opt-selected-wrong { border-color: var(--danger); background: #fff5f5; opacity: 1; }
+        .option-btn.opt-selected-wrong .option-letter { background: var(--danger); color: white; }
+        .option-btn:disabled { cursor: not-allowed; }
+        .explanation { display: none; padding: 1rem 1.1rem; border-radius: 10px; background: #f0fdf4; border: 1px solid #6ee7b7; color: #14532d; font-size: 0.875rem; line-height: 1.7; margin-top: 0.75rem; }
+        .explanation code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        .explanation strong { color: #065f46; }
+        .ch-footer { padding: 0.8rem 1.4rem; background: #f8fafc; border-top: 1px solid var(--border); display: flex; align-items: flex-start; gap: 0.6rem; flex-wrap: wrap; }
+        .hint-btn { padding: 5px 13px; border-radius: 8px; font-size: 0.78rem; font-weight: 600; cursor: pointer; border: 1px solid #c4b5fd; background: #ede9fe; color: #5b21b6; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .hint-btn:hover { background: #c4b5fd; }
+        .hint-box { display: none; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.85rem; width: 100%; background: #f5f3ff; border: 1px solid #c4b5fd; color: #5b21b6; line-height: 1.65; margin-top: 0.25rem; }
+        .hint-box code { background: rgba(0,0,0,0.08); padding: 1px 5px; border-radius: 4px; font-family: 'Fira Code', monospace; font-size: 0.85em; }
+        @media (max-width: 860px) { aside { display: none; } main { margin-left: 0; max-width: 100%; padding: 1.5rem 1rem; } .options-grid { grid-template-columns: 1fr; } }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Practice Hub</a>
+    <a href="../../index.html" class="logo">⚡ VibeTestQ</a>
+    <div class="header-score">Score: <span class="score-pill" id="scoreDisplay">0 / 15</span></div>
+</header>
+
+<div class="app-container">
+<aside>
+    <div class="sidebar-title">Locator Challenges</div>
+    <a href="#c1"  class="nav-item"><span>1. Locator Priority</span>         <div class="nav-dot" id="dot-c1"></div></a>
+    <a href="#c2"  class="nav-item"><span>2. getByLabel</span>               <div class="nav-dot" id="dot-c2"></div></a>
+    <a href="#c3"  class="nav-item"><span>3. getByPlaceholder</span>         <div class="nav-dot" id="dot-c3"></div></a>
+    <a href="#c4"  class="nav-item"><span>4. getByText exact match</span>    <div class="nav-dot" id="dot-c4"></div></a>
+    <a href="#c5"  class="nav-item"><span>5. getByTestId attribute</span>    <div class="nav-dot" id="dot-c5"></div></a>
+    <a href="#c6"  class="nav-item"><span>6. filter() method</span>          <div class="nav-dot" id="dot-c6"></div></a>
+    <a href="#c7"  class="nav-item"><span>7. nth() indexing</span>           <div class="nav-dot" id="dot-c7"></div></a>
+    <a href="#c8"  class="nav-item"><span>8. Chaining locators</span>        <div class="nav-dot" id="dot-c8"></div></a>
+    <a href="#c9"  class="nav-item"><span>9. has: option</span>              <div class="nav-dot" id="dot-c9"></div></a>
+    <a href="#c10" class="nav-item"><span>10. Locator.and()</span>           <div class="nav-dot" id="dot-c10"></div></a>
+    <a href="#c11" class="nav-item"><span>11. visible option</span>          <div class="nav-dot" id="dot-c11"></div></a>
+    <a href="#c12" class="nav-item"><span>12. Heading ARIA role</span>       <div class="nav-dot" id="dot-c12"></div></a>
+    <a href="#c13" class="nav-item"><span>13. getByRole combobox</span>      <div class="nav-dot" id="dot-c13"></div></a>
+    <a href="#c14" class="nav-item"><span>14. CSS :has-text()</span>         <div class="nav-dot" id="dot-c14"></div></a>
+    <a href="#c15" class="nav-item"><span>15. XPath vs CSS</span>            <div class="nav-dot" id="dot-c15"></div></a>
+    <div class="progress-section">
+        <div class="progress-label"><span>Progress</span><span id="progressText">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+</aside>
+
+<main>
+    <div class="page-header">
+        <h1><i class="fas fa-crosshairs"></i> Playwright Locators</h1>
+        <p>15 challenges covering getByRole, getByLabel, filters, chaining, CSS and XPath — the foundation of every Playwright test.</p>
+    </div>
+
+    <!-- C1 -->
+    <div class="challenge-card" id="c1">
+        <div class="ch-header"><span class="ch-num">Challenge 1</span><span class="badge beginner">Beginner</span><span class="topic-badge">Priority</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What is the correct Playwright locator priority order?</div>
+            <div class="ch-desc">Playwright recommends a specific order for choosing locators. Which option shows the correct recommended priority (most preferred first)?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">A</span> CSS → XPath → getByText → getByRole</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c1',this,true)"><span class="option-letter">B</span> getByRole → getByLabel → getByPlaceholder → getByText → getByTestId → CSS/XPath</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">C</span> getByTestId → getByRole → CSS → getByText</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c1',this,false)"><span class="option-letter">D</span> getByText → getByLabel → getByRole → CSS</button>
+            </div>
+            <div class="explanation" id="c1-exp"><strong>Answer: B</strong><br>Playwright's official priority: <code>getByRole</code> (most resilient — mirrors screen readers), then <code>getByLabel</code> (forms), <code>getByPlaceholder</code>, <code>getByText</code>, <code>getByTestId</code>, and finally CSS/XPath as last resort. This order ensures accessibility-friendly, resilient locators that survive UI refactors.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c1-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c1-hint">The locator at the top of the priority list is the one that mimics how a real user and assistive technology identify an element.</div></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="challenge-card" id="c2">
+        <div class="ch-header"><span class="ch-num">Challenge 2</span><span class="badge beginner">Beginner</span><span class="topic-badge">getByLabel</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">Which locator correctly targets the email input?</div>
+            <div class="ch-desc">Given this HTML, which locator is the most resilient and correct way to find the email input?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;label for="email"&gt;Email Address&lt;/label&gt;
+&lt;input id="email" type="email" /&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">A</span> page.locator('#email')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">B</span> page.locator('input[type="email"]')</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c2',this,true)"><span class="option-letter">C</span> page.getByLabel('Email Address')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c2',this,false)"><span class="option-letter">D</span> page.getByText('Email Address')</button>
+            </div>
+            <div class="explanation" id="c2-exp"><strong>Answer: C — getByLabel('Email Address')</strong><br><code>getByLabel</code> finds a form element by its associated label text. This is the recommended approach for form fields — it is resilient to ID changes, mirrors how screen readers associate labels with inputs, and communicates test intent clearly. Option A works but breaks if the ID changes. Option D finds the label element itself, not the input.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c2-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c2-hint">For form fields, use the visible label text. The <code>getByLabel</code> locator uses the label-input association, not the element's ID.</div></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="challenge-card" id="c3">
+        <div class="ch-header"><span class="ch-num">Challenge 3</span><span class="badge beginner">Beginner</span><span class="topic-badge">getByPlaceholder</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When should you prefer getByPlaceholder?</div>
+            <div class="ch-desc">Which scenario is the <em>best</em> use case for <code>page.getByPlaceholder()</code>?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;!-- Scenario A --&gt;
+&lt;label for="name"&gt;Full Name&lt;/label&gt;
+&lt;input id="name" placeholder="Enter your name" /&gt;
+
+&lt;!-- Scenario B --&gt;
+&lt;input placeholder="Search employees..." /&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">A</span> Scenario A — always prefer placeholder over label</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c3',this,true)"><span class="option-letter">B</span> Scenario B — when there is no label available</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">C</span> Both — getByPlaceholder is always the best choice for inputs</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c3',this,false)"><span class="option-letter">D</span> Neither — only CSS selectors should be used for inputs</button>
+            </div>
+            <div class="explanation" id="c3-exp"><strong>Answer: B — when no label is available</strong><br><code>getByPlaceholder</code> is third in the priority list. For Scenario A, <code>getByLabel('Full Name')</code> is better because labels are the semantic identifier for form fields. Use <code>getByPlaceholder</code> only when there is no label — like the search input in Scenario B. Placeholder text can be removed or changed by designers more frequently than labels.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c3-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c3-hint">Follow the priority order. If a label exists, use <code>getByLabel</code>. Fall back to <code>getByPlaceholder</code> only when no label is present.</div></div>
+    </div>
+
+    <!-- C4 -->
+    <div class="challenge-card" id="c4">
+        <div class="ch-header"><span class="ch-num">Challenge 4</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">getByText</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does getByText('Save') match?</div>
+            <div class="ch-desc">Which elements does <code>page.getByText('Save')</code> match by default?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;button&gt;Save&lt;/button&gt;
+&lt;button&gt;Save Changes&lt;/button&gt;
+&lt;span&gt;Save&lt;/span&gt;
+&lt;p&gt;Don't forget to Save your work&lt;/p&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">A</span> Only the first button — exact match only</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">B</span> All four elements — substring match</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c4',this,true)"><span class="option-letter">C</span> The first button and the span — case-insensitive substring, but not partial word inside longer text by default</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c4',this,false)"><span class="option-letter">D</span> Only elements that are interactive (buttons)</button>
+            </div>
+            <div class="explanation" id="c4-exp"><strong>Answer: C</strong><br><code>getByText('Save')</code> by default does a <strong>substring, case-insensitive match</strong> on the element's text content. It matches elements where the text content <em>is</em> "Save" (the button and span). "Save Changes" also matches because "Save" is a substring. The <code>&lt;p&gt;</code> also contains "Save" as substring. To require exact match, pass <code>{ exact: true }</code>. To scope to a specific element type, combine with <code>getByRole</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c4-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c4-hint"><code>getByText</code> performs a substring, case-insensitive search by default. Use <code>{ exact: true }</code> to require an exact match.</div></div>
+    </div>
+
+    <!-- C5 -->
+    <div class="challenge-card" id="c5">
+        <div class="ch-header"><span class="ch-num">Challenge 5</span><span class="badge beginner">Beginner</span><span class="topic-badge">getByTestId</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What HTML attribute does getByTestId() use by default?</div>
+            <div class="ch-desc">Your developer added a test identifier attribute to a button. Which attribute does <code>page.getByTestId('submit-btn')</code> look for by default?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">A</span> id="submit-btn"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">B</span> data-testid="submit-btn"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c5',this,true)"><span class="option-letter">C</span> data-testid="submit-btn" (default, configurable in playwright.config.ts)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c5',this,false)"><span class="option-letter">D</span> aria-label="submit-btn"</button>
+            </div>
+            <div class="explanation" id="c5-exp"><strong>Answer: C — data-testid (configurable)</strong><br>By default, <code>getByTestId</code> looks for the <code>data-testid</code> attribute. However, you can configure a different attribute globally in <code>playwright.config.ts</code> using <code>use: { testIdAttribute: 'data-cy' }</code>. This lets teams use their existing test ID conventions (Cypress teams often use <code>data-cy</code>, Testing Library uses <code>data-testid</code>).</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c5-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c5-hint">The default attribute name is <code>data-testid</code>. You can override this globally in your Playwright config.</div></div>
+    </div>
+
+    <!-- C6 -->
+    <div class="challenge-card" id="c6">
+        <div class="ch-header"><span class="ch-num">Challenge 6</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">filter()</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you select only the "Active" row from a table?</div>
+            <div class="ch-desc">A table has multiple rows. You want only the row that contains the text "Active". Which approach is correct?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Table rows with mixed statuses
+const rows = page.locator('tr.employee-row');
+
+// How to get only the "Active" row?</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">A</span> rows.getByText('Active')</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c6',this,true)"><span class="option-letter">B</span> rows.filter({ hasText: 'Active' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">C</span> rows.locator('Active')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c6',this,false)"><span class="option-letter">D</span> rows.find('Active')</button>
+            </div>
+            <div class="explanation" id="c6-exp"><strong>Answer: B — .filter({ hasText: 'Active' })</strong><br><code>locator.filter()</code> narrows down a locator's matches using a sub-condition. <code>{ hasText: 'Active' }</code> keeps only elements that contain the text "Active". You can also use <code>{ has: page.locator('.status-badge') }</code> to filter by the presence of a child element. This is cleaner than chaining multiple locators or using complex CSS selectors.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c6-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c6-hint">The <code>.filter()</code> method narrows a list of locator matches. It accepts <code>{ hasText }</code> or <code>{ has }</code> options.</div></div>
+    </div>
+
+    <!-- C7 -->
+    <div class="challenge-card" id="c7">
+        <div class="ch-header"><span class="ch-num">Challenge 7</span><span class="badge beginner">Beginner</span><span class="topic-badge">nth()</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you select the second item in a list?</div>
+            <div class="ch-desc">A page has multiple list items. Which call correctly selects the <em>second</em> item (0-indexed)?</div>
+            <div class="code-block"><pre><code class="language-typescript">const items = page.locator('ul.menu li');
+// Select the 2nd item (index 1)</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">A</span> items.nth(2)</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c7',this,true)"><span class="option-letter">B</span> items.nth(1)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">C</span> items.second()</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c7',this,false)"><span class="option-letter">D</span> items[1]</button>
+            </div>
+            <div class="explanation" id="c7-exp"><strong>Answer: B — items.nth(1)</strong><br><code>locator.nth(index)</code> is 0-based: <code>nth(0)</code> is the first item, <code>nth(1)</code> is the second. Playwright also provides <code>.first()</code> and <code>.last()</code> shortcuts. Note: <code>items[1]</code> does not work — Playwright locators are not arrays. Always use <code>.nth()</code>, <code>.first()</code>, or <code>.last()</code> for indexed access.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c7-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c7-hint"><code>nth()</code> uses 0-based indexing. First item = <code>nth(0)</code>, second = <code>nth(1)</code>. Shorthand: <code>.first()</code> and <code>.last()</code>.</div></div>
+    </div>
+
+    <!-- C8 -->
+    <div class="challenge-card" id="c8">
+        <div class="ch-header"><span class="ch-num">Challenge 8</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">Chaining</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does this chained locator select?</div>
+            <div class="ch-desc">Locators can be chained to narrow scope. What does the following chain select?</div>
+            <div class="code-block"><pre><code class="language-typescript">const editBtn = page
+  .locator('.employee-card')
+  .filter({ hasText: 'John Smith' })
+  .getByRole('button', { name: 'Edit' });</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">A</span> Any Edit button on the page</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">B</span> The employee card that contains "John Smith"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c8',this,true)"><span class="option-letter">C</span> The Edit button inside the employee card that contains "John Smith"</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c8',this,false)"><span class="option-letter">D</span> This is invalid — locators cannot be chained with getByRole</button>
+            </div>
+            <div class="explanation" id="c8-exp"><strong>Answer: C — The Edit button inside John Smith's card</strong><br>Locator chaining scopes each step to the context of the previous one. <code>.locator('.employee-card')</code> finds all cards, <code>.filter({ hasText: 'John Smith' })</code> narrows to the specific card, and <code>.getByRole('button', { name: 'Edit' })</code> finds the Edit button <em>within</em> that card. This is the correct way to target elements inside a specific list item without fragile CSS selectors.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c8-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c8-hint">Each chained method scopes the search to the elements from the previous step. Think of it as "within X, find Y."</div></div>
+    </div>
+
+    <!-- C9 -->
+    <div class="challenge-card" id="c9">
+        <div class="ch-header"><span class="ch-num">Challenge 9</span><span class="badge advanced">Advanced</span><span class="topic-badge">has: option</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does the has: option do in locator()?</div>
+            <div class="ch-desc">What does the following locator match?</div>
+            <div class="code-block"><pre><code class="language-typescript">page.locator('.list-item', {
+  has: page.locator('.badge.active')
+})</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">A</span> Elements with class .badge.active</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c9',this,true)"><span class="option-letter">B</span> .list-item elements that contain a child matching .badge.active</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">C</span> Elements that have both .list-item and .badge.active classes</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c9',this,false)"><span class="option-letter">D</span> This is a CSS selector equivalent of :has()</button>
+            </div>
+            <div class="explanation" id="c9-exp"><strong>Answer: B — .list-item elements containing a .badge.active child</strong><br>The <code>has:</code> option acts as a containment filter. It matches the outer element (<code>.list-item</code>) only when a matching child element is found inside it. This is equivalent to the CSS <code>:has()</code> pseudo-class but works across all browsers. It is more readable than CSS and composes well with other Playwright locator methods.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c9-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c9-hint">The <code>has:</code> option is a containment check — it keeps the outer element only if the inner locator matches something <em>inside</em> it.</div></div>
+    </div>
+
+    <!-- C10 -->
+    <div class="challenge-card" id="c10">
+        <div class="ch-header"><span class="ch-num">Challenge 10</span><span class="badge advanced">Advanced</span><span class="topic-badge">and()</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does locator.and() do?</div>
+            <div class="ch-desc">What is the result of this combined locator?</div>
+            <div class="code-block"><pre><code class="language-typescript">const button = page.getByRole('button')
+  .and(page.getByText('Submit'));</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">A</span> Finds a button OR an element with text "Submit"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c10',this,true)"><span class="option-letter">B</span> Finds elements that are BOTH a button role AND contain "Submit" text</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">C</span> Finds a button and then a "Submit" text element separately</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c10',this,false)"><span class="option-letter">D</span> This is invalid — .and() is not a Playwright method</button>
+            </div>
+            <div class="explanation" id="c10-exp"><strong>Answer: B — AND intersection of both conditions</strong><br><code>locator.and(other)</code> creates an intersection — the resulting locator matches elements that satisfy <em>both</em> locators simultaneously. It is the logical AND of two selectors. This is useful when you need to combine role-based and text-based constraints without resorting to CSS. The element must match both <code>getByRole('button')</code> AND <code>getByText('Submit')</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c10-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c10-hint"><code>.and()</code> is a logical AND — the result must satisfy both locators. Compare with <code>.or()</code> which is a logical OR.</div></div>
+    </div>
+
+    <!-- C11 -->
+    <div class="challenge-card" id="c11">
+        <div class="ch-header"><span class="ch-num">Challenge 11</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">visible option</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you select only visible elements when multiple exist?</div>
+            <div class="ch-desc">A page has two elements with the same class — one visible, one hidden with <code>display:none</code>. How do you target only the visible one?</div>
+            <div class="code-block"><pre><code class="language-typescript">// Both match .menu-panel, but one is hidden
+// How to select only the visible one?</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">A</span> page.locator('.menu-panel').first()</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c11',this,true)"><span class="option-letter">B</span> page.locator('.menu-panel', { hasNot: page.locator('[style*="display: none"]') }) or page.locator('.menu-panel:visible')</span></button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">C</span> page.locator('.menu-panel[visible=true]')</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c11',this,false)"><span class="option-letter">D</span> Playwright always ignores hidden elements automatically</button>
+            </div>
+            <div class="explanation" id="c11-exp"><strong>Answer: B — :visible pseudo-class or hasNot filter</strong><br>Playwright supports the <code>:visible</code> CSS pseudo-class as a selector engine extension: <code>page.locator('.menu-panel:visible')</code>. Alternatively, use <code>locator.filter({ visible: true })</code> — this is the cleanest API. Note: <code>.first()</code> just returns the first in DOM order, which might be the hidden one. Playwright does NOT automatically skip hidden elements in locators — only in actionability checks.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c11-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c11-hint">Playwright has a <code>:visible</code> pseudo-selector and <code>filter({ visible: true })</code> to target only elements that are visible in the DOM.</div></div>
+    </div>
+
+    <!-- C12 -->
+    <div class="challenge-card" id="c12">
+        <div class="ch-header"><span class="ch-num">Challenge 12</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">ARIA Roles</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">How do you target an h2 heading with getByRole?</div>
+            <div class="ch-desc">What is the correct <code>getByRole</code> call for this element?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;h2&gt;Employee List&lt;/h2&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">A</span> page.getByRole('h2', { name: 'Employee List' })</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c12',this,true)"><span class="option-letter">B</span> page.getByRole('heading', { name: 'Employee List', level: 2 })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">C</span> page.getByRole('heading', { name: 'h2' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c12',this,false)"><span class="option-letter">D</span> page.getByRole('title', { name: 'Employee List' })</button>
+            </div>
+            <div class="explanation" id="c12-exp"><strong>Answer: B — role: 'heading' with level: 2</strong><br>All heading elements (h1–h6) share the ARIA role <code>'heading'</code>. To distinguish between levels, pass <code>{ level: 2 }</code>. Option A is wrong because <code>'h2'</code> is not a valid ARIA role — it's an HTML tag name. Option D uses <code>'title'</code> which doesn't exist as a standard ARIA role for headings.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c12-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c12-hint">ARIA roles use semantic names, not HTML tag names. All heading tags share the <code>'heading'</code> role. Use the <code>level</code> option to specify h1–h6.</div></div>
+    </div>
+
+    <!-- C13 -->
+    <div class="challenge-card" id="c13">
+        <div class="ch-header"><span class="ch-num">Challenge 13</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">ARIA Roles</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What ARIA role does a &lt;select&gt; element have?</div>
+            <div class="ch-desc">You want to use <code>getByRole</code> to locate a dropdown <code>&lt;select&gt;</code> element. What is the correct ARIA role?</div>
+            <div class="code-block"><pre><code class="language-html">&lt;label for="dept"&gt;Department&lt;/label&gt;
+&lt;select id="dept"&gt;
+  &lt;option&gt;Engineering&lt;/option&gt;
+  &lt;option&gt;QA&lt;/option&gt;
+&lt;/select&gt;</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c13',this,false)"><span class="option-letter">A</span> page.getByRole('select', { name: 'Department' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c13',this,false)"><span class="option-letter">B</span> page.getByRole('dropdown', { name: 'Department' })</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c13',this,true)"><span class="option-letter">C</span> page.getByRole('combobox', { name: 'Department' })</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c13',this,false)"><span class="option-letter">D</span> page.getByRole('listbox', { name: 'Department' })</button>
+            </div>
+            <div class="explanation" id="c13-exp"><strong>Answer: C — combobox</strong><br>A <code>&lt;select&gt;</code> element has the implicit ARIA role of <code>'combobox'</code>. Common HTML-to-ARIA role mappings: <code>&lt;button&gt;</code> → <code>'button'</code>, <code>&lt;a&gt;</code> → <code>'link'</code>, <code>&lt;input type="text"&gt;</code> → <code>'textbox'</code>, <code>&lt;input type="checkbox"&gt;</code> → <code>'checkbox'</code>, <code>&lt;select&gt;</code> → <code>'combobox'</code>, <code>&lt;table&gt;</code> → <code>'table'</code>.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c13-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c13-hint">ARIA roles map to semantic HTML elements. A <code>&lt;select&gt;</code> dropdown is a "combination" of a text input and a listbox — which ARIA role reflects this?</div></div>
+    </div>
+
+    <!-- C14 -->
+    <div class="challenge-card" id="c14">
+        <div class="ch-header"><span class="ch-num">Challenge 14</span><span class="badge advanced">Advanced</span><span class="topic-badge">CSS Selectors</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">What does this CSS selector find?</div>
+            <div class="ch-desc">Playwright extends standard CSS with custom pseudo-classes. What does <code>:has-text()</code> do here?</div>
+            <div class="code-block"><pre><code class="language-typescript">page.locator('li:has-text("Active")')</code></pre></div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c14',this,false)"><span class="option-letter">A</span> li elements with attribute text="Active"</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c14',this,true)"><span class="option-letter">B</span> li elements whose text content contains "Active" (case-insensitive)</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c14',this,false)"><span class="option-letter">C</span> The first li element only</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c14',this,false)"><span class="option-letter">D</span> This is standard CSS and works in all browsers</button>
+            </div>
+            <div class="explanation" id="c14-exp"><strong>Answer: B — li elements containing "Active" text</strong><br><code>:has-text()</code> is a Playwright-specific CSS extension that matches elements whose text content contains the specified string (case-insensitive). It is processed by Playwright's selector engine, not the browser's CSS engine, so it works consistently across all browsers. It is equivalent to using <code>.filter({ hasText: 'Active' })</code> but inline in the CSS selector string.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c14-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c14-hint"><code>:has-text()</code> is Playwright's own CSS extension — not standard CSS. It filters by text content, similar to <code>.filter({ hasText: ... })</code>.</div></div>
+    </div>
+
+    <!-- C15 -->
+    <div class="challenge-card" id="c15">
+        <div class="ch-header"><span class="ch-num">Challenge 15</span><span class="badge intermediate">Intermediate</span><span class="topic-badge">XPath</span><div class="solved-badge"><i class="fas fa-check-circle"></i> Solved</div></div>
+        <div class="ch-body">
+            <div class="ch-title">When is XPath acceptable in Playwright?</div>
+            <div class="ch-desc">Playwright supports XPath but recommends avoiding it. Which scenario legitimately justifies using XPath over Playwright's built-in locators?</div>
+            <div class="options-grid">
+                <button class="option-btn" data-correct="false" onclick="pick('c15',this,false)"><span class="option-letter">A</span> When you want tests to run faster — XPath is more performant</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c15',this,false)"><span class="option-letter">B</span> When you need to click a button by its visible text</button>
+                <button class="option-btn" data-correct="true"  onclick="pick('c15',this,true)"><span class="option-letter">C</span> When navigating a complex parent–sibling–ancestor relationship that built-in locators cannot express</button>
+                <button class="option-btn" data-correct="false" onclick="pick('c15',this,false)"><span class="option-letter">D</span> Always — XPath is the most reliable selector type</button>
+            </div>
+            <div class="explanation" id="c15-exp"><strong>Answer: C — complex structural DOM relationships</strong><br>XPath is acceptable as a last resort for structural navigation that built-in locators cannot express — e.g., selecting a parent element based on a child's content, or traversing to a sibling. XPath is NOT faster (it's actually slower than CSS), and built-in locators handle text matching better. Avoid XPath for simple cases — it makes tests brittle and hard to read.</div>
+        </div>
+        <div class="ch-footer"><button class="hint-btn" onclick="toggleBox('c15-hint')"><i class="fas fa-lightbulb"></i> Hint</button><div class="hint-box" id="c15-hint">XPath's strength is traversal (parent/sibling/ancestor navigation). Built-in locators cover text and role better. Use XPath only when you genuinely need DOM structural traversal.</div></div>
+    </div>
+
+</main>
+</div>
+
+<script>
+    const TOTAL = 15;
+    const STORAGE_KEY = 'vtq-pw-locators';
+    const solved = {};
+
+    (function restore() {
+        try {
+            const s = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+            Object.keys(s).forEach(id => {
+                if (!s[id]) return;
+                solved[id] = true;
+                const dot = document.getElementById('dot-' + id);
+                if (dot) dot.classList.add('solved');
+                const card = document.getElementById(id);
+                if (card) {
+                    card.classList.add('solved');
+                    const exp = document.getElementById(id + '-exp');
+                    if (exp) exp.style.display = 'block';
+                    card.querySelectorAll('.option-btn').forEach(b => {
+                        b.disabled = true;
+                        if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+                        else b.classList.add('opt-wrong');
+                    });
+                }
+            });
+        } catch(_) {}
+        refreshScore();
+    })();
+
+    function pick(cardId, btn, correct) {
+        const card = document.getElementById(cardId);
+        if (card.dataset.answered) return;
+        card.dataset.answered = '1';
+        card.querySelectorAll('.option-btn').forEach(b => {
+            b.disabled = true;
+            if (b.dataset.correct === 'true') b.classList.add('opt-correct');
+            else if (b === btn) b.classList.add('opt-selected-wrong');
+            else b.classList.add('opt-wrong');
+        });
+        document.getElementById(cardId + '-exp').style.display = 'block';
+        if (correct && !solved[cardId]) {
+            solved[cardId] = true;
+            card.classList.add('solved');
+            const dot = document.getElementById('dot-' + cardId);
+            if (dot) dot.classList.add('solved');
+            refreshScore();
+            saveProgress();
+        }
+    }
+
+    function refreshScore() {
+        const count = Object.keys(solved).length;
+        const el = document.getElementById('scoreDisplay');
+        el.textContent = count + ' / ' + TOTAL;
+        el.classList.add('bump');
+        setTimeout(() => el.classList.remove('bump'), 300);
+        const pct = Math.round((count / TOTAL) * 100);
+        document.getElementById('progressFill').style.width = pct + '%';
+        document.getElementById('progressText').textContent = pct + '%';
+    }
+
+    function saveProgress() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(solved)); } catch(_) {}
+    }
+
+    function toggleBox(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach(b => hljs.highlightElement(b));
+    });
+</script>
+</body>
+</html>

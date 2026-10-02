@@ -1,0 +1,859 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🔄 Part 4 &nbsp;·&nbsp; Chapter 403 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Retries</span> <span class="w2">—</span> <span class="w3">Flakiness</span> <span class="w4">&amp;</span> <span class="w5">Recovery</span></h1>
+    <p class="sn-title-sub">Execution &amp; CI/CD — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers Playwright's retry mechanism — how tests re-run on failure, what happens during a retry, and how to use retry data for debugging. Interviewers ask about retries to gauge reliability thinking: a candidate who can distinguish between absorbing environmental flakiness and masking real bugs, and who knows how to find and fix flaky tests, brings long-term value to any test team.</span>
+  </div>
+
+
+  <!-- Q403.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.1</span>
+      <h2 class="sn-q-text">What are retries in Playwright and what problem do they solve?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When a test fails, Playwright can automatically re-run it. If it passes on a subsequent attempt, Playwright marks it <strong class="k-blue">flaky</strong> (not failed) in the report. If it fails on every attempt, it is marked <strong class="k-blue">failed</strong>.</p>
+      </div>
+<p class="sn-para">Retries solve the environmental flakiness problem. CI machines share resources, network conditions vary, containers start cold. A test that passes perfectly locally may occasionally fail on CI due to a slow server response, a brief animation delay, or a network timeout — not because the application is broken or the test is wrong.</p>
+<p class="sn-para">Without retries, every such fluke breaks the CI gate. Engineers learn to re-trigger pipelines without investigating, and the team loses confidence that a red CI means a real bug. Real failures get ignored.</p>
+<p class="sn-para">With retries configured correctly, occasional environmental failures are absorbed. The test is marked flaky — a signal that something needs investigation — but the CI gate is not broken by a single bad run.</p>
+<p class="sn-para"><strong class="k-blue">The critical distinction:</strong> retries do not fix flaky tests. They absorb them temporarily. A test that reliably passes on retry is a maintenance debt that compounds over time.</p>
+    </div>
+  </div>
+
+  <!-- Q403.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.2</span>
+      <h2 class="sn-q-text">How do you configure retries?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-green">In <code class="sn-ic">playwright.config.ts</code>:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  retries: <span class="tc-num">2</span>,  <span class="tc-cm">// retry failed tests up to 2 times</span>
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-green">The standard CI pattern:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">retries: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,</div>
+      </div>
+<p class="sn-para">Locally: 0 retries — see failures immediately, fix them immediately. On CI: 2 retries — absorb genuine environmental noise without hiding real bugs. A test that fails three times in a row is not an environmental blip.</p>
+<p class="sn-para"><strong class="k-green">From the CLI:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --retries=3   # override for this run
+npx playwright test --retries=0   # disable retries even if config has them</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Per-test override:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(
+  <span class="tc-str">'email notification is delivered'</span>,
+  { retries: <span class="tc-num">3</span> },
+  <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-cm">// Email delivery has variable timing — deserves extra retries</span>
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Welcome email sent'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: 30_000 });
+  }
+);</div>
+      </div>
+<p class="sn-para"><strong class="k-green">Per-group override:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave Module'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ retries: <span class="tc-num">1</span> });
+  <span class="tc-cm">// All tests in this describe get 1 retry regardless of global setting</span>
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q403.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.3</span>
+      <h2 class="sn-q-text">What exactly happens when a test is retried?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A retry is a complete fresh start — not a continuation of the failed run:</p>
+      </div>
+<ol class="sn-olist">
+<li>The current browser context and page are closed</li>
+<li>A fresh browser context is created (loading <code class="sn-ic">storageState</code> again if configured)</li>
+<li>All <code class="sn-ic">beforeEach</code> hooks run again from the beginning</li>
+<li>The entire test body runs from the start</li>
+<li><code class="sn-ic">test.info().retry</code> increments to reflect the attempt number</li>
+</ol>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Runs before EVERY attempt — first run AND every retry</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/pim/viewEmployeeList'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'employee search returns results @smoke'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// If this fails and retries:</span>
+  <span class="tc-cm">// beforeEach runs again → fresh page → navigate again → test body re-runs</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByPlaceholder</span>(<span class="tc-str">'Type for hints...'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Linda'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Linda Anderson'</span>)).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para">The clean restart means any UI state from the failed run is gone. This is why retries work for environmental failures — the second attempt starts from a clean slate.</p>
+    </div>
+  </div>
+
+  <!-- Q403.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.4</span>
+      <h2 class="sn-q-text">What is test.info().retry and how do you use it?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">test.info().retry</code> tells you which attempt the test is currently on:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><code class="sn-ic">0</code> — first run (not a retry)</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">1</code> — first retry</span></li>
+<li><span class="icon">⚡</span><span><code class="sn-ic">2</code> — second retry</span></li>
+</ul>
+<p class="sn-para"><strong class="k-orange">Use it to adapt behaviour on retry:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee list loads correctly @smoke'</span>, <span class="tc-kw">async</span> ({ page, context }) =&gt; {
+  <span class="tc-kw">if</span> (<span class="tc-kw">test</span>.<span class="tc-fn">info</span>().retry &gt; <span class="tc-num">0</span>) {
+    <span class="tc-cm">// Previous attempt failed — clear any lingering state before trying again</span>
+    console.<span class="tc-fn">log</span>(<span class="tc-str">`Retry ${test.info().retry}: clearing context state`</span>);
+    <span class="tc-kw">await</span> context.<span class="tc-fn">clearCookies</span>();
+    <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; {
+      localStorage.<span class="tc-fn">clear</span>();
+      sessionStorage.<span class="tc-fn">clear</span>();
+    });
+  }
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/web/index.php/pim/viewEmployeeList'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'heading'</span>, { name: <span class="tc-str">'Employee List'</span> })).<span class="tc-fn">toBeVisible</span>();
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Use it to label per-attempt evidence:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+  <span class="tc-kw">if</span> (info.status === <span class="tc-str">'failed'</span>) {
+    <span class="tc-kw">const</span> label = info.retry === <span class="tc-num">0</span>
+      ? <span class="tc-str">'failure-first-attempt'</span>
+      : <span class="tc-str">`failure-retry-${info.retry}`</span>;
+
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(label, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+  }
+});</div>
+      </div>
+<p class="sn-para">The HTML report then shows a labelled screenshot for each failed attempt. When a test fails after all retries, you can compare screenshots across attempts to see whether the failure was consistent or changed between runs.</p>
+    </div>
+  </div>
+
+  <!-- Q403.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.5</span>
+      <h2 class="sn-q-text">How do retries appear in the HTML report and terminal?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">HTML Report — test that passes on retry (flaky):</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">⚠️  employee search returns results    flaky
+    Attempt 1: failed (timeout 30000ms)
+      [screenshot attached]
+    Attempt 2: passed (1.8s)</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">HTML Report — test that fails all retries:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">❌  employee search returns results    failed
+    Attempt 1: failed (timeout 30000ms)
+      [screenshot attached]
+    Attempt 2: failed (timeout 30000ms)
+      [screenshot attached]
+    Attempt 3: failed (network error)
+      [screenshot attached]</div>
+      </div>
+<p class="sn-para"><strong class="k-teal">Terminal:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">✅  Login › valid credentials redirect to dashboard (1.2s)
+⚠️  Employee List › search returns results (2.1s) — passed on retry 1
+❌  Leave Module › apply leave with past date (30.0s) — failed after 2 retries</div>
+      </div>
+<p class="sn-para">The flaky distinction matters. A test marked "passed on retry" is a warning, not a pass. It tells you: this test is unstable. Track it. Fix it.</p>
+    </div>
+  </div>
+
+  <!-- Q403.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.6</span>
+      <h2 class="sn-q-text">How does trace: 'on-first-retry' work with retries?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">trace: 'on-first-retry'</code> is the optimal CI setting for trace capture. It records a full Playwright trace only when a test fails on the first run and is about to be retried:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  screenshot: <span class="tc-str">'only-on-failure'</span>,  <span class="tc-cm">// screenshot from each failed moment</span>
+  trace:      <span class="tc-str">'on-first-retry'</span>,   <span class="tc-cm">// full trace recorded on the first retry</span>
+  video:      <span class="tc-str">'retain-on-failure'</span>, <span class="tc-cm">// full video for tests that fail all retries</span>
+},
+retries: process.env.CI ? <span class="tc-num">2</span> : <span class="tc-num">0</span>,</div>
+      </div>
+<p class="sn-para">The logic:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span><strong class="k-pink">First run (no retry yet):</strong> No trace recorded — zero overhead for passing tests</span></li>
+<li><span class="icon">💡</span><span><strong class="k-pink">First retry (failure confirmed):</strong> Trace IS recorded — you are now investigating</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-pink">Second retry:</strong> No trace (already have one from the first retry)</span></li>
+</ul>
+<p class="sn-para">The trace records every action, screenshot, DOM snapshot, network call, and console log during the test. Replay it with:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright show-trace test-results/some-test-chromium/trace.zip</div>
+      </div>
+<p class="sn-para">You can scrub through the test timeline, see exactly what the browser was displaying at each moment, and identify exactly where things went wrong.</p>
+<p class="sn-para"><strong class="k-pink">Why not <code class="sn-ic">trace: 'on'</code>?</strong> Recording a trace for every test — including the 99% that pass — adds significant overhead: larger files, slower runs, more disk. <code class="sn-ic">on-first-retry</code> gives you the trace exactly when you need it: when something is failing and you want to understand why.</p>
+    </div>
+  </div>
+
+  <!-- Q403.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.7</span>
+      <h2 class="sn-q-text">What is the difference between retries and --repeat-each?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both cause a test to run multiple times. They serve completely different purposes:</p>
+      </div>
+
+      <div class="sn-table-scroll">
+        <table class="sn-table">
+          <thead><tr><th></th><th class="sn-th-blue"><code class="sn-ic">retries</code></th><th class="sn-th-green"><code class="sn-ic">--repeat-each</code></th></tr></thead>
+          <tbody>
+          <tr><td>When it runs again</td><td>Only when the test <strong>failed</strong></td><td>Every test <strong>always</strong></td></tr>
+          <tr><td>Purpose</td><td>Absorb environmental failures in CI</td><td>Reproduce intermittent failures / verify fixes</td></tr>
+          <tr><td>Typical use</td><td>Production CI config</td><td>Local debugging</td></tr>
+          <tr><td>Count</td><td>Re-runs failed test up to N more times</td><td>Runs every test exactly N times</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">
+npx playwright test --grep &quot;employee search&quot; --repeat-each=20 --workers=1
+
+npx playwright test --grep &quot;employee search&quot; --repeat-each=50 --workers=1</div>
+      </div>
+<p class="sn-para">If <code class="sn-ic">--repeat-each=20</code> shows the test fails on 3 out of 20 runs, the test is genuinely flaky with about 15% failure rate. With <code class="sn-ic">retries=2</code>, it would still eventually pass on most CI runs — but it is producing noise that needs fixing.</p>
+    </div>
+  </div>
+
+  <!-- Q403.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.8</span>
+      <h2 class="sn-q-text">What are the most common causes of flaky tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">1. Missing proper waits — the most common cause:</strong></p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Asserts before the search results load</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>)).<span class="tc-fn">toHaveCountGreaterThan</span>(<span class="tc-num">1</span>);
+
+<span class="tc-cm">// ✅ Wait for network to settle before asserting</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Search'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>)).<span class="tc-fn">toHaveCountGreaterThan</span>(<span class="tc-num">1</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">2. Assertion timeout too low for the application's actual response time:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ 5s might not be enough for a slow server</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+<span class="tc-cm">// ✅ Increase the timeout for this specific assertion</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Save'</span> }).<span class="tc-fn">click</span>();
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Successfully Saved'</span>)).<span class="tc-fn">toBeVisible</span>({ timeout: 10_000 });</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">3. Shared database state — tests interfering with each other in parallel:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Asserts an exact count — breaks when other tests add records concurrently</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'row'</span>)).<span class="tc-fn">toHaveCount</span>(<span class="tc-num">5</span>);
+
+<span class="tc-cm">// ✅ Assert specific known data instead of counts</span>
+<span class="tc-kw">await</span> employeeListPage.<span class="tc-fn">searchByName</span>(<span class="tc-str">'Linda Anderson'</span>);
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Linda Anderson'</span>)).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">4. Animation not complete before interaction:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Modal is still animating open when fill runs</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>).<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Test'</span>);
+
+<span class="tc-cm">// ✅ Wait for animation to complete first</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>)).<span class="tc-fn">toBeVisible</span>();
+<span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'dialog'</span>).<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Name'</span>).<span class="tc-fn">fill</span>(<span class="tc-str">'Test'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">5. Hard waits masking underlying timing issues:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// ❌ Arbitrary sleep — works sometimes, fails sometimes</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">2000</span>);
+
+<span class="tc-cm">// ✅ Wait for the specific condition you need</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByText</span>(<span class="tc-str">'Data loaded'</span>)).<span class="tc-fn">toBeVisible</span>();</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q403.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.9</span>
+      <h2 class="sn-q-text">What is the fix cycle for a flaky test?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">A systematic approach prevents flaky tests from accumulating:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Step 1 — Identify the flaky test:</strong> Look for "passed on retry" results in the HTML report across multiple CI runs. A test that shows this pattern repeatedly is chronically flaky.</p>
+<p class="sn-para"><strong class="k-blue">Step 2 — Annotate it:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(
+  <span class="tc-str">'employee search returns results'</span>,
+  { annotation: { <span class="tc-kw">type</span>: <span class="tc-str">'flaky'</span>, description: <span class="tc-str">'Passes on retry — investigating timing issue'</span> } },
+  <span class="tc-kw">async</span> ({ page }) =&gt; { ... }
+);</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Step 3 — Reproduce locally with --repeat-each:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;employee search&quot; --repeat-each=20 --workers=1</div>
+      </div>
+<p class="sn-para">If it fails once in 20 runs, it is flaky with ~5% failure rate. If it passes all 20, the environment itself (CI's slow network) is the cause.</p>
+<p class="sn-para"><strong class="k-blue">Step 4 — Identify the root cause:</strong> Open the trace from the failed attempt. Look at what the browser was showing at the moment of failure. Is the element present? Hidden? Different text? Was there a network request that was still in flight?</p>
+<p class="sn-para"><strong class="k-blue">Step 5 — Apply the fix:</strong> Missing wait → add <code class="sn-ic">waitForLoadState</code> or increase assertion timeout. Shared state → use unique IDs or clean up in <code class="sn-ic">afterEach</code>. Animation race → wait for element to be visible before interacting.</p>
+<p class="sn-para"><strong class="k-blue">Step 6 — Verify the fix:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;employee search&quot; --repeat-each=50 --workers=1</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Step 7 — Remove the annotation, update retries if needed.</strong></p>
+    </div>
+  </div>
+
+  <!-- Q403.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.10</span>
+      <h2 class="sn-q-text">How do retries interact with beforeAll and afterAll hooks?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">beforeAll</code> and <code class="sn-ic">afterAll</code> are not retried — only the test itself retries.</p>
+      </div>
+<p class="sn-para">When a test in a describe group is retried:</p>
+<ol class="sn-olist">
+<li><code class="sn-ic">beforeAll</code> already ran (once, when the first test in the group started) — it does not re-run</li>
+<li>The fresh browser context is created</li>
+<li><code class="sn-ic">beforeEach</code> runs again</li>
+<li>The test body runs again</li>
+<li><code class="sn-ic">afterEach</code> runs again</li>
+<li><code class="sn-ic">afterAll</code> has not run yet (it waits until all tests in the group finish)</li>
+</ol>
+<p class="sn-para">This means: if your <code class="sn-ic">beforeAll</code> set up shared state (a database seed, a variable), that state persists across retries of tests within the group. Only the test-scoped browser context resets.</p>
+<p class="sn-para"><strong class="k-green">Implication:</strong> Do not rely on <code class="sn-ic">beforeAll</code> having run freshly before each retry. If a retry needs clean test data, set it up in <code class="sn-ic">beforeEach</code> instead — which does re-run with each retry.</p>
+    </div>
+  </div>
+
+  <!-- Q403.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.11</span>
+      <h2 class="sn-q-text">How do you configure an auto fixture to track flakiness?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">An auto fixture that runs after every test can detect when a test passed on retry and add an annotation automatically:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">const</span> <span class="tc-kw">test</span> = base.extend&lt;{ trackFlakiness: <span class="tc-kw">void</span> }&gt;({
+  trackFlakiness: [<span class="tc-kw">async</span> ({}, use) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-fn">use</span>();
+
+    <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+
+    <span class="tc-cm">// A test that passed after retrying is flaky</span>
+    <span class="tc-kw">if</span> (info.retry &gt; <span class="tc-num">0</span> &amp;&amp; info.status === info.expectedStatus) {
+      info.annotations.<span class="tc-fn">push</span>({
+        <span class="tc-kw">type</span>:        <span class="tc-str">'flaky'</span>,
+        description: <span class="tc-str">`Passed on retry ${info.retry} — investigate root cause`</span>,
+      });
+      console.<span class="tc-fn">warn</span>(<span class="tc-str">`⚠️  FLAKY: ${info.title} — passed on retry ${info.retry}`</span>);
+    }
+  }, { auto: <span class="tc-kw">true</span> }],
+});</div>
+      </div>
+<p class="sn-para">Every test in the suite now automatically gets a <code class="sn-ic">flaky</code> annotation added to the HTML report when it passes on retry. The annotation is visible in the report, exportable from JSON, and parseable by CI dashboards that track flakiness trends over time.</p>
+    </div>
+  </div>
+
+  <!-- Q403.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.12</span>
+      <h2 class="sn-q-text">What is the right number of retries and how do you decide?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-orange">0 retries</strong> — locally. You want immediate, honest feedback. If a test fails locally, it should show as failed so you fix it.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">1 retry</strong> — for relatively stable suites running against a reliable test environment. Absorbs single-occurrence glitches without over-tolerating.</p>
+<p class="sn-para"><strong class="k-orange">2 retries</strong> — the standard CI setting. Most genuine environmental failures resolve within two retries. A test that fails three consecutive times is almost certainly a real failure.</p>
+<p class="sn-para"><strong class="k-orange">3+ retries</strong> — a warning sign. If 3 retries are needed to make CI green, the test suite has significant flakiness that is being suppressed rather than fixed. This adds time (each retry costs time) and erodes confidence.</p>
+<p class="sn-para"><strong class="k-orange">Per-test overrides for legitimately variable tests:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Email delivery has external service timing variability</span>
+<span class="tc-kw">test</span>(<span class="tc-str">'welcome email is received'</span>, { retries: <span class="tc-num">4</span> }, <span class="tc-kw">async</span> ({ mailPage }) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(mailPage.<span class="tc-fn">getInbox</span>()).<span class="tc-fn">toContainText</span>(<span class="tc-str">'Welcome to OrangeHRM'</span>, { timeout: 60_000 });
+});</div>
+      </div>
+<p class="sn-para">Use per-test overrides for tests that interact with external services or genuinely variable processes — not as a blanket suppression for all tests.</p>
+    </div>
+  </div>
+
+  <!-- Q403.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.13</span>
+      <h2 class="sn-q-text">How do retries affect test run time?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Retries add time to any CI run where tests fail. With <code class="sn-ic">retries: 2</code>:</p>
+      </div>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A passing test: runs once</span></li>
+<li><span class="icon">💡</span><span>A flaky test that passes on retry: runs twice (wasted ~1× the test's duration)</span></li>
+<li><span class="icon">⚡</span><span>A genuinely failing test: runs three times (wasted ~2× the test's duration)</span></li>
+</ul>
+<p class="sn-para">With 200 tests and 5% flakiness (10 flaky tests averaging 5 seconds each):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Extra time per run: 10 tests × 1 extra run × 5s = 50 seconds per CI run
+Over 100 CI runs: ~83 minutes of wasted compute</div>
+      </div>
+<p class="sn-para">This is another reason to fix flaky tests rather than just adding retries: the cost accumulates. An aggressively flaky suite with <code class="sn-ic">retries: 2</code> can add 5–10 minutes to every CI run — budget that disappears silently.</p>
+    </div>
+  </div>
+
+  <!-- Q403.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.14</span>
+      <h2 class="sn-q-text">What evidence should you capture per retry attempt?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Capture evidence on every failed attempt — not just the final failure. Comparing screenshots across attempts reveals whether the failure is consistent (always the same error) or variable (different failures on different attempts, suggesting a race condition):</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// In baseFixture.ts — auto fixture</span>
+screenshotOnFailure: [<span class="tc-kw">async</span> ({ page }, use) =&gt; {
+  <span class="tc-kw">await</span> <span class="tc-fn">use</span>();
+
+  <span class="tc-kw">const</span> info = <span class="tc-kw">test</span>.<span class="tc-fn">info</span>();
+  <span class="tc-kw">if</span> (info.status === <span class="tc-str">'failed'</span>) {
+    <span class="tc-cm">// Label includes the attempt number</span>
+    <span class="tc-kw">const</span> attempt = info.retry === <span class="tc-num">0</span> ? <span class="tc-str">'attempt-1'</span> : <span class="tc-str">`attempt-${info.retry + 1}`</span>;
+
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">`screenshot-${attempt}`</span>, {
+      body: <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> }),
+      contentType: <span class="tc-str">'image/png'</span>,
+    });
+
+    <span class="tc-kw">await</span> info.<span class="tc-fn">attach</span>(<span class="tc-str">`url-${attempt}`</span>, {
+      body: Buffer.<span class="tc-kw">from</span>(page.<span class="tc-fn">url</span>()),
+      contentType: <span class="tc-str">'text/plain'</span>,
+    });
+  }
+}, { auto: <span class="tc-kw">true</span> }],</div>
+      </div>
+<p class="sn-para">When a test fails after all retries and has multiple screenshots attached, the HTML report shows a timeline of the failure across attempts.</p>
+    </div>
+  </div>
+
+  <!-- Q403.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.15</span>
+      <h2 class="sn-q-text">How do you prevent retries from hiding real failures?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Retries should absorb rare environmental noise, not paper over persistent bugs. Several practices keep this discipline:</p>
+      </div>
+<p class="sn-para"><strong class="k-red">1. Keep retries low (2 maximum on CI):</strong> A test that needs 3+ retries to pass is not an environmental issue — it is a broken test being suppressed.</p>
+<p class="sn-para"><strong class="k-red">2. Monitor the flakiness rate:</strong> Track how often tests pass on retry across CI runs. If a test passes on retry more than 10% of the time, it is chronically flaky and needs fixing, not more retries.</p>
+<p class="sn-para"><strong class="k-red">3. Never add retries to newly failing tests:</strong> When a new test starts failing on CI, resist the impulse to add <code class="sn-ic">{ retries: 3 }</code>. Investigate why it is failing. Retries are for pre-existing environmental variability, not for tests that just started failing.</p>
+<p class="sn-para"><strong class="k-red">4. Use <code class="sn-ic">--retries=0</code> to verify:</strong> Before merging a fix, run with <code class="sn-ic">--retries=0</code> to confirm the test genuinely passes without the safety net:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;employee search&quot; --retries=0 --repeat-each=5</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q403.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.16</span>
+      <h2 class="sn-q-text">How do you interpret "flaky" vs "failed" in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Failed:</strong> The test failed on every attempt. The application or the test code has a real problem. Do not merge. Investigate immediately.</p>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Flaky:</strong> The test failed at least once but eventually passed on a retry. The test is unstable. This is not a pass — it is a warning. The test should be investigated before the flakiness worsens or causes a real failure to be missed.</p>
+<p class="sn-para">A flaky test that is ignored eventually becomes one of two things:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>A test that consistently fails (the underlying issue gets worse)</span></li>
+<li><span class="icon">💡</span><span>A test that is permanently skipped or removed because "it never reliably passes"</span></li>
+</ul>
+<p class="sn-para">Neither outcome is acceptable. Treat a flaky status in the CI report as a bug to be filed and scheduled, not a condition to be tolerated.</p>
+    </div>
+  </div>
+
+  <!-- Q403.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.17</span>
+      <h2 class="sn-q-text">How do per-test and per-describe retries interact with the global setting?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The most specific retry configuration wins:</p>
+      </div>
+<ol class="sn-olist">
+<li>Per-test <code class="sn-ic">{ retries: N }</code> in the details object — overrides everything</li>
+<li><code class="sn-ic">test.describe.configure({ retries: N })</code> — overrides global for that group</li>
+<li>Global <code class="sn-ic">retries</code> in <code class="sn-ic">playwright.config.ts</code> — applies when nothing more specific is set</li>
+</ol>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Global: retries: 2 (in config)</span>
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Stable Module'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ retries: <span class="tc-num">0</span> }); <span class="tc-cm">// this group: 0 retries</span>
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'predictable test @smoke'</span>, <span class="tc-kw">async</span> () =&gt; { ... }); <span class="tc-cm">// 0 retries</span>
+});
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Leave Module'</span>, () =&gt; {
+  <span class="tc-kw">test</span>.<span class="tc-kw">describe</span>.<span class="tc-fn">configure</span>({ retries: <span class="tc-num">1</span> }); <span class="tc-cm">// this group: 1 retry</span>
+
+  <span class="tc-kw">test</span>(
+    <span class="tc-str">'email notification'</span>,
+    { retries: <span class="tc-num">4</span> },  <span class="tc-cm">// this test: 4 retries (overrides describe-level)</span>
+    <span class="tc-kw">async</span> () =&gt; { ... }
+  );
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'apply leave @regression'</span>, <span class="tc-kw">async</span> () =&gt; { ... }); <span class="tc-cm">// 1 retry (describe-level)</span>
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'standard test @smoke'</span>, <span class="tc-kw">async</span> () =&gt; { ... }); <span class="tc-cm">// 2 retries (global)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q403.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q403.18</span>
+      <h2 class="sn-q-text">What was your most impactful intervention on a flaky test suite?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When I joined the project, the test suite had <code class="sn-ic">retries: 3</code> and a 35% flakiness rate — one in three tests was passing only on retry. CI runs were unpredictable. The team had stopped trusting results.</p>
+      </div>
+<p class="sn-para">The intervention was systematic:</p>
+<p class="sn-para"><strong class="k-green">Phase 1 — Stop the growth:</strong> Changed <code class="sn-ic">retries: 3</code> to <code class="sn-ic">retries: 2</code> and added the flakiness-tracking auto fixture that annotated every "passed on retry" result. This gave us a flakiness leaderboard from the JSON report.</p>
+<p class="sn-para"><strong class="k-green">Phase 2 — Fix the top 10:</strong> Used <code class="sn-ic">--repeat-each=20</code> on each chronically flaky test. Seven of the ten had the same root cause: <code class="sn-ic">expect.count</code> assertions counting all rows in a shared database, broken by concurrent parallel tests. Fixed by replacing count assertions with <code class="sn-ic">searchByName</code> + <code class="sn-ic">toBeVisible</code> patterns.</p>
+<p class="sn-para"><strong class="k-green">Phase 3 — Fix the infrastructure:</strong> Three tests were flaky because they navigated to pages with third-party analytics scripts that caused timeouts. Fixed by adding <code class="sn-ic">page.route('**/analytics/**', r =&gt; r.abort())</code> in the global context override.</p>
+<p class="sn-para">After four weeks of targeted fixes:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Flakiness rate: 35% → 3%</span></li>
+<li><span class="icon">💡</span><span><code class="sn-ic">retries: 2</code> → <code class="sn-ic">retries: 1</code> (enough for the remaining 3%)</span></li>
+<li><span class="icon">⚡</span><span>CI run time reduced by 8 minutes (fewer retries × shorter tests)</span></li>
+<li><span class="icon">🎯</span><span>Team confidence restored — a red CI now means a real bug</span></li>
+</ul>
+<p class="sn-para">The key insight: every flaky test is hiding information. When you fix it, you learn something about the application, the infrastructure, or the test design. That knowledge compounds.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Retries re-run a failed test from scratch — fresh browser context, <code class="sn-ic">beforeEach</code> runs again, clean start.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">retries: process.env.CI ? 2 : 0</code> — the standard pattern; fail fast locally, absorb CI noise on CI.</span></li>
+            <li><span class="icon">⭐</span><span>Per-test: <code class="sn-ic">{ retries: N }</code> in the details object. Per-group: <code class="sn-ic">test.describe.configure({ retries: N })</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">test.info().retry</code> — 0 on first run, increments on each retry. Use to adapt behaviour and label evidence.</span></li>
+            <li><span class="icon">⭐</span><span>Flaky in report = "passed on retry N" — a warning, not a pass. Needs investigation.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">trace: 'on-first-retry'</code> — records a full trace only when a test fails and is retried; zero overhead for passing tests.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">--repeat-each=N</code> runs every test N times regardless of outcome. Use for reproducing flakiness and verifying fixes.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Common flakiness causes: missing waits, low assertion timeout, shared database state, animation races.</span></li>
+            <li><span class="icon">⭐</span><span>Fix cycle: identify via report → annotate → reproduce with <code class="sn-ic">--repeat-each</code> → trace to root cause → fix → verify → clean up.</span></li>
+            <li><span class="icon">⭐</span><span>Retries do not fix flaky tests — they absorb them temporarily. A flaky test is a debt that compounds.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">beforeAll</code> does not re-run on retry — only <code class="sn-ic">beforeEach</code> and the test body do.</span></li>
+            <li><span class="icon">⭐</span><span>Never use retries to suppress a newly failing test. Investigate first.</span></li>
+            <li><span class="icon">⭐</span><span>Monitor flakiness rate over time — tests passing on retry more than 10% need fixing, not more retries.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

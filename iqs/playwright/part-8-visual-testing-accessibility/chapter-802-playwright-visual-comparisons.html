@@ -1,0 +1,847 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎨 Part 8 &nbsp;·&nbsp; Chapter 802 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Playwright</span> <span class="w2">Visual</span> <span class="w3">Comparisons</span></h1>
+    <p class="sn-title-sub">Visual &amp; Accessibility — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers <code class="sn-ic">toHaveScreenshot()</code> in depth — all options, snapshot path configuration, update workflows, element-level comparisons, and the <code class="sn-ic">page.screenshot()</code> API for non-comparison captures. Interviewers ask these questions when hiring for roles that own the visual testing layer. Questions progress from basic syntax through threshold tuning, masking patterns, and the CI snapshot update workflow.</span>
+  </div>
+
+
+  <!-- Q802.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.1</span>
+      <h2 class="sn-q-text">What is toHaveScreenshot and how does it work?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">toHaveScreenshot()</code> is a Playwright assertion that captures a screenshot of the page (or a specific locator) and compares it pixel-by-pixel against a stored baseline image. It is the primary API for visual regression testing:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'login page looks correct'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/login'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'login.png'</span>);
+});</div>
+      </div>
+<p class="sn-para">On the first run: no <code class="sn-ic">login.png</code> baseline exists. Playwright captures a screenshot and saves it. The test passes with a message: "snapshot was written."</p>
+<p class="sn-para">On subsequent runs: Playwright captures a fresh screenshot and compares it to the saved baseline. If differences exceed the tolerance, the test fails and three files are saved: actual, expected, and diff.</p>
+<p class="sn-para">The baseline file name includes the browser and OS automatically: <code class="sn-ic">login-chromium-linux.png</code> — ensuring each platform has its own baseline.</p>
+    </div>
+  </div>
+
+  <!-- Q802.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.2</span>
+      <h2 class="sn-q-text">What are all the options available in toHaveScreenshot?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'name.png'</span>, {
+
+  <span class="tc-cm">// Comparison tolerance</span>
+  threshold:           <span class="tc-num">0.2</span>,    <span class="tc-cm">// per-pixel colour difference tolerance (0–1)</span>
+  maxDiffPixels:       <span class="tc-num">50</span>,     <span class="tc-cm">// max absolute number of differing pixels</span>
+  maxDiffPixelRatio:   <span class="tc-num">0.001</span>,  <span class="tc-cm">// max ratio of differing pixels (0–1)</span>
+
+  <span class="tc-cm">// Capture options</span>
+  fullPage:   <span class="tc-kw">true</span>,            <span class="tc-cm">// capture entire scrollable page (not just viewport)</span>
+  animations: <span class="tc-str">'disabled'</span>,      <span class="tc-cm">// 'disabled' | 'allow' — wait for animations to finish</span>
+  caret:      <span class="tc-str">'hide'</span>,          <span class="tc-cm">// 'hide' | 'initial' — hide text cursor</span>
+
+  <span class="tc-cm">// Content masking</span>
+  mask: [
+    page.<span class="tc-fn">locator</span>(<span class="tc-str">'.timestamp'</span>),
+    page.<span class="tc-fn">locator</span>(<span class="tc-str">'.ad-banner'</span>),
+  ],
+  maskColor: '<span class="tc-cm">#FF00FF',        // colour used for masked areas (default: cyan)</span>
+
+  <span class="tc-cm">// Clip to specific area (instead of full page)</span>
+  clip: { x: <span class="tc-num">0</span>, y: <span class="tc-num">0</span>, width: <span class="tc-num">800</span>, height: <span class="tc-num">400</span> },
+
+  <span class="tc-cm">// Timeout for snapshot assertion</span>
+  timeout: 10_000,
+});</div>
+      </div>
+<p class="sn-para">The most commonly used options in practice: <code class="sn-ic">threshold</code>, <code class="sn-ic">mask</code>, <code class="sn-ic">animations: 'disabled'</code>, and <code class="sn-ic">fullPage</code>.</p>
+    </div>
+  </div>
+
+  <!-- Q802.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.3</span>
+      <h2 class="sn-q-text">How do you take element-level screenshots?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Pass a locator to <code class="sn-ic">expect()</code> instead of <code class="sn-ic">page</code> to capture only that element:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'product card visual'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/products'</span>);
+
+  <span class="tc-cm">// Capture only the first product card</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'product-card'</span>).<span class="tc-fn">first</span>()
+  ).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'product-card.png'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'navigation component'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'nav.png'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'chart component'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/analytics'</span>);
+  <span class="tc-cm">// Wait for chart to render fully</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'revenue-chart'</span>)).<span class="tc-fn">toBeVisible</span>();
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'revenue-chart'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'revenue-chart.png'</span>);
+});</div>
+      </div>
+<p class="sn-para">Element-level screenshots capture exactly the element's bounding box. They are stable because changes outside the component do not cause failures. Ideal for component-level visual tests and design system validation.</p>
+    </div>
+  </div>
+
+  <!-- Q802.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.4</span>
+      <h2 class="sn-q-text">What is the difference between toHaveScreenshot and page.screenshot?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">toHaveScreenshot()</code> — a visual <strong class="k-orange">assertion</strong>. Saves a baseline on first run. Compares against baseline on subsequent runs. Fails the test if the difference exceeds tolerance. Used for visual regression testing.</p>
+      </div>
+<p class="sn-para"><code class="sn-ic">page.screenshot()</code> — captures and <strong class="k-orange">saves</strong> a screenshot without any comparison. Returns a Buffer. Used for debugging, evidence collection, or attaching to test reports.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// toHaveScreenshot — assertion, visual regression</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage.png'</span>);
+
+<span class="tc-cm">// page.screenshot — capture only, no comparison</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ path: <span class="tc-str">'debug/current-state.png'</span> });
+
+<span class="tc-cm">// Attach screenshot to the test report on failure</span>
+<span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>();
+<span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'screenshot'</span>, {
+  body:      screenshot,
+  contentType: <span class="tc-str">'image/png'</span>,
+});</div>
+      </div>
+<p class="sn-para">Never use <code class="sn-ic">page.screenshot()</code> for visual regression — it captures but never compares. Never use <code class="sn-ic">toHaveScreenshot()</code> when you just need a debug capture — it adds baseline management overhead.</p>
+    </div>
+  </div>
+
+  <!-- Q802.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.5</span>
+      <h2 class="sn-q-text">How do you configure the snapshot directory?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">By default, Playwright saves baselines next to the test file in a <code class="sn-ic">__snapshots__</code> directory. Override with <code class="sn-ic">snapshotDir</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  <span class="tc-cm">// All baselines stored in one central directory</span>
+  snapshotDir: <span class="tc-str">'./visual-baselines'</span>,
+
+  <span class="tc-cm">// Or fine-grained control with snapshotPathTemplate</span>
+  snapshotPathTemplate:
+    <span class="tc-str">'{testDir}/__snapshots__/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}-{platform}{ext}'</span>,
+});</div>
+      </div>
+<p class="sn-para">Template variables: <code class="sn-ic">{testDir}</code>, <code class="sn-ic">{testFileDir}</code>, <code class="sn-ic">{testFileName}</code>, <code class="sn-ic">{testName}</code>, <code class="sn-ic">{arg}</code> (the name you passed to <code class="sn-ic">toHaveScreenshot</code>), <code class="sn-ic">{projectName}</code>, <code class="sn-ic">{platform}</code> (linux/darwin/win32), <code class="sn-ic">{ext}</code> (.png).</p>
+<p class="sn-para">Centralising all baselines in one directory (<code class="sn-ic">./visual-baselines</code>) makes it easy to find, review, and update them. It also makes gitignore patterns simpler.</p>
+    </div>
+  </div>
+
+  <!-- Q802.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.6</span>
+      <h2 class="sn-q-text">How do you run only visual tests in a project?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx playwright test --grep &quot;@visual&quot;
+
+npx playwright test visual/
+
+npx playwright test --project=visual</div>
+      </div>
+<p class="sn-para">Create a dedicated visual testing project in <code class="sn-ic">playwright.config.ts</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  {
+    name:      <span class="tc-str">'visual'</span>,
+    testMatch: /.*\.visual\.spec\.ts/,
+    use: {
+      ...devices[<span class="tc-str">'Desktop Chrome'</span>],
+      <span class="tc-cm">// Disable animations globally for the visual project</span>
+      launchOptions: { args: [<span class="tc-str">'--force-prefers-reduced-motion'</span>] },
+    },
+  },
+],</div>
+      </div>
+<p class="sn-para">All files named <code class="sn-ic">*.visual.spec.ts</code> run under the visual project's settings (consistent browser, animation-disabled) without affecting functional test projects.</p>
+    </div>
+  </div>
+
+  <!-- Q802.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.7</span>
+      <h2 class="sn-q-text">How do you handle snapshot updates in CI?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In CI, <code class="sn-ic">--update-snapshots</code> should never be the default — it would overwrite baselines on every run, defeating the purpose of visual testing.</p>
+      </div>
+<p class="sn-para">The standard CI workflow:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">- name: Run visual tests
+  run: npx playwright <span class="tc-kw">test</span> --grep @visual
+  <span class="tc-cm"># Fails if any visual diff is detected</span>
+
+- name: Upload diff artifacts on failure
+  <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()
+  uses: actions/upload-artifact@v4
+  with:
+    name: visual-diffs
+    path: <span class="tc-kw">test</span>-results/
+    retention-days: <span class="tc-num">7</span></div>
+      </div>
+<p class="sn-para">When a developer intentionally changes the UI:</p>
+<ol class="sn-olist">
+<li>Run <code class="sn-ic">--update-snapshots</code> locally (in Docker for consistency)</li>
+<li>Commit the updated baseline files alongside the code change</li>
+<li>Push to PR — CI green because baseline matches the new UI</li>
+</ol>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">docker run --rm \
+  -v $(pwd):/app \
+  mcr.microsoft.com/playwright:v1.47.0-jammy \
+  npx playwright test --grep @visual --update-snapshots</div>
+      </div>
+<p class="sn-para">Never allow CI to auto-commit updated baselines — that removes the human review gate that makes visual testing valuable.</p>
+    </div>
+  </div>
+
+  <!-- Q802.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.8</span>
+      <h2 class="sn-q-text">How do you configure threshold per test vs globally?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-yellow">Global threshold</strong> in <code class="sn-ic">playwright.config.ts</code>:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  <span class="tc-kw">expect</span>: {
+    toHaveScreenshot: {
+      threshold:         <span class="tc-num">0.2</span>,
+      maxDiffPixelRatio: <span class="tc-num">0.001</span>,
+      animations:        <span class="tc-str">'disabled'</span>,
+    },
+  },
+});</div>
+      </div>
+<p class="sn-para"><strong class="k-yellow">Per-test override:</strong></p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Strict threshold for the logo (should never change)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'logo'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'logo.png'</span>, {
+  threshold: <span class="tc-num">0</span>,
+  maxDiffPixels: <span class="tc-num">0</span>,
+});
+
+<span class="tc-cm">// Loose threshold for a chart (rendering varies slightly)</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'chart'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'chart.png'</span>, {
+  threshold: <span class="tc-num">0.3</span>,
+  maxDiffPixelRatio: <span class="tc-num">0.05</span>,
+});</div>
+      </div>
+<p class="sn-para">Set tight thresholds for: logos, icons, buttons, text. These should be pixel-perfect and rarely change.</p>
+<p class="sn-para">Set loose thresholds for: charts, graphs, gradient backgrounds, canvas elements. These have inherent rendering variation that is not a regression.</p>
+    </div>
+  </div>
+
+  <!-- Q802.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.9</span>
+      <h2 class="sn-q-text">How do you handle visual tests for responsive designs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use the <code class="sn-ic">viewport</code> option or a per-project configuration to test multiple breakpoints:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'responsive visual tests'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'mobile layout'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">setViewportSize</span>({ width: <span class="tc-num">375</span>, height: <span class="tc-num">812</span> });
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/home'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'home-mobile.png'</span>, {
+      animations: <span class="tc-str">'disabled'</span>,
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'tablet layout'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">setViewportSize</span>({ width: <span class="tc-num">768</span>, height: <span class="tc-num">1024</span> });
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/home'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'home-tablet.png'</span>, {
+      animations: <span class="tc-str">'disabled'</span>,
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'desktop layout'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">setViewportSize</span>({ width: <span class="tc-num">1440</span>, height: <span class="tc-num">900</span> });
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/home'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'home-desktop.png'</span>, {
+      animations: <span class="tc-str">'disabled'</span>,
+    });
+  });
+});</div>
+      </div>
+<p class="sn-para">Or use projects — run the same visual tests at each breakpoint with the viewport set in the project config:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">projects: [
+  { name: <span class="tc-str">'visual-desktop'</span>, use: { viewport: { width: <span class="tc-num">1440</span>, height: <span class="tc-num">900</span> }  } },
+  { name: <span class="tc-str">'visual-tablet'</span>,  use: { viewport: { width: <span class="tc-num">768</span>,  height: <span class="tc-num">1024</span> } } },
+  { name: <span class="tc-str">'visual-mobile'</span>,  use: { viewport: { width: <span class="tc-num">375</span>,  height: <span class="tc-num">812</span>  } } },
+],</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q802.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.10</span>
+      <h2 class="sn-q-text">How do you deal with a page that has scroll-triggered animations?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Scroll-triggered animations (elements that fade in as you scroll) can cause different screenshots depending on whether the browser has scrolled to reveal them:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'below-fold content renders correctly'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/landing'</span>);
+
+  <span class="tc-cm">// Scroll to the element before capturing</span>
+  <span class="tc-kw">const</span> section = page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'features-section'</span>);
+  <span class="tc-kw">await</span> section.<span class="tc-fn">scrollIntoViewIfNeeded</span>();
+
+  <span class="tc-cm">// Wait for scroll-triggered animation to complete</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForTimeout</span>(<span class="tc-num">300</span>); <span class="tc-cm">// or use CSS injection to disable transitions</span>
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(section).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'features-section.png'</span>, {
+    animations: <span class="tc-str">'disabled'</span>,
+  });
+});</div>
+      </div>
+<p class="sn-para">Better approach — disable scroll-triggered animations entirely via CSS:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">await</span> page.<span class="tc-fn">addStyleTag</span>({
+  content: <span class="tc-str">`
+    [data-scroll-animation],
+    .aos-animate,
+    .fade-in-on-scroll {
+      opacity:   1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  `</span>,
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q802.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.11</span>
+      <h2 class="sn-q-text">How do you take a screenshot of a specific state (hover, focus)?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'button hover state'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">const</span> button = page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Subscribe'</span> });
+
+  <span class="tc-cm">// Hover the button to trigger hover styles</span>
+  <span class="tc-kw">await</span> button.<span class="tc-fn">hover</span>();
+
+  <span class="tc-cm">// Capture the hover state</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(button).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'button-hover.png'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'input focus state'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/contact'</span>);
+  <span class="tc-kw">const</span> input = page.<span class="tc-fn">getByLabel</span>(<span class="tc-str">'Email'</span>);
+
+  <span class="tc-cm">// Focus the input</span>
+  <span class="tc-kw">await</span> input.<span class="tc-fn">focus</span>();
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(input).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'input-focused.png'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'dropdown open state'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/products'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'combobox'</span>, { name: <span class="tc-str">'Category'</span> }).<span class="tc-fn">click</span>();
+
+  <span class="tc-cm">// Dropdown is now open</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'dropdown-open.png'</span>);
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q802.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.12</span>
+      <h2 class="sn-q-text">How do you visually test a dark mode toggle?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'dark mode visual tests'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'light mode default'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">test</span>.<span class="tc-fn">use</span>({ colorScheme: <span class="tc-str">'light'</span> });
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage-light.png'</span>, {
+      animations: <span class="tc-str">'disabled'</span>,
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dark mode via CSS class toggle'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+    <span class="tc-cm">// Click the dark mode toggle button</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'button'</span>, { name: <span class="tc-str">'Toggle dark mode'</span> }).<span class="tc-fn">click</span>();
+    <span class="tc-cm">// Wait for the transition to complete</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">addStyleTag</span>({ content: <span class="tc-str">'* { transition: none !important; }'</span> });
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage-dark.png'</span>);
+  });
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q802.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.13</span>
+      <h2 class="sn-q-text">What causes "snapshot was written" vs "snapshot comparison failed"?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-teal">"snapshot was written"</strong> — the baseline file did not exist when the test ran. Playwright created it. The test passes. This happens on first run or when the baseline file is deleted.</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">"snapshot comparison failed"</strong> — the baseline exists but the current screenshot differs beyond the threshold. The test fails. Three output files are created: actual, expected, diff.</p>
+<p class="sn-para"><strong class="k-teal">"image size mismatch"</strong> — the viewport or element size changed between the baseline run and the current run. Even if the content is identical, different dimensions force a complete regeneration. Often caused by:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Viewport size not configured consistently</span></li>
+<li><span class="icon">💡</span><span>Scrollbar appearing/disappearing between runs</span></li>
+<li><span class="icon">⚡</span><span>Browser zoom level differences</span></li>
+</ul>
+<p class="sn-para">To fix image size mismatch: ensure the viewport is explicitly set in the test or project config and that the environment is consistent.</p>
+    </div>
+  </div>
+
+  <!-- Q802.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.14</span>
+      <h2 class="sn-q-text">How do you exclude a region by coordinates rather than a locator?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Use the <code class="sn-ic">clip</code> option to capture a specific bounding box, or use <code class="sn-ic">mask</code> with a locator. For arbitrary regions, inject a covering element:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Capture only the top navigation bar area</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'header.png'</span>, {
+  clip: { x: <span class="tc-num">0</span>, y: <span class="tc-num">0</span>, width: <span class="tc-num">1280</span>, height: <span class="tc-num">80</span> },
+});
+
+<span class="tc-cm">// Mask a specific coordinate area using an overlay</span>
+<span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; {
+  <span class="tc-kw">const</span> overlay = document.<span class="tc-fn">createElement</span>(<span class="tc-str">'div'</span>);
+  overlay.style.cssText = <span class="tc-str">`
+    position: fixed; top: 200px; left: 0;
+    width: 300px; height: 100px;
+    background:  S2 
+  `</span>;
+  document.body.<span class="tc-fn">appendChild</span>(overlay);
+});
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'page-with-masked-area.png'</span>);</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">clip</code> approach is cleaner for header/footer captures. The overlay approach works when you need to mask an exact pixel region with no corresponding DOM element.</p>
+    </div>
+  </div>
+
+  <!-- Q802.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.15</span>
+      <h2 class="sn-q-text">Write a complete visual test suite for a homepage.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/visual/homepage.visual.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'@visual homepage'</span>, () =&gt; {
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+
+    <span class="tc-cm">// Wait for all resources</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+    <span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; document.fonts.ready);
+
+    <span class="tc-cm">// Disable animations</span>
+    <span class="tc-kw">await</span> page.<span class="tc-fn">addStyleTag</span>({
+      content: <span class="tc-str">`
+        *, *::before, *::after {
+          animation-duration:  0s !important;
+          transition-duration: 0s !important;
+        }
+      `</span>,
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'above the fold'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage-hero.png'</span>, {
+      mask: [
+        page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'dynamic-banner'</span>),
+        page.<span class="tc-fn">locator</span>(<span class="tc-str">'.current-promo'</span>),
+      ],
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'navigation bar'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'navigation'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'nav.png'</span>);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'full page'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage-full.png'</span>, {
+      fullPage:  <span class="tc-kw">true</span>,
+      threshold: <span class="tc-num">0.2</span>,
+      mask:      [page.<span class="tc-fn">locator</span>(<span class="tc-str">'.ad-slot'</span>)],
+    });
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'footer'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">evaluate</span>(() =&gt; window.<span class="tc-fn">scrollTo</span>(<span class="tc-num">0</span>, document.body.scrollHeight));
+    <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'contentinfo'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'footer.png'</span>);
+  });
+
+});</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q802.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.16</span>
+      <h2 class="sn-q-text">How do you attach visual diffs to the Playwright HTML report?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">When <code class="sn-ic">toHaveScreenshot</code> fails, Playwright automatically attaches the actual, expected, and diff images to the HTML report. No extra code needed.</p>
+      </div>
+<p class="sn-para">To also attach screenshots on success (for audit trail):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'homepage visual audit'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+
+  <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> });
+
+  <span class="tc-cm">// Attach the screenshot to the report regardless of pass/fail</span>
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'homepage-full-page'</span>, {
+    body:        screenshot,
+    contentType: <span class="tc-str">'image/png'</span>,
+  });
+
+  <span class="tc-cm">// Then do the comparison assertion</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage.png'</span>, { fullPage: <span class="tc-kw">true</span> });
+});</div>
+      </div>
+<p class="sn-para">Configure <code class="sn-ic">screenshot</code> in <code class="sn-ic">playwright.config.ts</code> to automatically capture on failure (for non-visual tests):</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code">use: {
+  screenshot: <span class="tc-str">'only-on-failure'</span>, <span class="tc-cm">// 'off' | 'on' | 'only-on-failure'</span>
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q802.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.17</span>
+      <h2 class="sn-q-text">How do you prevent visual tests from failing when Playwright updates its Chromium?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright periodically updates its bundled Chromium. A Chromium update can cause minor rendering changes that invalidate all visual baselines.</p>
+      </div>
+<p class="sn-para">Prevention strategy:</p>
+<p class="sn-para"><strong class="k-blue">Pin the Playwright version.</strong> Use an exact version in <code class="sn-ic">package.json</code> rather than <code class="sn-ic">^</code> or <code class="sn-ic">~</code>:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">json</span>
+        </div>
+        <div class="sn-terminal-code">&quot;@playwright/test&quot;: &quot;1.47.0&quot;</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Use a versioned Docker image.</strong> The Docker image tag includes the Playwright version:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">mcr.microsoft.com/playwright:v1.47.0-jammy</div>
+      </div>
+<p class="sn-para"><strong class="k-blue">Handle Playwright upgrades explicitly.</strong> When upgrading Playwright:</p>
+<ol class="sn-olist">
+<li>Update the version in <code class="sn-ic">package.json</code></li>
+<li>Update the Docker image tag</li>
+<li>Regenerate all visual baselines in the new Docker container</li>
+<li>Commit all new baselines in a single "chore: upgrade playwright to vX.Y.Z" commit</li>
+</ol>
+<p class="sn-para">This makes visual baseline regeneration an explicit, documented event in git history — not a silent failure in CI.</p>
+    </div>
+  </div>
+
+  <!-- Q802.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q802.18</span>
+      <h2 class="sn-q-text">In your project, what was the hardest visual testing challenge you solved?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The hardest challenge in our OrangeHRM visual tests was achieving consistent screenshots across local macOS development machines and Linux CI.</p>
+      </div>
+<p class="sn-para">When we first added <code class="sn-ic">toHaveScreenshot()</code>, the tests passed locally (Mac) but failed in CI (Linux) every time with a font rendering diff. The OrangeHRM sidebar uses a custom Google Font (Roboto). On macOS, it renders with sub-pixel antialiasing and looks slightly sharper. On Linux, it uses greyscale antialiasing. The diff images showed every text pixel as red.</p>
+<p class="sn-para">Our solution had three parts. First, we created a dedicated Docker script (<code class="sn-ic">scripts/update-snapshots.sh</code>) that runs <code class="sn-ic">--update-snapshots</code> inside the same <code class="sn-ic">mcr.microsoft.com/playwright:v1.47.0-jammy</code> container that CI uses. This is now the only way baselines can be updated — local Mac-generated baselines are rejected.</p>
+<p class="sn-para">Second, we added a CI check that fails if a developer commits a baseline from a non-Linux environment. We detect this by checking the file's git commit metadata in the PR pipeline.</p>
+<p class="sn-para">Third, for three specific components (the data table header, the employee name column, the module navigation) that had residual differences even with Docker, we use <code class="sn-ic">threshold: 0.3</code> and <code class="sn-ic">maxDiffPixelRatio: 0.005</code> rather than the global <code class="sn-ic">threshold: 0.2</code>. These components have fine typography at small sizes where even Linux-to-Linux rendering has slight variation.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span><code class="sn-ic">toHaveScreenshot(name)</code> creates a baseline on first run and compares on subsequent runs — it is a visual assertion, not just a capture.</span></li>
+            <li><span class="icon">⭐</span><span>Three output files on failure: actual (current), expected (baseline), diff (highlighted differences).</span></li>
+            <li><span class="icon">⭐</span><span>Key options: <code class="sn-ic">threshold</code> (per-pixel colour tolerance), <code class="sn-ic">maxDiffPixels</code>/<code class="sn-ic">maxDiffPixelRatio</code> (how many differing pixels are acceptable), <code class="sn-ic">mask</code> (exclude dynamic content), <code class="sn-ic">animations: 'disabled'</code>, <code class="sn-ic">fullPage</code>.</span></li>
+            <li><span class="icon">⭐</span><span><code class="sn-ic">page.screenshot()</code> captures without comparing — use it for debugging and report attachments, not visual regression.</span></li>
+            <li><span class="icon">⭐</span><span>Element-level <code class="sn-ic">expect(locator).toHaveScreenshot()</code> captures only that element's bounding box — stable, component-focused visual tests.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Global threshold is set in <code class="sn-ic">playwright.config.ts</code> under <code class="sn-ic">expect.toHaveScreenshot</code>; per-test overrides take precedence.</span></li>
+            <li><span class="icon">⭐</span><span>Baselines are committed to the repository; test-results (actual/diff) are not committed.</span></li>
+            <li><span class="icon">⭐</span><span>Always run <code class="sn-ic">--update-snapshots</code> inside Docker (same environment as CI) to avoid false positives from OS font rendering differences.</span></li>
+            <li><span class="icon">⭐</span><span>Responsive visual testing: set explicit viewport per test or use separate visual projects per breakpoint.</span></li>
+            <li><span class="icon">⭐</span><span>Pin the Playwright version in <code class="sn-ic">package.json</code> and Docker image tag — Chromium updates can change rendering and invalidate all baselines.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,894 @@
+<div class="sn-chapter">
+<div class="sn-page">
+  <div class="sn-margin-line"></div>
+
+  <div class="sn-stars" aria-hidden="true">
+    <span class="sn-star" style="top:2%;right:5%;animation-delay:.4s">⭐</span>
+    <span class="sn-star" style="top:6%;right:13%;animation-delay:.9s;font-size:.7rem">✦</span>
+    <span class="sn-star" style="top:1%;right:22%;animation-delay:.6s;font-size:.65rem">★</span>
+    <span class="sn-star" style="top:11%;right:4%;animation-delay:1.4s;font-size:.7rem">💫</span>
+  </div>
+
+  <div class="sn-title-block">
+    <div class="sn-eyebrow">🎨 Part 8 &nbsp;·&nbsp; Chapter 803 &nbsp;·&nbsp; 18 Questions</div>
+    <h1 class="sn-big-title"><span class="w1">Advanced</span> <span class="w2">Visual</span> <span class="w3">Testing</span></h1>
+    <p class="sn-title-sub">Visual &amp; Accessibility — Interview Q&amp;A</p>
+    <div class="sn-title-deco"></div>
+  </div>
+
+  <div class="sn-callout c-blue sn-reveal" style="margin-bottom:1.5rem">
+    <span class="sn-callout-icon">📖</span>
+    <span class="sn-callout-text">This chapter covers enterprise visual testing strategies — cloud visual platforms (Percy, Applitools), pixelmatch for custom comparison logic, visual testing in CI pipelines, component-level visual strategy, and the decision framework for choosing between built-in and cloud tools. Interviewers ask these questions to assess whether a candidate can design a visual testing programme at scale, not just write a <code class="sn-ic">toHaveScreenshot()</code> call.</span>
+  </div>
+
+
+  <!-- Q803.1 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.1</span>
+      <h2 class="sn-q-text">What are the limitations of Playwright's built-in snapshot testing at scale?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright's <code class="sn-ic">toHaveScreenshot()</code> is excellent for small-to-medium suites in a controlled environment. At scale, three problems emerge:</p>
+      </div>
+<p class="sn-para"><strong class="k-blue">Baseline sprawl.</strong> Every browser + OS combination generates its own baseline. A suite with 50 visual tests across three browsers and two platforms produces 300 baseline image files committed to the repository. Storage grows; PR diffs become noise.</p>
+<p class="sn-para"><strong class="k-blue">No review workflow.</strong> When a visual difference is detected, the test fails. There is no built-in "approve this change" workflow — the developer must manually run <code class="sn-ic">--update-snapshots</code>, review the diff, and commit. On a large team with frequent UI changes, this becomes a bottleneck.</p>
+<p class="sn-para"><strong class="k-blue">False positive management.</strong> Even with Docker, minor rendering differences between Playwright versions, OS updates, or font hinting changes produce false positives. Managing <code class="sn-ic">threshold</code> and <code class="sn-ic">maxDiffPixelRatio</code> per test becomes maintenance overhead.</p>
+<p class="sn-para"><strong class="k-blue">Cross-browser rendering gaps.</strong> Running visual tests on three browsers means three separate baseline sets. A change that looks fine on Chromium may render slightly differently on WebKit — requiring either separate thresholds or separate baselines.</p>
+<p class="sn-para">Cloud visual platforms solve these problems by handling rendering in a controlled environment, providing a web-based approval workflow, and maintaining baselines in the cloud.</p>
+    </div>
+  </div>
+
+  <!-- Q803.2 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.2</span>
+      <h2 class="sn-q-text">What is Percy and how does it work with Playwright?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Percy (now BrowserStack Visual) is a cloud visual testing platform. Instead of comparing screenshots locally, Percy captures DOM snapshots, uploads them to Percy's servers, renders them in a controlled environment, and compares them against stored baselines. Diffs are reviewed in a web UI with approve/reject controls.</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @percy/cli @percy/playwright</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { percySnapshot } <span class="tc-kw">from</span> <span class="tc-str">'@percy/playwright'</span>;
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'homepage visual'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+
+  <span class="tc-cm">// Sends DOM + CSS to Percy's cloud for rendering and comparison</span>
+  <span class="tc-kw">await</span> <span class="tc-fn">percySnapshot</span>(page, <span class="tc-str">'Homepage'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'product page visual'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/products/1'</span>);
+  <span class="tc-kw">await</span> <span class="tc-fn">percySnapshot</span>(page, <span class="tc-str">'Product Detail'</span>, {
+    widths: [<span class="tc-num">375</span>, <span class="tc-num">768</span>, <span class="tc-num">1280</span>], <span class="tc-cm">// Test at multiple viewports in one call</span>
+  });
+});</div>
+      </div>
+<p class="sn-para">Run with:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npx percy exec -- npx playwright test --grep @visual</div>
+      </div>
+<p class="sn-para">Percy renders the snapshots in its cloud infrastructure, compares them to the approved baseline, and posts a pass/fail status to the PR. The team reviews diffs in Percy's web UI and approves or rejects each change.</p>
+    </div>
+  </div>
+
+  <!-- Q803.3 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.3</span>
+      <h2 class="sn-q-text">What are the key advantages Percy provides over built-in snapshots?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><strong class="k-purple">Cloud rendering consistency.</strong> Percy renders every snapshot in a controlled Linux environment — eliminating the OS font rendering inconsistency that requires Docker workarounds with built-in snapshots.</p>
+      </div>
+<p class="sn-para"><strong class="k-purple">Approval workflow.</strong> When Percy detects a visual change, the PR is marked as "unreviewed." A team member reviews the diff in Percy's web UI and approves (intentional change) or rejects (regression). This creates a gated visual review process without manual baseline file management.</p>
+<p class="sn-para"><strong class="k-purple">Baseline management in the cloud.</strong> Baselines are not committed to git. Percy stores them. When an approved diff becomes the new baseline, it updates automatically — no <code class="sn-ic">--update-snapshots</code> run and no committed PNG files in the repository.</p>
+<p class="sn-para"><strong class="k-purple">Multi-width snapshots.</strong> A single <code class="sn-ic">percySnapshot()</code> call can render the same DOM at multiple viewport widths simultaneously — responsive testing without separate projects or test files.</p>
+<p class="sn-para"><strong class="k-purple">Cross-browser rendering.</strong> Percy can render the same snapshot in multiple browsers (Chrome, Firefox, Safari) from a single snapshot upload — without needing to run separate Playwright projects.</p>
+<p class="sn-para">The trade-off: Percy costs money (paid per snapshot). For teams on tight budgets, Playwright's built-in approach in Docker is a viable free alternative.</p>
+    </div>
+  </div>
+
+  <!-- Q803.4 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.4</span>
+      <h2 class="sn-q-text">What is Applitools Eyes and how does it differ from Percy?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both Percy and Applitools are cloud visual testing platforms, but their comparison approach differs fundamentally.</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Percy</strong> — pixel-based comparison with region-level ignore capabilities. It shows you pixel diffs and you decide. It is relatively simple and transparent.</p>
+<p class="sn-para"><strong class="k-orange">Applitools Eyes</strong> — AI-powered "Visual AI" comparison. Uses computer vision trained on millions of UI screenshots to distinguish meaningful regressions (a missing button, wrong colour, layout shift) from noise (1-pixel anti-aliasing differences, sub-pixel rendering variation). The AI mimics how a human reviewer would look at a diff.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @applitools/eyes-playwright</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { Eyes, Target, Configuration, BatchInfo } <span class="tc-kw">from</span> <span class="tc-str">'@applitools/eyes-playwright'</span>;
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'Visual AI suite'</span>, () =&gt; {
+  <span class="tc-kw">let</span> eyes: Eyes;
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">beforeEach</span>(<span class="tc-kw">async</span> ({ page }) =&gt; {
+    eyes = <span class="tc-kw">new</span> Eyes();
+    <span class="tc-kw">const</span> config = <span class="tc-kw">new</span> Configuration();
+    config.<span class="tc-fn">setBatch</span>(<span class="tc-kw">new</span> BatchInfo(<span class="tc-str">'OrangeHRM Visual Suite'</span>));
+    eyes.<span class="tc-fn">setConfiguration</span>(config);
+    <span class="tc-kw">await</span> eyes.<span class="tc-fn">open</span>(page, <span class="tc-str">'OrangeHRM'</span>, <span class="tc-kw">test</span>.<span class="tc-fn">info</span>().title);
+  });
+
+  <span class="tc-kw">test</span>(<span class="tc-str">'dashboard layout'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+    <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+    <span class="tc-kw">await</span> eyes.<span class="tc-fn">check</span>(<span class="tc-str">'Dashboard'</span>, Target.<span class="tc-fn">window</span>().<span class="tc-fn">fully</span>());
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterEach</span>(<span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> eyes.<span class="tc-fn">close</span>();
+  });
+
+  <span class="tc-kw">test</span>.<span class="tc-kw">afterAll</span>(<span class="tc-kw">async</span> () =&gt; {
+    <span class="tc-kw">await</span> eyes.<span class="tc-fn">abort</span>(); <span class="tc-cm">// cleanup if tests were interrupted</span>
+  });
+});</div>
+      </div>
+<p class="sn-para">Applitools sends screenshots to its cloud, runs Visual AI comparison, and reports results through its Eyes dashboard. Failed checks require human approval in the Applitools UI.</p>
+    </div>
+  </div>
+
+  <!-- Q803.5 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.5</span>
+      <h2 class="sn-q-text">When do you choose built-in snapshots vs Percy vs Applitools?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">The decision depends on team size, budget, and maintenance tolerance:</p>
+      </div>
+<p class="sn-para"><strong class="k-teal">Use Playwright's built-in <code class="sn-ic">toHaveScreenshot()</code>:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Small team (1–3 people), small visual suite (under 20 tests)</span></li>
+<li><span class="icon">💡</span><span>Budget is zero — it is free</span></li>
+<li><span class="icon">⚡</span><span>Docker is available for consistent rendering</span></li>
+<li><span class="icon">🎯</span><span>You are comfortable managing baseline PNG files in git</span></li>
+<li><span class="icon">📌</span><span>You want full control — no external dependencies</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Use Percy:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🔑</span><span>Medium team, moderate visual suite (20–100 tests)</span></li>
+<li><span class="icon">🚀</span><span>Want an approval workflow without manual baseline file management</span></li>
+<li><span class="icon">🌟</span><span>Frequently change the UI and need a review process</span></li>
+<li><span class="icon">📦</span><span>Want multi-viewport testing with minimal setup</span></li>
+<li><span class="icon">🔶</span><span>Cost per snapshot is acceptable for the time saved</span></li>
+</ul>
+<p class="sn-para"><strong class="k-teal">Use Applitools:</strong></p>
+<ul class="sn-list">
+<li><span class="icon">🎪</span><span>Large team with a large, frequently-changing UI (100+ visual tests)</span></li>
+<li><span class="icon">🔹</span><span>False positive management is a significant cost (AI reduces false positives by ~80%)</span></li>
+<li><span class="icon">🔷</span><span>Cross-browser visual regression is a priority</span></li>
+<li><span class="icon">💡</span><span>Need advanced features: root cause analysis, AI-suggested regions to ignore</span></li>
+<li><span class="icon">⚡</span><span>Enterprise with a budget for tooling</span></li>
+</ul>
+<p class="sn-para">The hybrid strategy: use <code class="sn-ic">toHaveScreenshot()</code> for component-level tests in Docker and Percy or Applitools for full-page PR review. This combines free component coverage with a managed review workflow for page-level diffs.</p>
+    </div>
+  </div>
+
+  <!-- Q803.6 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.6</span>
+      <h2 class="sn-q-text">What is pixelmatch and when would you use it directly?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem"><code class="sn-ic">pixelmatch</code> is the low-level pixel comparison library that Playwright uses internally for <code class="sn-ic">toHaveScreenshot()</code>. Accessing it directly gives you custom comparison logic that the high-level API does not expose:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install pixelmatch pngjs</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> pixelmatch <span class="tc-kw">from</span> <span class="tc-str">'pixelmatch'</span>;
+<span class="tc-kw">import</span> { PNG } <span class="tc-kw">from</span> <span class="tc-str">'pngjs'</span>;
+<span class="tc-kw">import</span> fs <span class="tc-kw">from</span> <span class="tc-str">'fs'</span>;
+
+<span class="tc-kw">export</span> <span class="tc-kw">function</span> <span class="tc-fn">compareScreenshots</span>(
+  baselinePath: <span class="tc-kw">string</span>,
+  actualPath:   <span class="tc-kw">string</span>,
+  diffPath:     <span class="tc-kw">string</span>,
+  threshold:    <span class="tc-kw">number</span> = <span class="tc-num">0.1</span>
+): { passed: <span class="tc-kw">boolean</span>; diffPixels: <span class="tc-kw">number</span>; diffRatio: <span class="tc-kw">number</span> } {
+  <span class="tc-kw">const</span> baseline = PNG.sync.<span class="tc-fn">read</span>(fs.<span class="tc-fn">readFileSync</span>(baselinePath));
+  <span class="tc-kw">const</span> actual   = PNG.sync.<span class="tc-fn">read</span>(fs.<span class="tc-fn">readFileSync</span>(actualPath));
+  <span class="tc-kw">const</span> { width, height } = baseline;
+  <span class="tc-kw">const</span> diff = <span class="tc-kw">new</span> PNG({ width, height });
+
+  <span class="tc-kw">const</span> diffPixels = <span class="tc-fn">pixelmatch</span>(
+    baseline.data, actual.data, diff.data,
+    width, height,
+    { threshold }
+  );
+
+  <span class="tc-cm">// Save diff image</span>
+  fs.<span class="tc-fn">writeFileSync</span>(diffPath, PNG.sync.<span class="tc-fn">write</span>(diff));
+
+  <span class="tc-kw">const</span> totalPixels = width * height;
+  <span class="tc-kw">return</span> {
+    passed:     diffPixels === <span class="tc-num">0</span>,
+    diffPixels,
+    diffRatio:  diffPixels / totalPixels,
+  };
+}</div>
+      </div>
+<p class="sn-para">Use pixelmatch directly when:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Building a custom visual comparison tool or reporting system</span></li>
+<li><span class="icon">💡</span><span>Comparing screenshots generated outside of Playwright (from mobile apps, PDFs)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Implementing custom masking logic that <code class="sn-ic">toHaveScreenshot</code> does not support</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Writing a utility that compares two arbitrary images (not tied to Playwright assertions)</span></li>
+</ul>
+<p class="sn-para">For standard Playwright visual tests, use <code class="sn-ic">toHaveScreenshot()</code> — it handles pixelmatch internally plus baseline file management, diffing, and test reporting.</p>
+    </div>
+  </div>
+
+  <!-- Q803.7 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.7</span>
+      <h2 class="sn-q-text">How do you structure visual tests for a component library?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Component libraries (design systems) benefit from element-level visual tests that are isolated, fast, and independent of page layout:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// tests/visual/components/button.visual.spec.ts</span>
+<span class="tc-kw">import</span> { <span class="tc-kw">test</span>, <span class="tc-kw">expect</span> } <span class="tc-kw">from</span> <span class="tc-str">'@playwright/test'</span>;
+
+<span class="tc-kw">test</span>.<span class="tc-kw">describe</span>(<span class="tc-str">'@visual Button component'</span>, () =&gt; {
+  <span class="tc-kw">const</span> variants = [<span class="tc-str">'primary'</span>, <span class="tc-str">'secondary'</span>, <span class="tc-str">'danger'</span>, <span class="tc-str">'ghost'</span>];
+  <span class="tc-kw">const</span> sizes    = [<span class="tc-str">'sm'</span>, <span class="tc-str">'md'</span>, <span class="tc-str">'lg'</span>];
+
+  <span class="tc-kw">for</span> (<span class="tc-kw">const</span> variant <span class="tc-kw">of</span> variants) {
+    <span class="tc-kw">for</span> (<span class="tc-kw">const</span> size <span class="tc-kw">of</span> sizes) {
+      <span class="tc-kw">test</span>(<span class="tc-str">`${variant} ${size}`</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+        <span class="tc-cm">// Navigate to Storybook or component demo page</span>
+        <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">`/storybook/?path=/story/button--${variant}&amp;amp;size=${size}`</span>);
+        <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+        <span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; document.fonts.ready);
+
+        <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+          page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'storybook-root'</span>)
+        ).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">`button-${variant}-${size}.png`</span>, {
+          animations: <span class="tc-str">'disabled'</span>,
+        });
+      });
+    }
+  }
+});</div>
+      </div>
+<p class="sn-para">For design systems, pair Playwright visual tests with Storybook:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Storybook isolates each component variant with props</span></li>
+<li><span class="icon">💡</span><span>Playwright captures each story</span></li>
+<li><span class="icon">⚡</span><span>Baselines capture every variant independently</span></li>
+<li><span class="icon">🎯</span><span>A change to the <code class="sn-ic">Button</code> component is immediately visible across all 12 variant/size combinations</span></li>
+</ul>
+<p class="sn-para">This gives much tighter regression detection than page-level tests — a page-level diff shows you something changed, but you have to search for what. A component-level diff shows you exactly which variant broke.</p>
+    </div>
+  </div>
+
+  <!-- Q803.8 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.8</span>
+      <h2 class="sn-q-text">How do you visually test a data table with dynamic content?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Data tables are the most common "hard to visual test" UI pattern — they contain dynamic data that changes every run. The strategy is to either mock the data or mask the content:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'employee table structure'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Approach 1: mock the API to return fixed data</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/employees'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">200</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>({
+        data: [
+          { id: <span class="tc-num">1</span>, name: <span class="tc-str">'Alice Smith'</span>,   department: <span class="tc-str">'Engineering'</span> },
+          { id: <span class="tc-num">2</span>, name: <span class="tc-str">'Bob Jones'</span>,     department: <span class="tc-str">'Design'</span>      },
+          { id: <span class="tc-num">3</span>, name: <span class="tc-str">'Carol White'</span>,   department: <span class="tc-str">'Marketing'</span>   },
+        ],
+      }),
+    })
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Visual test with stable mocked data</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(
+    page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>)
+  ).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'employee-table.png'</span>);
+});
+
+<span class="tc-kw">test</span>(<span class="tc-str">'employee table with masked cells'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/employees'</span>);
+
+  <span class="tc-cm">// Approach 2: mask data cells, keep structural columns</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByRole</span>(<span class="tc-str">'table'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'table-structure.png'</span>, {
+    mask: [
+      page.<span class="tc-fn">locator</span>(<span class="tc-str">'td[data-col=&amp;quot;name&amp;quot;]'</span>),
+      page.<span class="tc-fn">locator</span>(<span class="tc-str">'td[data-col=&amp;quot;email&amp;quot;]'</span>),
+      page.<span class="tc-fn">locator</span>(<span class="tc-str">'td[data-col=&amp;quot;last-login&amp;quot;]'</span>),
+    ],
+  });
+});</div>
+      </div>
+<p class="sn-para">The API mock approach gives the cleanest visual test — stable data means the screenshot is reproducible. The mask approach is faster to implement but tests less — masked columns are invisible in the diff.</p>
+    </div>
+  </div>
+
+  <!-- Q803.9 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.9</span>
+      <h2 class="sn-q-text">How do you handle visual testing for charts and graphs?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-blue" style="margin-top:.25rem">
+        <span class="sn-box-label c-blue">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Charts are notoriously difficult to visual test — canvas rendering, SVG path calculations, and animation frames all introduce variation:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'revenue chart renders correctly'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Mock chart data for stability</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'**/api/analytics/revenue'</span>, route =&gt;
+    route.<span class="tc-fn">fulfill</span>({
+      status: <span class="tc-num">200</span>,
+      body:   JSON.<span class="tc-fn">stringify</span>({
+        labels: [<span class="tc-str">'Jan'</span>, <span class="tc-str">'Feb'</span>, <span class="tc-str">'Mar'</span>],
+        data:   [<span class="tc-num">12500</span>, <span class="tc-num">18200</span>, <span class="tc-num">15800</span>],
+      }),
+    })
+  );
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/analytics'</span>);
+
+  <span class="tc-cm">// Wait for chart to finish rendering</span>
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'revenue-chart'</span>)).<span class="tc-fn">toBeVisible</span>();
+
+  <span class="tc-cm">// Wait for canvas paint — charts animate on entry</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; {
+    <span class="tc-kw">const</span> canvas = document.<span class="tc-fn">querySelector</span>(<span class="tc-str">'[data-testid=&amp;quot;revenue-chart&amp;quot;] canvas'</span>);
+    <span class="tc-kw">return</span> canvas !== <span class="tc-kw">null</span>;
+  });
+
+  <span class="tc-cm">// Small delay after animation should complete (clock API is better)</span>
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">install</span>();
+  <span class="tc-kw">await</span> page.clock.<span class="tc-fn">fastForward</span>(<span class="tc-num">1000</span>); <span class="tc-cm">// skip chart entry animation</span>
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'revenue-chart'</span>)).<span class="tc-fn">toHaveScreenshot</span>(
+    <span class="tc-str">'revenue-chart.png'</span>, {
+      threshold:         <span class="tc-num">0.3</span>,   <span class="tc-cm">// looser threshold for canvas rendering</span>
+      maxDiffPixelRatio: <span class="tc-num">0.02</span>,  <span class="tc-cm">// 2% pixel variation acceptable for charts</span>
+      animations:        <span class="tc-str">'disabled'</span>,
+    }
+  );
+});</div>
+      </div>
+<p class="sn-para">For Chart.js and D3 charts: test the SVG/canvas output with looser thresholds. For charts where pixel-level accuracy matters (financial dashboards, data visualisation products), consider an image-to-image comparison at the data layer level rather than the pixel level.</p>
+    </div>
+  </div>
+
+  <!-- Q803.10 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.10</span>
+      <h2 class="sn-q-text">How do you integrate visual tests into a CI pipeline without slowing it down?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Visual tests are slower than functional tests — they take screenshots, compare images, and may upload to cloud services. Running them on every commit blocks fast feedback.</p>
+      </div>
+<p class="sn-para">The strategy: decouple visual tests from the main CI pipeline.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">yaml</span>
+        </div>
+        <div class="sn-terminal-code">name: Visual Regression
+
+on:
+  <span class="tc-cm"># Run on PRs that touch UI code</span>
+  pull_request:
+    paths:
+      - <span class="tc-str">'src/components/**'</span>
+      - <span class="tc-str">'src/styles/**'</span>
+      - <span class="tc-str">'src/pages/**'</span>
+  <span class="tc-cm"># Also run nightly for full coverage</span>
+  schedule:
+    - cron: <span class="tc-str">'0 2 * * *'</span>
+
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: <span class="tc-str">'20'</span> }
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      - name: Run visual tests
+        run: npx playwright <span class="tc-kw">test</span> --grep @visual --project=visual
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}   <span class="tc-cm"># if using Percy</span>
+
+      - name: Upload diffs on failure
+        <span class="tc-kw">if</span>: <span class="tc-fn">failure</span>()
+        uses: actions/upload-artifact@v4
+        with:
+          name:            visual-diffs
+          path:            <span class="tc-kw">test</span>-results/
+          retention-days:  <span class="tc-num">7</span></div>
+      </div>
+<p class="sn-para">Key CI decisions:</p>
+<ul class="sn-list">
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span><strong class="k-green">Path-based triggers</strong> — only run when UI files change, not on backend-only PRs</span></li>
+<li><span class="icon">💡</span><span><strong class="k-green">Dedicated <code class="sn-ic">visual</code> project</strong> — separate from the functional test run so failures are isolated</span></li>
+<li><span class="icon">⚡</span><span><strong class="k-green">Nightly full run</strong> — catches slow-building visual regressions even on PRs that don't change UI</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q803.11 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#a855f7;--qc-bg:rgba(168,85,247,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.11</span>
+      <h2 class="sn-q-text">How do you review and approve visual changes in a team workflow?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-purple" style="margin-top:.25rem">
+        <span class="sn-box-label c-purple">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">With built-in snapshots, the workflow is git-based:</p>
+      </div>
+<ol class="sn-olist">
+<li>Developer updates UI → visual tests fail in CI</li>
+<li>Developer runs <code class="sn-ic">--update-snapshots</code> locally (in Docker)</li>
+<li>Developer commits updated baselines with the UI change</li>
+<li>PR reviewer sees baseline PNG diffs in GitHub</li>
+<li>Reviewer approves or requests changes to both code and baseline</li>
+</ol>
+<p class="sn-para">This works but has a problem: PNG diffs in GitHub's side-by-side view are hard to read. A better approach with Percy:</p>
+<ol class="sn-olist">
+<li>Developer updates UI → Percy detects visual change → PR status is "unreviewed"</li>
+<li>Percy posts a comment on the PR with a link to the visual diff</li>
+<li>Reviewer clicks the link → sees Percy's visual diff UI (side-by-side, overlay, slider)</li>
+<li>Reviewer approves or rejects each changed snapshot</li>
+<li>Once all approved → PR status goes green → merge is unblocked</li>
+</ol>
+<p class="sn-para">The Percy/Applitools approval workflow provides a significantly better reviewer experience than reading PNG diffs in a git viewer.</p>
+    </div>
+  </div>
+
+  <!-- Q803.12 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#f97316;--qc-bg:rgba(249,115,22,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.12</span>
+      <h2 class="sn-q-text">What is visual testing at the component vs page level and which is better?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-orange" style="margin-top:.25rem">
+        <span class="sn-box-label c-orange">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Both approaches serve different purposes:</p>
+      </div>
+<p class="sn-para"><strong class="k-orange">Component-level visual tests</strong> — capture a specific UI component in isolation (a button, a card, a modal). Fast, stable, and precise. A failure tells you exactly which component broke.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Component-level — precise</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'product-card'</span>)).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'product-card.png'</span>);</div>
+      </div>
+<p class="sn-para"><strong class="k-orange">Page-level visual tests</strong> — capture the entire page or a large viewport section. Slower, more fragile (any change on the page causes a failure), but validates the composition — how components look together.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// Page-level — broad</span>
+<span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage.png'</span>, { fullPage: <span class="tc-kw">true</span> });</div>
+      </div>
+<p class="sn-para">The recommended strategy: **component-level as the foundation, page-level for smoke testing.** Test every component variant at the component level. Add page-level tests only for the five or ten most critical pages.</p>
+<p class="sn-para">This gives:</p>
+<ul class="sn-list">
+<li><span class="icon">🔷</span><span>Fast, precise failure location (component tests catch the breakage)</span></li>
+<li><span class="icon">💡</span><span>Compositional validation (page tests verify the layout holds)</span></li>
+<li><span class="icon" style="color:var(--sn-red)">✗</span><span>Manageable baseline count (components + key pages, not every page)</span></li>
+</ul>
+    </div>
+  </div>
+
+  <!-- Q803.13 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#14b8a6;--qc-bg:rgba(20,184,166,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.13</span>
+      <h2 class="sn-q-text">How do you handle visual test flakiness caused by third-party content?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-teal" style="margin-top:.25rem">
+        <span class="sn-box-label c-teal">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Third-party content — ads, social media embeds, chat widgets, analytics scripts — loads asynchronously and changes between runs:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'homepage without third-party content'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Block third-party scripts before navigation</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">route</span>(<span class="tc-str">'** S1 googletagmanager.com S2 intercom.io S3 hotjar.com/**'</span>, route =&gt; route.<span class="tc-fn">abort</span>());
+
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage.png'</span>, {
+    animations: <span class="tc-str">'disabled'</span>,
+    <span class="tc-cm">// Also mask any remaining third-party containers</span>
+    mask: [
+      page.<span class="tc-fn">locator</span>(<span class="tc-str">'[id^=&amp;quot;google_ads&amp;quot;]'</span>),
+      page.<span class="tc-fn">locator</span>(<span class="tc-str">'.chat-widget-container'</span>),
+    ],
+  });
+});</div>
+      </div>
+<p class="sn-para">The <code class="sn-ic">page.route()</code> abort approach is cleaner than masking — it prevents the content from loading at all, so the layout is not affected by its absence (no empty containers). Use <code class="sn-ic">route.abort()</code> for scripts and tracking pixels; use <code class="sn-ic">mask</code> for content that affects layout when removed.</p>
+    </div>
+  </div>
+
+  <!-- Q803.14 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ec4899;--qc-bg:rgba(236,72,153,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.14</span>
+      <h2 class="sn-q-text">How do you generate a visual testing report that non-engineers can review?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-pink" style="margin-top:.25rem">
+        <span class="sn-box-label c-pink">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Playwright's HTML report shows visual diffs inline:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-cm">// playwright.config.ts</span>
+<span class="tc-kw">export</span> <span class="tc-kw">default</span> <span class="tc-fn">defineConfig</span>({
+  reporter: [
+    [<span class="tc-str">'html'</span>, { open: <span class="tc-str">'never'</span> }],
+    [<span class="tc-str">'json'</span>, { outputFile: <span class="tc-str">'visual-results.json'</span> }],
+  ],
+  use: {
+    screenshot: <span class="tc-str">'only-on-failure'</span>,
+    video:      <span class="tc-str">'retain-on-failure'</span>,
+  },
+});</div>
+      </div>
+<p class="sn-para">For a business-facing report, attach each visual screenshot to the report with a descriptive label:</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'homepage visual @visual'</span>, <span class="tc-kw">async</span> ({ page }, testInfo) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+
+  <span class="tc-kw">const</span> screenshot = <span class="tc-kw">await</span> page.<span class="tc-fn">screenshot</span>({ fullPage: <span class="tc-kw">true</span> });
+  <span class="tc-kw">await</span> testInfo.<span class="tc-fn">attach</span>(<span class="tc-str">'Homepage — full page'</span>, {
+    body:        screenshot,
+    contentType: <span class="tc-str">'image/png'</span>,
+  });
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'homepage.png'</span>, { fullPage: <span class="tc-kw">true</span> });
+});</div>
+      </div>
+<p class="sn-para">The HTML report groups all visual tests with their screenshots, diffs, and baseline images. Share the published report URL with designers and product owners so they can review visual changes without needing to understand test code.</p>
+<p class="sn-para">For formal approval workflows, Percy and Applitools provide stakeholder dashboards with annotation tools, comment threads, and approval audit trails.</p>
+    </div>
+  </div>
+
+  <!-- Q803.15 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#ef4444;--qc-bg:rgba(239,68,68,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.15</span>
+      <h2 class="sn-q-text">What is Argos CI and how does it compare to Percy?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-red" style="margin-top:.25rem">
+        <span class="sn-box-label c-red">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Argos CI is an open-source-friendly cloud visual testing platform. Key differences from Percy:</p>
+      </div>
+<p class="sn-para"><strong class="k-red">Pricing.</strong> Argos has a generous free tier (5,000 screenshots/month at time of writing). Percy's free tier is more limited.</p>
+<p class="sn-para"><strong class="k-red">GitHub integration.</strong> Both integrate with GitHub Actions and post PR status checks. Argos's GitHub app setup is simpler for open-source projects.</p>
+<p class="sn-para"><strong class="k-red">Baseline management.</strong> Both manage baselines in the cloud. Argos automatically sets the baseline from the default branch; Percy requires an explicit approval step.</p>
+<p class="sn-para"><strong class="k-red">Rendering.</strong> Both use cloud rendering for consistency. Argos renders using a headless Chrome instance; Percy supports multiple browsers.</p>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">bash</span>
+        </div>
+        <div class="sn-terminal-code">npm install --save-dev @argos-ci/playwright</div>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">import</span> { argosScreenshot } <span class="tc-kw">from</span> <span class="tc-str">'@argos-ci/playwright'</span>;
+
+<span class="tc-kw">test</span>(<span class="tc-str">'dashboard visual'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/dashboard'</span>);
+  <span class="tc-kw">await</span> <span class="tc-fn">argosScreenshot</span>(page, <span class="tc-str">'dashboard'</span>);
+});</div>
+      </div>
+<p class="sn-para">For open-source projects or budget-constrained teams, Argos is worth evaluating before committing to Percy's pricing.</p>
+    </div>
+  </div>
+
+  <!-- Q803.16 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#eab308;--qc-bg:rgba(234,179,8,.08)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.16</span>
+      <h2 class="sn-q-text">How do you visually test email templates?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-yellow" style="margin-top:.25rem">
+        <span class="sn-box-label c-yellow">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">Email templates are rendered in email clients (not browsers) but can be tested for consistent rendering using Playwright against an email preview endpoint:</p>
+      </div>
+
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">typescript</span>
+        </div>
+        <div class="sn-terminal-code"><span class="tc-kw">test</span>(<span class="tc-str">'order confirmation email visual'</span>, <span class="tc-kw">async</span> ({ page }) =&gt; {
+  <span class="tc-cm">// Navigate to the email preview route in the app</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">goto</span>(<span class="tc-str">'/email-preview/order-confirmation?orderId=TEST-001'</span>);
+
+  <span class="tc-cm">// Set viewport to common email reading width</span>
+  <span class="tc-kw">await</span> page.<span class="tc-fn">setViewportSize</span>({ width: <span class="tc-num">600</span>, height: <span class="tc-num">800</span> });
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForLoadState</span>(<span class="tc-str">'networkidle'</span>);
+  <span class="tc-kw">await</span> page.<span class="tc-fn">waitForFunction</span>(() =&gt; document.fonts.ready);
+
+  <span class="tc-kw">await</span> <span class="tc-kw">expect</span>(page).<span class="tc-fn">toHaveScreenshot</span>(<span class="tc-str">'order-confirmation-email.png'</span>, {
+    fullPage:   <span class="tc-kw">true</span>,
+    animations: <span class="tc-str">'disabled'</span>,
+    mask: [
+      page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'order-date'</span>),      <span class="tc-cm">// dynamic date</span>
+      page.<span class="tc-fn">getByTestId</span>(<span class="tc-str">'tracking-number'</span>), <span class="tc-cm">// unique per order</span>
+    ],
+  });
+});</div>
+      </div>
+<p class="sn-para">For cross-client email testing (Gmail, Outlook, Apple Mail), dedicated services like Litmus or Email on Acid are more appropriate. Playwright visual tests cover your own template rendering — not email client rendering quirks.</p>
+    </div>
+  </div>
+
+  <!-- Q803.17 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#3b82f6;--qc-bg:rgba(59,130,246,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.17</span>
+      <h2 class="sn-q-text">Write a complete visual testing strategy document for a medium-sized team.</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-terminal">
+        <div class="sn-terminal-bar">
+          <div class="sn-tbar-dot" style="background:#ff5f57"></div>
+          <div class="sn-tbar-dot" style="background:#febc2e"></div>
+          <div class="sn-tbar-dot" style="background:#28c840"></div>
+          <span class="sn-terminal-label">code</span>
+        </div>
+        <div class="sn-terminal-code">Visual Testing Strategy — OrangeHRM Test Suite
+==============================================
+
+SCOPE
+  Visual tests cover:
+  - 5 key pages: Login, Dashboard, Employee List, Leave Calendar, PIM form
+  - 3 shared components: Navigation, Data Table, Form Fields
+  - 2 viewport sizes: 1440px (desktop), 375px (mobile)
+
+TOOLING
+  - Built-in toHaveScreenshot() for component-level tests
+  - Docker (mcr.microsoft.com/playwright:v1.47.0-jammy) for all rendering
+  - Dedicated 'visual' project in playwright.config.ts
+
+BASELINE MANAGEMENT
+  - All baselines generated inside Docker, committed to repository
+  - scripts/update-snapshots.sh is the only approved way to update baselines
+  - Baseline updates require at least one reviewer approval on the PR
+
+CI INTEGRATION
+  - Visual tests run on PRs that touch src/components/ or src/styles/
+  - Visual tests run nightly regardless of changed files
+  - Failures upload diff artifacts to GitHub Actions for review
+  - Visual tests do NOT block merge — they are advisory only until stable
+
+THRESHOLDS
+  - Global: threshold: 0.2, maxDiffPixelRatio: 0.001
+  - Charts and canvas: threshold: 0.3, maxDiffPixelRatio: 0.02
+  - Icons and logos: threshold: 0, maxDiffPixels: 0 (pixel-perfect)
+
+MAINTENANCE RULES
+  - Every visual test must have @visual tag
+  - Mask all dynamic content (timestamps, avatars, live data)
+  - Block third-party scripts before navigation in all visual tests
+  - Wait for document.fonts.ready and networkidle before snapshot</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q803.18 -->
+  <div class="sn-q-card sn-reveal" style="--qc:#22c55e;--qc-bg:rgba(34,197,94,.07)">
+    <div class="sn-q-head">
+      <span class="sn-q-badge">Q803.18</span>
+      <h2 class="sn-q-text">In your project, how did you decide which pages to cover with visual tests?</h2>
+    </div>
+    <div class="sn-a-zone">
+      <div class="sn-box b-green" style="margin-top:.25rem">
+        <span class="sn-box-label c-green">Key Point</span>
+        <p class="sn-para" style="margin-top:.45rem">In our OrangeHRM framework, we used a risk-prioritisation matrix to decide what to cover. We scored each page on two dimensions: user visibility (how many users see it) and change frequency (how often the UI changes).</p>
+      </div>
+<p class="sn-para">High visibility + low change frequency = good visual test candidate. The Login page and Employee List fit this perfectly — every user sees them, and their layout is stable between releases.</p>
+<p class="sn-para">High visibility + high change frequency = problematic visual test candidate. The PIM form fits this pattern — it is important but changes frequently. We opted for component-level visual tests on the form's input fields and buttons rather than a full-page test. This way, layout regression is caught but minor content changes do not constantly invalidate baselines.</p>
+<p class="sn-para">Low visibility + any frequency = we skipped visual testing entirely. Internal admin screens that only three system administrators use were excluded from the visual test suite. The maintenance cost outweighed the benefit.</p>
+<p class="sn-para">Our final visual test suite has 12 tests: 5 page-level (Login, Dashboard, Employee List header, Leave Calendar, Report output) and 7 component-level (Nav bar, Data table header, Status badge variants, Form validation state, Button row layout, Modal overlay, Empty state card). All run in Docker in a nightly CI job. None block PRs — they are informational. We review the nightly report once a week as a team.</p>
+    </div>
+  </div>
+
+
+    <div class="sn-remember sn-reveal">
+      <div class="sn-remember-hd"><span>📌</span><span>Chapter Summary</span></div>
+      <div class="sn-cloud">
+        <div class="sn-grid-2" style="text-align:left;gap:.5rem">
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Built-in <code class="sn-ic">toHaveScreenshot()</code> works well for small suites; at scale it suffers from baseline sprawl, no approval workflow, and false positive management overhead.</span></li>
+            <li><span class="icon">⭐</span><span>Percy (BrowserStack Visual) provides cloud rendering, an approval workflow, and multi-viewport snapshots — baselines live in the cloud, not in git.</span></li>
+            <li><span class="icon">⭐</span><span>Applitools Eyes uses AI ("Visual AI") to distinguish meaningful regressions from rendering noise, reducing false positives by ~80% in large suites.</span></li>
+            <li><span class="icon">⭐</span><span>Argos CI is an open-source-friendly alternative to Percy with a generous free tier.</span></li>
+            <li><span class="icon">⭐</span><span>pixelmatch is the underlying comparison library — use it directly for custom comparison logic outside of Playwright's assertion API.</span></li>
+          </ul>
+          <ul class="sn-list">
+            <li><span class="icon">⭐</span><span>Component-level visual tests (locator-scoped) are more stable and precise than page-level tests; use page-level tests only for key compositions.</span></li>
+            <li><span class="icon">⭐</span><span>Data table and chart visual tests require API mocking for stable data, looser thresholds for canvas rendering, and the Clock API to skip entry animations.</span></li>
+            <li><span class="icon">⭐</span><span>Visual tests should run in CI on path-based triggers (only when UI files change) and nightly for full coverage — decoupled from the main functional test run.</span></li>
+            <li><span class="icon">⭐</span><span>Block third-party scripts with <code class="sn-ic">page.route()</code> before navigation to prevent dynamic third-party content from causing false positives.</span></li>
+            <li><span class="icon">⭐</span><span>The baseline update workflow should be Docker-only, script-enforced, and require PR review — treating baselines as first-class test fixtures.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+
+
+</div>
+</div>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syllabus - AI-Native Manual Testing Masterclass</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #4b5563;
+            --text-color: #1f2937;
+            --bg-color: #ffffff;
+            --card-bg: #f9fafb;
+            --border-color: #e5e7eb;
+            --practice-bg: #ffffff;
+            --session-tag: #dbeafe;
+            --agent-accent: #7c3aed;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                background-color: white;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+
+            .day-card {
+                border: 1px solid #ddd !important;
+                break-inside: avoid;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            padding: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 30px;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .course-type {
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--agent-accent);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 8px 0;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #374151;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .day-header {
+            background: linear-gradient(90deg, var(--primary-color), var(--agent-accent));
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            font-size: 22px;
+            margin-top: 40px;
+        }
+
+        .session-card {
+            border: 1px solid var(--border-color);
+            border-top: none;
+            padding: 25px;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            position: relative;
+        }
+
+        .session-title {
+            color: var(--primary-color);
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .duration-badge {
+            background: white;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 4px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        ul {
+            padding-left: 20px;
+            margin: 0 0 15px 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li strong {
+            color: #111827;
+        }
+
+        .practice-box {
+            background: #ffffff;
+            border-left: 5px solid var(--agent-accent);
+            padding: 15px 25px;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-top: 15px;
+        }
+
+        .practice-box strong {
+            color: var(--agent-accent);
+            font-style: normal;
+        }
+
+        h2 {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            color: #111827;
+        }
+
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            padding-top: 25px;
+        }
+
+        .print-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: all 0.2s;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-2px);
+            background: #1d4ed8;
+        }
+    </style>
+    <script src="/docs/auth-guard.js"></script>
+</head>
+
+<body>
+    <button class="print-btn no-print" onclick="window.print()">Print Syllabus to PDF</button>
+
+    <div class="container">
+        <header>
+            <h1>AI-Native Manual Testing Masterclass</h1>
+            <div class="course-type">3-Day Intensive BootCamp: Leveraging GenAI, MCP & Agents</div>
+        </header>
+
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Duration</span>
+                <span>3 Days (24 Hours)</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Format</span>
+                <span>4 Hours x 6 Sessions</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Skill Level</span>
+                <span>Manual Testing Beginner</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tools Covered</span>
+                <span>MCP, AI IDEs, Browser Agents</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Labs</span>
+                <span>100% Usage-Focused (No Dev)</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Outcome</span>
+                <span>Agent-Augmented Tester</span>
+            </div>
+        </div>
+
+        <section>
+            <h2>Program Overview</h2>
+            <p>This course is designed for manual testers to transform their daily workflow using **off-the-shelf AI
+                assistants and agents**. You will not be coding or developing agents; instead, you will master
+                **leveraging** existing tools like MCP servers, AI IDEs, and Browser Agents to 10X your productivity in
+                test design, data management, and execution.</p>
+        </section>
+
+        <!-- DAY 1 -->
+        <div class="day-header">Day 1: AI Foundations & Professional Prompting</div>
+
+        <div class="session-card">
+            <div class="session-title">
+                <span>Morning: The AI-Native Tester Mindset</span>
+                <span class="duration-badge">Session 1 (4 hrs)</span>
+            </div>
+            <ul>
+                <li><strong>GenAI Essentials:</strong> Using ChatGPT, Claude, and Gemini for QA analysis.</li>
+                <li><strong>Professional Prompting:</strong> QA-specific Prompt Engineering (Zero-shot to
+                    Chain-of-Thought).</li>
+                <li><strong>Requirements Analysis:</strong> Leveraging AI to find gaps in PRDs and User Stories.</li>
+                <li><strong>Risk Assessment:</strong> Using AI to prioritize high-risk application areas.</li>
+                <li><strong>Security & Privacy:</strong> Best practices for using GenAI in corporate environments.</li>
+            </ul>
+            <div class="practice-box">
+                <strong>Practice:</strong> Analyze a complex feature document and generate a "Gaps & Risks" report using
+                professional prompting.
+            </div>
+        </div>
+
+        <div class="session-card">
+            <div class="session-title">
+                <span>Afternoon: AI-Driven Test Design & MCP Basics</span>
+                <span class="duration-badge">Session 2 (4 hrs)</span>
+            </div>
+            <ul>
+                <li><strong>Scenario & Gherkin:</strong> Generating Happy Path & Edge cases with AI.</li>
+                <li><strong>Visual Test Design:</strong> Using AI Vision to create test cases from screenshots.</li>
+                <li><strong>Introduction to MCP:</strong> Using <strong>Claude Desktop</strong> with
+                    <code>claude_desktop_config.json</code>.
+                </li>
+                <li><strong>Accessing MCPs:</strong> Connecting to available marketplace MCP servers.</li>
+                <li><strong>Jira MCP:</strong> Leveraging the Jira MCP server to read stories directly in Claude.</li>
+            </ul>
+            <div class="practice-box">
+                <strong>Practice:</strong> Setup Claude Desktop with Jira MCP and generate a test suite for an assigned
+                Jira ticket.
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- DAY 2 -->
+        <div class="day-header">Day 2: AI IDEs & Browser Agents for QA</div>
+
+        <div class="session-card">
+            <div class="session-title">
+                <span>Morning: Using AI IDEs for Manual Testing</span>
+                <span class="duration-badge">Session 3 (4 hrs)</span>
+            </div>
+            <ul>
+                <li><strong>AI IDE Ecosystem:</strong> Introduction to **Cursor** and VS Code AI for manual testers.
+                </li>
+                <li><strong>Project Context:</strong> Leveraging "Codebase Indexing" to write accurate test cases.</li>
+                <li><strong>Asset Generation:</strong> Creating Test Plans and Markdown docs directly in the IDE.</li>
+                <li><strong>Standardization:</strong> Using AI IDE Agents to rewrite and clean up old test artifacts.
+                </li>
+                <li><strong>Context-Aware Designing:</strong> Writing tests while the AI "reads" the application code.
+                </li>
+            </ul>
+            <div class="practice-box">
+                <strong>Practice:</strong> Use an AI IDE Agent (like Cursor) to generate a standardized test suite based
+                on a local folder of features.
+            </div>
+        </div>
+
+        <div class="session-card">
+            <div class="session-title">
+                <span>Afternoon: Leveraging Browser Automation Agents</span>
+                <span class="duration-badge">Session 4 (4 hrs)</span>
+            </div>
+            <ul>
+                <li><strong>Browser Agents:</strong> Using **Comet** and **Claude Chrome Plugin** for UI interaction.
+                </li>
+                <li><strong>Autonomous Navigation:</strong> Instructing agents to perform multi-step user journeys.</li>
+                <li><strong>Verification:</strong> Using agents to check for UI changes, broken links, and functional
+                    errors.</li>
+                <li><strong>Vibe Exploratory Testing:</strong> Using agentic assistants to explore "unhappy paths."</li>
+                <li><strong>Agentic Debugging:</strong> Prompting agents to identify root causes of UI failures.</li>
+            </ul>
+            <div class="practice-box">
+                <strong>Practice:</strong> Use the Claude Chrome Plugin or Comet to autonomously execute a "Checkout
+                Flow" validation on a web app.
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <!-- DAY 3 -->
+        <div class="day-header">Day 3: Advanced Leveraging & Capstone</div>
+
+        <div class="session-card">
+            <div class="session-title">
+                <span>Morning: Advanced MCP & Utility Assistants</span>
+                <span class="duration-badge">Session 5 (4 hrs)</span>
+            </div>
+            <ul>
+                <li><strong>Playwright MCP Server:</strong> Controlling the browser directly from the Claude Chat
+                    interface.</li>
+                <li><strong>Vibium & Data MCPs:</strong> Leveraging specialized servers for fetching synthetic test
+                    data.</li>
+                <li><strong>Orchestration:</strong> Using multiple MCPs (Jira + Playwright) for "Requirement to
+                    Execution" flow.</li>
+                <li><strong>Intelligent Execution:</strong> Using AI to analyze logs and network traffic during manual
+                    testing.</li>
+                <li><strong>Bug Reporting:</strong> Leveraging AI to generate polished, documented bug reports in Jira.
+                </li>
+            </ul>
+            <div class="practice-box">
+                <strong>Practice:</strong> Perform a "Connect the Dots" lab: Fetch a Jira ticket via MCP, verify it via
+                Playwright MCP, and log a bug via AI.
+            </div>
+        </div>
+
+        <div class="session-card">
+            <div class="session-title">
+                <span>Afternoon: The Capstone - Agent-Augmented QA Cycle</span>
+                <span class="duration-badge">Session 6 (4 hrs)</span>
+            </div>
+            <ul>
+                <li><strong>Synthetic User Personas:</strong> Using AI agents to simulate different user behaviors.</li>
+                <li><strong>Daily Status & Metrics:</strong> Using AI to summarize testing progress and quality trends.
+                </li>
+                <li><strong>Continuous Testing:</strong> Planning your daily routine with AI "Assistants."</li>
+                <li><strong>Final Capstone Project:</strong> Perform a full cycle (Requirement -> Test Design -> Data ->
+                    Execution -> Bug Report) using the AI Toolkit.</li>
+                <li><strong>Future Readiness:</strong> Adapting to the evolving landscape of Agentic Software Testing.
+                </li>
+            </ul>
+            <div class="practice-box">
+                <strong>Capstone Lab:</strong> Deliver a full Quality Report for a new application feature using ONLY
+                AI-augmented tools.
+            </div>
+        </div>
+
+        <section>
+            <h2>Learning Outcomes</h2>
+            <ul>
+                <li><strong>Master Professional Prompting</strong> tailored specifically for Quality Assurance tasks.
+                </li>
+                <li><strong>Leverage MCP Servers</strong> (Jira, Playwright, Vibium) to connect AI directly to your QA
+                    data.</li>
+                <li><strong>Utilize AI IDEs</strong> (Cursor/VS Code) to design production-grade test documents in
+                    minutes.</li>
+                <li><strong>Operate Browser Agents</strong> (Comet/Claude Plugin) to autonomously verify complex user
+                    flows.</li>
+                <li><strong>Modernize Bug Management</strong> using AI for root cause analysis and professional
+                    reporting.</li>
+            </ul>
+        </section>
+
+        <div class="footer">
+            QtpSudhakar - VibeTestQ.com | Expert Training in AI-Native Quality Engineering</div>
+    </div>
+</body>
+
+</html>
