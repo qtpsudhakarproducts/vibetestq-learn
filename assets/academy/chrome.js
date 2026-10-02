@@ -48,6 +48,19 @@
     right.insertAdjacentHTML('beforeend', btn('/playwright/', 'fas fa-route', 'Curriculum'));
     right.insertAdjacentHTML('beforeend', btn('/', 'fas fa-graduation-cap', 'Academy', true));
 
+    function renderUser() {
+      const au = window.academyAuth;
+      if (!au || document.getElementById('acad-user')) return;
+      const b = document.createElement('button');
+      b.id = 'acad-user'; b.className = 'acad-btn'; b.type = 'button';
+      b.title = au.user.name + (au.user.email ? ' · ' + au.user.email : '');
+      b.innerHTML = '<i class="fas fa-right-from-bracket"></i> <span class="acad-label">Sign out</span>';
+      b.addEventListener('click', () => au.signOut());
+      right.appendChild(b);
+    }
+    window.addEventListener('academy:auth', renderUser);
+    renderUser();
+
     document.body.insertBefore(bar, document.body.firstChild);
     document.body.classList.add('acad-chrome');
     if (d.pad) document.body.classList.add('acad-pad');

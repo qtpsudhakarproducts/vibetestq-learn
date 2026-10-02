@@ -2,7 +2,7 @@
   "id": "playwright-apitest",
   "title": "API Testing",
   "sidebarIcon": "fas fa-plug",
-  "meta": "22 chapters · 7 parts",
+  "meta": "23 chapters · 7 parts",
   "pageTitle": "API Testing | VibeTestQ Academy",
   "chapterTitle": "{title} | API Testing | VibeTestQ Academy",
   "topbarChapter": "{num}. {title}",
@@ -15,7 +15,7 @@
     "note": "<strong>Use it like this:</strong> work through the parts in order — each chapter builds on the one before it.",
     "stats": [
       [
-        "22",
+        "23",
         "Chapters"
       ],
       [
@@ -263,6 +263,12 @@
           "slug": "appendix-glossary",
           "title": "Glossary",
           "src": "/playwright/apitest/appendix-glossary.md"
+        },
+        {
+          "num": 23,
+          "slug": "employee-api-guide",
+          "title": "Employee Management API — complete walkthrough",
+          "src": "/apitest/playwright-api-testing-guide.md"
         }
       ]
     }

@@ -38,3 +38,14 @@ body.acad-pad { padding-top: 56px; }
   #acad-bar .acad-label { display: none; }
   #acad-bar .acad-page { display: none; }
 }
+
+@media (max-width: 560px) {
+  #acad-bar { gap: .4rem; padding: 0 .55rem; }
+  #acad-bar .acad-logo img { height: 28px; }
+  #acad-bar .acad-sep, #acad-bar .acad-page { display: none; }
+  #acad-bar .acad-sec { overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
+  #acad-bar .acad-right { gap: .3rem; }
+  #acad-bar .acad-btn { padding: .32rem .5rem; }
+  #acad-bar .acad-label { display: none; }
+  #acad-bar .header-score { font-size: .68rem; }
+}

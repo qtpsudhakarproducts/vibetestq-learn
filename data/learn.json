@@ -2,7 +2,7 @@
   "id": "learn",
   "title": "Learning Library",
   "sidebarIcon": "fas fa-book-open",
-  "meta": "8 tracks · 42 sections",
+  "meta": "8 tracks · 40 sections",
   "pageTitle": "Learning Library | VibeTestQ Academy",
   "chapterTitle": "{title} | Learning Library | VibeTestQ Academy",
   "topbarChapter": "{title}",
@@ -21,7 +21,7 @@
         "Tracks"
       ],
       [
-        "367",
+        "368",
         "Lessons"
       ],
       [
@@ -208,42 +208,30 @@
         {
           "num": 18,
           "slug": "i18",
-          "title": "AI for QA",
-          "href": "/aiqa/"
+          "title": "AI for Testers — learning path",
+          "href": "/ai/"
         },
         {
           "num": 19,
           "slug": "i19",
-          "title": "AI-Native Manual Testing",
-          "href": "/mtai/"
-        },
-        {
-          "num": 20,
-          "slug": "i20",
           "title": "Masterclass syllabus",
           "href": "/mtai/ai-native-manual-testing-agents-masterclass.html"
         },
         {
-          "num": 21,
-          "slug": "i21",
-          "title": "AI-Native Tester Masterclass",
-          "href": "/uai/"
-        },
-        {
-          "num": 22,
-          "slug": "i22",
+          "num": 20,
+          "slug": "i20",
           "title": "AI Skills for Testing",
           "href": "/skills/"
         },
         {
-          "num": 23,
-          "slug": "i23",
+          "num": 21,
+          "slug": "i21",
           "title": "QA Workflows for the AI SDLC",
           "href": "/workflows/"
         },
         {
-          "num": 24,
-          "slug": "i24",
+          "num": 22,
+          "slug": "i22",
           "title": "WebMCP",
           "href": "/wmcp/"
         }
@@ -262,32 +250,32 @@
       "listLinks": true,
       "chapters": [
         {
-          "num": 25,
-          "slug": "i25",
+          "num": 23,
+          "slug": "i23",
           "title": "AI-Powered QA — overview",
           "href": "/lang/"
         },
         {
-          "num": 26,
-          "slug": "i26",
+          "num": 24,
+          "slug": "i24",
           "title": "LangChain",
           "href": "/lang/langchain/"
         },
         {
-          "num": 27,
-          "slug": "i27",
+          "num": 25,
+          "slug": "i25",
           "title": "LangGraph",
           "href": "/lang/langgraph/"
         },
         {
-          "num": 28,
-          "slug": "i28",
+          "num": 26,
+          "slug": "i26",
           "title": "LangSmith",
           "href": "/lang/langsmith/"
         },
         {
-          "num": 29,
-          "slug": "i29",
+          "num": 27,
+          "slug": "i27",
           "title": "Playwright AI",
           "href": "/lang/playwright-ai/"
         }
@@ -306,14 +294,14 @@
       "listLinks": true,
       "chapters": [
         {
-          "num": 30,
-          "slug": "i30",
+          "num": 28,
+          "slug": "i28",
           "title": "Cypress",
           "href": "/cy/"
         },
         {
-          "num": 31,
-          "slug": "i31",
+          "num": 29,
+          "slug": "i29",
           "title": "Mobile testing",
           "href": "/appium/"
         }
@@ -332,14 +320,14 @@
       "listLinks": true,
       "chapters": [
         {
-          "num": 32,
-          "slug": "i32",
+          "num": 30,
+          "slug": "i30",
           "title": "CI/CD & cloud guides",
           "href": "/testbed/"
         },
         {
-          "num": 33,
-          "slug": "i33",
+          "num": 31,
+          "slug": "i31",
           "title": "AI & GitHub for QA",
           "href": "/playwright/gh/"
         }
@@ -358,56 +346,56 @@
       "listLinks": true,
       "chapters": [
         {
-          "num": 34,
-          "slug": "i34",
+          "num": 32,
+          "slug": "i32",
           "title": "Study notes",
           "href": "/notes/"
         },
         {
-          "num": 35,
-          "slug": "i35",
+          "num": 33,
+          "slug": "i33",
           "title": "Locator cheat sheets",
           "href": "/cs/"
         },
         {
-          "num": 36,
-          "slug": "i36",
+          "num": 34,
+          "slug": "i34",
           "title": "Slides · JavaScript history",
           "href": "/presentations/javascript-history-presentation.html"
         },
         {
-          "num": 37,
-          "slug": "i37",
+          "num": 35,
+          "slug": "i35",
           "title": "Slides · JS, TS & Node.js for testers",
           "href": "/presentations/js-ts-nodejs-for-testers.html"
         },
         {
-          "num": 38,
-          "slug": "i38",
+          "num": 36,
+          "slug": "i36",
           "title": "Slides · Async, callbacks & promises",
           "href": "/presentations/async-callbacks-promises.html"
         },
         {
-          "num": 39,
-          "slug": "i39",
+          "num": 37,
+          "slug": "i37",
           "title": "Slides · Element inspection",
           "href": "/presentations/element-inspection-presentation.html"
         },
         {
-          "num": 40,
-          "slug": "i40",
+          "num": 38,
+          "slug": "i38",
           "title": "Slides · Locators masterclass",
           "href": "/presentations/locators-masterclass.html"
         },
         {
-          "num": 41,
-          "slug": "i41",
+          "num": 39,
+          "slug": "i39",
           "title": "Slides · Mobile application testing",
           "href": "/appium/Mobile-Application-Testing-2026.html"
         },
         {
-          "num": 42,
-          "slug": "i42",
+          "num": 40,
+          "slug": "i40",
           "title": "Slides · Why Playwright",
           "href": "/presentations/playwright-superiority-presentation.html"
         }

@@ -1,0 +1,324 @@
+{
+  "id": "ai",
+  "title": "AI for Testers",
+  "sidebarIcon": "fas fa-robot",
+  "meta": "31 chapters · 7 parts",
+  "pageTitle": "AI for Testers | VibeTestQ Academy",
+  "chapterTitle": "{title} | AI for Testers | VibeTestQ Academy",
+  "topbarChapter": "{num}. {title}",
+  "badgeLetter": "P",
+  "home": {
+    "eyebrow": "AI for manual and automation testers",
+    "eyebrowIcon": "fas fa-robot",
+    "title": "<span class=\"g\">AI</span> for <span class=\"g2\">Testers</span>",
+    "sub": "One path from your first AI prompt to agent-augmented QA: start with Level 1, go deeper in Level 2, then take the masterclass or the 3-day intensive.",
+    "note": "<strong>Use it like this:</strong> follow the parts in order. The 3-day intensive is a fast track if you already know the basics.",
+    "stats": [
+      [
+        "31",
+        "Chapters"
+      ],
+      [
+        "7",
+        "Parts"
+      ]
+    ],
+    "label": "Learning path",
+    "labelIcon": "fas fa-route"
+  },
+  "content": {
+    "type": "md"
+  },
+  "topbar": [
+    {
+      "label": "Library",
+      "icon": "fas fa-book-open",
+      "href": "/learn/"
+    },
+    {
+      "label": "Academy",
+      "icon": "fas fa-graduation-cap",
+      "href": "/",
+      "accent": true
+    }
+  ],
+  "parts": [
+    {
+      "title": "Level 1 — Use AI first",
+      "icon": "fas fa-seedling",
+      "desc": "Use AI · disruption · how AI works · prompts · VS Code & Copilot",
+      "chapters": [
+        {
+          "slug": "level1-ch1-use-ai-before-you-learn",
+          "title": "Use AI Before You Learn About It",
+          "src": "/aiqa/level1-ch1-use-ai-before-you-learn.md",
+          "num": 1
+        },
+        {
+          "slug": "level1-ch2-disruption-is-here",
+          "title": "The Disruption Is Already Here",
+          "src": "/aiqa/level1-ch2-disruption-is-here.md",
+          "num": 2
+        },
+        {
+          "slug": "level1-ch3-how-ai-works",
+          "title": "How AI Works & Responsible Use",
+          "src": "/aiqa/level1-ch3-how-ai-works.md",
+          "num": 3
+        },
+        {
+          "slug": "level1-ch4-prompts-and-context",
+          "title": "Prompts & Context",
+          "src": "/aiqa/level1-ch4-prompts-and-context.md",
+          "num": 4
+        },
+        {
+          "slug": "level1-ch5-vscode-copilot-skillsmd",
+          "title": "VS Code, GitHub Copilot & Skills.md",
+          "src": "/aiqa/level1-ch5-vscode-copilot-skillsmd.md",
+          "num": 5
+        },
+        {
+          "slug": "level1-practice-guide",
+          "title": "Practice Guide",
+          "src": "/aiqa/level1-practice-guide.md",
+          "num": 6
+        }
+      ],
+      "num": 1,
+      "slug": "g1",
+      "short": "Level 1 — Use AI first",
+      "color": "#fbbf24",
+      "rgb": "251,191,36",
+      "metric": ""
+    },
+    {
+      "title": "Level 2 — AI in your testing",
+      "icon": "fas fa-plug",
+      "desc": "MCP in VS Code · Gherkin · exploratory · test data · toolkit",
+      "chapters": [
+        {
+          "slug": "level2-ch1-mcp-in-vscode",
+          "title": "MCP in VS Code",
+          "src": "/aiqa/level2-ch1-mcp-in-vscode.md",
+          "num": 7
+        },
+        {
+          "slug": "level2-ch2-requirements-and-gherkin",
+          "title": "Requirements Analysis & Test Case Design with Gherkin",
+          "src": "/aiqa/level2-ch2-requirements-and-gherkin.md",
+          "num": 8
+        },
+        {
+          "slug": "level2-ch3-exploratory-testing",
+          "title": "Exploratory Testing with MCP & AI Agents",
+          "src": "/aiqa/level2-ch3-exploratory-testing.md",
+          "num": 9
+        },
+        {
+          "slug": "level2-ch4-test-data-and-bug-reporting",
+          "title": "Test Data Generation & Bug Reporting",
+          "src": "/aiqa/level2-ch4-test-data-and-bug-reporting.md",
+          "num": 10
+        },
+        {
+          "slug": "level2-ch5-ai-testing-toolkit",
+          "title": "AI Testing Toolkit Organisation",
+          "src": "/aiqa/level2-ch5-ai-testing-toolkit.md",
+          "num": 11
+        },
+        {
+          "slug": "level2-practice-guide",
+          "title": "Practice Guide",
+          "src": "/aiqa/level2-practice-guide.md",
+          "num": 12
+        }
+      ],
+      "num": 2,
+      "slug": "g2",
+      "short": "Level 2 — AI in your testing",
+      "color": "#10b981",
+      "rgb": "16,185,129",
+      "metric": ""
+    },
+    {
+      "title": "Masterclass · Foundations",
+      "icon": "fas fa-layer-group",
+      "desc": "Traditional Testing Fundamentals · Foundations · AI-SDLC",
+      "chapters": [
+        {
+          "slug": "traditional",
+          "title": "Traditional Testing Fundamentals",
+          "src": "/mtai/00_traditional_testing_fundamentals.md",
+          "num": 13
+        },
+        {
+          "slug": "foundations",
+          "title": "Foundations",
+          "src": "/mtai/01_foundations.md",
+          "num": 14
+        },
+        {
+          "slug": "ai_sdlc",
+          "title": "AI-SDLC",
+          "src": "/mtai/02_ai_sdlc_modern_testing.md",
+          "num": 15
+        }
+      ],
+      "num": 3,
+      "slug": "g3",
+      "short": "Masterclass · Foundations",
+      "color": "#6366f1",
+      "rgb": "99,102,241",
+      "metric": ""
+    },
+    {
+      "title": "Masterclass · Tools & Frameworks",
+      "icon": "fas fa-robot",
+      "desc": "Management Tools · GenAI & MCP",
+      "chapters": [
+        {
+          "slug": "tools",
+          "title": "Management Tools",
+          "src": "/mtai/03_test_management_tools.md",
+          "num": 16
+        },
+        {
+          "slug": "mcp",
+          "title": "GenAI & MCP",
+          "src": "/mtai/04_genai_mcp_testing.md",
+          "num": 17
+        }
+      ],
+      "num": 4,
+      "slug": "g4",
+      "short": "Masterclass · Tools & Frameworks",
+      "color": "#0ea5e9",
+      "rgb": "14,165,233",
+      "metric": ""
+    },
+    {
+      "title": "Masterclass · AI Skills",
+      "icon": "fas fa-robot",
+      "desc": "Prompt Engineering · Artifact Generation",
+      "chapters": [
+        {
+          "slug": "prompting",
+          "title": "Prompt Engineering",
+          "src": "/mtai/05_prompt_engineering.md",
+          "num": 18
+        },
+        {
+          "slug": "artifacts",
+          "title": "Artifact Generation",
+          "src": "/mtai/06_ai_powered_test_artifact_generation.md",
+          "num": 19
+        }
+      ],
+      "num": 5,
+      "slug": "g5",
+      "short": "Masterclass · AI Skills",
+      "color": "#ec4899",
+      "rgb": "236,72,153",
+      "metric": ""
+    },
+    {
+      "title": "Masterclass · Strategy & Career",
+      "icon": "fas fa-robot",
+      "desc": "Human-In-The-Loop · Irreplaceable Skills · API Testing · Prompt Testing …",
+      "chapters": [
+        {
+          "slug": "hitl",
+          "title": "Human-In-The-Loop",
+          "src": "/mtai/07_human_in_the_loop.md",
+          "num": 20
+        },
+        {
+          "slug": "human_skills",
+          "title": "Irreplaceable Skills",
+          "src": "/mtai/08_human_irreplaceable_skills.md",
+          "num": 21
+        },
+        {
+          "slug": "api_testing",
+          "title": "API Testing",
+          "src": "/mtai/09_api_testing.md",
+          "num": 22
+        },
+        {
+          "slug": "prompt_testing",
+          "title": "Prompt Testing",
+          "src": "/mtai/10_testing_ai_systems_prompt_testing.md",
+          "num": 23
+        },
+        {
+          "slug": "capstone",
+          "title": "Capstone Project",
+          "src": "/mtai/11_capstone_project.md",
+          "num": 24
+        },
+        {
+          "slug": "career",
+          "title": "Career Dev",
+          "src": "/mtai/12_career_development.md",
+          "num": 25
+        }
+      ],
+      "num": 6,
+      "slug": "g6",
+      "short": "Masterclass · Strategy & Career",
+      "color": "#f97316",
+      "rgb": "249,115,22",
+      "metric": ""
+    },
+    {
+      "title": "3-day intensive",
+      "icon": "fas fa-bolt",
+      "desc": "The tester mindset, AI IDEs, browser agents and the agent-augmented QA cycle, in three days.",
+      "chapters": [
+        {
+          "slug": "mindset",
+          "title": "Day 1 — AI Native Mindset",
+          "src": "/uai/masterclass_01_ai_native_mindset.md",
+          "num": 26
+        },
+        {
+          "slug": "design",
+          "title": "Day 1 — Test Design & MCP",
+          "src": "/uai/masterclass_02_test_design_mcp.md",
+          "num": 27
+        },
+        {
+          "slug": "ide",
+          "title": "Day 2 — AI IDEs (Cursor)",
+          "src": "/uai/masterclass_03_ai_ides.md",
+          "num": 28
+        },
+        {
+          "slug": "browser",
+          "title": "Day 2 — Browser Agents",
+          "src": "/uai/masterclass_04_browser_agents.md",
+          "num": 29
+        },
+        {
+          "slug": "advanced",
+          "title": "Day 3 — Advanced MCP",
+          "src": "/uai/masterclass_05_advanced_mcp.md",
+          "num": 30
+        },
+        {
+          "slug": "capstone",
+          "title": "Day 3 — Capstone Cycle",
+          "src": "/uai/masterclass_06_capstone.md",
+          "num": 31
+        }
+      ],
+      "num": 7,
+      "slug": "g7",
+      "short": "3-day intensive",
+      "color": "#8b5cf6",
+      "rgb": "139,92,246",
+      "metric": ""
+    }
+  ]
+}

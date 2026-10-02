@@ -1,199 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Docs Login | Vibetestq</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f4f7fb;
-      --card: #ffffff;
-      --text: #0f172a;
-      --muted: #64748b;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --border: #e2e8f0;
-      --success: #047857;
-      --error: #dc2626;
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(135deg, #eff6ff 0%, var(--bg) 100%);
-      color: var(--text);
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-    }
-
-    .card {
-      width: min(100%, 440px);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
-      padding: 32px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-      font-weight: 700;
-      color: var(--primary-dark);
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 1.7rem;
-    }
-
-    p {
-      margin: 0 0 20px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 12px;
-      padding: 13px 16px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
-
-    button:hover { transform: translateY(-1px); }
-
-    .btn-github {
-      background: #111827;
-      color: white;
-      box-shadow: 0 8px 18px rgba(17,24,39,.16);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-github:hover { box-shadow: 0 10px 22px rgba(17,24,39,.22); }
-
-    .status {
-      margin-top: 16px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      display: none;
-    }
-
-    .status.success {
-      display: block;
-      background: #ecfdf5;
-      color: var(--success);
-      border: 1px solid #a7f3d0;
-    }
-
-    .status.error {
-      display: block;
-      background: #fef2f2;
-      color: var(--error);
-      border: 1px solid #fecaca;
-    }
-
-    .small {
-      margin-top: 14px;
-      font-size: 0.88rem;
-      color: var(--muted);
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in | VibeTestQ Academy</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://academy.vibetestq.com/login.html">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&display=swap">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f1f5f9;--panel:#fff;--line:#e2e8f0;--text:#1e293b;--dim:#64748b;--bright:#0f172a;--cyan:#0284c7;--violet:#7c3aed;--err:#b91c1c}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;line-height:1.6}
+  .bar{height:56px;display:flex;align-items:center;gap:.75rem;padding:0 1rem;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line);box-shadow:0 1px 8px rgba(0,0,0,.06)}
+  .bar img{height:34px;width:auto;display:block}
+  .bar .sp{flex:1}
+  .bar a.back{font-size:.73rem;font-weight:700;color:#475569;text-decoration:none;border:1px solid var(--line);border-radius:7px;padding:.32rem .75rem}
+  .bar a.back:hover{border-color:var(--cyan);color:var(--cyan)}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
+  .card{width:100%;max-width:440px;background:#fffef8;border:2px solid #e8d8b4;border-radius:22px;padding:2rem 1.75rem 1.6rem;box-shadow:0 10px 35px rgba(15,23,42,.07);position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(transparent,transparent 28px,rgba(148,163,184,.12) 28px,rgba(148,163,184,.12) 29px);pointer-events:none}
+  .card>*{position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:.45rem;padding:.3rem .7rem;border-radius:999px;background:#fff;border:1px solid #fcd34d;color:#b45309;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.9rem}
+  h1{font-family:'Kalam','Segoe UI',cursive;font-size:1.9rem;line-height:1.2;color:#111827;margin-bottom:.6rem}
+  h1 span{color:var(--cyan)}
+  p.lead{color:#475569;font-size:.95rem;margin-bottom:1.3rem}
+  .btn{width:100%;display:flex;align-items:center;justify-content:center;gap:.6rem;border:none;border-radius:12px;padding:.85rem 1rem;font-size:1rem;font-weight:700;cursor:pointer;background:#111827;color:#fff;transition:transform .12s,box-shadow .12s}
+  .btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,23,42,.2)}
+  .btn:disabled{opacity:.6;cursor:wait}
+  .status{display:none;margin-top:1rem;padding:.75rem .9rem;border-radius:12px;font-size:.88rem;line-height:1.5}
+  .status.show{display:block}
+  .status.ok{background:rgba(34,197,94,.08);border:1.5px dashed #22c55e;color:#166534}
+  .status.err{background:#fef2f2;border:1px solid #fecaca;color:var(--err)}
+  .status.info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+  .fine{margin-top:1.1rem;font-size:.8rem;color:var(--dim);text-align:center}
+  .fine a{color:var(--cyan)}
+</style>
 </head>
 <body>
-  <main class="card">
-    <div class="brand">🔐 Vibetestq Docs</div>
-    <h1>Sign in to continue</h1>
-    <p>Use your GitHub account to access the protected docs area.</p>
+<header class="bar">
+  <a href="/"><img src="/assets/ulogo.jpg" alt="VibeTestQ"></a>
+  <span class="sp"></span>
+  <a class="back" href="/"><i class="fas fa-arrow-left"></i> Back to the Academy</a>
+</header>
 
-    <button id="githubLoginBtn" class="btn-github" type="button">Continue with GitHub</button>
+<main>
+  <section class="card">
+    <div class="eyebrow"><i class="fas fa-graduation-cap"></i> VibeTestQ Academy</div>
+    <h1>Sign in to <span>start learning</span></h1>
+    <p class="lead">The lessons, practice sets and quizzes are free. Sign in with your GitHub account to open them.</p>
 
-    <div id="status" class="status"></div>
-    <div class="small">You will be redirected back to the docs section after sign-in.</div>
-  </main>
+    <button id="githubLoginBtn" class="btn" type="button" disabled><i class="fab fa-github"></i> Continue with GitHub</button>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <p class="fine">We only read your public GitHub name and email to sign you in.</p>
+  </section>
+</main>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import {
-      getAuth,
-      onAuthStateChanged,
-      GithubAuthProvider,
-      signInWithPopup
-    } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, GithubAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult
+  } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBFlp21T_oghQMpH0y5D7N9p3dqNQfBtxg",
-      authDomain: "vibetestq-b3eb9.firebaseapp.com",
-      projectId: "vibetestq-b3eb9",
-      storageBucket: "vibetestq-b3eb9.firebasestorage.app",
-      messagingSenderId: "334461164720",
-      appId: "1:334461164720:web:5f563cca7e91f00e33ef75",
-      measurementId: "G-B7E47M7147"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBFlp21T_oghQMpH0y5D7N9p3dqNQfBtxg",
+    authDomain: "vibetestq-b3eb9.firebaseapp.com",
+    projectId: "vibetestq-b3eb9",
+    storageBucket: "vibetestq-b3eb9.firebasestorage.app",
+    messagingSenderId: "334461164720",
+    appId: "1:334461164720:web:5f563cca7e91f00e33ef75",
+    measurementId: "G-B7E47M7147"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const auth = getAuth(initializeApp(firebaseConfig));
+  const btn = document.getElementById('githubLoginBtn');
+  const statusEl = document.getElementById('status');
+  const DEFAULT_AFTER_LOGIN = '/learn/';
 
-    const statusEl = document.getElementById("status");
-    const loginBtn = document.getElementById("githubLoginBtn");
+  // Only ever send the reader back to a page on this site.
+  function safeRedirect(raw) {
+    try {
+      const u = new URL(raw || '', window.location.origin);
+      if (u.origin !== window.location.origin) return DEFAULT_AFTER_LOGIN;
+      if (u.pathname.indexOf('/login') === 0) return DEFAULT_AFTER_LOGIN;
+      return u.pathname + u.search + u.hash;
+    } catch (e) { return DEFAULT_AFTER_LOGIN; }
+  }
+  const target = safeRedirect(new URLSearchParams(window.location.search).get('redirect'));
 
-    const params = new URLSearchParams(window.location.search);
-    const redirectTo = params.get("redirect") || "/";
+  function show(kind, html) {
+    statusEl.className = 'status show ' + kind;
+    statusEl.innerHTML = html;
+  }
+  const MESSAGES = {
+    'auth/unauthorized-domain': 'Sign-in is not enabled for this website address yet. <br><small>Site owner: add <b>' + window.location.hostname + '</b> in Firebase console → Authentication → Settings → Authorized domains.</small>',
+    'auth/popup-closed-by-user': 'The sign-in window was closed before finishing. Please try again.',
+    'auth/cancelled-popup-request': 'Another sign-in window was already open. Please try again.',
+    'auth/account-exists-with-different-credential': 'This email is already linked to a different sign-in method.',
+    'auth/network-request-failed': 'Could not reach the sign-in service. Check your connection and try again.',
+    'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+    'auth/operation-not-allowed': 'GitHub sign-in is not enabled for this site yet. Site owner: enable the GitHub provider in Firebase → Authentication → Sign-in method.',
+  };
+  const fail = (e) => {
+    console.error(e);
+    show('err', MESSAGES[e && e.code] || 'Sign-in did not complete. Please try again.');
+    btn.disabled = false;
+  };
+  const done = (user) => {
+    show('ok', 'Signed in as <b>' + (user.displayName || user.email || 'your account') + '</b>. Opening the Academy…');
+    window.setTimeout(() => window.location.replace(target), 500);
+  };
 
-    function showStatus(message, type) {
-      statusEl.textContent = message;
-      statusEl.className = `status ${type}`;
-    }
+  // returning from a redirect-based sign-in (used when the popup is blocked)
+  getRedirectResult(auth).then((r) => { if (r && r.user) done(r.user); }).catch(fail);
 
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        showStatus(`Signed in as ${user.displayName || user.email}. Redirecting...`, "success");
-        window.setTimeout(() => {
-          window.location.replace(redirectTo);
-        }, 700);
+  onAuthStateChanged(auth, (user) => {
+    if (user) done(user);
+    else btn.disabled = false;
+  });
+
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    show('info', 'Opening GitHub…');
+    const provider = new GithubAuthProvider();
+    provider.addScope('read:user');
+    provider.addScope('user:email');
+    try {
+      const result = await signInWithPopup(auth, provider);
+      if (result && result.user) done(result.user); else btn.disabled = false;
+    } catch (e) {
+      // phones and some browsers block popups: fall back to a full-page redirect
+      if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) {
+        show('info', 'Your browser blocked the pop-up, so we are redirecting you to GitHub instead…');
+        try { await signInWithRedirect(auth, provider); } catch (e2) { fail(e2); }
       } else {
-        loginBtn.disabled = false;
+        fail(e);
       }
-    });
-
-    loginBtn.addEventListener("click", async () => {
-      loginBtn.disabled = true;
-      showStatus("Opening GitHub sign-in popup...", "success");
-
-      try {
-        const provider = new GithubAuthProvider();
-        provider.addScope("read:user");
-        provider.addScope("user:email");
-
-        const result = await signInWithPopup(auth, provider);
-        if (result?.user) {
-          showStatus("Sign-in successful. Redirecting...", "success");
-          window.setTimeout(() => {
-            window.location.replace(redirectTo);
-          }, 700);
-        } else {
-          loginBtn.disabled = false;
-        }
-      } catch (error) {
-        loginBtn.disabled = false;
-        console.error(error);
-        showStatus(error.message || "GitHub sign-in failed.", "error");
-      }
-    });
-  </script>
+    }
+  });
+</script>
 </body>
 </html>

@@ -65,6 +65,20 @@
         </div>
       </div>`;
 
+    // signed-in reader: show Sign out (auth-guard.js fires academy:auth once it knows who they are)
+    function renderUser() {
+      const au = window.academyAuth, right = document.querySelector('#topbar .tbar-right');
+      if (!au || !right || document.getElementById('acad-user')) return;
+      const b = document.createElement('button');
+      b.id = 'acad-user'; b.className = 'tbar-btn';
+      b.title = au.user.name + (au.user.email ? ' · ' + au.user.email : '');
+      b.innerHTML = '<i class="fas fa-right-from-bracket"></i> <span class="tbar-label">Sign out</span>';
+      b.addEventListener('click', () => au.signOut());
+      right.appendChild(b);
+    }
+    window.addEventListener('academy:auth', renderUser);
+    renderUser();
+
     const sbNav = document.getElementById('sb-nav');
     const mainEl = document.getElementById('main');
     const progFill = document.getElementById('prog-fill');

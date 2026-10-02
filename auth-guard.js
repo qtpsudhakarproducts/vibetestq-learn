@@ -1,30 +1,51 @@
+/*
+ * VibeTestQ Academy — sign-in gate for learning pages.
+ *
+ * Content is free; readers sign in with GitHub. This script:
+ *  - hides the page until Firebase confirms a signed-in user (no flash of content),
+ *  - sends everyone else to /login.html and back to where they were afterwards,
+ *  - exposes window.academyAuth ({ user, signOut }) and fires "academy:auth" so
+ *    the Academy top bars can show who is signed in and offer "Sign out".
+ *
+ * Note: this is a client-side gate. The lesson files are static, so it keeps casual
+ * visitors out but does not make the files private.
+ */
 (function () {
-  if (window.__docsAuthGuardLoaded) return;
-  window.__docsAuthGuardLoaded = true;
+  'use strict';
+  if (window.__academyGuard) return;
+  window.__academyGuard = true;
 
-  // This script is only included on protected learning pages (see each page's <head>),
-  // so the only page it must skip is the login page itself.
-  const pathname = window.location.pathname.replace(/\\/g, '/');
-  const normalizedPath = pathname.replace(/\/+$/, '') || '/';
-  const isLoginPage = normalizedPath === '/login.html' || normalizedPath === '/login';
+  var path = window.location.pathname.replace(/\\/g, '/');
+  var normalized = path.replace(/\/+$/, '') || '/';
+  if (normalized === '/login.html' || normalized === '/login') return;
 
-  if (isLoginPage) {
-    return;
+  function loginUrl() {
+    return '/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search + window.location.hash);
   }
+  window.__docsAuthRedirectUrl = loginUrl(); // kept for older pages
 
-  const loginUrl = '/login.html?redirect=' + encodeURIComponent(pathname + window.location.search);
-  window.__docsAuthRedirectUrl = loginUrl;
+  var host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') return; // local preview is not gated
 
-  const isLocalPreview = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  if (isLocalPreview) {
-    return;
-  }
+  // Hide the page until we know who is reading it.
+  var hide = document.createElement('style');
+  hide.id = 'academy-guard-style';
+  hide.textContent = 'html{visibility:hidden}';
+  document.documentElement.appendChild(hide);
 
-  const script = document.createElement('script');
+  var toLogin = function () { window.location.replace(loginUrl()); };
+  // If Firebase cannot load (blocked network, CDN down) do not leave a blank page.
+  var timer = setTimeout(toLogin, 10000);
+  window.__academyGuardApi = {
+    ok: function () { clearTimeout(timer); hide.remove(); },
+    toLogin: toLogin,
+  };
+
+  var script = document.createElement('script');
   script.type = 'module';
   script.textContent = `
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBFlp21T_oghQMpH0y5D7N9p3dqNQfBtxg",
@@ -36,15 +57,18 @@
       measurementId: "G-B7E47M7147"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
+    const auth = getAuth(initializeApp(firebaseConfig));
     onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.replace(window.__docsAuthRedirectUrl);
-      }
+      const api = window.__academyGuardApi;
+      if (!user) { api.toLogin(); return; }
+      window.academyAuth = {
+        user: { name: user.displayName || user.email || 'Signed in', email: user.email || '', photo: user.photoURL || '' },
+        signOut: () => signOut(auth).then(() => window.location.replace('/login.html')),
+      };
+      api.ok();
+      window.dispatchEvent(new CustomEvent('academy:auth'));
     });
   `;
-
+  script.onerror = toLogin;
   document.head.appendChild(script);
 })();
