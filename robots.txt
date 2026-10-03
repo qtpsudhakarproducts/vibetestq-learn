@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://academy.vibetestq.com/sitemap.xml
