@@ -633,3 +633,51 @@ a:hover{text-decoration:underline}
   .tbar-btn{padding:.32rem .5rem}
   .tbar-label{display:none}
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   PROFESSIONAL POLISH — contrast, focus, footer, motion
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Accent colours are bright on purpose; as TEXT on white they need a darker tone (WCAG AA).
+   --pc stays the bright brand colour for borders, bars and badges. */
+.md-article h2,
+.md-article a,
+.ch-part-badge,
+.lab-day .tag,
+.ph-icon-tag,
+.ph-go,
+.ph-links a:hover,
+.ch-link.active .ch-num {
+  color: var(--pc, #0284c7);
+  color: color-mix(in srgb, var(--pc, #0284c7) 68%, #000);
+}
+.p-badge span { color: var(--pc, #0284c7) !important; color: color-mix(in srgb, var(--pc, #0284c7) 68%, #000) !important; }
+.md-article h2 { border-bottom-color: rgba(var(--pc-rgb, 2, 132, 199), .22); }
+
+/* keyboard users get a visible focus ring, mouse users do not */
+a:focus-visible, button:focus-visible, .ph-card:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 6px;
+}
+#main:focus { outline: none; }
+
+.skip-link {
+  position: fixed; left: .75rem; top: -48px; z-index: 1000; background: #0f172a; color: #fff;
+  padding: .5rem .9rem; border-radius: 8px; font-size: .85rem; font-weight: 700; text-decoration: none;
+  transition: top .15s;
+}
+.skip-link:focus { top: .75rem; }
+
+/* quiet footer at the end of the home and every chapter */
+.acad-foot {
+  margin: 3rem 0 0; padding: 1.1rem 0 .4rem; border-top: 1px solid #e2e8f0;
+  display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; align-items: center; justify-content: space-between;
+  font-size: .76rem; color: var(--text-dim);
+}
+.acad-foot-links { display: flex; flex-wrap: wrap; gap: .35rem 1.2rem; }
+.acad-foot a { color: var(--text-mid); text-decoration: none; }
+.acad-foot a:hover { color: var(--cyan); text-decoration: underline; }
+
+/* respect "reduce motion" */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

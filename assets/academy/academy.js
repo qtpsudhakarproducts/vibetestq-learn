@@ -40,6 +40,7 @@
 
     // ── Shell ──────────────────────────────────────────────────────────────
     document.body.innerHTML = `
+      <a class="skip-link" href="#main">Skip to content</a>
       <header id="topbar">
         <button id="sb-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
         <a class="tbar-logo" href="/"><img src="/assets/ulogo.jpg" alt="VibeTestQ"></a>
@@ -61,7 +62,7 @@
         </aside>
         <div id="content-col">
           <div id="prog"><div id="prog-fill"></div></div>
-          <div id="main"></div>
+          <main id="main" tabindex="-1"></main>
         </div>
       </div>`;
 
@@ -79,6 +80,8 @@
     window.addEventListener('academy:auth', renderUser);
     renderUser();
 
+    const footerHtml = '<footer class="acad-foot"><span>&copy; 2026 VibeTestQ. All rights reserved.</span>' +
+      '<span class="acad-foot-links"><a href="/learn/">Learning Library</a><a href="https://vibetestq.com" target="_blank" rel="noopener">vibetestq.com</a><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></span></footer>';
     const sbNav = document.getElementById('sb-nav');
     const mainEl = document.getElementById('main');
     const progFill = document.getElementById('prog-fill');
@@ -124,7 +127,7 @@
             a.style.cssText = colorVars(p);
             a.dataset.chnum = c.num;
             a.href = c.href ? c.href : `#ch${c.num}`;
-            a.innerHTML = `<span class="ch-num">${c.num}</span><span style="flex:1;min-width:0">${esc(c.title)}${c.href ? ' <i class="fas fa-arrow-up-right-from-square" style="font-size:.6rem;opacity:.5"></i>' : ''}</span>`;
+            a.innerHTML = `<span class="ch-num">${c.num}</span><span style="flex:1;min-width:0">${esc(c.title)}${/^https?:/.test(c.href || '') ? ' <i class="fas fa-arrow-up-right-from-square" aria-hidden="true" style="font-size:.6rem;opacity:.5"></i>' : ''}</span>`;
             list.appendChild(a);
           });
           toggle.addEventListener('click', () => toggle.classList.toggle('open'));
@@ -204,6 +207,7 @@
           </div>
           <div class="home-section-label"><i class="${H.labelIcon || 'fas fa-layer-group'}"></i> ${esc(H.label || 'Study map')}</div>
           <div class="parts-home-grid">${cards}</div>
+          ${footerHtml}
         </div>`;
 
       mainEl.querySelectorAll('.ph-card:not(.ph-card-soon):not(.ph-card-links)').forEach((card) => {
@@ -230,6 +234,12 @@
       const tmp = document.createElement('div');
       tmp.className = 'md-article';
       tmp.innerHTML = html;
+      // reference text reads more professionally without decorative emoji at the start of headings
+      const LEAD_EMOJI = /^(?:[\s\uFE0F\u200D\u20E3]|[\p{Extended_Pictographic}\u{1F1E6}-\u{1F1FF}\u{1F3FB}-\u{1F3FF}]|[0-9#*]\uFE0F?\u20E3)+/u;
+      tmp.querySelectorAll('h1,h2,h3,h4').forEach((h) => {
+        const t = h.firstChild;
+        if (t && t.nodeType === 3) t.textContent = t.textContent.replace(LEAD_EMOJI, '');
+      });
       // relative images -> resolve against the markdown file
       tmp.querySelectorAll('img').forEach((img) => {
         const s = img.getAttribute('src') || '';
@@ -300,6 +310,7 @@
           <span class="ch-part-badge" style="${colorVars(p)}"><i class="${p.icon}"></i> ${esc(label(p))} — ${esc(p.short || p.title)}</span>
           <div class="ch-content">${html}</div>
           <div class="chapter-nav">${nav(prev, 'prev')}${nav(next, 'next')}</div>
+          ${footerHtml}
         </div>`;
 
       if (window.hljs) mainEl.querySelectorAll('pre.code-block code').forEach((el) => window.hljs.highlightElement(el));
