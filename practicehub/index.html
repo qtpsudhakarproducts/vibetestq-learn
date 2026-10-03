@@ -1,577 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Practice Hub — JS, TypeScript & Playwright | VibeTestQ</title>
-    <meta name="description" content="136 interactive MCQ challenges for JavaScript, TypeScript and Playwright. 11 topic areas covering locators, assertions, fixtures, API testing, BDD, POM and more.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #2563eb;
-            --primary-dark: #1e40af;
-            --primary-light: #eff6ff;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #0f172a;
-            --text-light: #64748b;
-            --border: #e2e8f0;
-            --shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05);
-        }
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 1rem 2rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .logo {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 1.4rem;
-            color: var(--primary-dark);
-            text-decoration: none;
-        }
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 7px 14px;
-            background: var(--primary-light);
-            color: var(--primary);
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .back-btn:hover { background: var(--primary); color: white; }
-        main {
-            flex: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            width: 100%;
-        }
-        .hero {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        .hero-eyebrow {
-            display: inline-block;
-            background: var(--primary-light);
-            color: var(--primary);
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            padding: 5px 14px;
-            border-radius: 20px;
-            margin-bottom: 1rem;
-        }
-        .hero h1 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, #f59e0b, #2563eb, #7c3aed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero p {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            max-width: 640px;
-            margin: 0 auto;
-        }
-        .stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-bottom: 3rem;
-            padding: 1.5rem;
-            background: white;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-        }
-        .stat { text-align: center; }
-        .stat-num {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .stat-label { font-size: 0.8rem; color: var(--text-light); font-weight: 500; }
-
-        /* ── Section headings ── */
-        .section-label {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.25rem;
-            margin-top: 0.5rem;
-        }
-        .section-label h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .section-label .section-line {
-            flex: 1;
-            height: 2px;
-            background: var(--border);
-            border-radius: 1px;
-        }
-        .section-label .section-badge {
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            background: #f1f5f9;
-            color: #475569;
-            white-space: nowrap;
-        }
-        .section-block { margin-bottom: 3rem; }
-
-        /* ── Grid ── */
-        .hub-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        .hub-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem 1.75rem;
-            text-decoration: none;
-            color: inherit;
-            border: 2px solid var(--border);
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-        .hub-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 4px;
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-        .hub-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow);
-        }
-        .hub-card:hover::before { transform: scaleX(1); }
-        .icon-wrapper {
-            width: 72px; height: 72px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1.25rem;
-            transition: all 0.3s;
-        }
-        .hub-card:hover .icon-wrapper { transform: scale(1.1) rotate(5deg); }
-        .hub-card h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 1.35rem;
-            margin-bottom: 0.6rem;
-        }
-        .hub-card p {
-            color: var(--text-light);
-            font-size: 0.85rem;
-            margin-bottom: 1.25rem;
-            flex: 1;
-            line-height: 1.55;
-        }
-        .count-pill {
-            font-size: 0.75rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-bottom: 1rem;
-            background: #f1f5f9;
-            color: #475569;
-        }
-        .tag-row {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-bottom: 1.25rem;
-        }
-        .tag {
-            padding: 2px 9px;
-            border-radius: 20px;
-            font-size: 0.68rem;
-            font-weight: 600;
-            background: #f1f5f9;
-            color: #475569;
-        }
-        .cta-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 9px 20px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-        .cta-btn i { transition: transform 0.2s; }
-        .hub-card:hover .cta-btn i { transform: translateX(4px); }
-
-        /* ── Card colour themes ── */
-        /* JavaScript */
-        .card-js::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
-        .card-js .icon-wrapper { background: #fffbeb; color: #d97706; }
-        .card-js:hover .icon-wrapper { background: linear-gradient(135deg, #f59e0b, #f97316); color: white; }
-        .card-js .cta-btn { background: #fffbeb; color: #b45309; }
-        .card-js:hover .cta-btn { background: #f59e0b; color: white; }
-
-        /* TypeScript */
-        .card-ts::before { background: linear-gradient(90deg, #2563eb, #3b82f6); }
-        .card-ts .icon-wrapper { background: #eff6ff; color: #2563eb; }
-        .card-ts:hover .icon-wrapper { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; }
-        .card-ts .cta-btn { background: #eff6ff; color: #1d4ed8; }
-        .card-ts:hover .cta-btn { background: #2563eb; color: white; }
-
-        /* Playwright Overview */
-        .card-pw::before { background: linear-gradient(90deg, #059669, #10b981); }
-        .card-pw .icon-wrapper { background: #ecfdf5; color: #059669; }
-        .card-pw:hover .icon-wrapper { background: linear-gradient(135deg, #059669, #10b981); color: white; }
-        .card-pw .cta-btn { background: #ecfdf5; color: #047857; }
-        .card-pw:hover .cta-btn { background: #059669; color: white; }
-
-        /* Locators */
-        .card-loc::before { background: linear-gradient(90deg, #7c3aed, #8b5cf6); }
-        .card-loc .icon-wrapper { background: #f5f3ff; color: #7c3aed; }
-        .card-loc:hover .icon-wrapper { background: linear-gradient(135deg, #7c3aed, #8b5cf6); color: white; }
-        .card-loc .cta-btn { background: #f5f3ff; color: #5b21b6; }
-        .card-loc:hover .cta-btn { background: #7c3aed; color: white; }
-
-        /* Assertions */
-        .card-asr::before { background: linear-gradient(90deg, #0891b2, #06b6d4); }
-        .card-asr .icon-wrapper { background: #ecfeff; color: #0891b2; }
-        .card-asr:hover .icon-wrapper { background: linear-gradient(135deg, #0891b2, #06b6d4); color: white; }
-        .card-asr .cta-btn { background: #ecfeff; color: #0e7490; }
-        .card-asr:hover .cta-btn { background: #0891b2; color: white; }
-
-        /* Fixtures */
-        .card-fix::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
-        .card-fix .icon-wrapper { background: #fffbeb; color: #d97706; }
-        .card-fix:hover .icon-wrapper { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
-        .card-fix .cta-btn { background: #fffbeb; color: #92400e; }
-        .card-fix:hover .cta-btn { background: #d97706; color: white; }
-
-        /* Config */
-        .card-cfg::before { background: linear-gradient(90deg, #6366f1, #818cf8); }
-        .card-cfg .icon-wrapper { background: #eef2ff; color: #6366f1; }
-        .card-cfg:hover .icon-wrapper { background: linear-gradient(135deg, #6366f1, #818cf8); color: white; }
-        .card-cfg .cta-btn { background: #eef2ff; color: #3730a3; }
-        .card-cfg:hover .cta-btn { background: #6366f1; color: white; }
-
-        /* API Testing */
-        .card-api::before { background: linear-gradient(90deg, #059669, #10b981); }
-        .card-api .icon-wrapper { background: #ecfdf5; color: #059669; }
-        .card-api:hover .icon-wrapper { background: linear-gradient(135deg, #059669, #10b981); color: white; }
-        .card-api .cta-btn { background: #ecfdf5; color: #047857; }
-        .card-api:hover .cta-btn { background: #059669; color: white; }
-
-        /* Network */
-        .card-net::before { background: linear-gradient(90deg, #dc2626, #ef4444); }
-        .card-net .icon-wrapper { background: #fff1f2; color: #dc2626; }
-        .card-net:hover .icon-wrapper { background: linear-gradient(135deg, #dc2626, #ef4444); color: white; }
-        .card-net .cta-btn { background: #fff1f2; color: #991b1b; }
-        .card-net:hover .cta-btn { background: #dc2626; color: white; }
-
-        /* POM */
-        .card-pom::before { background: linear-gradient(90deg, #9333ea, #a855f7); }
-        .card-pom .icon-wrapper { background: #faf5ff; color: #9333ea; }
-        .card-pom:hover .icon-wrapper { background: linear-gradient(135deg, #9333ea, #a855f7); color: white; }
-        .card-pom .cta-btn { background: #faf5ff; color: #6b21a8; }
-        .card-pom:hover .cta-btn { background: #9333ea; color: white; }
-
-        /* BDD */
-        .card-bdd::before { background: linear-gradient(90deg, #16a34a, #22c55e); }
-        .card-bdd .icon-wrapper { background: #f0fdf4; color: #16a34a; }
-        .card-bdd:hover .icon-wrapper { background: linear-gradient(135deg, #16a34a, #22c55e); color: white; }
-        .card-bdd .cta-btn { background: #f0fdf4; color: #14532d; }
-        .card-bdd:hover .cta-btn { background: #16a34a; color: white; }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            border-top: 1px solid var(--border);
-            color: var(--text-light);
-            font-size: 0.85rem;
-            background: white;
-        }
-        @media (max-width: 700px) {
-            .hero h1 { font-size: 2rem; }
-            main { padding: 2rem 1rem; }
-            .stats-bar { gap: 1.5rem; flex-wrap: wrap; }
-            .hub-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-    <script src="/auth-guard.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Hub — JS, TypeScript & Playwright | VibeTestQ Academy</title>
+<meta name="description" content="136 multiple-choice practice challenges across 11 topics with instant feedback, hints and explanations.">
+<link rel="canonical" href="https://academy.vibetestq.com/practicehub/">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="/assets/academy/chrome.css">
-<script defer src="/assets/academy/chrome.js" data-section="Practice Hub" data-title="Practice sets"></script>
+<script src="/auth-guard.js"></script>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#f1f5f9;color:#1e293b;line-height:1.55;padding-top:56px}
+  .wrap{max-width:1040px;margin:0 auto;padding:1.6rem 1rem 3rem}
+  .top{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.4rem}
+  .top h1{font-size:1.7rem;font-weight:800;letter-spacing:-.02em;color:#0f172a;line-height:1.2}
+  .top p{color:#64748b;font-size:.92rem;margin-top:.3rem;max-width:560px}
+  .summary{display:flex;align-items:center;gap:1rem;background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:.8rem 1rem;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .summary .num{font-size:1.35rem;font-weight:800;color:#0f172a;line-height:1}
+  .summary .num small{font-size:.8rem;font-weight:600;color:#64748b}
+  .summary .lbl{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-top:.2rem}
+  .bar{width:150px;height:8px;border-radius:99px;background:#e2e8f0;overflow:hidden;margin-top:.45rem}
+  .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#0284c7,#7c3aed);border-radius:99px;transition:width .4s}
+  .go{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem 1rem;border-radius:10px;background:#0284c7;color:#fff;text-decoration:none;font-size:.86rem;font-weight:700;white-space:nowrap}
+  .go:hover{background:#0369a1}
+  .group{margin-top:1.6rem}
+  .group-h{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin:0 .25rem .55rem}
+  .group-h h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:#0369a1;font-weight:800}
+  .group-h span{font-size:.78rem;color:#64748b}
+  .table{background:#fff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .head,.row{display:grid;grid-template-columns:minmax(0,1fr) 112px 64px 170px 104px;align-items:center;gap:1rem;padding:.75rem 1.1rem}
+  .head{background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#64748b;font-weight:700}
+  .row{border-bottom:1px solid #f1f5f9;text-decoration:none;color:inherit;transition:background .12s}
+  .row:last-child{border-bottom:none}
+  .row:hover{background:#f8fafc}
+  .t{display:flex;align-items:center;gap:.8rem;min-width:0}
+  .t>div:last-child{min-width:0}
+  .ico{width:36px;height:36px;border-radius:10px;background:#e0f2fe;color:#0369a1;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .t b{display:block;font-size:.95rem;color:#0f172a;font-weight:700}
+  .t span{display:block;font-size:.8rem;color:#64748b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lv{display:flex;gap:.25rem;flex-wrap:nowrap}
+  .chip{min-width:26px;text-align:center;font-size:.74rem;font-weight:800;padding:.14rem .4rem;border-radius:99px;white-space:nowrap}
+  .legend{display:flex;gap:.9rem;flex-wrap:wrap;font-size:.76rem;color:#64748b;margin:.2rem .25rem 0}
+  .legend span{display:inline-flex;align-items:center;gap:.35rem}.legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .chip.b{background:#ecfdf5;color:#047857}.chip.i{background:#fffbeb;color:#b45309}.chip.a{background:#fff1f2;color:#be123c}
+  .n{font-size:.88rem;font-weight:700;color:#334155}
+  .prog{font-size:.78rem;color:#475569}
+  .prog .bar{width:100%;margin-top:.3rem}
+  .btn{justify-self:end;display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .8rem;border-radius:8px;border:1px solid #cbd5e1;color:#0f172a;font-size:.78rem;font-weight:700;background:#fff}
+  .row:hover .btn{border-color:#0284c7;color:#0369a1}
+  .btn.primary{background:#0284c7;border-color:#0284c7;color:#fff}
+  .row:hover .btn.primary{background:#0369a1;color:#fff}
+  .done .ico{background:#dcfce7;color:#15803d}
+  .note{margin-top:1.4rem;font-size:.78rem;color:#64748b;text-align:center}
+  @media(max-width:860px){
+    .head{display:none}
+    .row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t btn" "lv lv" "prog prog";row-gap:.55rem}
+    .row .t{grid-area:t}.row .btn{grid-area:btn}.row .lv{grid-area:lv}.row .n{display:none}.row .prog{grid-area:prog}
+    .t span{white-space:normal}
+  }
+</style>
+<script defer src="/assets/academy/chrome.js"></script>
 </head>
 <body>
-<header>
-    <div class="header-content">
-        <a href="/" class="logo">⚡ VibeTestQ</a>
-        <a href="../locators/index.html" class="back-btn"><i class="fas fa-crosshairs"></i> Locators Hub</a>
+<main class="wrap" id="main">
+  <div class="top">
+    <div>
+      <h1>Practice Hub</h1>
+      <p>136 multiple-choice challenges across 11 topics, with instant feedback, hints and explanations.</p>
     </div>
-</header>
-
-<main>
-    <div class="hero">
-        <span class="hero-eyebrow"><i class="fas fa-brain"></i> Interactive Practice</span>
-        <h1>JS · TS · Playwright<br>Practice Hub</h1>
-        <p>136 multiple-choice challenges across 11 topic areas with instant feedback, hints, and explanations. Track progress, earn solved badges, and sharpen interview skills.</p>
+    <div class="summary" aria-live="polite">
+      <div><div class="num"><span id="solved">0</span> <small>/ 136 solved</small></div><div class="bar"><i id="overall"></i></div></div>
+      <a class="go" id="continue" href="#"><i class="fas fa-play"></i> Start</a>
     </div>
-
-    <div class="stats-bar">
-        <div class="stat">
-            <div class="stat-num">136</div>
-            <div class="stat-label">Total Challenges</div>
-        </div>
-        <div class="stat">
-            <div class="stat-num">11</div>
-            <div class="stat-label">Topic Areas</div>
-        </div>
-        <div class="stat">
-            <div class="stat-num">3</div>
-            <div class="stat-label">Difficulty Levels</div>
-        </div>
-    </div>
-
-    <!-- ── Section 1: Foundation ── -->
-    <div class="section-block">
-        <div class="section-label">
-            <h2><i class="fas fa-layer-group"></i> Foundation</h2>
-            <div class="section-line"></div>
-            <span class="section-badge">34 challenges</span>
-        </div>
-        <div class="hub-grid">
-
-            <!-- JavaScript -->
-            <a href="javascript.html" class="hub-card card-js">
-                <div class="icon-wrapper"><i class="fab fa-js-square"></i></div>
-                <h2>JavaScript</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>Hoisting, closures, async/await, array methods, and modern ES6+ patterns every tester must know.</p>
-                <div class="tag-row">
-                    <span class="tag">Hoisting</span>
-                    <span class="tag">Closures</span>
-                    <span class="tag">Async/Await</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- TypeScript -->
-            <a href="typescript.html" class="hub-card card-ts">
-                <div class="icon-wrapper"><i class="fas fa-code"></i></div>
-                <h2>TypeScript</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 10 Challenges</div>
-                <p>Type annotations, unions, intersection types, generics, type narrowing and strict mode rules.</p>
-                <div class="tag-row">
-                    <span class="tag">Types</span>
-                    <span class="tag">Generics</span>
-                    <span class="tag">Type Guards</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- Playwright Overview -->
-            <a href="playwright.html" class="hub-card card-pw">
-                <div class="icon-wrapper"><i class="fas fa-theater-masks"></i></div>
-                <h2>Playwright Overview</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>Core Playwright concepts — test runner, context isolation, trace viewer, reporters, and CI patterns.</p>
-                <div class="tag-row">
-                    <span class="tag">Test Runner</span>
-                    <span class="tag">Context</span>
-                    <span class="tag">CI/CD</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-        </div>
-    </div>
-
-    <!-- ── Section 2: Playwright Core ── -->
-    <div class="section-block">
-        <div class="section-label">
-            <h2><i class="fas fa-puzzle-piece"></i> Playwright Core</h2>
-            <div class="section-line"></div>
-            <span class="section-badge">51 challenges</span>
-        </div>
-        <div class="hub-grid">
-
-            <!-- Locators -->
-            <a href="pw-locators.html" class="hub-card card-loc">
-                <div class="icon-wrapper"><i class="fas fa-crosshairs"></i></div>
-                <h2>Locators</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 15 Challenges</div>
-                <p>getByRole, getByLabel, getByText, CSS, XPath, chaining, filtering, and locator best practices.</p>
-                <div class="tag-row">
-                    <span class="tag">getByRole</span>
-                    <span class="tag">getByLabel</span>
-                    <span class="tag">Chaining</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- Assertions -->
-            <a href="pw-assertions.html" class="hub-card card-asr">
-                <div class="icon-wrapper"><i class="fas fa-check-double"></i></div>
-                <h2>Assertions</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>toBeVisible, toHaveText, toHaveURL, soft assertions, expect.poll, retry-ability and assertion timeouts.</p>
-                <div class="tag-row">
-                    <span class="tag">toBeVisible</span>
-                    <span class="tag">Soft Assertions</span>
-                    <span class="tag">Retry</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- Fixtures -->
-            <a href="pw-fixtures.html" class="hub-card card-fix">
-                <div class="icon-wrapper"><i class="fas fa-plug"></i></div>
-                <h2>Fixtures &amp; Hooks</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>test.extend(), fixture scopes, beforeEach vs fixtures, teardown with use(), and worker-scoped state.</p>
-                <div class="tag-row">
-                    <span class="tag">test.extend</span>
-                    <span class="tag">Scopes</span>
-                    <span class="tag">Teardown</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- Config -->
-            <a href="pw-config.html" class="hub-card card-cfg">
-                <div class="icon-wrapper"><i class="fas fa-sliders"></i></div>
-                <h2>Configuration</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>playwright.config.ts — projects, baseURL, retries, workers, timeouts, use options, and reporters.</p>
-                <div class="tag-row">
-                    <span class="tag">Projects</span>
-                    <span class="tag">baseURL</span>
-                    <span class="tag">Retries</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-        </div>
-    </div>
-
-    <!-- ── Section 3: Advanced Playwright ── -->
-    <div class="section-block">
-        <div class="section-label">
-            <h2><i class="fas fa-rocket"></i> Advanced Playwright</h2>
-            <div class="section-line"></div>
-            <span class="section-badge">51 challenges</span>
-        </div>
-        <div class="hub-grid">
-
-            <!-- API Testing -->
-            <a href="pw-api-testing.html" class="hub-card card-api">
-                <div class="icon-wrapper"><i class="fas fa-network-wired"></i></div>
-                <h2>API Testing</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 15 Challenges</div>
-                <p>request fixture, APIRequestContext, authentication, response validation, and API+UI hybrid workflows.</p>
-                <div class="tag-row">
-                    <span class="tag">request</span>
-                    <span class="tag">APIContext</span>
-                    <span class="tag">Auth</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- Network Mocking -->
-            <a href="pw-network.html" class="hub-card card-net">
-                <div class="icon-wrapper"><i class="fas fa-wifi"></i></div>
-                <h2>Network Mocking</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>page.route(), route.fulfill(), route.abort(), HAR replay, waitForResponse, offline mode and cookie injection.</p>
-                <div class="tag-row">
-                    <span class="tag">route()</span>
-                    <span class="tag">fulfill()</span>
-                    <span class="tag">HAR</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- POM -->
-            <a href="pw-pom.html" class="hub-card card-pom">
-                <div class="icon-wrapper"><i class="fas fa-sitemap"></i></div>
-                <h2>Page Object Model</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>Page class design, TypeScript constructor patterns, BasePage, component objects, fixtures, and when not to use POM.</p>
-                <div class="tag-row">
-                    <span class="tag">Page Classes</span>
-                    <span class="tag">BasePage</span>
-                    <span class="tag">Fixtures</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-            <!-- BDD -->
-            <a href="pw-bdd.html" class="hub-card card-bdd">
-                <div class="icon-wrapper"><i class="fas fa-list-check"></i></div>
-                <h2>BDD / Cucumber</h2>
-                <div class="count-pill"><i class="fas fa-list-check"></i> 12 Challenges</div>
-                <p>Gherkin syntax, Scenario Outline, Background, hooks, tags, World object, step definitions, and Data Tables.</p>
-                <div class="tag-row">
-                    <span class="tag">Gherkin</span>
-                    <span class="tag">Hooks</span>
-                    <span class="tag">World</span>
-                </div>
-                <span class="cta-btn">Start <i class="fas fa-arrow-right"></i></span>
-            </a>
-
-        </div>
-    </div>
-
+  </div>
+  <div class="legend" aria-hidden="true"><b style="color:#475569">Difficulty</b><span><i style="background:#10b981"></i>Beginner</span><span><i style="background:#f59e0b"></i>Intermediate</span><span><i style="background:#e11d48"></i>Advanced</span></div>
+  <div id="groups"></div>
+  <p class="note">Your progress is saved in this browser.</p>
 </main>
-
-<footer>
-    &copy; 2026 VibeTestQ &mdash; Master the Future of Test Automation.
-</footer>
+<script>
+const DATA = {"groups":[{"name":"Foundation","blurb":"The language and runner basics","topics":[{"page":"javascript","title":"JavaScript","icon":"fab fa-js-square","count":12,"desc":"Hoisting, closures, async/await, array methods, and modern ES6+ patterns every tester must know.","tags":["Hoisting","Closures","Async/Await"],"levels":{"beginner":6,"intermediate":5,"advanced":1},"key":"vtq-js-practice"},{"page":"typescript","title":"TypeScript","icon":"fas fa-code","count":10,"desc":"Type annotations, unions, intersection types, generics, type narrowing and strict mode rules.","tags":["Types","Generics","Type Guards"],"levels":{"beginner":5,"intermediate":4,"advanced":1},"key":"vtq-ts-practice"},{"page":"playwright","title":"Playwright Overview","icon":"fas fa-theater-masks","count":12,"desc":"Core Playwright concepts — test runner, context isolation, trace viewer, reporters, and CI patterns.","tags":["Test Runner","Context","CI/CD"],"levels":{"beginner":6,"intermediate":4,"advanced":2},"key":"vtq-pw-practice"}]},{"name":"Playwright Core","blurb":"Day-to-day test writing","topics":[{"page":"pw-locators","title":"Locators","icon":"fas fa-crosshairs","count":15,"desc":"getByRole, getByLabel, getByText, CSS, XPath, chaining, filtering, and locator best practices.","tags":["getByRole","getByLabel","Chaining"],"levels":{"beginner":5,"intermediate":7,"advanced":3},"key":"vtq-pw-locators"},{"page":"pw-assertions","title":"Assertions","icon":"fas fa-check-double","count":12,"desc":"toBeVisible, toHaveText, toHaveURL, soft assertions, expect.poll, retry-ability and assertion timeouts.","tags":["toBeVisible","Soft Assertions","Retry"],"levels":{"beginner":6,"intermediate":4,"advanced":2},"key":"vtq-pw-assertions"},{"page":"pw-fixtures","title":"Fixtures & Hooks","icon":"fas fa-plug","count":12,"desc":"test.extend(), fixture scopes, beforeEach vs fixtures, teardown with use(), and worker-scoped state.","tags":["test.extend","Scopes","Teardown"],"levels":{"beginner":3,"intermediate":4,"advanced":5},"key":"vtq-pw-fixtures"},{"page":"pw-config","title":"Configuration","icon":"fas fa-sliders","count":12,"desc":"playwright.config.ts — projects, baseURL, retries, workers, timeouts, use options, and reporters.","tags":["Projects","baseURL","Retries"],"levels":{"beginner":5,"intermediate":5,"advanced":2},"key":"vtq-pw-config"}]},{"name":"Advanced Playwright","blurb":"Framework-level skills","topics":[{"page":"pw-api-testing","title":"API Testing","icon":"fas fa-network-wired","count":15,"desc":"request fixture, APIRequestContext, authentication, response validation, and API+UI hybrid workflows.","tags":["request","APIContext","Auth"],"levels":{"beginner":9,"intermediate":4,"advanced":2},"key":"vtq-pw-api"},{"page":"pw-network","title":"Network Mocking","icon":"fas fa-wifi","count":12,"desc":"page.route(), route.fulfill(), route.abort(), HAR replay, waitForResponse, offline mode and cookie injection.","tags":["route()","fulfill()","HAR"],"levels":{"beginner":5,"intermediate":5,"advanced":2},"key":"vtq-pw-network"},{"page":"pw-pom","title":"Page Object Model","icon":"fas fa-sitemap","count":12,"desc":"Page class design, TypeScript constructor patterns, BasePage, component objects, fixtures, and when not to use POM.","tags":["Page Classes","BasePage","Fixtures"],"levels":{"beginner":6,"intermediate":6,"advanced":0},"key":"vtq-pw-pom"},{"page":"pw-bdd","title":"BDD / Cucumber","icon":"fas fa-list-check","count":12,"desc":"Gherkin syntax, Scenario Outline, Background, hooks, tags, World object, step definitions, and Data Tables.","tags":["Gherkin","Hooks","World"],"levels":{"beginner":6,"intermediate":4,"advanced":2},"key":"vtq-pw-bdd"}]}]};
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function solvedCount(key) {
+  try { const o = JSON.parse(localStorage.getItem(key) || '{}'); return Object.keys(o).filter((k) => o[k]).length; } catch (e) { return 0; }
+}
+let totalSolved = 0, totalAll = 0, resume = null, firstUnstarted = null;
+const html = DATA.groups.map((g) => {
+  const rows = g.topics.map((t) => {
+    const s = Math.min(solvedCount(t.key), t.count);
+    totalSolved += s; totalAll += t.count;
+    const pct = t.count ? Math.round(100 * s / t.count) : 0;
+    const state = s === 0 ? 'Start' : (s >= t.count ? 'Review' : 'Continue');
+    if (!resume && s > 0 && s < t.count) resume = t;
+    if (!firstUnstarted && s === 0) firstUnstarted = t;
+    const L = t.levels;
+    return '<a class="row' + (s >= t.count ? ' done' : '') + '" href="' + t.page + '.html">' +
+      '<div class="t"><div class="ico"><i class="' + esc(t.icon) + '" aria-hidden="true"></i></div><div><b>' + esc(t.title) + '</b><span>' + esc(t.desc) + '</span></div></div>' +
+      '<div class="lv" aria-label="Difficulty: beginner, intermediate, advanced">' +
+        (L.beginner ? '<span class="chip b" title="' + L.beginner + ' beginner">' + L.beginner + '</span>' : '') +
+        (L.intermediate ? '<span class="chip i" title="' + L.intermediate + ' intermediate">' + L.intermediate + '</span>' : '') +
+        (L.advanced ? '<span class="chip a" title="' + L.advanced + ' advanced">' + L.advanced + '</span>' : '') + '</div>' +
+      '<div class="n">' + t.count + '</div>' +
+      '<div class="prog">' + s + ' / ' + t.count + ' solved<div class="bar"><i style="width:' + pct + '%"></i></div></div>' +
+      '<span class="btn' + (state === 'Start' ? ' primary' : '') + '">' + state + ' <i class="fas fa-arrow-right" aria-hidden="true"></i></span></a>';
+  }).join('');
+  const n = g.topics.reduce((a, t) => a + t.count, 0);
+  return '<section class="group"><div class="group-h"><h2>' + esc(g.name) + '</h2><span>' + esc(g.blurb) + ' · ' + n + ' challenges</span></div>' +
+    '<div class="table"><div class="head"><div>Topic</div><div>Difficulty</div><div>Total</div><div>Your progress</div><div></div></div>' + rows + '</div></section>';
+}).join('');
+document.getElementById('groups').innerHTML = html;
+document.getElementById('solved').textContent = totalSolved;
+document.getElementById('overall').style.width = (totalAll ? Math.round(100 * totalSolved / totalAll) : 0) + '%';
+const next = resume || firstUnstarted || DATA.groups[0].topics[0];
+const cont = document.getElementById('continue');
+cont.href = next.page + '.html';
+cont.innerHTML = '<i class="fas fa-play" aria-hidden="true"></i> ' + (totalSolved === 0 ? 'Start practising' : (resume ? 'Continue · ' + esc(next.title) : (firstUnstarted ? 'Next · ' + esc(next.title) : 'Review')));
+</script>
 </body>
 </html>

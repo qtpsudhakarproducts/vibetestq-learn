@@ -28,7 +28,7 @@
   const libs = {};
   function lib(name, src) { return libs[name] || (libs[name] = loadScript(src)); }
 
-  fetch(manifestUrl).then((r) => r.json()).then(start).catch((e) => {
+  Promise.all([fetch(manifestUrl).then((r) => r.json()), lib('bar', '/assets/academy/bar.js')]).then((x) => start(x[0])).catch((e) => {
     document.body.innerHTML = '<p style="padding:2rem;font-family:sans-serif;color:#b91c1c">Could not load this section (' + esc(e.message) + ').</p>';
   });
 
@@ -41,16 +41,6 @@
     // ── Shell ──────────────────────────────────────────────────────────────
     document.body.innerHTML = `
       <a class="skip-link" href="#main">Skip to content</a>
-      <header id="topbar">
-        <button id="sb-toggle" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
-        <a class="tbar-logo" href="/"><img src="/assets/ulogo.jpg" alt="VibeTestQ"></a>
-        <span class="tbar-sep">›</span>
-        <span class="tbar-pg">${esc(M.title)}</span>
-        <span id="tbar-ch"></span>
-        <div class="tbar-right">${(M.topbar || []).map((b) =>
-          `<a class="tbar-btn${b.accent ? ' accent' : ''}" href="${b.href}"${b.target ? ` target="${b.target}"` : ''}><i class="${b.icon}"></i> <span class="tbar-label">${esc(b.label)}</span></a>`).join('')}
-        </div>
-      </header>
       <div id="sb-overlay"></div>
       <div id="app">
         <aside id="sidebar">
@@ -66,26 +56,15 @@
         </div>
       </div>`;
 
-    // signed-in reader: show Sign out (auth-guard.js fires academy:auth once it knows who they are)
-    function renderUser() {
-      const au = window.academyAuth, right = document.querySelector('#topbar .tbar-right');
-      if (!au || !right || document.getElementById('acad-user')) return;
-      const b = document.createElement('button');
-      b.id = 'acad-user'; b.className = 'tbar-btn';
-      b.title = au.user.name + (au.user.email ? ' · ' + au.user.email : '');
-      b.innerHTML = '<i class="fas fa-right-from-bracket"></i> <span class="tbar-label">Sign out</span>';
-      b.addEventListener('click', () => au.signOut());
-      right.appendChild(b);
-    }
-    window.addEventListener('academy:auth', renderUser);
-    renderUser();
+    // one top navigation for the whole Academy (also handles Sign out)
+    window.AcademyBar.mount({ sidebarToggle: true });
 
     const footerHtml = '<footer class="acad-foot"><span>&copy; 2026 VibeTestQ. All rights reserved.</span>' +
       '<span class="acad-foot-links"><a href="/learn/">Learning Library</a><a href="https://vibetestq.com" target="_blank" rel="noopener">vibetestq.com</a><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></span></footer>';
     const sbNav = document.getElementById('sb-nav');
     const mainEl = document.getElementById('main');
     const progFill = document.getElementById('prog-fill');
-    const tbarCh = document.getElementById('tbar-ch');
+    const tbarCh = { textContent: '' }; // chapter title now lives in the page, not the bar
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sb-overlay');
     const contentCol = document.getElementById('content-col');
@@ -307,6 +286,7 @@
 
       mainEl.innerHTML = `
         <div class="reader-wrap fade-in" style="${colorVars(p)}">
+          <nav class="acad-crumb" aria-label="Breadcrumb"><a href="${window.location.pathname}">${esc(M.title)}</a><span aria-hidden="true">›</span><span>${esc(label(p))}</span></nav>
           <span class="ch-part-badge" style="${colorVars(p)}"><i class="${p.icon}"></i> ${esc(label(p))} — ${esc(p.short || p.title)}</span>
           <div class="ch-content">${html}</div>
           <div class="chapter-nav">${nav(prev, 'prev')}${nav(next, 'next')}</div>

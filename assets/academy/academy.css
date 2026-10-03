@@ -681,3 +681,8 @@ a:focus-visible, button:focus-visible, .ph-card:focus-visible, [tabindex]:focus-
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ── SHARED BAR + BREADCRUMB ───────────────────────────────────── */
+.acad-crumb{display:flex;align-items:center;gap:.5rem;font-size:.78rem;color:var(--text-dim);margin:0 0 .8rem}
+.acad-crumb a{color:var(--text-mid);text-decoration:none;font-weight:600}
+.acad-crumb a:hover{color:var(--cyan);text-decoration:underline}

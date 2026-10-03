@@ -1,54 +1,11 @@
-/* VibeTestQ Academy — shared top bar for interactive pages (practice, quizzes, labs).
-   Same look as the reading shell's top bar; mounted by chrome.js. */
+/* VibeTestQ Academy — interactive pages (practice sets, locator labs, quizzes).
+   The top bar itself lives in bar.js; this file sizes the page for it and applies the Academy theme. */
 :root { --header-height: 56px !important; }
 
-#acad-bar {
-  position: fixed; top: 0; left: 0; right: 0; height: 56px; z-index: 2000;
-  background: rgba(255, 255, 255, .97); backdrop-filter: blur(12px);
-  border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 8px rgba(0, 0, 0, .06);
-  display: flex; align-items: center; gap: .75rem; padding: 0 1rem;
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.4;
-}
-#acad-bar * { box-sizing: border-box; }
-#acad-bar .acad-logo { display: flex; align-items: center; flex-shrink: 0; text-decoration: none; }
-#acad-bar .acad-logo img { height: 34px; width: auto; display: block; }
-#acad-bar .acad-sep { color: #64748b; font-size: .75rem; flex-shrink: 0; }
-#acad-bar .acad-sec { font-size: .76rem; font-weight: 700; color: #475569; white-space: nowrap; text-decoration: none; flex-shrink: 0; }
-#acad-bar a.acad-sec:hover { color: #0284c7; }
-#acad-bar .acad-page { flex: 1; min-width: 0; font-size: .76rem; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-left: .25rem; }
-#acad-bar .acad-right { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
-#acad-bar .acad-btn {
-  display: inline-flex; align-items: center; gap: .35rem; padding: .32rem .75rem; border-radius: 7px;
-  font-size: .73rem; font-weight: 700; text-decoration: none; border: 1px solid #e2e8f0; color: #475569;
-  transition: all .15s; white-space: nowrap; background: transparent;
-}
-#acad-bar .acad-btn:hover { border-color: #0284c7; color: #0284c7; background: rgba(2, 132, 199, .05); }
-#acad-bar .acad-btn.accent { background: rgba(2, 132, 199, .08); border-color: rgba(2, 132, 199, .25); color: #0284c7; }
-#acad-bar .acad-btn.accent:hover { background: rgba(2, 132, 199, .14); }
-
-/* pieces moved in from the page's own header keep working */
-#acad-bar .header-score { margin: 0; font-size: .76rem; color: #475569; }
-#acad-bar .level-badge { margin: 0; }
-
-/* pages whose own header was not fixed need room for the bar */
+/* the page title moved out of a quiz page's old header */
+.acad-moved-title { max-width: 800px; margin: 1.4rem auto .4rem; padding: 0 1rem; text-align: left !important; }
+.acad-moved-title h1, .acad-moved-title p { text-align: left !important; }
 body.acad-pad { padding-top: 56px; }
-.acad-moved-title { max-width: 1000px; margin: 1rem auto 0; padding: 0 1rem; }
-
-@media (max-width: 720px) {
-  #acad-bar .acad-label { display: none; }
-  #acad-bar .acad-page { display: none; }
-}
-
-@media (max-width: 560px) {
-  #acad-bar { gap: .4rem; padding: 0 .55rem; }
-  #acad-bar .acad-logo img { height: 28px; }
-  #acad-bar .acad-sep, #acad-bar .acad-page { display: none; }
-  #acad-bar .acad-sec { overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1; }
-  #acad-bar .acad-right { gap: .3rem; }
-  #acad-bar .acad-btn { padding: .32rem .5rem; }
-  #acad-bar .acad-label { display: none; }
-  #acad-bar .header-score { font-size: .68rem; }
-}
 
 /* ══════════════════════════════════════════════════════════════════
    ACADEMY THEME FOR INTERACTIVE PAGES
@@ -111,6 +68,3 @@ body.acad-chrome [tabindex]:focus-visible {
   }
 }
 
-/* quiz title (moved out of the old header) lines up with the quiz card */
-.acad-moved-title { max-width: 800px; margin: 1.4rem auto .4rem; padding: 0 1rem; text-align: left !important; }
-.acad-moved-title h1, .acad-moved-title p { text-align: left !important; }
