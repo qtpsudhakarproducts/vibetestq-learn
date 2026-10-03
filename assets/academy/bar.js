@@ -36,8 +36,9 @@
     '#acad-bar *{box-sizing:border-box}',
     '#acad-bar .acb-toggle{background:none;border:1px solid #e2e8f0;color:#1e293b;cursor:pointer;border-radius:7px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}',
     '#acad-bar .acb-toggle:hover{background:#f1f5f9;border-color:#0284c7}',
-    '#acad-bar .acb-logo{display:flex;align-items:center;flex-shrink:0}',
-    '#acad-bar .acb-logo img{height:44px;width:auto;display:block}',
+    '#acad-bar .acb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;text-decoration:none}',
+    '#acad-bar .acb-logo img{height:50px;width:100px;object-fit:contain;display:block}',
+    '#acad-bar .acb-brand-label{font-size:9px;font-weight:700;letter-spacing:.08em;color:#0369a1;padding:4px 6px;border:1px solid #dce5ed;border-radius:4px;background:#f0f9ff}',
     '#acad-bar .acb-nav{display:flex;align-items:center;gap:.15rem;margin-left:.5rem}',
     '#acad-bar .acb-link{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .75rem;border-radius:8px;font-size:.84rem;font-weight:600;color:#475569;text-decoration:none;white-space:nowrap;transition:background .12s,color .12s}',
     '#acad-bar .acb-link:hover{background:#f1f5f9;color:#0f172a}',
@@ -55,7 +56,9 @@
     '#acad-bar .header-score{margin:0;font-size:.78rem;color:#475569}',
     '#acad-bar .level-badge{margin:0}',
     '@media(max-width:1000px){#acad-bar .acb-nav{display:none}#acad-bar .acb-menu{display:block}#acad-bar .acb-user .acb-label{display:none}}',
-    '@media(max-width:560px){#acad-bar{gap:.5rem;padding:0 .6rem}#acad-bar .acb-logo img{height:34px}#acad-bar .acb-btn{padding:.35rem .55rem}}',
+    '#acad-bar a:focus-visible,#acad-bar button:focus-visible{outline:2px solid #0284c7;outline-offset:2px}',
+    '@media(max-width:560px){#acad-bar{gap:.5rem;padding:0 .6rem}#acad-bar .acb-logo img{height:46px;width:76px}#acad-bar .acb-logo{gap:4px}#acad-bar .acb-brand-label{font-size:8px}#acad-bar .acb-btn{padding:.35rem .55rem}#acad-bar .acb-home{display:none}}',
+    '@media(max-width:420px){#acad-bar .acb-brand-label{display:none}}',
     'body.acad-pad{padding-top:56px}',
   ].join('\n');
 
@@ -82,12 +85,12 @@
     bar.setAttribute('role', 'banner');
     bar.innerHTML =
       (opts.sidebarToggle ? '<button id="sb-toggle" class="acb-toggle" type="button" aria-label="Toggle chapter list"><i class="fas fa-bars"></i></button>' : '') +
-      '<a class="acb-logo" href="/" aria-label="VibeTestQ Academy home"><img src="/assets/vq/logo-title-light.png" alt="VibeTestQ"></a>' +
+      '<a class="acb-logo" href="/" aria-label="VibeTestQ Academy home"><img src="/assets/vq/VQLogoTitleForLight.png" width="100" height="50" alt="VibeTestQ"><span class="acb-brand-label">ACADEMY</span></a>' +
       '<nav class="acb-nav" aria-label="Academy">' + links('') + '</nav>' +
       '<span class="acb-spacer"></span>' +
       '<div class="acb-right"><div class="acb-slot"></div>' +
-      '<div class="acb-menu"><button class="acb-btn" type="button" aria-haspopup="true" aria-expanded="false"><i class="fas fa-compass"></i> Menu</button>' +
-      '<div class="acb-panel" role="menu">' + links('') + '<a class="acb-link" href="/"><i class="fas fa-graduation-cap" aria-hidden="true"></i> Academy home</a></div></div>' +
+      '<div class="acb-menu"><button class="acb-btn" type="button" aria-controls="academy-learning-menu" aria-expanded="false"><i class="fas fa-compass" aria-hidden="true"></i> Menu</button>' +
+      '<div class="acb-panel" id="academy-learning-menu">' + links('') + '<a class="acb-link" href="/#programs">Live programs</a><a class="acb-link" href="/upcoming-trainings.html">Batch schedule</a><a class="acb-link" href="/"><i class="fas fa-graduation-cap" aria-hidden="true"></i> Academy home</a></div></div>' +
       '<a class="acb-btn acb-home" href="/"><i class="fas fa-graduation-cap" aria-hidden="true"></i> <span class="acb-label">Academy</span></a>' +
       '</div>';
     document.body.insertBefore(bar, document.body.firstChild);
@@ -95,6 +98,11 @@
     var menu = bar.querySelector('.acb-menu'), mbtn = menu.querySelector('button');
     mbtn.addEventListener('click', function (e) { e.stopPropagation(); var o = menu.classList.toggle('open'); mbtn.setAttribute('aria-expanded', o); });
     document.addEventListener('click', function () { menu.classList.remove('open'); mbtn.setAttribute('aria-expanded', 'false'); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && menu.classList.contains('open')) {
+        menu.classList.remove('open'); mbtn.setAttribute('aria-expanded', 'false'); mbtn.focus();
+      }
+    });
 
     // signed-in reader: who they are + Sign out (auth-guard.js fires academy:auth)
     function user() {
