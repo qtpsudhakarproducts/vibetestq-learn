@@ -49,3 +49,68 @@ body.acad-pad { padding-top: 56px; }
   #acad-bar .acad-label { display: none; }
   #acad-bar .header-score { font-size: .68rem; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   ACADEMY THEME FOR INTERACTIVE PAGES
+   Practice sets, locator labs and quizzes keep their own layout and logic;
+   these overrides put them on the Academy palette and type so a learner
+   sees one product. (The pages read these variables, and chrome.css loads
+   after each page's own styles.)
+   ══════════════════════════════════════════════════════════════════ */
+:root {
+  --primary: #0284c7;
+  --primary-dark: #0369a1;
+  --primary-light: #e0f2fe;
+  --accent: #7c3aed;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --bg: #f1f5f9;
+  --card-bg: #ffffff;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --glass: rgba(255, 255, 255, 0.97);
+}
+
+body.acad-chrome {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+body.acad-chrome h1,
+body.acad-chrome h2,
+body.acad-chrome h3,
+body.acad-chrome h4 {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+  letter-spacing: -0.01em;
+}
+
+/* cards: same soft border and shadow as the reading pages */
+body.acad-chrome .card,
+body.acad-chrome .challenge,
+body.acad-chrome .challenge-card,
+body.acad-chrome .exercise-card,
+body.acad-chrome .topic-card {
+  border-radius: 12px;
+  border-color: var(--border);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .05), 0 4px 16px rgba(0, 0, 0, .04);
+}
+
+/* keyboard focus, as on the reading pages */
+body.acad-chrome a:focus-visible,
+body.acad-chrome button:focus-visible,
+body.acad-chrome input:focus-visible,
+body.acad-chrome [tabindex]:focus-visible {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  body.acad-chrome *, body.acad-chrome *::before, body.acad-chrome *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+  }
+}
+
+/* quiz title (moved out of the old header) lines up with the quiz card */
+.acad-moved-title { max-width: 800px; margin: 1.4rem auto .4rem; padding: 0 1rem; text-align: left !important; }
+.acad-moved-title h1, .acad-moved-title p { text-align: left !important; }
