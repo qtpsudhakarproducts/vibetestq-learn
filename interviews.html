@@ -457,49 +457,19 @@
     </button>
 
     <script src="script.js?v=2.7.1"></script>
+    <script src="/assets/academy/forms.js"></script>
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzZJZYtD0vr7ctCVC-MrDrL40XLAJ2GpLw9Xl19WUESWrDGhxUG6H8mipzP-TeV0XOZ/exec';
-        const form = document.getElementById('interviewForm');
-        const status = document.getElementById('formStatus');
-        const submitBtn = document.getElementById('submitBtn');
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Sending...';
-            status.style.display = 'block';
-            status.innerText = 'Submitting your request...';
-            status.style.color = 'var(--text-muted)';
-
-            const formData = new FormData(form);
-            // Append a secure token (Sync this with your Google Script)
-            formData.append('vibe_token', 'vibe_secure_interviews_2026');
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: formData,
-                redirect: 'follow'
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.result === 'success') {
-                        status.innerText = 'Success! Your request has been submitted. We will contact you soon.';
-                        status.style.color = '#10b981';
-                        form.reset();
-                        submitBtn.disabled = false;
-                        submitBtn.innerText = 'Submit Request';
-                        setTimeout(() => { status.style.display = 'none'; }, 6000);
-                    } else {
-                        throw new Error(data.error || 'Unknown script error');
-                    }
-                })
-                .catch(error => {
-                    status.innerText = 'Error! Submitting failed: ' + error.message;
-                    status.style.color = '#ef4444';
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Submit Request';
-                    console.error('Submission Error:', error);
-                });
+        VTQForms.init({
+            form: '#interviewForm',
+            endpoint: 'https://script.google.com/macros/s/AKfycbzZJZYtD0vr7ctCVC-MrDrL40XLAJ2GpLw9Xl19WUESWrDGhxUG6H8mipzP-TeV0XOZ/exec',
+            token: 'vibe_secure_interviews_2026',
+            readReply: true,
+            fallbackEmail: 'trainings@vibetestq.com',
+            subject: 'Interview evaluation request',
+            messages: {
+                sending: 'Submitting your request…',
+                success: 'Success! Your request has been submitted. We will contact you soon.'
+            }
         });
     </script>
 </body>

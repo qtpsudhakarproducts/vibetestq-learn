@@ -564,44 +564,20 @@
     </button>
 
     <script src="script.js?v=2.7.1"></script>
+    <script src="/assets/academy/forms.js"></script>
     <script>
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbwoKhl0co2R0MzYx2I3vmqqfeC7TTHokVO6w2G84woYB3rN0-cVjtMBpNIednO5qJ3M/exec';
-        const form = document.getElementById('mentorForm');
-        const status = document.getElementById('formStatus');
-        const submitBtn = document.getElementById('submitBtn');
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'Submitting...';
-            status.style.display = 'block';
-            status.innerText = 'Sending your application...';
-            status.style.color = 'var(--text-muted)';
-
-            const formData = new FormData(form);
-            formData.append('form_type', 'mentor_application');
-            formData.append('vibe_token', 'vibe_secure_mentor_2026');
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: formData,
-                mode: 'no-cors'
-            })
-                .then(() => {
-                    status.innerText = 'Thank you! Your application has been submitted successfully. We will connect with you soon.';
-                    status.style.color = '#10b981';
-                    form.reset();
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Submit Application';
-                })
-                .catch(error => {
-                    status.innerText = 'Error! Submitting failed: ' + error.message;
-                    status.style.color = '#f43f5e';
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = 'Submit Application';
-                    console.error('Submission Error:', error);
-                });
+        VTQForms.init({
+            form: '#mentorForm',
+            endpoint: 'https://script.google.com/macros/s/AKfycbwoKhl0co2R0MzYx2I3vmqqfeC7TTHokVO6w2G84woYB3rN0-cVjtMBpNIednO5qJ3M/exec',
+            token: 'vibe_secure_mentor_2026',
+            extra: { form_type: 'mentor_application' },
+            readReply: false,   // this script's reply is not readable from the browser
+            fallbackEmail: 'trainings@vibetestq.com',
+            subject: 'Mentorship application',
+            messages: {
+                sending: 'Sending your application…',
+                sentUnconfirmed: 'Thank you! Your application has been sent. We will connect with you soon. If you do not hear from us within 3 working days, please email trainings@vibetestq.com.'
+            }
         });
     </script>
 </body>
