@@ -28,7 +28,7 @@
   const libs = {};
   function lib(name, src) { return libs[name] || (libs[name] = loadScript(src)); }
 
-  Promise.all([fetch(manifestUrl).then((r) => r.json()), lib('bar', '/assets/academy/bar.js')]).then((x) => start(x[0])).catch((e) => {
+  Promise.all([fetch(manifestUrl).then((r) => r.json()), lib('bar', '/assets/academy/bar.js'), lib('progress', '/assets/academy/progress.js')]).then((x) => start(x[0])).catch((e) => {
     document.body.innerHTML = '<p style="padding:2rem;font-family:sans-serif;color:#b91c1c">Could not load this section (' + esc(e.message) + ').</p>';
   });
 
@@ -75,6 +75,73 @@
     const metric = (p) => `${p.chapters.length} ${word(p.chapters.length)}${p.metric ? ' · ' + p.metric : ''}`;
     const metricShort = (p) => `${p.chapters.length} ${M.chapterWord ? word(p.chapters.length) : 'ch'}${p.metric ? ' · ' + p.metric : ''}`;
 
+    // ── Reading progress (kept in this browser; see progress.js) ───────────
+    const P = window.AcademyProgress;
+    const SID = M.id;
+    const readable = (p) => p.chapters.filter((c) => !c.href);
+    const doneIn = (p) => readable(p).filter((c) => P.isDone(SID, c.num)).length;
+    const READ_ALL = ALL.filter((c) => !c.href);
+    const doneAll = () => READ_ALL.filter((c) => P.isDone(SID, c.num)).length;
+    const pctOf = (d, n) => (n ? Math.round((100 * d) / n) : 0);
+    function resumeTarget() {
+      const last = P.get(SID).last;
+      const lastEntry = last && byNum.get(String(last.num));
+      if (lastEntry && !lastEntry.href) {
+        // go back to where they were; if that chapter is finished, go to the next unfinished one
+        if (!P.isDone(SID, last.num)) return lastEntry;
+        const i = READ_ALL.findIndex((c) => String(c.num) === String(last.num));
+        const nxt = READ_ALL.slice(i + 1).concat(READ_ALL.slice(0, i)).find((c) => !P.isDone(SID, c.num));
+        if (nxt) return nxt;
+      }
+      return READ_ALL.find((c) => !P.isDone(SID, c.num)) || READ_ALL[0] || ALL[0];
+    }
+    const progressMeta = (p) => {
+      if (p._flat) return P.isDone(SID, p.chapters[0].num) ? 'Completed' : 'Chapter ' + p.num;
+      const d = doneIn(p), n = readable(p).length;
+      return metricShort(p) + (d ? ' · ' + d + '/' + n + ' done' : '');
+    };
+    const progressBar = (p) => {
+      if (p._flat) return '';
+      const d = doneIn(p), n = readable(p).length;
+      return d ? '<div class="ph-prog" role="img" aria-label="' + d + ' of ' + n + ' completed"><i style="width:' + pctOf(d, n) + '%"></i></div>' : '';
+    };
+    function resumeBlock() {
+      if (!READ_ALL.length) return '';
+      const d = doneAll(), n = READ_ALL.length, seen = Object.keys(P.get(SID).seen).length;
+      const t = resumeTarget();
+      const verb = d >= n ? 'Review' : (seen || d ? 'Continue' : 'Start');
+      return '<div class="home-resume"><div class="hr-top"><b>' + d + ' / ' + n + '</b> ' + esc(word(n)) + ' completed</div>' +
+        '<div class="hr-bar"><i style="width:' + pctOf(d, n) + '%"></i></div>' +
+        '<a class="hr-btn" href="#ch' + t.num + '"><i class="fas fa-play" aria-hidden="true"></i> ' + verb + ' · ' + esc(t.title) + '</a></div>';
+    }
+    function dashboardHtml() {
+      const recent = P.all().filter((r) => r.id !== SID).slice(0, 3);
+      const pr = P.practice(), qz = P.quizzes();
+      const card = (r) => {
+        const d = Object.keys(r.done).length, n = r.total || 0;
+        return '<a class="dash-card" href="' + esc(r.href) + '#ch' + esc(r.last.num) + '"><span class="dc-sec">' + esc(r.title) + '</span>' +
+          '<span class="dc-ch">' + esc(r.last.title) + '</span>' +
+          '<span class="dc-bar"><i style="width:' + pctOf(d, n) + '%"></i></span>' +
+          '<span class="dc-meta">' + d + ' / ' + n + ' completed</span><span class="dc-go">Resume <i class="fas fa-arrow-right" aria-hidden="true"></i></span></a>';
+      };
+      const main = recent.length
+        ? '<h2>Continue learning</h2><div class="dash-cards">' + recent.map(card).join('') + '</div>'
+        : '<h2>Start here</h2><div class="dash-cards"><a class="dash-card" href="/playwright/"><span class="dc-sec">Playwright Mastery</span><span class="dc-ch">The full curriculum, module by module</span><span class="dc-meta">10 modules</span><span class="dc-go">Open curriculum <i class="fas fa-arrow-right" aria-hidden="true"></i></span></a></div>';
+      return '<section class="dash" aria-label="Your learning">' +
+        '<div class="dash-main">' + main + '</div>' +
+        '<div class="dash-side"><h2>Your activity</h2>' +
+        '<a class="dash-stat" href="/practicehub/"><b>' + pr.solved + ' / ' + pr.total + '</b><span>practice challenges solved</span><em class="ds-track"><i style="width:' + pctOf(pr.solved, pr.total) + '%"></i></em></a>' +
+        '<a class="dash-stat" href="/playwright/assessments/"><b>' + qz.taken + ' / ' + qz.total + '</b><span>quizzes taken' + (qz.avg != null ? ' · ' + qz.avg + '% average' : '') + '</span><em class="ds-track"><i style="width:' + pctOf(qz.taken, qz.total) + '%"></i></em></a>' +
+        '</div></section>';
+    }
+    function markDoneHtml(entry) {
+      if (entry.href) return '';
+      const on = P.isDone(SID, entry.num);
+      return '<div class="mark-done-wrap"><button type="button" class="mark-done' + (on ? ' on' : '') + '" aria-pressed="' + on + '">' +
+        '<i class="' + (on ? 'fas' : 'far') + ' fa-circle-check" aria-hidden="true"></i> <span>' + (on ? 'Completed — click to undo' : 'Mark as complete') + '</span></button></div>';
+    }
+    let currentNum = null, autoTried = false;
+
     // ── Sidebar ────────────────────────────────────────────────────────────
     function buildSidebar() {
       sbNav.innerHTML = '';
@@ -82,6 +149,7 @@
         const live = p.live !== false;
         const grp = document.createElement('div');
         grp.className = 'part-group';
+        grp.dataset.part = p.num;
         const toggle = document.createElement('button');
         toggle.className = 'part-toggle' + (live ? '' : ' locked');
         toggle.style.cssText = colorVars(p);
@@ -107,6 +175,7 @@
             a.dataset.chnum = c.num;
             a.href = c.href ? c.href : `#ch${c.num}`;
             a.innerHTML = `<span class="ch-num">${c.num}</span><span style="flex:1;min-width:0">${esc(c.title)}${/^https?:/.test(c.href || '') ? ' <i class="fas fa-arrow-up-right-from-square" aria-hidden="true" style="font-size:.6rem;opacity:.5"></i>' : ''}</span>`;
+            if (!c.href) a.insertAdjacentHTML('beforeend', '<span class="ch-state" aria-hidden="true"></span>');
             list.appendChild(a);
           });
           toggle.addEventListener('click', () => toggle.classList.toggle('open'));
@@ -115,6 +184,25 @@
         sbNav.appendChild(grp);
       });
     }
+
+    function refreshSidebar() {
+      document.querySelectorAll('.ch-link[data-chnum]').forEach((a) => {
+        const num = a.dataset.chnum;
+        a.classList.toggle('done', P.isDone(SID, num));
+        a.classList.toggle('seen', !P.isDone(SID, num) && !!P.get(SID).seen[num]);
+      });
+      PARTS.forEach((p) => {
+        const el = document.querySelector('.part-group[data-part="' + p.num + '"] .p-count');
+        if (!el || p.live === false) return;
+        const d = doneIn(p), n = readable(p).length;
+        el.textContent = metric(p) + (d ? ' · ' + d + '/' + n + ' done' : '');
+      });
+    }
+    P.onChange(() => {
+      refreshSidebar();
+      const hr = document.querySelector('.home-resume');
+      if (hr) hr.outerHTML = resumeBlock();
+    });
 
     // ── Home (study map) ───────────────────────────────────────────────────
     function showHome() {
@@ -163,8 +251,9 @@
               </div>
             </div>
             <div class="ph-desc"${live ? '' : ' style="color:#cbd5e1"'}>${p.desc || ''}</div>
+            ${progressBar(p)}
             <div class="ph-foot">
-              <span class="ph-meta"><i class="fas fa-book-open"></i> ${p._flat ? 'Chapter ' + p.num : metricShort(p)}</span>
+              <span class="ph-meta"><i class="fas fa-book-open"></i> ${progressMeta(p)}</span>
               ${live ? '<span class="ph-go">Open <i class="fas fa-arrow-right"></i></span>' : '<span class="ph-soon-badge"><i class="fas fa-clock"></i> Coming Soon</span>'}
             </div>
           </div>
@@ -180,10 +269,12 @@
                 <h1>${H.title || esc(M.title)}</h1>
                 ${H.sub ? `<p class="home-sub">${H.sub}</p>` : ''}
                 ${H.note ? `<div class="home-note">${H.note}</div>` : ''}
+                ${H.dashboard ? '' : resumeBlock()}
               </div>
               <div class="home-hero-right">${(H.stats || []).map((s) => `<div class="home-stat-pill"><b>${esc(s[0])}</b><span>${esc(s[1])}</span></div>`).join('')}</div>
             </div>
           </div>
+          ${H.dashboard ? dashboardHtml() : ''}
           <div class="home-section-label"><i class="${H.labelIcon || 'fas fa-layer-group'}"></i> ${esc(H.label || 'Study map')}</div>
           <div class="parts-home-grid">${cards}</div>
           ${footerHtml}
@@ -196,6 +287,8 @@
         });
       });
       document.querySelectorAll('.ch-link.active').forEach((l) => l.classList.remove('active'));
+      currentNum = null;
+      refreshSidebar();
     }
 
     // ── Chapter content ────────────────────────────────────────────────────
@@ -289,6 +382,7 @@
           <nav class="acad-crumb" aria-label="Breadcrumb"><a href="${window.location.pathname}">${esc(M.title)}</a><span aria-hidden="true">›</span><span>${esc(label(p))}</span></nav>
           <span class="ch-part-badge" style="${colorVars(p)}"><i class="${p.icon}"></i> ${esc(label(p))} — ${esc(p.short || p.title)}</span>
           <div class="ch-content">${html}</div>
+          ${markDoneHtml(entry)}
           <div class="chapter-nav">${nav(prev, 'prev')}${nav(next, 'next')}</div>
           ${footerHtml}
         </div>`;
@@ -317,6 +411,25 @@
 
       contentCol.scrollTo({ top: 0, behavior: 'smooth' });
 
+      // remember where the reader is, and let them mark the chapter complete
+      if (!entry.href) {
+        currentNum = entry.num; autoTried = false;
+        P.visit(SID, { title: M.title, href: window.location.pathname, total: READ_ALL.length }, { num: entry.num, title: entry.title });
+        const btn = mainEl.querySelector('.mark-done');
+        if (btn) btn.addEventListener('click', () => {
+          const on = !P.isDone(SID, entry.num);
+          autoTried = true; // an explicit choice wins over auto-complete
+          P.setDone(SID, entry.num, on);
+          btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', on);
+          btn.querySelector('i').className = (on ? 'fas' : 'far') + ' fa-circle-check';
+          btn.querySelector('span').textContent = on ? 'Completed — click to undo' : 'Mark as complete';
+        });
+        // a short chapter that fits on screen counts as read after a few seconds
+        setTimeout(() => {
+          if (currentNum === entry.num && !autoTried && contentCol.scrollHeight - contentCol.clientHeight < 140) autoComplete(entry.num);
+        }, 6000);
+      }
+
       const sn = mainEl.querySelector('.sn-chapter');
       if (sn) {
         mainEl.querySelector('.reader-wrap')?.classList.add('sn-reader');
@@ -329,6 +442,7 @@
         }
       }
 
+      refreshSidebar();
       document.querySelectorAll('.ch-link.active').forEach((l) => l.classList.remove('active'));
       const link = document.querySelector(`.ch-link[data-chnum="${CSS.escape(String(num))}"]`);
       if (link) {
@@ -340,9 +454,22 @@
     }
 
     // ── Behaviour ──────────────────────────────────────────────────────────
+    function autoComplete(num) {
+      if (autoTried || currentNum !== num || P.isDone(SID, num)) return;
+      autoTried = true;
+      P.setDone(SID, num, true);
+      const btn = mainEl.querySelector('.mark-done');
+      if (btn) {
+        btn.classList.add('on'); btn.setAttribute('aria-pressed', 'true');
+        btn.querySelector('i').className = 'fas fa-circle-check';
+        btn.querySelector('span').textContent = 'Completed — click to undo';
+      }
+    }
     contentCol.addEventListener('scroll', () => {
       const h = contentCol.scrollHeight - contentCol.clientHeight;
-      progFill.style.width = (h > 0 ? (contentCol.scrollTop / h) * 100 : 0) + '%';
+      const pct = h > 0 ? contentCol.scrollTop / h : 0;
+      progFill.style.width = pct * 100 + '%';
+      if (currentNum !== null && h > 140 && pct >= 0.9) autoComplete(currentNum);
     });
     const openSb = () => { sidebar.classList.add('open'); overlay.classList.add('show'); };
     const closeSb = () => { sidebar.classList.remove('open'); overlay.classList.remove('show'); };

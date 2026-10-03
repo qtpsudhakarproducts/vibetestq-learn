@@ -30,7 +30,8 @@
       ]
     ],
     "label": "Tracks",
-    "labelIcon": "fas fa-compass"
+    "labelIcon": "fas fa-compass",
+    "dashboard": true
   },
   "content": {
     "type": "md"
