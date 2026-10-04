@@ -1,42 +1,77 @@
-# Rahul Nair
+# ML Test Engineer
 
-- **Name:** Rahul Nair
-- **Role:** ML Test Engineer
-- **Experience level:** Mid-level (4 years)
-- **Location:** Kochi, Kerala
-- **Email:** rahul.nair@mltester.com
-- **LinkedIn:** linkedin.com/in/rahulnair
-- **GitHub:** github.com/rahulnair
-- **10-point profile summary:**
-  - Specialized ML Test Engineer with 4 years of experience testing machine learning models and AI systems
-  - Proficient in Python-based testing frameworks for ML model validation and performance evaluation
-  - Expert in implementing model monitoring, drift detection, and alerting systems for production ML models
-  - Skilled in data validation, dataset quality assessment, and ensuring data pipeline reliability
-  - Experienced in building reproducible testing pipelines for ML experiments and model deployments
-  - Knowledgeable in ML evaluation metrics, bias testing, and fairness assessments for AI systems
-  - Adept at collaborating with data scientists and ML engineers on model testing strategies
-  - Strong focus on CI/CD integration for ML pipelines with automated testing and validation
-  - Experienced in testing various ML models including recommendation systems, computer vision, and NLP
-  - Expert in 2026 ML and LLM testing convergence: LLM output validation with DeepEval, RAG pipeline evaluation with RAGAS, agentic AI workflow reliability testing, adversarial prompt injection security, OWASP LLM Top 10 compliance, LangSmith production tracing, and AI safety alignment testing for enterprise deployments
-- **Technologies:** Python, SQL, TensorFlow, PyTorch, Scikit-learn, XGBoost, pytest, unittest, Great Expectations, Pandas, NumPy, Apache Spark, MLflow, Prometheus, Grafana, AWS SageMaker, Git, Docker, Kubernetes, Jupyter, DeepEval, RAGAS, PromptBench, LangSmith, LangChain Testing, Hallucination Detection, RAG Pipeline Testing, Agentic Workflow Testing, Prompt Injection Testing, OWASP LLM Top 10, AI Safety Testing
-- **Experience:** 4 years in ML testing focused on ensuring the quality and reliability of machine learning systems. Expertise includes model validation, data quality testing, and production monitoring across recommendation engines, computer vision, and NLP systems.
-- **Projects:**
-  - Recommendation Engine Monitoring: Implemented comprehensive model monitoring system for e-commerce recommendation engine with drift detection and alerting. Technologies: Python, MLflow, Prometheus, AWS SageMaker. Reduced model performance degradation incidents by 70%.
-  - Computer Vision Model Validation: Built automated testing pipeline for computer vision models including accuracy, robustness, and bias testing. Technologies: PyTorch, pytest, OpenCV, Docker. Improved model reliability by 50% and ensured consistent performance across edge cases.
-  - NLP Model Data Pipeline Testing: Developed data validation and testing framework for NLP model training pipelines. Technologies: TensorFlow, Great Expectations, Apache Spark, Kubernetes. Enhanced data quality by 60% and reduced training failures through early validation.
-  - LLM and RAG Production Quality Framework: Extended ML testing expertise into LLM systems by building a comprehensive evaluation pipeline for a GPT-4-powered customer service LLM. Used RAGAS for RAG retrieval quality, DeepEval for hallucination and faithfulness scoring, LangSmith for production trace analysis, and PromptBench for adversarial testing. Established OWASP LLM Top 10 compliance checks in CI. Reduced critical hallucinations by 60% before production release. Technologies: RAGAS, DeepEval, LangSmith, PromptBench, OWASP LLM Top 10, RAG Pipeline Testing, Hallucination Detection, Agentic Workflow Testing, Python, AWS SageMaker.
-- **Roles and Responsibilities:**
-  - Design and implement testing frameworks for ML models and data pipelines
-  - Build model monitoring systems with drift detection and performance alerting
-  - Create data validation rules and quality assessment frameworks
-  - Develop reproducible testing pipelines for ML experiments
-  - Collaborate with ML engineers on model evaluation and validation strategies
-  - Implement automated testing in ML CI/CD pipelines
-  - Perform bias testing, fairness assessments, and security validation for AI systems
-  - Monitor production ML systems and troubleshoot performance issues
-  - Document testing procedures and maintain testing infrastructure
-  - Stay updated with ML testing best practices and emerging tools
-  - Validate LLM and agentic AI systems: hallucination detection (DeepEval), RAG pipeline accuracy (RAGAS), adversarial prompt testing (PromptBench), OWASP LLM Top 10 compliance, and LangSmith production monitoring for enterprise AI quality assurance
-- **Certifications:** TensorFlow Developer Certificate, AWS Certified Machine Learning – Specialty, Certified Kubernetes Administrator (CKA), Google Cloud Professional ML Engineer, Microsoft Certified: Azure AI Engineer Associate
-- **Education:** Master of Science in Data Science from Kerala University, Kochi, India (2019)
-- **Achievements:** Developed ML testing framework that improved model deployment success rate by 80%; Led implementation of model monitoring that saved $500K in potential revenue loss; Published research paper on ML testing methodologies at international conference; Recognized as "ML Quality Champion" for establishing testing standards
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** ML data splits and model behavior validation
+
+## Professional summary
+
+- Quality Engineering practitioner focused on ml data splits and model behavior validation.
+- Demonstrates python and api test fundamentals, evaluation datasets and grading rubrics, expected behavior and failure analysis through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Define expected behavior using examples and a documented rubric.
+- Keep evaluation inputs and model configuration versioned.
+- Separate application defects, data issues, and unacceptable model behavior.
+
+## Core skills
+
+- Python and API test fundamentals
+- Evaluation datasets and grading rubrics
+- Expected behavior and failure analysis
+- Data quality and reproducible experiments
+- Model or prompt regression comparison
+- Clear evaluation reports
+- Train, validation, and test-set separation
+- Precision, recall, and error analysis for the chosen task
+
+## Optional / role-dependent
+
+- An evaluation framework appropriate to the project
+- Retrieval or agent workflow specialization
+- Statistical analysis and evaluation calibration
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### ML data splits and model behavior validation - practical example
+
+Evaluate a small classifier on a held-out dataset. Check preprocessing, data leakage, class-level errors, and reproducibility before comparing two model versions.
+
+- Evidence: A dataset with expected behavior and edge cases
+- Evidence: A rubric with examples of acceptable and unacceptable output
+- Evidence: A comparison report with failure categories and limitations
+
+### ML data splits and model behavior validation - failure investigation
+
+Extend the example with one failure or change relevant to ml data splits and model behavior validation. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [AI for Testers](https://academy.vibetestq.com/ai/)
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [MillionLogics · Senior QA Engineer, AI Model Evaluation · Foundit India](https://www.foundit.in/job/senior-qa-engineer-ai-model-evaluation-millionlogics-india-51782705)

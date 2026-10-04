@@ -1,39 +1,76 @@
-# Rajat Kapoor
+# SDET - API Testing
 
-- **Name:** Rajat Kapoor
-- **Role:** SDET - API Testing
-- **Experience level:** Mid-level (4 years)
-- **Location:** Kolkata, West Bengal
-- **Email:** rajat.kapoor.sdet@email.com
-- **LinkedIn:** linkedin.com/in/rajat-kapoor-sdet
-- **GitHub:** github.com/rajatkapoorapi
-- **10-point profile summary:**
-  - Skilled SDET with 4 years of expertise in API testing and automation for microservices architectures
-  - Proficient in designing and automating API tests using Postman and RestAssured
-  - Experienced in contract testing and API versioning strategies for reliable integrations
-  - Knowledgeable in CI integration for automated API testing on every code merge
-  - Adept at using Newman for API test execution in CI/CD pipelines
-  - Familiar with Java-based testing frameworks for comprehensive API validation
-  - Integrating LLM-based API testing workflows: validating AI service endpoints for hallucination detection, token limit handling, and non-deterministic output consistency
-  - Applying GitHub Copilot for automated test code generation and adopting self-healing selector strategies for robust 2026 API contract testing pipelines
-- **Technologies:** Postman, RestAssured, Java, Newman, Contract Testing (Pact), API Testing, JSON, XML, CI/CD (Jenkins, GitHub Actions), TestNG, Maven, Git, Swagger/OpenAPI, Microservices, REST, GraphQL, GitHub Copilot, LLM API Testing, Hallucination Detection, Self-Healing Tests, DeepEval (Basic), Prompt Injection Testing
-- **Experience:** 4 years of experience as an SDET specializing in API testing at software companies in Kolkata. Focused on building automated API test suites and integrating them into CI pipelines.
-- **Projects:**
-  - Microservices API Regression Suite: Built comprehensive API regression suite for a microservices-based platform, automating 200+ API endpoints and reducing manual testing effort by 70%. Technologies: RestAssured, Java, TestNG, Jenkins.
-  - Contract Testing Implementation: Designed and implemented contract testing for API integrations, ensuring compatibility between services and preventing breaking changes. Technologies: Pact, Postman, CI/CD, Git.
-  - API Performance Testing: Developed automated API performance tests, identifying bottlenecks and optimizing response times for high-traffic endpoints. Technologies: Newman, JMeter, GitHub Actions, Monitoring Tools.
-  - LLM API Contract Testing: Built automated test suite to validate a GPT-4-powered summarization API endpoint, covering response schema validation, hallucination rate checks, consistency under repeated prompts, and timeout/retry behavior. Integrated with CI pipeline for nightly validation. Technologies: RestAssured, Java, GitHub Copilot, LLM API Testing, GitHub Actions, Pact.
-- **Roles and Responsibilities:**
-  - Design and automate API tests for REST and GraphQL endpoints
-  - Implement contract testing for API integrations and versioning
-  - Integrate API tests into CI pipelines for automated execution
-  - Collaborate with backend developers on API design and testing strategies
-  - Maintain and update API test data and environments
-  - Analyze API test results and provide feedback on API quality
-  - Debug API issues and work with teams on resolution
-  - Document API testing processes and best practices
-  - Test LLM/AI-powered APIs: validate non-deterministic outputs, detect hallucinations, test prompt injection resilience, and implement statistical consistency checks for AI service endpoints
-  - Generate test code using GitHub Copilot and adopt self-healing strategies for fragile API contracts
-- **Certifications:** ISTQB Advanced Level - Test Automation, API Testing Specialist Certification, Java SE Programmer
-- **Education:** B.Tech in Computer Science from Jadavpur University, Kolkata (2018-2022, 8.4 CGPA)
-- **Achievements:** Built API test suite covering 95% of endpoints; Reduced API-related production bugs by 50%; Awarded "API Testing Excellence" for contract testing implementation; Contributed to open-source API testing tools
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** Programming fundamentals and small test utilities
+
+## Professional summary
+
+- Quality Engineering practitioner focused on programming fundamentals and small test utilities.
+- Demonstrates java and rest assured, ui and api automation, fixtures and isolated test data through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Write test code that checks business outcomes rather than only element presence.
+- Keep data setup repeatable and investigate failures before adding retries.
+- Review test changes and publish useful diagnostic artifacts in CI.
+
+## Core skills
+
+- Java and REST Assured
+- UI and API automation
+- Fixtures and isolated test data
+- Git and code review
+- CI test execution and artifacts
+- Failure diagnosis and meaningful assertions
+
+## Optional / role-dependent
+
+- Contract testing for service boundaries
+- Containers and distributed-system testing
+- AI-assisted coding with review and validation
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Programming fundamentals and small test utilities - practical example
+
+Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+
+- Evidence: A runnable repository with a clear setup guide
+- Evidence: A CI run with trace or log artifacts
+- Evidence: A deliberately broken case caught by a meaningful assertion
+
+### Programming fundamentals and small test utilities - failure investigation
+
+Extend the example with one failure or change relevant to programming fundamentals and small test utilities. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

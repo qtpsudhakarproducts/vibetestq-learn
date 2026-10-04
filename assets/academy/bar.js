@@ -16,12 +16,12 @@
     { key: 'curriculum', label: 'Curriculum', href: '/playwright/', icon: 'fas fa-route' },
     { key: 'practice', label: 'Practice', href: '/practicehub/', icon: 'fas fa-dumbbell' },
     { key: 'quizzes', label: 'Quizzes', href: '/playwright/assessments/', icon: 'fas fa-clipboard-check' },
-    { key: 'interviews', label: 'Interview Prep', href: '/iqs/', icon: 'fas fa-microphone-lines' },
+    { key: 'career', label: 'Career Preparation', href: '/career-preparation/', icon: 'fas fa-microphone-lines' },
   ];
 
   function activeKey(p) {
     p = p.replace(/\/index\.html$/, '/');
-    if (/^\/(iqs|playwright\/iqs)\b/.test(p)) return 'interviews';
+    if (/^\/(iqs|profiles|career-preparation|playwright\/iqs)\b/.test(p)) return 'career';
     if (/^\/playwright\/assessments\b/.test(p)) return 'quizzes';
     if (/^\/(practicehub|projects|assignments)\b/.test(p)) return 'practice';
     if (/^\/locators\/(beginner|intermediate|advanced|expert|practice|learn)/.test(p)) return 'practice';

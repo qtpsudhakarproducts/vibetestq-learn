@@ -1,44 +1,76 @@
-# Vidya Narayan
+# Senior Automation Engineer
 
-- **Name:** Vidya Narayan
-- **Role:** Senior Automation Engineer
-- **Experience level:** Senior (8 years)
-- **Location:** Kolkata, West Bengal
-- **Email:** vidya.narayan@automationexpert.com
-- **LinkedIn:** linkedin.com/in/vidyanarayan
-- **GitHub:** github.com/vidyanarayan
-- **10-point profile summary:**
-  - Seasoned Senior Automation Engineer with 8 years of expertise leading automation initiatives and framework development
-  - Specialized in designing scalable automation frameworks using Selenium, Playwright, and UiPath for enterprise applications
-  - Expert in implementing CI/CD pipelines with comprehensive automation integration using Jenkins, GitHub Actions, and Azure DevOps
-  - Proficient in API testing, UI automation, and performance testing with tools like Rest Assured and JMeter
-  - Experienced mentor who guides junior engineers in automation best practices and coding standards
-  - Skilled in cloud-based testing with AWS, Azure, and Kubernetes for distributed and containerized environments
-  - Adept at data-driven testing approaches and test analytics to improve test effectiveness and reliability
-  - Collaborative leader who works with cross-functional teams to establish automation strategies and improve coverage
-  - Knowledgeable in modern methodologies including BDD, TDD, and Agile for efficient software development cycles
-  - Expert in 2026 automation innovation: AI-powered test analytics, LLM integration testing governance, agentic workflow validation standards, GitHub Copilot program management, and intelligent test infrastructure with ML-based selection
-  - Visionary automation architect driving organizational AI testing maturity: self-healing test ecosystems, Applitools visual AI at scale, k6 performance frameworks, and DeepEval-based LLM quality pipelines
-- **Technologies:** Selenium, Playwright, UiPath, Robot Framework, pytest, Java, Python, JavaScript, C#, Jenkins, GitHub Actions, Azure DevOps, Rest Assured, Postman, AWS, Azure, GCP, Docker, Kubernetes, SQL, NoSQL, Git, TestNG, JUnit, SpecFlow, BDD, TDD, Agile, Performance Testing, Test Analytics, GitHub Copilot, Applitools, k6, LLM Integration Testing, Agentic Workflow Testing, DeepEval, AI-Powered Test Selection, Self-Healing Tests, OpenTelemetry, Playwright Fixtures, Network Interception, Page Object Model, Playwright Agents
-- **Experience:** 8 years in automation engineering leading initiatives to modernize testing practices and improve software quality. Extensive experience with both traditional and modern automation tools including RPA and AI-assisted testing, with deep expertise in framework architecture and driving adoption across organizations.
-- **Projects:**
-  - Enterprise ERP Automation Migration: Led the migration from legacy automation tools to a modern Selenium-based framework for a large ERP system. Technologies: Selenium, Java, TestNG, Jenkins, AWS. Improved test execution speed by 65% and introduced test analytics dashboard.
-  - Cloud-Native Application Test Suite: Developed comprehensive test automation for cloud-native applications with microservices architecture. Technologies: Playwright, Python, pytest, GitHub Actions, Azure. Achieved 90% automation coverage and reduced release cycle time by 40%.
-  - RPA Process Automation: Implemented RPA solutions for business process automation and testing workflows. Technologies: UiPath, C#, .NET, UiPath Orchestrator, Azure. Automated 15+ manual processes saving 200+ hours monthly.
-  - AI Test Innovation Program: Directed enterprise-wide AI testing transformation: deployed GitHub Copilot for test engineering teams (saving 120+ hours/month), introduced Applitools Eyes for visual AI testing across 5 product lines, implemented DeepEval for LLM feature quality gates, and established agentic workflow testing standards with OpenTelemetry observability. Technologies: GitHub Copilot, Applitools, DeepEval, k6, Agentic Workflow Testing, OpenTelemetry, Playwright, Azure DevOps.
-- **Roles and Responsibilities:**
-  - Lead automation framework design and development using industry-standard tools
-  - Implement and maintain CI/CD pipelines with integrated automation testing
-  - Perform comprehensive testing including API, UI, performance, and RPA validation
-  - Mentor junior engineers and establish coding standards and best practices
-  - Collaborate with teams to identify automation opportunities and improve test strategies
-  - Design data-driven testing approaches and implement test analytics
-  - Work with cloud platforms and containerization technologies for scalable testing
-  - Participate in code reviews and provide feedback on automation potential
-  - Drive adoption of modern testing methodologies and tools
-  - Contribute to organizational automation strategy and roadmap
-  - Lead organizational AI testing transformation: GitHub Copilot program management, Applitools visual AI governance, DeepEval-based LLM testing frameworks, and agentic workflow validation standards at enterprise scale
-  - Establish intelligent test infrastructure: ML-based test selection, self-healing automation ecosystems, and OpenTelemetry-integrated AI observability
-- **Certifications:** ISTQB Advanced Level – Test Manager, AWS Certified Solutions Architect - Associate, UiPath RPA Solution Architect Certification, Certified Kubernetes Administrator (CKA), Prince2 Foundation Certification
-- **Education:** Master of Science in Computer Science from Jadavpur University, Kolkata, India (2015)
-- **Achievements:** Led automation transformation that increased test efficiency by 70% across 5 product lines; Awarded "Innovation Leader" for implementing RPA solutions that saved $500K annually; Published 5 articles on automation frameworks; Successfully mentored 8 engineers who became team leads; Presented at 3 international testing conferences
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 8 years
+
+**Focus:** Cross-browser reliability and maintainability
+
+## Professional summary
+
+- Quality Engineering practitioner focused on cross-browser reliability and maintainability.
+- Demonstrates typescript and playwright, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
+- Choose a small repeatable regression slice based on product risk.
+- Refactor duplication and keep test data independent between cases.
+- Document maintenance decisions and diagnose application versus test failures.
+
+## Core skills
+
+- TypeScript and Playwright
+- JavaScript/TypeScript or Java fundamentals
+- API checks and deterministic setup
+- Stable locators and assertions
+- Git and CI execution
+- Test maintenance and failure triage
+
+## Optional / role-dependent
+
+- Visual regression where it adds value
+- Component testing
+- AI-assisted test authoring with code review
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Cross-browser reliability and maintainability - practical example
+
+Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+
+- Evidence: A test suite with independent cases
+- Evidence: A locator or synchronization issue and its verified fix
+- Evidence: A CI report with failed-test evidence
+
+### Cross-browser reliability and maintainability - failure investigation
+
+Extend the example with one failure or change relevant to cross-browser reliability and maintainability. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

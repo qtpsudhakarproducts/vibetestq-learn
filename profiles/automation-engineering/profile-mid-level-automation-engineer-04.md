@@ -1,43 +1,76 @@
-# Anupama Rathi
+# Test Automation Engineer
 
-- **Name:** Anupama Rathi
-- **Role:** Test Automation Engineer
-- **Experience level:** Mid-level (5 years)
-- **Location:** Gurugram, Haryana
-- **Email:** anupama.rathi@automationguru.com
-- **LinkedIn:** linkedin.com/in/anupamarathi
-- **GitHub:** github.com/anupamarathi
-- **10-point profile summary:**
-  - Experienced Test Automation Engineer with 5 years specializing in modern web automation frameworks
-  - Proficient in Playwright and Cypress for robust UI automation and cross-browser testing
-  - Skilled in API automation and integration testing for comprehensive test coverage
-  - Adept at building maintainable test suites with proper page objects and test data management
-  - Experienced in collaborating with product teams to automate acceptance criteria and BDD scenarios
-  - Strong focus on test resilience, flake handling, and reliable CI/CD integration
-  - Knowledgeable in test reporting, analytics, and providing actionable insights to teams
-  - Collaborative engineer who promotes test ownership and quality culture across teams
-  - Experienced in performance testing basics and mobile automation with Appium
-  - Expert in 2026 automation engineering: GitHub Copilot-accelerated test development, Applitools visual AI testing, k6 modern performance testing, and LLM feature validation workflows
-  - Committed to intelligent automation ecosystem: self-healing Playwright selectors, AI-powered test gap analysis, and MCP-based cross-team observability for cloud-native product quality
-- **Technologies:** Playwright, Cypress, Selenium, JavaScript, TypeScript, Python, Axios, Supertest, Postman, GitHub Actions, Jenkins, CircleCI, Jest, Mocha, TestNG, Git, AWS, MongoDB, PostgreSQL, Appium, BrowserStack, BDD, TDD, Docker, Kubernetes, GitHub Copilot, Self-Healing Tests, Applitools, k6, LLM Integration Testing, AI-Powered Test Generation, MCP, Playwright Fixtures, Network Interception, Page Object Model
-- **Experience:** 5 years in test automation building scalable frameworks using modern tools like Playwright and Cypress. Expertise includes UI automation, API testing, and CI/CD integration across various web applications.
-- **Projects:**
-  - Cross-Team Playwright Suite: Developed shared Playwright test suite for multiple teams with consistent flake handling and reporting. Technologies: Playwright, TypeScript, Jest, GitHub Actions, Docker. Reduced test flakiness by 80% and improved cross-team collaboration.
-  - E-Commerce Automation Framework: Built comprehensive automation framework for e-commerce platform covering UI and API testing. Technologies: Cypress, JavaScript, Mocha, Jenkins, AWS. Increased test coverage by 70% and reduced manual testing time by 60%.
-  - API Testing Infrastructure: Implemented API testing framework with contract testing and data validation. Technologies: Supertest, TypeScript, Jest, PostgreSQL, Kubernetes. Enhanced API reliability by 50% through automated validation.
-  - AI-Powered Test Generation Platform: Built shared automation platform using Playwright TypeScript with GitHub Copilot-assisted test generation, Applitools visual regression, and k6 performance tests integrated into a unified CI/CD quality gate. Added LLM response validation module for a cross-team AI recommendation API, covering semantic consistency and hallucination detection. Technologies: Playwright, TypeScript, GitHub Copilot, Applitools, k6, LLM Integration Testing, MCP, GitHub Actions.
-- **Roles and Responsibilities:**
-  - Design and implement automation frameworks using Playwright and Cypress
-  - Develop and maintain UI and API test suites with proper test data management
-  - Collaborate with product teams to automate acceptance criteria and user stories
-  - Implement CI/CD pipelines with automated testing and quality gates
-  - Improve test resilience through flake handling and retry mechanisms
-  - Create comprehensive test reports and analytics for stakeholders
-  - Promote test ownership and quality culture across development teams
-  - Maintain test environments and troubleshoot automation issues
-  - Participate in code reviews and provide testing feedback
-  - Stay updated with automation tools and best practices
-  - Use GitHub Copilot for AI-assisted test generation, Applitools for visual regression, k6 for performance testing, and build LLM validation workflows for AI feature quality assurance
-- **Certifications:** ISTQB Advanced Level – Test Automation Engineer, JavaScript Developer Certification, AWS Certified Developer - Associate, Cypress.io Certification, Certified Scrum Master (CSM)
-- **Education:** Bachelor of Engineering in Computer Science from Guru Gobind Singh Indraprastha University, Gurugram, India (2018)
-- **Achievements:** Developed automation framework adopted by 8 teams saving 100+ hours weekly; Improved test execution reliability from 70% to 95%; Awarded "Automation Excellence" for innovative testing solutions; Led testing transformation that reduced bug leakage by 75%
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 5 years
+
+**Focus:** API and browser test integration
+
+## Professional summary
+
+- Quality Engineering practitioner focused on api and browser test integration.
+- Demonstrates typescript and playwright, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Choose a small repeatable regression slice based on product risk.
+- Refactor duplication and keep test data independent between cases.
+- Document maintenance decisions and diagnose application versus test failures.
+
+## Core skills
+
+- TypeScript and Playwright
+- JavaScript/TypeScript or Java fundamentals
+- API checks and deterministic setup
+- Stable locators and assertions
+- Git and CI execution
+- Test maintenance and failure triage
+
+## Optional / role-dependent
+
+- Visual regression where it adds value
+- Component testing
+- AI-assisted test authoring with code review
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### API and browser test integration - practical example
+
+Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+
+- Evidence: A test suite with independent cases
+- Evidence: A locator or synchronization issue and its verified fix
+- Evidence: A CI report with failed-test evidence
+
+### API and browser test integration - failure investigation
+
+Extend the example with one failure or change relevant to api and browser test integration. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

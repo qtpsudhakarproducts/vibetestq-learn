@@ -18,7 +18,7 @@ headers[1].events.keydown({key:' ',preventDefault(){}});assert.equal(headers[1].
 weekHeader.events.click();assert.equal(weekHeader.attrs['aria-expanded'],'true');weekHeader.events.click();assert.equal(weekHeader.attrs['aria-expanded'],'false');
 const readerContext={window:{}};
 vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../assets/academy/bar.js'),'utf8'),readerContext);
-for(const [route,active] of [['/learn/','learn'],['/playwright/index.html','curriculum'],['/practicehub/','practice'],['/projects/','practice'],['/playwright/assessments/','quizzes'],['/iqs/','interviews']])assert.equal(readerContext.window.AcademyBar.activeKey(route),active);
+for(const [route,active] of [['/learn/','learn'],['/playwright/index.html','curriculum'],['/practicehub/','practice'],['/projects/','practice'],['/playwright/assessments/','quizzes'],['/iqs/','career'],['/profiles/','career'],['/career-preparation/','career']])assert.equal(readerContext.window.AcademyBar.activeKey(route),active);
 (async function checkSchedule() {
   function node(tag) { return {tag,children:[],dataset:{},appendChild(child){this.children.push(child);},replaceChildren(fragment){this.children=fragment.children;}}; }
   const sessions=node('div');sessions.dataset.academySessions='2';sessions.children=[node('published-fallback')];

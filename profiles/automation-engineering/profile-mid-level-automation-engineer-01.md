@@ -1,43 +1,76 @@
-# Sneha Iyer
+# Automation Engineer - Cypress Specialist
 
-- **Name:** Sneha Iyer
-- **Role:** Mid-level Automation Engineer - Cypress Specialist
-- **Experience level:** Mid-level (4 years)
-- **Location:** Chennai, Tamil Nadu
-- **Email:** sneha.iyer.automation@email.com
-- **LinkedIn:** linkedin.com/in/sneha-iyer-automation
-- **GitHub:** github.com/snehaiyerautomation
-- **10-point profile summary:**
-  - Skilled Automation Engineer with 4 years of expertise in designing and implementing test automation frameworks using Cypress
-  - Proficient in Java and Python for developing scalable automation scripts and custom testing solutions
-  - Experienced in test execution, debugging, and build management for efficient software delivery cycles
-  - Knowledgeable in API testing with Rest Assured and BDD frameworks like Cucumber for comprehensive validation
-  - Familiar with quality engineering practices, infrastructure automation, and deployment processes
-  - Strong analytical skills for troubleshooting automation issues and optimizing performance
-  - Collaborative professional working in Agile environments to integrate testing into development workflows
-  - Expert in version control with Git and Maven for build management and dependency handling
-  - Experienced in CI/CD integration with GitHub Actions and Jenkins for automated testing pipelines
-  - Skilled in 2026 automation excellence: GitHub Copilot for test code generation, self-healing Cypress selectors, AI-assisted test maintenance, and LLM feature validation integrated into modern TypeScript-first testing workflows
-  - Committed to intelligent test infrastructure: MCP-based observability, AI-powered test gap analysis, and k6 performance testing for cloud-native application quality assurance
-- **Technologies:** Automation Testing, Selenium, Java, Python, Test Execution, Debugging, Build Management, GIT, Maven, API Testing, Rest Assured, BDD, Cucumber, Quality Engineering, Infrastructure, Deployment, Playwright, Cypress, GitHub Actions, MCP, Jenkins, Docker, Kubernetes, YAML, CI/CD, Agile, Test Orchestration, JavaScript, Mocha, API Mocking, GitHub Copilot, Self-Healing Tests, LLM Integration Testing, k6, AI-Assisted Test Maintenance, TypeScript, Playwright Fixtures, Network Interception, Page Object Model
-- **Experience:** 4 years of progressive experience as an Automation Engineer at software companies in Chennai, specializing in Cypress-based end-to-end testing frameworks. Developed automation solutions that reduced manual testing efforts by 75% and improved release quality by 60%.
-- **Projects:**
-  - Single-Page Application Testing: Designed and implemented comprehensive Cypress test suites for a React-based SPA, including visual regression checks and API mocking. Achieved 95% test coverage with flakeless execution in CI/CD pipelines. Technologies: Cypress, JavaScript, Mocha, GitHub Actions, Docker, API Mocking Tools.
-  - E-commerce Platform Automation: Developed automated test frameworks for API and UI testing using Cypress and Rest Assured. Integrated with Jenkins for nightly regression testing and performance validation, ensuring seamless user experience. Technologies: Cypress, Java, Rest Assured, Jenkins, Maven, Kubernetes.
-  - Mobile Web Application Testing: Created automation scripts for responsive web applications using Cypress with cross-browser testing. Implemented BDD with Cucumber for maintainable test scenarios and CI integration. Technologies: Cypress, Python, Cucumber, GitHub Actions, BrowserStack, API Testing.
-  - AI-Assisted Test Automation Migration: Leveraged GitHub Copilot to migrate 400+ Selenium tests to Playwright TypeScript, generating self-healing selector strategies and AI-enhanced test code. Integrated k6 performance tests and LLM response validation for a React-based SPA with AI recommendation features. Reduced maintenance overhead by 65%. Technologies: Playwright, TypeScript, GitHub Copilot, Self-Healing Tests, k6, LLM Integration Testing, MCP, GitHub Actions.
-- **Roles and Responsibilities:**
-  - Design and develop automated test frameworks and scripts using Cypress, Selenium, and Playwright for web applications
-  - Execute automated test suites and analyze results to identify defects and performance issues
-  - Collaborate with development teams to integrate testing into CI/CD pipelines using GitHub Actions and Jenkins
-  - Maintain and update existing automation infrastructure, including test environments and build scripts
-  - Perform API and UI automation testing with Rest Assured and specialized tools
-  - Debug and troubleshoot automation issues, optimizing scripts for reliability and efficiency
-  - Document automation processes and best practices for team knowledge sharing
-  - Participate in code reviews and provide feedback on testability and automation potential
-  - Implement quality engineering practices and infrastructure automation for scalable testing
-  - Stay updated with emerging technologies and tools for continuous improvement of automation strategies
-  - Use GitHub Copilot for AI-generated test code, implement self-healing selectors, integrate k6 performance testing, and validate LLM-powered features with automated consistency and hallucination checks
-- **Certifications:** ISTQB Foundation Level, AWS Certified Developer - Associate, Docker Certified Associate
-- **Education:** B.Sc. in Computer Science from University of Madras, Chennai (2017-2020, 8.5 CGPA)
-- **Achievements:** Awarded "Automation Innovation Award" for Cypress framework implementation; Reduced test execution time by 50% through optimization; Contributed to open-source Cypress plugins used by 200+ developers
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** Cypress regression and network behavior
+
+## Professional summary
+
+- Quality Engineering practitioner focused on cypress regression and network behavior.
+- Demonstrates javascript/typescript and cypress, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Choose a small repeatable regression slice based on product risk.
+- Refactor duplication and keep test data independent between cases.
+- Document maintenance decisions and diagnose application versus test failures.
+
+## Core skills
+
+- JavaScript/TypeScript and Cypress
+- JavaScript/TypeScript or Java fundamentals
+- API checks and deterministic setup
+- Stable locators and assertions
+- Git and CI execution
+- Test maintenance and failure triage
+
+## Optional / role-dependent
+
+- Visual regression where it adds value
+- Component testing
+- AI-assisted test authoring with code review
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Cypress regression and network behavior - practical example
+
+Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+
+- Evidence: A test suite with independent cases
+- Evidence: A locator or synchronization issue and its verified fix
+- Evidence: A CI report with failed-test evidence
+
+### Cypress regression and network behavior - failure investigation
+
+Extend the example with one failure or change relevant to cypress regression and network behavior. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

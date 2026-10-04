@@ -1,43 +1,76 @@
-# Karan Mehra
+# SDET - Selenium Specialist
 
-- **Name:** Karan Mehra
-- **Role:** Mid-level SDET (Software Development Engineer in Test) - Selenium Specialist
-- **Experience level:** Mid-level (5 years)
-- **Location:** Delhi, Delhi
-- **Email:** karan.mehra.sdet@email.com
-- **LinkedIn:** linkedin.com/in/karan-mehra-sdet
-- **GitHub:** github.com/karanmehrasdet
-- **10-point profile summary:**
-  - Skilled SDET with 5 years of expertise in developing and maintaining automated test frameworks using Selenium WebDriver
-  - Proficient in Java, Python, and JavaScript for creating robust automation solutions and custom testing utilities
-  - Experienced in CI/CD integration with Jenkins and GitHub Actions for continuous testing and deployment
-  - Skilled in API testing, unit testing, and regression testing to ensure comprehensive quality coverage
-  - Knowledgeable in system architecture, object-oriented design, and integration testing for enterprise applications
-  - Familiar with AWS DevOps tools, Appium for mobile testing, and JMeter for performance validation
-  - Strong analytical skills for debugging automation issues and optimizing test execution efficiency
-  - Collaborative professional working in Agile environments, participating in code reviews and sprint planning
-  - Experienced in mobile automation and performance testing for cross-platform application validation
-  - Skilled in AI-assisted test engineering: GitHub Copilot for test code generation, self-healing Selenium selectors with AI fallback strategies, and LLM feature validation integrated into CI/CD pipelines
-  - Committed to 2026 testing standards: Applitools visual regression testing, prompt injection security checks, and agentic AI workflow testing for enterprise automation platforms
-- **Technologies:** Automation Testing, Java, Python, JavaScript, Selenium, Playwright, Cypress, API Testing, Unit Testing, CI/CD, Jenkins, Test Cases, Regression Testing, System Architecture, Object Oriented Design, AWS DevOps, Appium, JMeter, GitHub Actions, MCP, TestNG, Maven, WebDriver, JIRA, Agile, BDD, Cucumber, REST Assured, Git, GitHub Copilot, Self-Healing Tests, Applitools, LLM Integration Testing, Prompt Injection Testing, Playwright Fixtures, Network Interception, Page Object Model
-- **Experience:** 5 years of progressive experience as an SDET at software development companies in Delhi, specializing in Selenium-based automation frameworks. Developed and maintained test suites that improved regression testing efficiency by 70% and reduced manual testing time by 80%.
-- **Projects:**
-  - CRM Product Automation Suite: Designed and implemented a comprehensive cross-browser regression test suite using Selenium WebDriver with TestNG. Achieved parallel execution across multiple browsers, reducing test cycle time by 60% for a 500-user CRM system. Technologies: Selenium WebDriver, Java, TestNG, Maven, Jenkins, JIRA.
-  - E-commerce Platform Testing: Developed automated test frameworks for API and UI testing using Selenium and REST Assured. Integrated with GitHub Actions for nightly builds and performance testing with JMeter, ensuring 99% test coverage. Technologies: Selenium, Python, REST Assured, GitHub Actions, JMeter, AWS.
-  - Mobile Banking App Automation: Created hybrid automation framework combining Selenium for web components and Appium for native mobile testing. Implemented BDD with Cucumber for business-readable scenarios, supporting iOS and Android platforms. Technologies: Selenium, Appium, Java, Cucumber, Jenkins, AWS DevOps.
-  - AI-Assisted CRM Test Generation with GitHub Copilot: Migrated 300+ legacy Selenium scripts to Playwright using GitHub Copilot for code generation, reducing migration effort by 55%. Implemented self-healing selector strategies and added LLM response validation tests for CRM AI assistant features. Integrated Applitools for visual regression across 12 CRM modules. Technologies: Playwright, TypeScript, GitHub Copilot, Applitools, Self-Healing Tests, LLM Integration Testing, Jenkins.
-- **Roles and Responsibilities:**
-  - Design, develop, and maintain automated test scripts and frameworks using Selenium, Playwright, and Cypress
-  - Perform unit, integration, and regression testing, ensuring high test coverage and efficient execution
-  - Collaborate with development teams to integrate testing into CI/CD pipelines using Jenkins and GitHub Actions
-  - Analyze test results and provide detailed reports on software quality, defect trends, and test metrics
-  - Design test cases and scenarios for new features, APIs, and system integrations
-  - Participate in code reviews, providing feedback on testability and code quality
-  - Maintain test environments, tools, and infrastructure for scalable automation testing
-  - Research and implement new testing tools and methodologies, including MCP and AI-driven testing
-  - Mentor junior SDETs and contribute to team knowledge sharing on automation best practices
-  - Ensure test automation aligns with Agile development processes and sprint goals
-  - Use GitHub Copilot for AI-assisted test generation, implement self-healing selectors, and validate LLM/AI feature outputs including hallucination detection and Applitools visual testing
-- **Certifications:** ISTQB Advanced Level - Test Automation, AWS Certified Developer - Associate, Certified Scrum Master (CSM)
-- **Education:** B.Tech in Computer Science and Engineering from Delhi Technological University, Delhi (2016-2020, 8.8 CGPA)
-- **Achievements:** Recognized as "Automation Excellence Award" winner for CRM test suite implementation; Optimized Selenium scripts reducing flakiness by 40%; Contributed to open-source Selenium utilities adopted by 100+ developers
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 5 years
+
+**Focus:** Selenium and Java regression frameworks
+
+## Professional summary
+
+- Quality Engineering practitioner focused on selenium and java regression frameworks.
+- Demonstrates java and selenium webdriver, ui and api automation, fixtures and isolated test data through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Write test code that checks business outcomes rather than only element presence.
+- Keep data setup repeatable and investigate failures before adding retries.
+- Review test changes and publish useful diagnostic artifacts in CI.
+
+## Core skills
+
+- Java and Selenium WebDriver
+- UI and API automation
+- Fixtures and isolated test data
+- Git and code review
+- CI test execution and artifacts
+- Failure diagnosis and meaningful assertions
+
+## Optional / role-dependent
+
+- Contract testing for service boundaries
+- Containers and distributed-system testing
+- AI-assisted coding with review and validation
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Selenium and Java regression frameworks - practical example
+
+Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+
+- Evidence: A runnable repository with a clear setup guide
+- Evidence: A CI run with trace or log artifacts
+- Evidence: A deliberately broken case caught by a meaningful assertion
+
+### Selenium and Java regression frameworks - failure investigation
+
+Extend the example with one failure or change relevant to selenium and java regression frameworks. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

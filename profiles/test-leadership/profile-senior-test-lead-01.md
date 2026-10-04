@@ -1,43 +1,77 @@
-# Rajni Gupta
+# Senior Test Lead
 
-- **Name:** Rajni Gupta
-- **Role:** Senior Test Lead
-- **Experience level:** Senior (13 years)
-- **Location:** Delhi, Delhi
-- **Email:** rajni.gupta.testlead@email.com
-- **LinkedIn:** linkedin.com/in/rajni-gupta-test-lead
-- **GitHub:** github.com/rajniguptatestlead
-- **10-point profile summary:**
-  - Accomplished Senior Test Lead with 13 years of expertise in overseeing QA operations and leading high-performing testing teams
-  - Proficient in test strategy development, automation frameworks, and quality governance across diverse domains
-  - Skilled in Agile methodologies, CI/CD integration, and performance testing for enterprise applications
-  - Experienced in managing cross-functional teams, stakeholder communication, and compliance standards
-  - Knowledgeable in embedded testing, ETL pipelines, and cloud-based testing environments
-  - Familiar with test management tools, defect tracking, and quality metrics reporting
-  - Strong leadership skills in mentoring teams and driving process improvements
-  - Expert in risk assessment, test planning, and ensuring comprehensive test coverage
-  - Expert in 2026 agentic AI governance: leading enterprise LLM testing strategy, governing AI quality frameworks with DeepEval and OpenTelemetry, directing prompt injection security testing, and establishing agentic workflow reliability standards
-  - Visionary test leadership: driving AI-native test operations, evaluating and scaling AI testing tools across 50+ team members, mentoring on LLM testing methodologies, and aligning AI quality strategy with business objectives
-- **Technologies:** Test Management, Automation Testing, Selenium, Playwright, Python, Java, JIRA, Agile, Zephyr, Cucumber, Katalon Studio, SoapUI, Tosca, AWS, Azure, SQL, Power BI, Git, CI/CD, Performance Testing, Embedded Testing, ETL, Firmware Testing, RPA, Typescript, Page Object Model, GitHub Copilot, DeepEval, OpenTelemetry, LLM Test Strategy, Agentic Workflow Testing, Prompt Injection Testing, AI Quality Governance, AI Testing Maturity
-- **Experience:** 13 years of leadership experience as a Senior Test Lead at multinational corporations in Delhi. Led QA teams of 15+ members across 30+ projects, achieving 99.5% defect detection rate and improving release quality by 60%.
-- **Projects:**
-  - QA Dashboard Implementation and Shift-Left Testing: Designed and implemented comprehensive QA dashboards with real-time metrics and shift-left testing practices. Integrated automated testing into CI/CD pipelines, reducing defect leakage by 70% and improving team productivity. Technologies: JIRA, Zephyr, Selenium, Python, AWS, Power BI.
-  - Enterprise System Integration Testing: Led testing efforts for complex system integrations involving embedded devices and ETL pipelines. Developed test strategies for firmware validation and data workflows, ensuring compliance with ISO standards. Technologies: Embedded Testing, ETL, SQL, Azure Data Factory, Firmware Validation, I2C, SPI.
-  - AI-Driven Test Automation Framework: Architected AI-enhanced test automation framework using Playwright and machine learning for smart test case generation. Implemented continuous integration and monitoring, supporting agile development for telecom and pharma domains. Technologies: Playwright, Python, Typescript, AI, RPA, GitHub Copilot, Continuous Integration.
-- **Roles and Responsibilities:**
-  - Lead and manage QA teams, providing strategic direction and technical guidance
-  - Develop comprehensive test strategies, plans, and quality governance frameworks
-  - Oversee manual and automated test execution across multiple projects and domains
-  - Implement CI/CD integration and automated testing pipelines
-  - Monitor quality metrics, defect trends, and testing effectiveness
-  - Collaborate with stakeholders to align testing with business objectives
-  - Conduct audits, risk assessments, and continuous improvement initiatives
-  - Mentor team members and foster professional development
-  - Evaluate and recommend testing tools, frameworks, and technologies
-  - Ensure compliance with industry standards and regulatory requirements
-  - Lead performance, security, and usability testing efforts
-  - Communicate testing progress, risks, and recommendations to executive teams
-  - Govern enterprise LLM test strategy with DeepEval + OpenTelemetry quality gates, direct prompt injection security testing, mentor 50+ team members on agentic AI testing, and align AI quality roadmap with organizational goals
-- **Certifications:** PMP (Project Management Professional), ISTQB Expert Level, AWS Certified Solutions Architect, Certified Scrum Master (CSM)
-- **Education:** MBA in Information Technology from Delhi University, Delhi (2008-2010, 8.9 CGPA)
-- **Achievements:** Awarded "Quality Leadership Excellence" for implementing shift-left practices; Improved defect detection by 60% across enterprise projects; Led QA transformation for 50+ team members
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 13 years
+
+**Focus:** Release planning and test execution coordination
+
+## Professional summary
+
+- Quality Engineering practitioner focused on release planning and test execution coordination.
+- Demonstrates risk-based test planning, coverage and release-readiness decisions, defect triage and stakeholder communication through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
+- Align test scope with product risk, dependencies, and release goals.
+- Coordinate investigation and communicate unresolved issues with evidence.
+- Review coverage and coach the team without replacing individual accountability.
+
+## Core skills
+
+- Risk-based test planning
+- Coverage and release-readiness decisions
+- Defect triage and stakeholder communication
+- API and integration testing strategy
+- Test management and traceability
+- Coaching and review
+
+## Optional / role-dependent
+
+- Automation architecture for technical leads
+- Specialist accessibility or performance depth
+- Reviewed AI-assisted planning and analysis
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Release planning and test execution coordination - practical example
+
+Plan validation for a multi-team release. Show how you selected coverage, handled dependencies, and communicated remaining risk.
+
+- Evidence: A release test strategy with explicit scope
+- Evidence: A traceability view and decision log
+- Evidence: A short stakeholder update with risks and next actions
+
+### Release planning and test execution coordination - failure investigation
+
+Extend the example with one failure or change relevant to release planning and test execution coordination. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+- Distinguish technical influence from people management and describe the scope you actually owned.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
+- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)

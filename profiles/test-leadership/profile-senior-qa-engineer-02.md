@@ -1,40 +1,76 @@
-# Kamala Devi
+# Senior Quality Analyst
 
-- **Name:** Kamala Devi
-- **Role:** Senior Quality Analyst
-- **Experience level:** Senior (9 years)
-- **Location:** Madurai, Tamil Nadu
-- **Email:** kamala.devi.qa@email.com
-- **LinkedIn:** linkedin.com/in/kamala-devi-qa
-- **GitHub:** github.com/kamaladeviqa
-- **10-point profile summary:**
-  - Experienced Senior Quality Analyst with 9 years of expertise in test governance and cross-functional testing
-  - Proficient in planning comprehensive test approaches and overseeing execution across complex projects
-  - Skilled in mentoring QA teams and driving improvements in testing standards and processes
-  - Experienced in providing high-level quality reports and metrics to leadership for decision-making
-  - Knowledgeable in cross-functional testing coordination and stakeholder management
-  - Familiar with enterprise application testing and multi-module release cycles
-  - Strong analytical skills for quality assessment and risk mitigation
-  - Collaborative professional adept at working with development, product, and business teams
-  - Expert in 2026 AI testing governance: establishing AI testing quality standards, defining LLM test strategy frameworks, governing AI tool adoption (DeepEval, GitHub Copilot), and building AI quality metrics and KPI dashboards for executive reporting
-  - Visionary QA governance leader: implementing AI testing maturity assessments, driving cross-functional AI quality improvement initiatives, and establishing agentic AI testing standards for regulated enterprise software
-- **Technologies:** Test Planning Tools, JIRA, TestRail, SQL, Agile Methodologies, Quality Metrics, Reporting Tools, Cross-functional Testing, Stakeholder Management, Process Improvement, AI Testing Governance, LLM Test Strategy, DeepEval, GitHub Copilot, AI Quality KPI Dashboards, AI Testing Maturity Assessment, Agentic AI Testing Standards
-- **Experience:** 9 years of progressive experience as a Senior Quality Analyst at a leading software company in Madurai. Specialized in test governance, cross-functional testing, and team mentoring across enterprise applications.
-- **Projects:**
-  - Enterprise Application QA: Led QA efforts for a multi-module enterprise application, planning test strategies and overseeing execution, resulting in successful release with 98% defect-free rate. Technologies: JIRA, TestRail, SQL, Agile Tools.
-  - Cross-functional Testing Initiative: Coordinated testing across development, product, and business teams for a major product launch, implementing improved processes that reduced testing cycle time by 25%. Technologies: Stakeholder Management Tools, Quality Metrics, Reporting Tools.
-  - Process Improvement Project: Designed and implemented QA process improvements, including automated reporting and metrics tracking, enhancing team efficiency and quality standards. Technologies: Process Improvement Tools, Quality Metrics, Test Planning Tools.
-  - AI Testing Governance Framework: Designed enterprise AI testing governance framework for a 200-person engineering organization, establishing LLM test strategy standards, deploying DeepEval + GitHub Copilot across 8 product teams, building AI quality KPI dashboards for executive reporting, and conducting AI testing maturity assessments resulting in 30% uplift in AI quality confidence scores. Established agentic AI testing protocols for regulated financial software. Technologies: AI Testing Governance, LLM Test Strategy, DeepEval, GitHub Copilot, AI Quality KPI Dashboards, AI Testing Maturity Assessment, Agentic AI Testing Standards, JIRA, TestRail.
-- **Roles and Responsibilities:**
-  - Plan comprehensive test approaches and strategies for complex projects
-  - Oversee test execution and coordinate cross-functional testing activities
-  - Mentor junior QA team members and improve testing standards
-  - Provide high-level quality reports and metrics to leadership
-  - Collaborate with stakeholders to ensure quality requirements are met
-  - Implement process improvements and best practices in QA
-  - Ensure compliance with industry standards and regulatory requirements
-  - Lead quality initiatives and foster a culture of quality excellence
-  - Establish AI testing governance standards, deploy DeepEval and GitHub Copilot across product teams, build AI quality KPI dashboards, conduct AI testing maturity assessments, and govern agentic AI testing protocols for regulated software
-- **Certifications:** Certified Scrum Master (CSM), ISTQB Advanced Level Test Manager, Six Sigma Green Belt
-- **Education:** B.Sc. in Computer Science from Madurai Kamaraj University, Madurai (2012-2015, 8.5 CGPA)
-- **Achievements:** Recognized as "QA Excellence Award Winner" in 2024; Led team to achieve 95% on-time delivery; Implemented process improvements saving 20% testing effort; Published articles on QA best practices
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 9 years
+
+**Focus:** Business analysis and quality investigation
+
+## Professional summary
+
+- Quality Engineering practitioner focused on business analysis and quality investigation.
+- Demonstrates risk-based test planning, coverage and release-readiness decisions, defect triage and stakeholder communication through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
+- Align test scope with product risk, dependencies, and release goals.
+- Coordinate investigation and communicate unresolved issues with evidence.
+- Review coverage and coach the team without replacing individual accountability.
+
+## Core skills
+
+- Risk-based test planning
+- Coverage and release-readiness decisions
+- Defect triage and stakeholder communication
+- API and integration testing strategy
+- Test management and traceability
+- Coaching and review
+
+## Optional / role-dependent
+
+- Automation architecture for technical leads
+- Specialist accessibility or performance depth
+- Reviewed AI-assisted planning and analysis
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Business analysis and quality investigation - practical example
+
+Plan validation for a multi-team release. Show how you selected coverage, handled dependencies, and communicated remaining risk.
+
+- Evidence: A release test strategy with explicit scope
+- Evidence: A traceability view and decision log
+- Evidence: A short stakeholder update with risks and next actions
+
+### Business analysis and quality investigation - failure investigation
+
+Extend the example with one failure or change relevant to business analysis and quality investigation. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
+- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)

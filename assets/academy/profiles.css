@@ -1,0 +1,5 @@
+.cp-note{max-width:850px;padding:16px 20px;border-left:3px solid var(--primary);background:var(--bg-card);font-size:.94rem;line-height:1.7;margin-top:20px}
+.cp-list{padding-left:22px;line-height:1.8;max-width:980px}.cp-list li{margin:8px 0}.cp-card h3 a{color:inherit}.cp-skills{font-size:.85rem;color:var(--text-muted,#64748b)}
+.cp-filters{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:16px;align-items:end;margin-bottom:20px}.cp-filters label{display:block;font-size:.9rem;font-weight:600;margin-bottom:8px}.cp-filters input,.cp-filters select{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-card);color:var(--text-main);font:inherit}.cp-card[hidden],#profile-empty[hidden]{display:none}
+.cp-card h4{margin-top:20px}#profile-count{margin-bottom:20px}#profile-empty{padding:20px}
+@media(max-width:900px){.cp-filters{grid-template-columns:1fr 1fr}.cp-filters>div:first-child{grid-column:1/-1}}@media(max-width:560px){.cp-filters{grid-template-columns:1fr}.cp-filters>div:first-child{grid-column:auto}}

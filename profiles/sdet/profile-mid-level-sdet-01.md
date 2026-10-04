@@ -1,41 +1,76 @@
-# Ankit Singh
+# SDET - Playwright Specialist
 
-- **Name:** Ankit Singh
-- **Role:** SDET (Software Development Engineer in Test) - Playwright Specialist
-- **Experience level:** Mid-level (4 years)
-- **Location:** Gurgaon, Haryana
-- **Email:** ankit.singh.sdet@email.com
-- **LinkedIn:** linkedin.com/in/ankit-singh-sdet
-- **GitHub:** github.com/ankitsinghsdet
-- **10-point profile summary:**
-  - Accomplished SDET with 4 years of expertise in designing and implementing robust test automation frameworks using Playwright
-  - Proficient in Java, Python, and JavaScript for developing scalable automation solutions across web and mobile platforms
-  - Experienced in building and maintaining CI/CD pipelines integrated with Jenkins and GitHub Actions for continuous testing
-  - Skilled in API testing, unit testing, and regression testing to ensure comprehensive test coverage and quality assurance
-  - Knowledgeable in system architecture, object-oriented design, and integration testing for complex enterprise applications
-  - Familiar with cloud technologies including AWS DevOps tools and containerization for scalable test environments
-  - Strong analytical skills for debugging automation issues and optimizing test execution performance
-  - Collaborative professional adept at working in Agile environments, participating in code reviews and sprint planning
-  - Expert in AI-copilot-assisted test engineering: using GitHub Copilot for automated test code generation, self-healing selectors via Playwright's auto-waits, and LLM integration testing for AI-powered SaaS features
-  - Skilled in visual AI testing with Applitools and validating non-deterministic LLM API outputs with statistical consistency checks and prompt injection resilience tests in 2026 frameworks
-- **Technologies:** Automation Testing, Java, Python, JavaScript, Selenium, Playwright, Cypress, API Testing, Unit Testing, CI/CD, Jenkins, Test Cases, Regression Testing, System Architecture, Object Oriented Design, AWS DevOps, Appium, JMeter, GitHub Actions, MCP, GitHub Copilot, Self-Healing Tests, Applitools, LLM Integration Testing, Visual AI Testing, Prompt Injection Testing, DeepEval (Basic), Playwright Fixtures, Network Interception, Page Object Model
-- **Experience:** 4 years of progressive experience as an SDET at technology companies in Gurgaon, specializing in Playwright-based automation for web applications and microservices. Developed and maintained automation frameworks that reduced manual testing efforts by 70% and improved release cycles by 40%.
-- **Projects:**
-  - SaaS Dashboard Automation: Architected and implemented a comprehensive end-to-end test automation framework using Playwright for a SaaS analytics platform, covering 500+ test cases for user workflows, data visualization, and API integrations. Integrated with GitHub Actions for nightly regression runs, achieving 95% automation coverage. Technologies: Playwright, TypeScript, Node.js, GitHub Actions, Jest, REST Assured.
-  - E-commerce Platform Testing: Developed automated test suites for a high-traffic e-commerce website, implementing visual regression testing with Playwright and cross-browser compatibility checks across Chrome, Firefox, and Safari. Optimized test execution time by 50% through parallel processing. Technologies: Playwright, JavaScript, Selenium Grid, AWS DevOps, JMeter, API Testing.
-  - Mobile Banking App Automation: Created hybrid automation framework combining Playwright for web components and Appium for native mobile testing of a banking application. Implemented BDD approach with Cucumber for business-readable test scenarios, ensuring compliance with banking regulations. Technologies: Playwright, Appium, Java, Jenkins, AWS DevOps.
-  - LLM-Powered Feature Testing with AI Copilot: Built Playwright TypeScript test suite for an AI financial advisor chatbot, using GitHub Copilot to generate test scaffolding and Applitools for visual consistency checks. Implemented LLM output validation tests checking response coherence, hallucination patterns, and prompt injection resilience. Integrated with GitHub Actions for nightly CI. Technologies: Playwright, TypeScript, GitHub Copilot, Applitools, LLM Integration Testing, GitHub Actions, DeepEval.
-- **Roles and Responsibilities:**
-  - Develop and maintain automated test scripts and frameworks
-  - Perform unit, integration, and regression testing
-  - Collaborate with developers to integrate testing into CI/CD pipelines
-  - Analyze test results and report defects
-  - Design test cases and scenarios for new features
-  - Participate in code reviews and provide testing feedback
-  - Maintain test environments and tools
-  - Ensure test coverage and quality metrics
-  - Use GitHub Copilot for AI-generated test code, implement self-healing selector strategies, and build LLM API validation tests for AI-powered features including hallucination detection and prompt injection testing
-  - Apply visual AI testing with Applitools to detect layout regressions across releases
-- **Certifications:** ISTQB Advanced Level - Test Automation, AWS Certified Developer - Associate, Certified Scrum Master (CSM)
-- **Education:** B.Sc. in Information Technology from University of Delhi, Delhi (2017-2020, 8.7 CGPA)
-- **Achievements:** Recognized as "Automation Excellence Award" winner in 2023 for innovative Playwright framework implementation; Contributed to open-source Playwright community with custom utilities; Led automation efforts that reduced production defects by 60% in e-commerce platform
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** Playwright browser and API workflows
+
+## Professional summary
+
+- Quality Engineering practitioner focused on playwright browser and api workflows.
+- Demonstrates typescript and playwright, ui and api automation, fixtures and isolated test data through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Write test code that checks business outcomes rather than only element presence.
+- Keep data setup repeatable and investigate failures before adding retries.
+- Review test changes and publish useful diagnostic artifacts in CI.
+
+## Core skills
+
+- TypeScript and Playwright
+- UI and API automation
+- Fixtures and isolated test data
+- Git and code review
+- CI test execution and artifacts
+- Failure diagnosis and meaningful assertions
+
+## Optional / role-dependent
+
+- Contract testing for service boundaries
+- Containers and distributed-system testing
+- AI-assisted coding with review and validation
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Playwright browser and API workflows - practical example
+
+Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+
+- Evidence: A runnable repository with a clear setup guide
+- Evidence: A CI run with trace or log artifacts
+- Evidence: A deliberately broken case caught by a meaningful assertion
+
+### Playwright browser and API workflows - failure investigation
+
+Extend the example with one failure or change relevant to playwright browser and api workflows. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

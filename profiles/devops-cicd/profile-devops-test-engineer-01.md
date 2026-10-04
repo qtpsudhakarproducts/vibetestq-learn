@@ -1,43 +1,76 @@
-# Aisha Khan
+# Automation Engineer - CI/CD Specialist
 
-- **Name:** Aisha Khan
-- **Role:** Mid-level Automation Engineer - CI/CD Specialist
-- **Experience level:** Mid-level (5 years)
-- **Location:** Mumbai, Maharashtra
-- **Email:** aisha.khan.automation@email.com
-- **LinkedIn:** linkedin.com/in/aisha-khan-automation
-- **GitHub:** github.com/aishakhanautomation
-- **10-point profile summary:**
-  - Experienced Automation Engineer with 5 years of expertise in designing and implementing CI/CD pipelines using GitHub Actions and Jenkins
-  - Proficient in Java and Python for developing automated test scripts and frameworks
-  - Skilled in test execution, debugging, and build management for efficient software delivery
-  - Knowledgeable in API testing with Rest Assured and BDD frameworks like Cucumber
-  - Experienced in quality engineering practices and infrastructure automation for scalable testing
-  - Familiar with deployment processes and infrastructure management in cloud environments
-  - Strong analytical skills for troubleshooting automation issues and optimizing performance
-  - Collaborative professional working in Agile environments to integrate testing into development workflows
-  - Expert in version control with Git and Maven for build management and dependency handling
-  - Expert in 2026 CI/CD quality engineering: AI-powered quality gates with ML-based test selection, GitOps testing workflows, LLM feature validation in CI pipelines, and OpenTelemetry-integrated observability
-  - Skilled in intelligent pipeline optimization: GitHub Actions AI-assisted workflows, ArgoCD GitOps deployment testing, and shift-left AI quality checks for cloud-native microservices
-- **Technologies:** Automation Testing, Selenium, Java, Python, Test Execution, Debugging, Build Management, GIT, Maven, API Testing, Rest Assured, BDD, Cucumber, Quality Engineering, Infrastructure, Deployment, Playwright, Cypress, GitHub Actions, Jenkins, Docker, Kubernetes, YAML, CI/CD, Agile, Test Orchestration, GitHub Copilot, AI-Powered Quality Gates, GitOps, ArgoCD, OpenTelemetry, ML-based Test Selection, LLM Pipeline Testing, Helm
-- **Experience:** 5 years of progressive experience as an Automation Engineer at software companies in Mumbai, specializing in CI/CD implementation and test automation. Designed and maintained automation frameworks that improved deployment frequency by 60% and reduced manual testing efforts by 75%.
-- **Projects:**
-  - Enterprise E-commerce Platform: Developed comprehensive CI/CD pipelines using GitHub Actions for automated testing, security scanning, and deployment to AWS. Implemented parallel test execution reducing build times by 40%, covering 1000+ test cases. Technologies: GitHub Actions, Selenium, Java, Python, AWS, Docker, Maven.
-  - Financial Services API Suite: Created automated test frameworks for REST APIs using Rest Assured and Cucumber BDD. Integrated with Jenkins for nightly regression testing and performance validation, ensuring 99.9% API uptime. Technologies: Rest Assured, Java, Cucumber, Jenkins, Git, Postman, JMeter.
-  - Mobile Application Testing Infrastructure: Built hybrid automation framework combining Appium for mobile testing and GitHub Actions for CI/CD. Implemented device farm integration and visual testing, supporting releases across iOS and Android platforms. Technologies: Appium, Python, GitHub Actions, BrowserStack, Playwright, Cypress.
-  - AI Quality Gates and GitOps Testing Pipeline: Implemented AI-powered quality gate system in GitHub Actions using ML-based test selection (risk-scored by code change impact), LLM response validation for AI microservices, and OpenTelemetry trace correlation for test observability. Integrated ArgoCD GitOps deployment testing to validate Kubernetes rollouts automatically. Technologies: GitHub Actions, ML-based Test Selection, OpenTelemetry, ArgoCD, GitOps, LLM Pipeline Testing, Kubernetes, Helm.
-- **Roles and Responsibilities:**
-  - Design and develop automated test frameworks and scripts using Selenium, Playwright, and Cypress for web and mobile applications
-  - Execute automated test suites and analyze results to identify defects and performance issues
-  - Collaborate with development teams to integrate testing into CI/CD pipelines using GitHub Actions, Jenkins, and other tools
-  - Maintain and update existing automation infrastructure, including test environments and build scripts
-  - Perform API and UI automation testing with Rest Assured and other specialized tools
-  - Debug and troubleshoot automation issues, optimizing scripts for reliability and efficiency
-  - Document automation processes and best practices for team knowledge sharing
-  - Participate in code reviews and provide feedback on testability and automation potential
-  - Implement quality engineering practices and infrastructure automation for scalable testing
-  - Stay updated with emerging technologies and tools for continuous improvement of automation strategies
-  - Implement AI-powered quality gates in CI/CD: ML-based intelligent test selection, LLM feature validation pipelines, GitOps deployment testing (ArgoCD), and OpenTelemetry observability for AI microservices
-- **Certifications:** AWS Certified Developer - Associate, Docker Certified Associate, ISTQB Foundation Level, GitHub Actions Expert Certification
-- **Education:** BCA (Bachelor of Computer Applications) from University of Mumbai, Mumbai (2016-2019, 8.4 CGPA)
-- **Achievements:** Recognized as "CI/CD Champion" for implementing zero-downtime deployment strategies; Optimized GitHub Actions workflows saving 30% in cloud costs; Led automation training program for 50+ engineers
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 5 years
+
+**Focus:** Continuous testing and CI integration
+
+## Professional summary
+
+- Quality Engineering practitioner focused on continuous testing and ci integration.
+- Demonstrates git and pipeline configuration, test execution and artifact retention, linux and scripting through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Keep pipelines reproducible and explain which checks run at each stage.
+- Classify test, application, and environment failures with evidence.
+- Maintain setup and artifacts so teams can reproduce CI failures locally.
+
+## Core skills
+
+- Git and pipeline configuration
+- Test execution and artifact retention
+- Linux and scripting
+- Environment and test-data setup
+- Failure classification
+- Delivery feedback and reporting
+
+## Optional / role-dependent
+
+- Containers and infrastructure as code
+- Test selection and parallelization
+- Observability for test infrastructure
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Continuous testing and CI integration - practical example
+
+Build a pull-request and release test pipeline with controlled setup, useful artifacts, and a documented failure-handling policy.
+
+- Evidence: Pipeline configuration in version control
+- Evidence: A reproducible failing run and investigation note
+- Evidence: A comparison of feedback time before and after a specific change
+
+### Continuous testing and CI integration - failure investigation
+
+Extend the example with one failure or change relevant to continuous testing and ci integration. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

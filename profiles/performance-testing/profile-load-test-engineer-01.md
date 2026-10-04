@@ -1,40 +1,75 @@
-# Dinesh Kumar
+# Load & Performance Engineer
 
-- **Name:** Dinesh Kumar
-- **Role:** Load & Performance Engineer
-- **Experience level:** Mid-level (5 years)
-- **Location:** Jaipur, Rajasthan
-- **Email:** dinesh.kumar.performance@email.com
-- **LinkedIn:** linkedin.com/in/dinesh-kumar-performance
-- **GitHub:** github.com/dineshkumarperf
-- **10-point profile summary:**
-  - Skilled Load & Performance Engineer with 5 years of expertise in designing and executing load tests for high-traffic services
-  - Proficient in JMeter and Gatling for comprehensive performance testing
-  - Experienced in cloud-based load testing and capacity planning
-  - Knowledgeable in performance tuning and bottleneck identification
-  - Adept at creating monitoring dashboards for performance metrics
-  - Familiar with scalability testing and promotional event capacity planning
-  - Collaborative professional working with development teams on optimizations
-  - Strong analytical skills for performance data analysis and recommendations
-  - Expert in 2026 performance testing: k6 modern load testing, AI-driven anomaly detection in performance metrics, predictive capacity planning using ML-based traffic forecasting, and LLM inference latency profiling
-  - Skilled in intelligent performance engineering: AI-powered bottleneck identification, adaptive load testing that adjusts based on real-time system response, and cloud-native performance testing at scale
-- **Technologies:** JMeter, Gatling, k6, Load Testing, Performance Testing, Cloud Platforms (AWS, Azure), Monitoring Tools (New Relic, AppDynamics, Grafana), Profiling Tools, SQL, Linux, Bash Scripting, Docker, Kubernetes, AI Anomaly Detection, ML-based Capacity Planning, LLM Latency Testing, Predictive Performance Testing
-- **Experience:** 5 years of experience as a Load & Performance Engineer at tech companies in Jaipur. Specialized in load testing, capacity planning, and performance optimization for web services.
-- **Projects:**
-  - Streaming Platform Capacity Planning: Conducted load testing for a streaming platform during promotional events, planning capacity for 1M+ concurrent users and optimizing performance. Technologies: JMeter, Cloud Platforms, Monitoring Tools.
-  - E-commerce Peak Load Testing: Designed and executed load tests for e-commerce platform, identifying bottlenecks and recommending optimizations for Black Friday traffic. Technologies: Gatling, Profiling Tools, SQL.
-  - API Performance Validation: Performed load testing on REST APIs, creating dashboards for metrics tracking and ensuring scalability under high loads. Technologies: JMeter, Monitoring Tools, Docker.
-  - AI-Driven Load Testing for LLM Inference API: Implemented k6 load testing for an LLM inference API endpoint, profiling latency under concurrent requests (10/100/1000 TPS), detecting P95 response time degradation, and implementing AI anomaly detection on metrics time-series for automatic threshold alerting. Used ML-based traffic forecasting for proactive capacity planning. Technologies: k6, AI Anomaly Detection, ML-based Capacity Planning, LLM Latency Testing, Prometheus, Grafana, AWS.
-- **Roles and Responsibilities:**
-  - Design and execute load test scenarios for applications
-  - Run scalability tests and analyze performance under load
-  - Profile system bottlenecks and provide optimization recommendations
-  - Create monitoring dashboards for performance metrics
-  - Collaborate with development teams on performance fixes
-  - Plan capacity for high-traffic events and promotions
-  - Document performance testing results and recommendations
-  - Maintain performance testing environments and tools
-  - Use k6 for modern cloud-native load testing, implement AI anomaly detection on performance metrics, profile LLM inference latency, and apply ML-based capacity planning for peak traffic prediction
-- **Certifications:** ISTQB Performance Testing, JMeter Professional Certification, AWS Performance Optimization
-- **Education:** B.Tech in Computer Science from MNIT Jaipur, Jaipur (2017-2021, 8.2 CGPA)
-- **Achievements:** Optimized streaming platform for 2x peak capacity; Reduced response times by 30% through bottleneck identification; Awarded "Performance Excellence" for load testing innovations; Led performance testing for 10+ major events
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 5 years
+
+**Focus:** API load, stress, and endurance testing
+
+## Professional summary
+
+- Quality Engineering practitioner focused on api load, stress, and endurance testing.
+- Demonstrates jmeter and workload scripting, http and api behavior, latency percentiles, throughput, and errors through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Model realistic traffic and document the assumptions behind the load.
+- Separate test-generator limits from application bottlenecks.
+- Compare repeatable runs and explain the evidence behind performance recommendations.
+
+## Core skills
+
+- JMeter and workload scripting
+- HTTP and API behavior
+- Latency percentiles, throughput, and errors
+- Workload modeling and baselines
+- Resource and application telemetry
+- Bottleneck investigation
+
+## Optional / role-dependent
+
+- k6 or another equivalent load tool
+- Cloud capacity and distributed tracing
+- Database profiling and scalability experiments
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### API load, stress, and endurance testing - practical example
+
+Create a repeatable load experiment for a business-critical API. Record workload assumptions, baseline results, saturation behavior, and a retest.
+
+- Evidence: A parameterized script and test environment description
+- Evidence: Latency, throughput, error, and resource measurements
+- Evidence: A bottleneck hypothesis with evidence and retest results
+
+### API load, stress, and endurance testing - failure investigation
+
+Extend the example with one failure or change relevant to api load, stress, and endurance testing. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Techblocks - Performance Test Engineer - Foundit India](https://www.foundit.in/job/performance-test-engineer-techblocks-hyderabad-secunderabad-telangana-36822245)

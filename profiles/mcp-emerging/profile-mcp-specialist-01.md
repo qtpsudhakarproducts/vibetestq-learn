@@ -1,42 +1,77 @@
-# Kavita Joshi
+# Junior SDET - AI Tool Integration
 
-- **Name:** Kavita Joshi
-- **Role:** Junior SDET (Software Development Engineer in Test) - MCP Specialist
-- **Experience level:** Junior (2 years)
-- **Location:** Mumbai, Maharashtra
-- **Email:** kavita.joshi.sdet@email.com
-- **LinkedIn:** linkedin.com/in/kavita-joshi-sdet
-- **GitHub:** github.com/kavitajoshisdet
-- **10-point profile summary:**
-  - Dedicated Junior SDET with 2 years of experience in automation testing and framework development using Playwright
-  - Proficient in Java, Python, and JavaScript for developing test scripts and automation solutions
-  - Skilled in Selenium, API testing, database testing, and backend testing for comprehensive validation
-  - Experienced in exploratory testing, web application testing, and white box testing methodologies
-  - Knowledgeable in SDLC, Agile processes, and version control with GitHub Actions
-  - Familiar with Playwright, Cypress, and MCP for advanced test automation and observability
-  - Strong analytical skills for debugging test failures and optimizing automation performance
-  - Collaborative team player working with developers to integrate testing into development workflows
-  - Expert in 2026 MCP protocol testing: agent behavior validation, MCP protocol compliance testing, tool-call contract verification, agent state machine testing, and LangGraph multi-agent interaction testing
-  - Skilled in AI-era automation: GitHub Copilot assisted test writing, self-healing selectors for MCP-enhanced test suites, agentic UI automation testing, and intelligent observability integration
-- **Technologies:** Automation Testing, Test Scripts, Test Cases, Test Scenarios, Coding, Java, Python, Selenium, API Testing, Database Testing, Backend Testing, Exploratory Testing, Web Application Testing, MySQL, MongoDB, Mobile Automation, White Box Testing, SDLC, Agile, GitHub Actions, Playwright, Cypress, MCP, Node.js, Observability, Test Automation, JavaScript, MCP Protocol Testing, Agent Behavior Validation, Tool-Call Contract Testing, LangGraph Testing, GitHub Copilot, Self-Healing Selectors, Agentic UI Testing
-- **Experience:** 2 years of hands-on experience as a Junior SDET at tech startups in Mumbai, specializing in Playwright automation and MCP integrations. Developed test suites that improved UI testing reliability by 70% and reduced flaky scenarios by 50%.
-- **Projects:**
-  - MCP-Based Test Harness: Implemented comprehensive test automation framework using Playwright with MCP integrations for visual and accessibility checks. Created observability hooks for real-time test monitoring and failure analysis. Technologies: Playwright, MCP, Node.js, JavaScript, GitHub Actions, Observability Tools.
-  - E-commerce Web Application Testing: Developed automated test scripts for user workflows, API validation, and cross-browser compatibility using Playwright. Integrated MCP for enhanced test reporting and troubleshooting. Technologies: Playwright, Python, API Testing, Selenium, GitHub Actions.
-  - Mobile App Automation: Created test suites for mobile web applications using Playwright and MCP, focusing on responsive design and accessibility compliance. Implemented CI integration for nightly regression testing. Technologies: Playwright, MCP, JavaScript, Mobile Testing Tools, Cypress.
-  - MCP Agent Protocol Compliance Testing: Built comprehensive protocol compliance test suite for an MCP server powering a multi-agent customer service platform, validating tool-call JSON schema contracts, agent state machine transitions, error recovery behaviors, and conversation memory persistence. Used GitHub Copilot to accelerate test script generation. Implemented LangGraph agent interaction tests for multi-hop orchestration reliability. Technologies: MCP Protocol Testing, Agent Behavior Validation, Tool-Call Contract Testing, LangGraph Testing, GitHub Copilot, Self-Healing Selectors, Playwright, Node.js.
-- **Roles and Responsibilities:**
-  - Develop and maintain automated test scripts and frameworks using Playwright, Selenium, and MCP
-  - Perform API testing, database testing, and backend testing for application validation
-  - Collaborate with developers to understand code changes and create appropriate automated tests
-  - Execute automated test suites and analyze results for defects and performance issues
-  - Identify and report bugs, working with teams to resolve issues and improve code quality
-  - Participate in code reviews and provide feedback on testability and automation potential
-  - Assist in continuous integration and deployment processes using GitHub Actions
-  - Learn and apply new testing tools and methodologies, including MCP and observability
-  - Document test procedures and maintain test environments for reliable execution
-  - Troubleshoot CI test failures and implement solutions for flaky test scenarios
-  - Validate MCP protocol compliance, test LangGraph agent behaviors, verify tool-call contract schemas, use GitHub Copilot for accelerated test generation, and apply self-healing selectors for resilient agentic UI automation
-- **Certifications:** ISTQB Foundation Level, MCP Fundamentals Certification
-- **Education:** BE in Electronics and Telecommunication from University of Mumbai, Mumbai (2019-2023, 8.6 CGPA)
-- **Achievements:** Recognized as "Rising Automation Talent" for MCP integration implementation; Reduced test flakiness by 50% in e-commerce project; Active contributor to internal testing tools library
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 2 years
+
+**Focus:** Junior SDET learning AI tool integration
+
+## Professional summary
+
+- Building practical experience in junior sdet learning ai tool integration.
+- Demonstrates programming and api fundamentals, json schemas and contract checks, tool input and output validation through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Works on a defined feature or test slice with review. Builds fundamentals, reports evidence clearly, and asks for help when expected behavior is unclear.
+- Verify tool contracts with controlled inputs and explicit expected outcomes.
+- Exercise missing arguments, failures, and incomplete workflows.
+- Review generated code and retain evidence of actual execution.
+
+## Core skills
+
+- Programming and API fundamentals
+- JSON schemas and contract checks
+- Tool input and output validation
+- Error handling and workflow tests
+- Git and code review
+- Execution traces and reproducible examples
+
+## Optional / role-dependent
+
+- MCP integration as a project specialization
+- Agent workflow evaluation
+- AI-assisted engineering with reviewed changes
+- MCP is an emerging specialization; it is not a baseline requirement for all junior SDET jobs.
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Junior SDET learning AI tool integration - practical example
+
+Build a small tool integration in a local practice repository. Validate inputs and outputs, simulate a failed tool call, and explain recovery behavior.
+
+- Evidence: A tool contract and deterministic examples
+- Evidence: Tests for success, invalid arguments, and errors
+- Evidence: Execution traces with a review checklist
+
+### Junior SDET learning AI tool integration - failure investigation
+
+Extend the example with one failure or change relevant to junior sdet learning ai tool integration. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [AI for Testers](https://academy.vibetestq.com/ai/)
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [MillionLogics · Senior QA Engineer, AI Model Evaluation · Foundit India](https://www.foundit.in/job/senior-qa-engineer-ai-model-evaluation-millionlogics-india-51782705)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

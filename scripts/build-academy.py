@@ -19,20 +19,22 @@ def brand():
 
 def header(active=''):
     entries = [('Learn', '/learn/', 'learn'), ('Programs', '/#programs', 'programs'),
-               ('Practice', '/practicehub/', 'practice'), ('Interview prep', '/iqs/', 'preparation'),
+               ('Practice', '/practicehub/', 'practice'), ('Career Preparation', '/career-preparation/', 'career'),
                ('Schedule', '/upcoming-trainings.html', 'schedule')]
     links = ''.join(f'<a href="{url}"' + (' aria-current="page"' if key == active else '') + f'>{label}</a>' for label, url, key in entries)
     return f'''<a class="ap-skip" href="#academy-main">Skip to content</a><header class="ap-header"><nav class="ap-wrap ap-nav" aria-label="Academy navigation">{brand()}<div class="ap-links" id="academy-navigation">{links}<a class="ap-company" href="https://vibetestq.com/" target="_blank" rel="noopener">Company ↗</a></div><button class="ap-theme" type="button" aria-label="Switch to dark theme">Dark</button><button class="ap-menu" type="button" aria-expanded="false" aria-controls="academy-navigation">Menu</button></nav></header>'''
 
 
 def footer():
-    return f'''<footer class="ap-footer"><div class="ap-wrap"><div class="ap-footer-grid"><div>{brand()}<p>Training, documentation, and hands-on learning for modern Quality Engineering.</p></div><div><strong>Learn and practice</strong><ul><li><a href="/learn/">Learning library</a></li><li><a href="/playwright/">Playwright curriculum</a></li><li><a href="/practicehub/">Practice challenges</a></li><li><a href="/projects/">Automation practice lab</a></li><li><a href="/playwright/assessments/">Quizzes</a></li></ul></div><div><strong>Programs and preparation</strong><ul><li><a href="/#programs">Live programs</a></li><li><a href="/upcoming-trainings.html">Batch schedule</a></li><li><a href="/iqs/">Interview questions</a></li><li><a href="/profiles/">Sample QA profiles</a></li></ul></div><div><strong>Connect</strong><ul><li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li><li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">Ask about training ↗</a></li><li><a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company ↗</a></li><li><a href="https://vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH Platform ↗</a></li></ul></div></div><div class="ap-footer-bottom"><span>© 2026 VibeTestQ Academy.</span><span>Learn · Practice · Build · Prepare</span></div></div></footer>'''
+    return f'''<footer class="ap-footer"><div class="ap-wrap"><div class="ap-footer-grid"><div>{brand()}<p>Training, documentation, and hands-on learning for modern Quality Engineering.</p></div><div><strong>Learn and practice</strong><ul><li><a href="/learn/">Learning library</a></li><li><a href="/playwright/">Playwright curriculum</a></li><li><a href="/practicehub/">Practice challenges</a></li><li><a href="/projects/">Automation practice lab</a></li><li><a href="/playwright/assessments/">Quizzes</a></li></ul></div><div><strong>Programs and preparation</strong><ul><li><a href="/career-preparation/">Career Preparation</a></li><li><a href="/#programs">Live programs</a></li><li><a href="/upcoming-trainings.html">Batch schedule</a></li><li><a href="/iqs/">Interview questions</a></li><li><a href="/profiles/">Sample QA profiles</a></li></ul></div><div><strong>Connect</strong><ul><li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li><li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">Ask about training ↗</a></li><li><a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company ↗</a></li><li><a href="https://vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH Platform ↗</a></li></ul></div></div><div class="ap-footer-bottom"><span>© 2026 VibeTestQ Academy.</span><span>Learn · Practice · Build · Prepare</span></div></div></footer>'''
 
 
 def page(path, title, description, body, active='', resume=False):
     canonical = 'https://academy.vibetestq.com/' + ('' if path == 'index.html' else path)
     result = f'''<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{html.escape(title)}</title><meta name="description" content="{html.escape(description, quote=True)}"><link rel="canonical" href="{canonical}"><meta property="og:type" content="website"><meta property="og:url" content="{canonical}"><meta property="og:title" content="{html.escape(title, quote=True)}"><meta property="og:description" content="{html.escape(description, quote=True)}"><meta property="og:image" content="https://academy.vibetestq.com/assets/vq/VQLogoTitleForLight.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/academy/portal.css?v={VERSION}"><script defer src="/assets/academy/portal.js?v={VERSION}"></script></head><body class="academy-public">{header(active)}<main id="academy-main">{body}</main>{footer()}{'<script defer src="/assets/academy/resume.js"></script>' if resume else ''}</body></html>'''
-    (ROOT / path).write_text(result + '\n', encoding='utf-8')
+    target = ROOT / path
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(result + '\n', encoding='utf-8')
 
 
 def cards(items, columns='three'):
@@ -71,10 +73,10 @@ def build():
         ('Cypress + GenAI', 'Cypress automation', 'Explore modern end-to-end automation, framework practice, and GenAI-assisted testing.', '/cypress-genai.html', 'View curriculum'),
     ], 'four'), True, '<a href="/upcoming-trainings.html">View batch schedule →</a>')
     body += section('sessions', 'Live learning', 'Upcoming live online training.', 'Starts November 10, 2026. Contact us on WhatsApp to join. Times are shown in IST.', sessions(trainings, 2), more='<a href="/upcoming-trainings.html">See all sessions →</a>')
-    body += section('preparation', 'Prepare for your next step', 'Turn practice into readiness.', 'Study questions and explanations to prepare for your next Quality Engineering interview.', cards([
+    body += section('preparation', 'Prepare for your next step', 'Career Preparation.', 'Explore role expectations, build evidence of your skills, and prepare to explain your work.', cards([
         ('Career examples', 'Sample QA profiles', 'Explore 57 sample profiles across QA roles and experience levels, with skills, projects, and responsibilities.', '/profiles/', 'Browse sample profiles'),
         ('Study', 'Interview preparation', 'Browse questions and explanations across Quality Engineering topics.', '/iqs/', 'Browse questions'),
-    ]), True)
+    ], 'two'), True, '<a href="/career-preparation/">Explore Career Preparation →</a>')
     body += '''<section class="ap-section"><div class="ap-wrap"><div class="ap-next"><div><span class="ap-eyebrow">Start with one topic</span><h2>Your next learning step is here.</h2><p>Open the library, choose a track, and work through it at your pace.</p></div><a class="ap-button" href="/learn/">Open Learning Library →</a></div><p class="ap-fine">Looking for the TAMASH product? Visit the <a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company website ↗</a>.</p></div></section>'''
     page('index.html', 'VibeTestQ Academy | Learn, Practice & Build Quality Engineering Skills', 'Explore Quality Engineering training, learning guides, practice challenges, quizzes, and interview preparation at VibeTestQ Academy.', body, resume=True)
 
@@ -106,7 +108,10 @@ def build():
     fallback = re.sub(r'<link rel="canonical"[^>]*>', '<meta name="robots" content="noindex">', fallback)
     (ROOT / '404.html').write_text(fallback, encoding='utf-8')
     (ROOT / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://academy.vibetestq.com/sitemap.xml\n', encoding='utf-8')
-    entries = ['', *PUBLIC, 'upcoming-trainings.html', 'learn/', 'playwright/', 'practicehub/', 'projects/', 'iqs/', 'profiles/', 'ai/']
+    entries = ['', *PUBLIC, 'upcoming-trainings.html', 'learn/', 'playwright/', 'practicehub/', 'projects/', 'iqs/', 'profiles/', 'ai/', 'career-preparation/', 'career-preparation/job-market.html']
+    profile_data = ROOT / 'profiles/profiles.json'
+    if profile_data.is_file():
+        entries += ['profiles/' + item['path'] for item in json.loads(profile_data.read_text(encoding='utf-8'))['profiles']]
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
     sitemap += ''.join(f'<url><loc>https://academy.vibetestq.com/{path}</loc></url>\n' for path in entries)
     (ROOT / 'sitemap.xml').write_text(sitemap + '</urlset>\n', encoding='utf-8')
@@ -114,3 +119,6 @@ def build():
 
 if __name__ == '__main__':
     build()
+    if (ROOT / 'profiles/profiles.json').is_file():
+        import runpy
+        runpy.run_path(str(ROOT / 'scripts/build-profiles.py'), run_name='__main__')

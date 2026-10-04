@@ -1,40 +1,77 @@
-# Neelam Kumar
+# Test Coordinator
 
-- **Name:** Neelam Kumar
-- **Role:** Test Coordinator
-- **Experience level:** Mid-level (5 years)
-- **Location:** Ranchi, Jharkhand
-- **Email:** neelam.kumar.test@email.com
-- **LinkedIn:** linkedin.com/in/neelam-kumar-test-coordinator
-- **GitHub:** github.com/neelamkumarqa
-- **10-point profile summary:**
-  - Dedicated Test Coordinator with 5 years of experience ensuring smooth test cycle execution and resource coordination
-  - Proficient in test scheduling, environment management, and release coordination
-  - Skilled in managing test environments and ensuring data availability for testing
-  - Experienced in coordinating resources and schedules across testing teams
-  - Knowledgeable in reporting testing health and identifying blockers
-  - Familiar with regression cycle coordination and timely release enablement
-  - Collaborative professional working with development and QA teams
-  - Strong organizational skills for managing complex testing schedules
-  - Expert in 2026 AI testing coordination: scheduling and coordinating AI feature testing sprints, managing test environments for LLM and ML workloads, coordinating AI regression cycles, and tracking LLM feature quality metrics across teams
-  - Skilled in intelligent test operations: AI-powered environment provisioning, cross-team AI testing cycle coordination, LLM release gate tracking, and agentic feature testing schedule management
-- **Technologies:** Test Management Tools (JIRA, TestRail), Environment Management, Scheduling Tools, Release Coordination, SQL, Data Management, Reporting Tools, Agile, Scrum, Communication Tools, Cloud Environments, AI Feature Testing Coordination, LLM Test Scheduling, AI Environment Provisioning, LLM Quality Metrics Tracking, Agentic Feature Testing Management
-- **Experience:** 5 years of experience as a Test Coordinator at software companies in Ranchi. Specialized in coordinating test cycles, managing environments, and ensuring smooth releases.
-- **Projects:**
-  - Regression Cycle Coordination: Coordinated regression testing cycles across multiple teams, scheduling resources and environments to enable timely releases. Technologies: TestRail, JIRA, Scheduling Tools.
-  - Environment Management for Large Releases: Managed test environments and data for major product releases, ensuring availability and stability for 50+ testers. Technologies: Cloud Environments, SQL, Data Management.
-  - Cross-Team Testing Coordination: Coordinated testing efforts between QA, development, and business teams, reporting health metrics and resolving blockers. Technologies: Communication Tools, Reporting Tools, Agile.
-  - AI Feature Testing Cycle Coordination: Coordinated cross-team testing sprints for an enterprise LLM platform, scheduling AI regression cycles across 4 QA teams, managing GPU-enabled test environments for LLM workloads, tracking hallucination and accuracy quality metrics per sprint, and reporting agentic feature test status to product and executive stakeholders. Implemented AI environment auto-provisioning reducing setup time by 45%. Technologies: AI Feature Testing Coordination, LLM Test Scheduling, AI Environment Provisioning, LLM Quality Metrics Tracking, JIRA, TestRail, Cloud Environments.
-- **Roles and Responsibilities:**
-  - Schedule test cycles and coordinate resource allocation
-  - Manage test environments and ensure data availability
-  - Coordinate with teams for smooth testing execution
-  - Report overall testing health and identify blockers
-  - Maintain environment stability and performance
-  - Assist in release coordination and go-live preparations
-  - Document testing processes and schedules
-  - Collaborate with stakeholders on testing requirements
-  - Coordinate AI feature testing sprints, manage LLM test environment provisioning, schedule AI regression cycles, track LLM quality metrics across teams, and report agentic feature testing status to product leadership
-- **Certifications:** ISTQB Foundation Level, Test Coordination Certification, Agile Scrum Master
-- **Education:** B.Sc. in Computer Science from Ranchi University, Ranchi (2017-2020, 8.1 CGPA)
-- **Achievements:** Coordinated 20+ major releases with zero delays; Improved environment setup time by 40%; Awarded "Coordination Excellence" for cross-team collaboration; Implemented automated scheduling reducing manual effort
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 5 years
+
+**Focus:** Multi-team test coordination
+
+## Professional summary
+
+- Quality Engineering practitioner focused on multi-team test coordination.
+- Demonstrates risk-based test planning, coverage and release-readiness decisions, defect triage and stakeholder communication through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
+- Align test scope with product risk, dependencies, and release goals.
+- Coordinate investigation and communicate unresolved issues with evidence.
+- Review coverage and coach the team without replacing individual accountability.
+
+## Core skills
+
+- Risk-based test planning
+- Coverage and release-readiness decisions
+- Defect triage and stakeholder communication
+- API and integration testing strategy
+- Test management and traceability
+- Coaching and review
+
+## Optional / role-dependent
+
+- Automation architecture for technical leads
+- Specialist accessibility or performance depth
+- Reviewed AI-assisted planning and analysis
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Multi-team test coordination - practical example
+
+Plan validation for a multi-team release. Show how you selected coverage, handled dependencies, and communicated remaining risk.
+
+- Evidence: A release test strategy with explicit scope
+- Evidence: A traceability view and decision log
+- Evidence: A short stakeholder update with risks and next actions
+
+### Multi-team test coordination - failure investigation
+
+Extend the example with one failure or change relevant to multi-team test coordination. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+- Distinguish technical influence from people management and describe the scope you actually owned.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
+- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)

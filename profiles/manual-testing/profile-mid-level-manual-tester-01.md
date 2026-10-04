@@ -1,42 +1,76 @@
-# Priya Sharma
+# Manual Tester
 
-- **Name:** Priya Sharma
-- **Role:** Mid-level Manual Tester
-- **Experience level:** Mid-level (4 years)
-- **Location:** Pune, Maharashtra
-- **Email:** priya.sharma.qa@email.com
-- **LinkedIn:** linkedin.com/in/priya-sharma-qa
-- **GitHub:** github.com/priyasharmaqa
-- **10-point profile summary:**
-  - Seasoned QA professional with 4 years of comprehensive experience in manual testing across diverse software applications
-  - Expert in developing and executing detailed test plans, test cases, and test scripts for complex enterprise systems
-  - Proficient in performing functional, regression, integration, system, and user acceptance testing with high accuracy
-  - Skilled in defect management, including identification, documentation, tracking, and triage using industry-standard tools
-  - Experienced in backend testing and SQL query validation for data integrity and database performance
-  - Well-versed in both Agile and Waterfall methodologies, adapting testing approaches to project requirements
-  - Strong analytical and debugging skills for troubleshooting complex issues and identifying root causes
-  - Effective communicator and collaborator, facilitating smooth interactions between development, product, and QA teams
-  - Proficient in validating AI-powered features including recommendation engines, chatbot responses, and LLM-generated outputs against acceptance criteria
-  - Skilled in using GitHub Copilot and ChatGPT for intelligent test case generation, scenario ideation, and prompt-based defect analysis in 2026 environments
-- **Technologies:** Manual Testing, Functional Testing, Regression Testing, Test Cases, Test Scripts, Test Execution, Defect Tracking, User Acceptance Testing, Bug Life Cycle, SDLC, STLC, AI-SDLC, Exploratory Testing, Backend Testing, Performance Testing, JIRA, TestRail, Xray, Bugasura, Bugzilla, SQL, Postman, Confluence, Microsoft Excel, Agile, Scrum, Waterfall, GitHub Copilot, ChatGPT, AI-Assisted Testing, Playwright (Basic), LLM Feature Validation, Prompt Engineering, Claude Desktop, MCP Integration, HITL Testing, Bias Testing, Hallucination Detection, Prompt Injection Testing, Accessibility Testing
-- **Experience:** 4 years of progressive experience as a Manual Tester at leading IT firms in Pune, specializing in testing web applications, enterprise portals, and healthcare systems. Led testing efforts for 15+ projects, achieving 98% defect detection rate and contributing to on-time delivery of high-quality software products.
-- **Projects:**
-  - Banking Portal Testing: Led comprehensive testing for a digital banking platform serving 500K+ users, validating transaction flows, multi-factor authentication, account management, and regulatory compliance features. Coordinated with compliance teams to ensure adherence to RBI guidelines, identifying and resolving 200+ defects. Technologies: JIRA, TestRail, SQL, Postman, Confluence.
-  - E-commerce Platform Testing: Executed end-to-end manual testing for a B2B e-commerce solution, covering order management, inventory systems, payment gateways, and supplier integrations. Performed cross-browser and cross-device compatibility testing across platforms. Technologies: JIRA, Functional Testing, SQL, Bugzilla, Excel.
-  - Healthcare Application Testing: Conducted thorough testing for an electronic health records (EHR) system, focusing on patient data management, HIPAA compliance, and integration with external medical devices and APIs. Implemented risk-based testing strategies to prioritize critical functionalities. Technologies: JIRA, TestRail, SQL, Postman, Confluence.
-  - AI Feature Validation for Healthcare Portal: Tested AI-powered clinical decision support features in an EHR platform, validating LLM-generated recommendations against clinical guidelines, checking for hallucinations and output consistency. Designed test cases covering prompt edge cases, response accuracy, and regulatory compliance. Technologies: GitHub Copilot, ChatGPT, Prompt Engineering, JIRA, Postman, SQL.
-- **Roles and Responsibilities:**
-  - Execute manual test cases and document test results
-  - Perform functional, regression, and user acceptance testing
-  - Identify, report, and track software defects using defect tracking tools
-  - Collaborate with developers and stakeholders to understand requirements
-  - Participate in test planning and strategy development
-  - Analyze test results and provide detailed reports
-  - Ensure adherence to testing standards and best practices
-  - Assist in automation testing where applicable
-  - Maintain test documentation and environments
-  - Use AI tools (GitHub Copilot, ChatGPT) to accelerate test case generation, analyze requirements for missing scenarios, and validate LLM-powered feature outputs
-  - Apply shift-left testing practices by collaborating with developers early and using AI-assisted defect prediction
-- **Certifications:** ISTQB Certified Tester Foundation Level, Certified Scrum Master (CSM)
-- **Education:** MCA (Master of Computer Applications) from Savitribai Phule Pune University, Pune (2017-2020, 8.5 CGPA)
-- **Achievements:** Awarded "Quality Champion" for Q2 2023 for outstanding defect prevention initiatives; Led testing efforts that reduced production defects by 30% in a major banking project; Published internal testing best practices guide adopted across the organization
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** Subscription renewal and cancellation
+
+## Professional summary
+
+- Quality Engineering practitioner focused on subscription renewal and cancellation.
+- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Clarify acceptance criteria and investigate ambiguous behavior.
+- Design positive, negative, and boundary scenarios around user workflows.
+- Capture reproducible defects and verify fixes with product and engineering.
+
+## Core skills
+
+- Test design and boundary analysis
+- Exploratory testing
+- Web and REST API validation
+- Postman and browser developer tools
+- SQL data checks
+- Defect reporting and retesting
+
+## Optional / role-dependent
+
+- Basic scripting and a small automation suite
+- Domain-specific workflows
+- AI-assisted scenario drafting with human review
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Subscription renewal and cancellation - practical example
+
+Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+
+- Evidence: A risk-based test charter and scenario matrix
+- Evidence: Defect evidence with expected versus actual behavior
+- Evidence: API collections and SQL checks linked to the workflow
+
+### Subscription renewal and cancellation - failure investigation
+
+Extend the example with one failure or change relevant to subscription renewal and cancellation. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
+- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)

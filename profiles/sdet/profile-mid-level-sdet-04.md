@@ -1,43 +1,76 @@
-# Aman Verma
+# Full-stack SDET
 
-- **Name:** Aman Verma
-- **Role:** Full-stack SDET
-- **Experience level:** Mid-level (5 years)
-- **Location:** Vadodara, Gujarat
-- **Email:** aman.verma@sdetpro.com
-- **LinkedIn:** linkedin.com/in/amanverma
-- **GitHub:** github.com/amanverma
-- **10-point profile summary:**
-  - Experienced Full-stack SDET with 5 years specializing in end-to-end automation across UI and API layers
-  - Proficient in Playwright and Selenium for robust web automation and cross-browser testing
-  - Skilled in API automation using Rest Assured and Postman for comprehensive backend validation
-  - Experienced in performance testing with JMeter and integration testing for complex systems
-  - Adept at implementing CI/CD pipelines with Jenkins and GitHub Actions for automated testing
-  - Knowledgeable in unit testing frameworks like JUnit, TestNG, and pytest for code quality assurance
-  - Collaborative engineer who works closely with development teams on test-driven development
-  - Strong focus on test architecture, framework design, and maintaining scalable test suites
-  - Experienced in mobile testing with Appium and cloud-based testing environments
-  - Expert in 2026 full-stack SDET excellence: GitHub Copilot-assisted test engineering, Applitools visual AI testing, LLM API validation, and agentic workflow contract testing across UI, API, and integration layers
-  - Skilled in shift-left AI quality: integrating AI-powered test generation, self-healing selectors, and DeepEval-based LLM output assessment into every CI/CD stage
-- **Technologies:** Playwright, Selenium, Cypress, Appium, Java, Python, JavaScript, Node.js, Rest Assured, Postman, Jenkins, GitHub Actions, Azure DevOps, JUnit, TestNG, pytest, Mocha, JMeter, AWS, Azure, GCP, Git, SQL, MongoDB, Docker, Kubernetes, BDD, TDD, GitHub Copilot, Self-Healing Tests, Applitools, DeepEval, LLM Integration Testing, Prompt Injection Testing, k6, Agentic Workflow Testing, Playwright Fixtures, Network Interception, Page Object Model
-- **Experience:** 5 years as a Full-stack SDET building comprehensive automation frameworks covering frontend, backend, and integration testing. Expertise includes scalable test architectures, CI/CD pipelines, and high test coverage across complex applications.
-- **Projects:**
-  - E-Commerce Order Processing Automation: Developed end-to-end automation for order processing workflows across multiple microservices. Technologies: Playwright, Java, TestNG, Jenkins, PostgreSQL. Reduced manual testing time by 70% and improved order fulfillment reliability by 40%.
-  - API Integration Testing Framework: Built comprehensive API testing framework with contract testing and data validation. Technologies: Rest Assured, Python, pytest, GitHub Actions, Docker. Achieved 95% API test coverage and reduced integration bugs by 60%.
-  - Performance Testing Suite: Implemented performance testing suite for web application scalability and load testing. Technologies: JMeter, Java, Jenkins, AWS, Grafana. Identified performance bottlenecks that improved response time by 50%.
-  - Full-Stack AI Feature Automation: Built comprehensive test coverage for an AI-powered order recommendation engine covering UI (Playwright), API (Rest Assured with LLM validation using DeepEval), and integration layers. GitHub Copilot generated 70% of test scaffolding. Implemented prompt injection defense testing and agentic workflow contract tests for multi-step recommendation flows. Technologies: Playwright, Java, DeepEval, GitHub Copilot, Rest Assured, k6, TestNG, GitHub Actions.
-- **Roles and Responsibilities:**
-  - Design and develop automated test frameworks for UI, API, and integration testing
-  - Implement CI/CD pipelines with comprehensive automated testing integration
-  - Create end-to-end test scenarios and maintain test data setups
-  - Perform unit, integration, and regression testing across application layers
-  - Collaborate with backend teams for contract testing and API validation
-  - Analyze test results, report defects, and work with teams for resolution
-  - Maintain test environments, tools, and ensure adequate test coverage
-  - Participate in code reviews and provide testing feedback to developers
-  - Design test cases and scenarios for new features and system changes
-  - Monitor test metrics and continuously improve testing processes
-  - Use GitHub Copilot for AI-accelerated test generation, implement self-healing selectors, build LLM validation tests with DeepEval, and perform agentic workflow and prompt injection testing
-- **Certifications:** ISTQB Advanced Level – Test Automation Engineer, AWS Certified Developer - Associate, Certified Scrum Master (CSM), Docker Certified Associate, Java SE Programmer Certification
-- **Education:** Bachelor of Technology in Computer Science from Gujarat Technological University, Vadodara, India (2018)
-- **Achievements:** Developed automation framework that increased test execution speed by 5x; Led testing efforts that improved application stability by 60% across releases; Recognized as "Automation Excellence Award" winner; Reduced bug leakage to production by 75% through comprehensive test coverage; Mentored 3 junior SDETs
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 5 years
+
+**Focus:** Web, API, and integration coverage
+
+## Professional summary
+
+- Quality Engineering practitioner focused on web, api, and integration coverage.
+- Demonstrates typescript and playwright, ui and api automation, fixtures and isolated test data through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Write test code that checks business outcomes rather than only element presence.
+- Keep data setup repeatable and investigate failures before adding retries.
+- Review test changes and publish useful diagnostic artifacts in CI.
+
+## Core skills
+
+- TypeScript and Playwright
+- UI and API automation
+- Fixtures and isolated test data
+- Git and code review
+- CI test execution and artifacts
+- Failure diagnosis and meaningful assertions
+
+## Optional / role-dependent
+
+- Contract testing for service boundaries
+- Containers and distributed-system testing
+- AI-assisted coding with review and validation
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Web, API, and integration coverage - practical example
+
+Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+
+- Evidence: A runnable repository with a clear setup guide
+- Evidence: A CI run with trace or log artifacts
+- Evidence: A deliberately broken case caught by a meaningful assertion
+
+### Web, API, and integration coverage - failure investigation
+
+Extend the example with one failure or change relevant to web, api, and integration coverage. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

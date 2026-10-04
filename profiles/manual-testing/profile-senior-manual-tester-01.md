@@ -1,45 +1,76 @@
-# Manoj Verma
+# Senior Manual Tester
 
-- **Name:** Manoj Verma
-- **Role:** Senior Manual Tester
-- **Experience level:** Senior (8 years)
-- **Location:** Noida, Uttar Pradesh
-- **Email:** manoj.verma.manualqa@email.com
-- **LinkedIn:** linkedin.com/in/manoj-verma-manual-qa
-- **GitHub:** github.com/manojvermamanualqa
-- **10-point profile summary:**
-  - Accomplished Senior Manual Tester with 8 years of expertise in comprehensive manual testing for web, mobile, and enterprise applications
-  - Proficient in API testing using Postman and SQL queries for backend validation and data integrity
-  - Skilled in functional testing, regression testing, exploratory testing, and black box testing methodologies
-  - Experienced in Agile and Scrum processes, actively participating in sprint reviews and requirement analysis
-  - Knowledgeable in test management tools like JIRA, TestRail, and Confluence for defect tracking and reporting
-  - Familiar with medical devices testing, ISO 13485 compliance, and firmware troubleshooting
-  - Strong analytical skills for debugging, defect reporting, and analytics-driven test improvements
-  - Experienced in testing AI-powered features including LLM-generated outputs, NLP classification results, and recommendation system accuracy against defined business acceptance criteria
-  - Strategic adopter of AI testing tools: using GitHub Copilot for test script generation, ChatGPT for exploratory test charter creation, and prompt engineering to validate AI outputs for 2026 enterprise quality standards
-  - Applying Claude Desktop with MCP integrations for AI-assisted test management workflows, and practicing HITL testing and bias detection to validate LLM-powered feature outputs for enterprise quality
-- **Technologies:** Manual Testing, Functional Testing, Regression Testing, Exploratory Testing, Black Box Testing, GUI Testing, Smoke Testing, Sanity Testing, System Testing, Integration Testing, API Testing, Database Testing, Performance Testing, Security Testing, Accessibility Testing, UAT Support, Test Planning, Test Strategy, Test Case Preparation, Test Data Generation, Test Case Execution, Defect Tracking, Defect Reporting, JIRA, TestRail, Xray, Bugasura, Confluence, SQL, Postman, REST API Testing, GIT, Agile, Scrum, SDLC, STLC, AI-SDLC, Medical Devices, ISO 13485, Firmware Testing, Telecom, VOIP, Linux, Windows, JMeter, LoadRunner, Incident Management, Production Support, GitHub Copilot, ChatGPT, AI-Assisted Testing, LLM Feature Validation, Prompt Engineering, Claude Desktop, MCP Integration, HITL Testing, Bias Testing, Hallucination Detection, Prompt Injection Testing, AI Output Governance, Applitools (Basic)
-- **Experience:** 8 years of extensive experience as a Senior Manual Tester at IT consulting firms in Noida, specializing in enterprise applications and insurance domain. Led testing efforts for 25+ projects, achieving 97% defect detection rate and ensuring compliance with industry standards.
-- **Projects:**
-  - Insurance Claims Processing System: Led end-to-end manual testing for a comprehensive insurance claims platform, validating complex workflows, compliance checks, and regulatory requirements. Coordinated UAT with business stakeholders, ensuring 100% acceptance criteria fulfillment. Technologies: JIRA, SQL, Postman, Confluence, TestRail, Excel.
-  - Healthcare Management Application: Conducted thorough manual testing for an EHR system with medical device integration, focusing on ISO 13485 compliance and data security. Performed exploratory testing and defect analysis, identifying critical usability issues. Technologies: JIRA, SQL, REST API Testing, Firmware Testing Tools, Confluence.
-  - Telecom Billing System: Executed manual testing for a VOIP billing platform, covering functional testing, regression testing, and performance validation. Coordinated with operations teams for production support and incident management. Technologies: JIRA, SQL, Linux, Windows, Load Runner, Test Management Tools.
-  - AI Feature Testing Initiative for Insurance Platform: Led testing of AI-powered claims auto-adjudication features, designing test scenarios to validate LLM decision outputs against regulatory rules, detect hallucinations and over-approvals, and ensure audit trail accuracy. Coordinated AI acceptance testing with compliance stakeholders. Technologies: GitHub Copilot, ChatGPT, Prompt Engineering, JIRA, SQL, Postman, TestRail.
-- **Roles and Responsibilities:**
-  - Design, develop, and execute detailed manual test cases and test scenarios for web, mobile, and API applications
-  - Perform functional, regression, integration, and exploratory testing to identify defects and ensure software quality
-  - Collaborate with business analysts and developers to understand requirements and create comprehensive test plans
-  - Execute manual tests, document results, and report defects using JIRA with clear reproduction steps
-  - Conduct API testing using Postman or SoapUI, validating endpoints and data flow
-  - Perform database testing to ensure data integrity and accuracy using SQL queries
-  - Participate in Agile/Scrum ceremonies and provide feedback on user stories and acceptance criteria
-  - Conduct smoke and sanity testing for new builds and releases
-  - Create and maintain test data for various testing scenarios and environments
-  - Work on cross-browser and cross-device compatibility testing
-  - Mentor junior testers and contribute to team knowledge sharing
-  - Ensure compliance with testing standards and best practices
-  - Lead AI feature testing: validate LLM outputs, test AI-assisted decision systems for accuracy and regulatory compliance, and design prompt-based test strategies for emerging AI capabilities
-  - Champion AI tool adoption within QA teams: evaluate GitHub Copilot, ChatGPT, and AI test assistants for ROI and quality impact
-- **Certifications:** ISTQB Advanced Level - Technical Test Analyst, Certified Scrum Master (CSM), ISO 13485 Lead Auditor
-- **Education:** B.Com (Bachelor of Commerce) from University of Delhi, Delhi (2013-2016, 8.2 CGPA)
-- **Achievements:** Awarded "Quality Assurance Excellence" for successful insurance system launch; Led UAT coordination for 50+ business users; Reduced post-release defects by 35% through improved test planning
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 8 years
+
+**Focus:** Complex regression and exploratory testing
+
+## Professional summary
+
+- Quality Engineering practitioner focused on complex regression and exploratory testing.
+- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
+- Clarify acceptance criteria and investigate ambiguous behavior.
+- Design positive, negative, and boundary scenarios around user workflows.
+- Capture reproducible defects and verify fixes with product and engineering.
+
+## Core skills
+
+- Test design and boundary analysis
+- Exploratory testing
+- Web and REST API validation
+- Postman and browser developer tools
+- SQL data checks
+- Defect reporting and retesting
+
+## Optional / role-dependent
+
+- Basic scripting and a small automation suite
+- Domain-specific workflows
+- AI-assisted scenario drafting with human review
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Complex regression and exploratory testing - practical example
+
+Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+
+- Evidence: A risk-based test charter and scenario matrix
+- Evidence: Defect evidence with expected versus actual behavior
+- Evidence: API collections and SQL checks linked to the workflow
+
+### Complex regression and exploratory testing - failure investigation
+
+Extend the example with one failure or change relevant to complex regression and exploratory testing. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
+- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)

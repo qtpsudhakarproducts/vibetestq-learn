@@ -1,42 +1,75 @@
-# Isha Patel
+# Accessibility Tester
 
-- **Name:** Isha Patel
-- **Role:** Accessibility Tester
-- **Experience level:** Junior (3 years)
-- **Location:** Vadodara, Gujarat
-- **Email:** isha.patel@accessibilitypro.com
-- **LinkedIn:** linkedin.com/in/ishapatel
-- **GitHub:** github.com/ishapatel
-- **10-point profile summary:**
-  - Dedicated Accessibility Tester with 3 years specializing in WCAG compliance and inclusive design
-  - Proficient in automated accessibility tools like axe-core, WAVE, and Lighthouse for comprehensive audits
-  - Experienced in manual testing with screen readers (NVDA, JAWS) and assistive technologies
-  - Skilled in conducting accessibility audits and providing detailed remediation guidance
-  - Adept at integrating accessibility checks into CI/CD pipelines and development workflows
-  - Knowledgeable in Section 508, ADA compliance, and international accessibility standards
-  - Collaborative professional who works with design and development teams for inclusive solutions
-  - Strong focus on user experience for people with disabilities and usability testing
-  - Experienced in mobile accessibility testing and cross-platform compatibility
-  - Expert in 2026 accessibility testing: WCAG 2.2 compliance assessment, AI-assisted accessibility scanning with automated LLM-generated remediation guidance, and inclusive design testing for AI-generated UI content, including testing AI chatbot interfaces for screen reader compatibility and cognitive accessibility
-- **Technologies:** axe-core, WAVE, Lighthouse, NVDA, JAWS, VoiceOver, TalkBack, Jest, Cypress, Playwright, GitHub Actions, Jenkins, CircleCI, Git, GitHub, WCAG 2.2, WCAG 2.1, Section 508, ADA, JavaScript, Python, Confluence, Color Contrast Analyzer, Appium, AI-Assisted A11y Scanning, AI Chatbot Accessibility Testing, LLM Content Accessibility Testing, Automated Remediation Guidance
-- **Experience:** 3 years in accessibility testing ensuring digital products are usable by everyone including people with disabilities. Expertise includes automated and manual accessibility testing, compliance audits, and inclusive design across web, mobile, and enterprise systems.
-- **Projects:**
-  - Government Portal Accessibility Certification: Conducted comprehensive accessibility audit and remediation for government website. Technologies: axe-core, NVDA, WAVE, Lighthouse, JIRA. Achieved WCAG 2.1 AA compliance and ADA certification.
-  - E-Commerce Platform Accessibility Enhancement: Implemented automated accessibility testing and manual validation for online store. Technologies: Cypress, JAWS, Color Contrast Analyzer, GitHub Actions. Improved accessibility score from 60% to 95% and increased user satisfaction.
-  - Mobile App Accessibility Testing: Performed accessibility testing for mobile application across iOS and Android platforms. Technologies: Appium, VoiceOver, TalkBack, axe-core, Jenkins. Ensured Section 508 compliance and reduced accessibility-related support tickets by 70%.
-  - WCAG 2.2 Compliance and AI Content Accessibility: Conducted WCAG 2.2 upgrade assessment for a government digital platform, validating new success criteria (2.4.11 Focus Appearance, 2.5.7 Dragging Movements, 3.2.6 Consistent Help). Implemented AI-assisted accessibility scanning using automated LLM-generated remediation suggestions and tested AI chatbot interface for screen reader compatibility and cognitive load assessment. Technologies: WCAG 2.2, AI-Assisted A11y Scanning, AI Chatbot Accessibility Testing, axe-core, NVDA, JAWS, Playwright, GitHub Actions.
-- **Roles and Responsibilities:**
-  - Conduct automated and manual accessibility audits using industry-standard tools
-  - Test applications with screen readers and other assistive technologies
-  - Provide detailed remediation guidance and accessibility best practices to development teams
-  - Integrate accessibility checks into CI/CD pipelines and quality gates
-  - Ensure WCAG compliance and adherence to accessibility standards
-  - Collaborate with UX designers for inclusive design implementation
-  - Perform keyboard navigation, color contrast, and usability testing
-  - Document accessibility issues and create remediation plans
-  - Educate teams on accessibility importance and compliance requirements
-  - Stay updated with accessibility standards and tool advancements
-  - Apply WCAG 2.2 compliance testing, implement AI-assisted accessibility scanning for contextual issue detection, test AI chatbot interfaces for screen reader and cognitive accessibility, and validate LLM-generated UI content for inclusive design
-- **Certifications:** Certified Accessibility Specialist (CAS), WCAG 2.1 Expert Certification, Adobe Accessibility Certification, ISTQB Foundation Level, Google UX Design Certification
-- **Education:** Bachelor of Arts in Psychology from Maharaja Sayajirao University, Vadodara, India (2020)
-- **Achievements:** Led accessibility certification for 3 government projects; Improved application accessibility scores by average 40% across projects; Recognized as "Accessibility Champion" for promoting inclusive design; Developed accessibility testing framework adopted by 4 development teams
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 3 years
+
+**Focus:** Accessible web interactions and remediation
+
+## Professional summary
+
+- Quality Engineering practitioner focused on accessible web interactions and remediation.
+- Demonstrates wcag criteria and semantic html, keyboard and focus testing, screen-reader workflows through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Map interaction failures to the relevant accessibility criterion.
+- Use keyboard and screen-reader testing alongside automated checks.
+- Explain remediation and verify the user workflow after the fix.
+
+## Core skills
+
+- WCAG criteria and semantic HTML
+- Keyboard and focus testing
+- Screen-reader workflows
+- Forms, names, labels, and errors
+- Accessibility defect reporting
+- Remediation verification
+
+## Optional / role-dependent
+
+- axe-core scans for supported checks
+- Document and mobile accessibility
+- CI checks alongside manual validation
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Accessible web interactions and remediation - practical example
+
+Audit a form or checkout flow with keyboard and screen-reader use. Record barriers, remediation suggestions, and fix verification.
+
+- Evidence: A manual interaction checklist
+- Evidence: A criterion-linked defect report
+- Evidence: A before-and-after demonstration of a corrected workflow
+
+### Accessible web interactions and remediation - failure investigation
+
+Extend the example with one failure or change relevant to accessible web interactions and remediation. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Aditi Tech Consulting · Sr. Accessibility Tester · Foundit India](https://www.foundit.in/job/sr-accessibility-tester-aditi-tech-consulting-private-limited-chennai-52025617)

@@ -1,45 +1,76 @@
-# Sameer Khan
+# TestOps Engineer
 
-- **Name:** Sameer Khan
-- **Role:** TestOps Engineer
-- **Experience level:** Mid-level (4 years)
-- **Location:** Hyderabad, Telangana
-- **Email:** sameer.khan.testops@email.com
-- **LinkedIn:** linkedin.com/in/sameer-khan-testops
-- **GitHub:** github.com/sameerkhantestops
-- **10-point profile summary:**
-  - Dedicated TestOps Engineer with 4 years of experience in managing and scaling test infrastructure for automated testing
-  - Proficient in container orchestration, CI/CD pipelines, and test environment automation
-  - Skilled in Kubernetes, Docker, and cloud platforms for scalable test execution
-  - Experienced in parallel test execution, resource optimization, and infrastructure monitoring
-  - Knowledgeable in DevOps practices, infrastructure as code, and automated provisioning
-  - Familiar with test runners, framework integration, and performance optimization
-  - Strong background in scripting, configuration management, and troubleshooting
-  - Collaborative engineer working with QA and DevOps teams to streamline testing processes
-  - Expert in cost optimization, security hardening, and compliance for test environments
-  - Expert in 2026 TestOps innovation: AI-powered dynamic test infrastructure scaling, LLM microservice test container orchestration, OpenTelemetry distributed tracing for test observability, and GitOps-driven test environment provisioning
-  - Skilled in intelligent TestOps platforms: MCP-integrated test runners, AI-enhanced flaky test remediation, predictive resource allocation for test environments, and zero-drift ephemeral test environments
-- **Technologies:** Test Infrastructure, Container Orchestration, CI/CD, Test Runners, Kubernetes, Docker, AWS, Azure, Jenkins, GitLab CI, Terraform, Ansible, Python, Bash, Selenium Grid, JMeter, Prometheus, Grafana, ELK Stack, Git, Linux, Windows, OpenTelemetry, GitOps, ArgoCD, MCP, AI-Enhanced TestOps, Predictive Resource Scaling, LLM Container Testing, k6
-- **Experience:** 4 years of experience as a TestOps Engineer at tech companies in Hyderabad. Designed and managed test infrastructure that scaled to handle 10,000+ parallel tests, reducing CI time by 60% and infrastructure costs by 40%.
-- **Projects:**
-  - Kubernetes-Based E2E Test Scaling: Implemented Kubernetes orchestration for E2E test runners, enabling parallel execution across multiple environments. Optimized resource allocation and monitoring, reducing CI pipeline time by 50% and improving test reliability. Technologies: Kubernetes, Docker, Jenkins, Selenium Grid, Prometheus, Grafana.
-  - Cloud-Native Test Infrastructure: Built automated test environment provisioning using Terraform and Ansible on AWS. Created self-service test environments with security controls, supporting 20+ teams with on-demand infrastructure. Technologies: AWS, Terraform, Ansible, Docker, GitLab CI, Python.
-  - Performance Test Infrastructure Optimization: Developed scalable infrastructure for JMeter performance testing, implementing distributed execution and real-time monitoring. Automated environment setup and teardown, reducing manual effort by 80%. Technologies: JMeter, Kubernetes, Azure, Bash, ELK Stack, Grafana.
-  - AI-Enhanced TestOps Platform with OpenTelemetry: Built next-generation TestOps platform integrating OpenTelemetry distributed tracing across all test runners, MCP-based test observability connectors, and AI-driven dynamic scaling that predicts resource needs based on test execution patterns. Implemented GitOps-driven ephemeral test environment provisioning with ArgoCD and LLM container smoke testing. Technologies: OpenTelemetry, MCP, ArgoCD, GitOps, AI-Enhanced TestOps, k6, Kubernetes, Prometheus, Grafana.
-- **Roles and Responsibilities:**
-  - Design and manage scalable test infrastructure using container orchestration and cloud platforms
-  - Implement CI/CD pipelines for automated test execution and environment provisioning
-  - Scale test runners and optimize parallel execution for efficient testing
-  - Automate environment setup, configuration, and cleanup processes
-  - Monitor test infrastructure performance, resource usage, and system health
-  - Collaborate with QA teams to integrate testing frameworks into CI/CD workflows
-  - Implement infrastructure as code practices for reproducible test environments
-  - Troubleshoot infrastructure issues and ensure high availability of test systems
-  - Optimize costs and security for test environments and cloud resources
-  - Develop monitoring and alerting systems for test infrastructure
-  - Provide support and training for teams using test infrastructure
-  - Stay updated with latest technologies and best practices in DevOps and TestOps
-  - Build 2026 TestOps platforms: OpenTelemetry-traced test execution, MCP-integrated observability, AI-driven dynamic resource scaling, GitOps ephemeral environments (ArgoCD), and LLM container deployment smoke testing
-- **Certifications:** AWS Certified DevOps Engineer - Professional, Certified Kubernetes Administrator (CKA), Docker Certified Associate
-- **Education:** B.Tech in Computer Science from Indian Institute of Technology Hyderabad, Hyderabad (2017-2021, 8.8 CGPA)
-- **Achievements:** Awarded "Infrastructure Innovation" for Kubernetes test scaling; Reduced CI costs by 40% through optimization; Implemented zero-downtime test environment updates
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** Test reporting and suite operations
+
+## Professional summary
+
+- Quality Engineering practitioner focused on test reporting and suite operations.
+- Demonstrates git and pipeline configuration, test execution and artifact retention, linux and scripting through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Keep pipelines reproducible and explain which checks run at each stage.
+- Classify test, application, and environment failures with evidence.
+- Maintain setup and artifacts so teams can reproduce CI failures locally.
+
+## Core skills
+
+- Git and pipeline configuration
+- Test execution and artifact retention
+- Linux and scripting
+- Environment and test-data setup
+- Failure classification
+- Delivery feedback and reporting
+
+## Optional / role-dependent
+
+- Containers and infrastructure as code
+- Test selection and parallelization
+- Observability for test infrastructure
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Test reporting and suite operations - practical example
+
+Build a pull-request and release test pipeline with controlled setup, useful artifacts, and a documented failure-handling policy.
+
+- Evidence: Pipeline configuration in version control
+- Evidence: A reproducible failing run and investigation note
+- Evidence: A comparison of feedback time before and after a specific change
+
+### Test reporting and suite operations - failure investigation
+
+Extend the example with one failure or change relevant to test reporting and suite operations. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
+- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)

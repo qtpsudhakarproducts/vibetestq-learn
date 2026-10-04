@@ -1,40 +1,76 @@
-# Bhavana Roy
+# Test Analyst
 
-- **Name:** Bhavana Roy
-- **Role:** Test Analyst
-- **Experience level:** Mid-level (4 years)
-- **Location:** Kolkata, West Bengal
-- **Email:** bhavana.roy.testanalyst@email.com
-- **LinkedIn:** linkedin.com/in/bhavana-roy-testanalyst
-- **GitHub:** github.com/bhavanatest
-- **10-point profile summary:**
-  - Dedicated Test Analyst with 4 years of experience in requirement traceability and manual testing
-  - Proficient in maintaining traceability matrices for complete coverage
-  - Skilled in executing comprehensive manual test suites
-  - Experienced in communicating defects with detailed reproducible steps
-  - Knowledgeable in assisting automation teams with test scenarios
-  - AI-SDLC practitioner — applying 7-phase AI lifecycle principles to testing workflows, from requirements analysis to AI-augmented test execution and validation
-  - Collaborative professional bridging manual and automation testing
-  - Strong analytical skills for identifying test gaps and risks
-  - Committed to delivering high-quality software products
-  - Experienced with Human-in-the-Loop (HITL) methodology — critically evaluating AI-generated test cases, prompts, and outputs for quality, hallucinations, and completeness
-- **Technologies:** Manual Testing, Requirement Traceability, Test Case Execution, Defect Reporting, JIRA, TestRail, Xray, Bugasura, Test Management Tools, SQL, Agile Methodologies, Test Data Management, Quality Assurance, ChatGPT, GitHub Copilot, AI-Assisted Testing, Prompt Engineering, AI-SDLC, Claude Desktop, MCP Integration, HITL Testing
-- **Experience:** 4 years of experience as a Test Analyst at software companies in Kolkata. Focused on functional testing, traceability, and defect reporting.
-- **Projects:**
-  - Billing Engine Testing: Conducted thorough functional testing for billing engine, ensuring accurate invoicing workflows and calculations. Technologies: Manual Testing, SQL, JIRA.
-  - Traceability Matrix Maintenance: Maintained comprehensive traceability matrices, achieving full requirement coverage and reducing gaps. Technologies: Test Management Tools, Requirement Traceability.
-  - Defect Communication Enhancement: Improved defect reporting with detailed steps, reducing resolution time by 30%. Technologies: Defect Reporting, Quality Assurance.
-  - AI-Powered Billing Feature Validation: Validated AI-driven billing calculation recommendations in a fintech platform, using ChatGPT to generate test data scenarios and edge-case matrix. Ensured AI outputs matched business rules, detected 3 critical rounding-error hallucinations pre-release. Technologies: ChatGPT, Prompt Engineering, JIRA, SQL, Manual Testing.
-- **Roles and Responsibilities:**
-  - Maintain requirement-to-test traceability matrices
-  - Execute manual test cases across multiple scenarios
-  - Communicate defects with clear reproduction steps
-  - Assist automation team with test data and scenarios
-  - Report test execution results and quality metrics
-  - Participate in requirement review and test planning
-  - Collaborate on defect triage and resolution processes
-  - Ensure test coverage for all functional requirements
-  - Use AI tools (ChatGPT, GitHub Copilot, Claude Desktop with MCP integrations for Jira and TestRail) to enhance test scenario design, validate AI-generated feature outputs, apply prompt engineering, and apply HITL workflows for quality assurance
-- **Certifications:** ISTQB Foundation Level, Test Analyst Certification, Manual Testing Specialist
-- **Education:** B.Sc. (Information Technology) from University of Calcutta, Kolkata (2017-2020, 8.2 CGPA)
-- **Achievements:** Maintained 100% traceability coverage; Improved defect communication efficiency; Awarded "Test Excellence" for comprehensive coverage; Developed test reporting templates
+Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+
+**Example experience:** 4 years
+
+**Focus:** Order status and reporting
+
+## Professional summary
+
+- Quality Engineering practitioner focused on order status and reporting.
+- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
+- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+
+## Responsibilities
+
+- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
+- Clarify acceptance criteria and investigate ambiguous behavior.
+- Design positive, negative, and boundary scenarios around user workflows.
+- Capture reproducible defects and verify fixes with product and engineering.
+
+## Core skills
+
+- Test design and boundary analysis
+- Exploratory testing
+- Web and REST API validation
+- Postman and browser developer tools
+- SQL data checks
+- Defect reporting and retesting
+
+## Optional / role-dependent
+
+- Basic scripting and a small automation suite
+- Domain-specific workflows
+- AI-assisted scenario drafting with human review
+
+## Suggested portfolio projects
+
+These are ideas, not completed-work claims.
+
+### Order status and reporting - practical example
+
+Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+
+- Evidence: A risk-based test charter and scenario matrix
+- Evidence: Defect evidence with expected versus actual behavior
+- Evidence: API collections and SQL checks linked to the workflow
+
+### Order status and reporting - failure investigation
+
+Extend the example with one failure or change relevant to order status and reporting. Explain how it was detected, investigated, corrected, and checked again.
+
+- Evidence: A documented change or injected failure
+- Evidence: A reproducible check and investigation notes
+- Evidence: A clear explanation of limitations and next improvements
+
+## Evidence to prepare
+
+- Explain one coverage decision and the risk it addresses.
+- Show your own contribution using a repository, test artifact, or investigation report.
+- Describe a defect you investigated and how you verified the correction.
+
+Use only your own verified qualifications and measured outcomes.
+
+## Continue learning
+
+- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
+- [Practice Hub](https://academy.vibetestq.com/practicehub/)
+- [Interview questions](https://academy.vibetestq.com/iqs/)
+
+## Research context
+
+Academy editorial synthesis; requirements vary by employer.
+
+- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
+- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
