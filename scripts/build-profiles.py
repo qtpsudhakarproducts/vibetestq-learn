@@ -29,15 +29,9 @@ def build():
         ('Role examples', 'Sample QA profiles', 'Explore 57 illustrative profiles with focused skills, ownership, project ideas, and evidence to prepare.', '/profiles/', 'Browse sample profiles'),
         ('Interview study', 'Interview Preparation', 'Work through Quality Engineering questions and explanations, then practice with examples from your own experience.', '/iqs/', 'Browse interview questions')
     ], 'two'), True)
-    career_intro += section('approach', 'Your next step', 'Turn an example into your own story.', '', bullets([
-        'Choose a role and experience level that fit your current work.',
-        'Compare the core skills with evidence you can already show.',
-        'Build one project for a gap, then explain the test decisions and findings.',
-        'Use your real experience and verified results when updating your resume.'
-    ]) + '<p><a href="/career-preparation/job-market.html">Read the India job-posting research notes →</a></p>')
     page('career-preparation/index.html', 'Career Preparation | VibeTestQ Academy', 'Explore sample QA profiles, interview questions, project evidence, and learning next steps.', career_intro, 'career')
     decorate('career-preparation/index.html')
-    intro = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Career Preparation</span><h1>Sample QA profiles.<br><span>Find your next step.</span></h1><p class="ap-lead">Explore role expectations, practical skills, and project ideas across Quality Engineering. Compare the examples with your experience and choose what to build next.</p><p class="cp-note">These are illustrative learning examples, not real candidates or vacancies. Experience ranges describe the examples; employers use different titles and expectations.</p><div class="ap-actions"><a class="ap-button secondary" href="/career-preparation/">Career Preparation</a><a href="/career-preparation/job-market.html">Research and update notes</a></div></div></section>'''
+    intro = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Career Preparation</span><h1>Sample QA profiles.<br><span>Find your next step.</span></h1><p class="ap-lead">Explore role expectations, practical skills, and project ideas across Quality Engineering. Compare the examples with your experience and choose what to build next.</p><p class="cp-note">These are illustrative learning examples, not real candidates or vacancies. Experience ranges describe the examples; employers use different titles and expectations.</p><div class="ap-actions"><a class="ap-button secondary" href="/career-preparation/">Career Preparation</a></div></div></section>'''
     options = ''.join(f'<option value="{E(k)}">{E(v["label"])}</option>' for k, v in categories.items())
     filters = f'''<div class="cp-filters"><div><label for="profile-search">Search roles, skills, or project topics</label><input id="profile-search" type="search" placeholder="Try API, Playwright, data, or leadership"></div><div><label for="profile-category">Role family</label><select id="profile-category"><option value="all">All role families</option>{options}</select></div><div><label for="profile-level">Experience level</label><select id="profile-level"><option value="all">All levels</option><option value="junior">Junior</option><option value="mid">Mid-level</option><option value="senior">Senior</option><option value="lead">Lead / manager</option><option value="exec">Principal / leadership</option></select></div><button type="button" class="ap-button secondary" id="profile-reset">Reset filters</button></div><p id="profile-count" role="status" aria-live="polite">57 sample profiles</p><p id="profile-empty" hidden>No profiles match. Try another role family or clear the filters.</p>'''
     directory = []
@@ -59,26 +53,13 @@ def build():
         content += section('evidence', 'Make it credible', 'Explain your contribution.', '', bullets(p['evidence']) + '<p>Replace these examples with your own work. Include measured outcomes only when you have a baseline, a method, and evidence. Add education or certifications only if they are yours.</p>', True)
         learning = [(tag, title, text, url, 'Explore resource') for tag, title, text, url in family['learning']]
         content += section('next', 'Build the missing skills', 'Continue in Academy.', 'These resources support part of this role. Specialist skills may require additional study and hands-on work.', cards(learning))
-        source_links = ''.join(f'<li><a href="{E(sources[k]["url"], quote=True)}" target="_blank" rel="noopener">{E(sources[k]["title"])}</a></li>' for k in family['sources'])
-        content += section('research', 'Editorial context', 'Postings behind this update.', 'The example combines market observations with Academy guidance; it does not reproduce one job description. Postings can change or close.', '<ul class="cp-list">' + source_links + '</ul><a href="/career-preparation/job-market.html">Read the research notes →</a><p><a href="' + E(Path(p['path']).name.replace('.html', '.md')) + '" download>Download this example as Markdown</a></p>', True)
+        content += '<p class="ap-wrap"><a href="' + E(Path(p['path']).name.replace('.html', '.md')) + '" download>Download this example as Markdown</a></p>'
         path = 'profiles/' + p['path']
         page(path, p['role'] + ' | Sample QA Profile | VibeTestQ Academy', p['focus'], intro + content, 'career')
         decorate(path)
         write_markdown(p, family, sources)
 
-    research = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Career Preparation · India research notes</span><h1>What informed<br><span>these examples.</span></h1><p class="ap-lead">Reviewed October 4, 2026. We reviewed India-based role descriptions on Cutshort and Foundit India, with India employer postings as cross-checks, to update Academy's QA examples.</p><p class="cp-note">This is a qualitative editorial review, not a hiring survey, salary guide, or statement about every employer. Titles and experience bands vary. The profiles are Academy-authored learning examples.</p><p>Some specialist postings are older or closed; their status is noted below. They support role guidance and do not imply current vacancies. Naukri was inaccessible to automated browsing and was not used as a verified source.</p></div></section>'''
-    research += section('findings', 'Our interpretation', 'Use a focused stack and show the evidence.', '', bullets([
-        'Keep test design, investigation, and product understanding visible alongside automation.',
-        'For automation roles, show a maintainable primary stack, API coverage, failure diagnosis, and useful CI feedback.',
-        'Separate using AI to assist test engineering from evaluating an AI product; they require different evidence.',
-        'Specialist roles need their own depth: mobile devices, accessible interactions, performance experiments, or data reconciliation.',
-        'Distinguish individual delivery, cross-team technical influence, and people leadership.',
-        'Treat tool names as stack examples. Optional technologies are not a universal checklist.'
-    ]), True)
-    source_cards = ''.join(f'<article class="ap-card"><h3><a href="{E(s["url"], quote=True)}" target="_blank" rel="noopener">{E(s["title"])}</a></h3><p>{E(s["location"])}</p><p>{E(s["note"])}</p><p class="ap-fine">Reviewed October 4, 2026. Link availability may change.</p></article>' for s in sources.values())
-    research += section('postings', 'India job sites and employer cross-checks', 'Examples reviewed.', 'Cutshort and Foundit listings form the main source set. Agency listings are identified, and site metadata is treated cautiously. We use responsibilities and skill distinctions; we do not generalize salary or location requirements.', '<div class="ap-grid two">' + source_cards + '</div>')
-    page('career-preparation/job-market.html', 'QA Job Market Research Notes | VibeTestQ Academy', 'Employer job postings and editorial notes behind Academy sample QA profiles, reviewed October 4, 2026.', research, 'career')
-    decorate('career-preparation/job-market.html')
+    (ROOT / 'career-preparation/job-market.html').write_text('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=/career-preparation/"><link rel="canonical" href="https://academy.vibetestq.com/career-preparation/"><title>Career Preparation | VibeTestQ Academy</title></head><body><p>Continue to <a href="/career-preparation/">Career Preparation</a>.</p></body></html>\n', encoding='utf-8')
 
 
 def decorate(path, directory=False):

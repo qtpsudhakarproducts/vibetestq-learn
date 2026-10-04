@@ -10,7 +10,7 @@ import json
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ['index.html', 'upcoming-trainings.html', 'qa-ai-era-training.html',
          'genai-manual-testing.html', 'selenium-genai.html', 'cypress-genai.html',
-         '404.html', 'career-preparation/index.html', 'career-preparation/job-market.html', 'profiles/index.html', 'practice/apps/index.html']
+         '404.html', 'career-preparation/index.html', 'profiles/index.html', 'practice/apps/index.html']
 PAGES += ['profiles/' + item['path'] for item in json.loads((ROOT / 'profiles/profiles.json').read_text(encoding='utf-8'))['profiles']]
 
 

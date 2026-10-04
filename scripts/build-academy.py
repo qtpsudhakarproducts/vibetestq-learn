@@ -129,7 +129,7 @@ def build():
     fallback = re.sub(r'<link rel="canonical"[^>]*>', '<meta name="robots" content="noindex">', fallback)
     (ROOT / '404.html').write_text(fallback, encoding='utf-8')
     (ROOT / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://academy.vibetestq.com/sitemap.xml\n', encoding='utf-8')
-    entries = ['', *PUBLIC, 'upcoming-trainings.html', 'learn/', 'playwright/', 'practicehub/', 'practice/apps/', 'projects/', 'iqs/', 'profiles/', 'ai/', 'career-preparation/', 'career-preparation/job-market.html']
+    entries = ['', *PUBLIC, 'upcoming-trainings.html', 'learn/', 'playwright/', 'practicehub/', 'practice/apps/', 'projects/', 'iqs/', 'profiles/', 'ai/', 'career-preparation/']
     profile_data = ROOT / 'profiles/profiles.json'
     if profile_data.is_file():
         entries += ['profiles/' + item['path'] for item in json.loads(profile_data.read_text(encoding='utf-8'))['profiles']]
