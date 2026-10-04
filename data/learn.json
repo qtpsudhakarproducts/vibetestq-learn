@@ -2,7 +2,7 @@
   "id": "learn",
   "title": "Learning Library",
   "sidebarIcon": "fas fa-book-open",
-  "meta": "8 tracks · 41 sections",
+  "meta": "8 tracks · 34 sections",
   "pageTitle": "Learning Library | VibeTestQ Academy",
   "chapterTitle": "{title} | Learning Library | VibeTestQ Academy",
   "topbarChapter": "{title}",
@@ -343,12 +343,12 @@
     {
       "num": 8,
       "slug": "t8",
-      "title": "Notes & Slides",
-      "short": "Notes & Slides",
+      "title": "Notes & References",
+      "short": "Notes & References",
       "color": "#14b8a6",
       "rgb": "20,184,166",
       "icon": "fas fa-note-sticky",
-      "desc": "Quick references: study notes, locator cheat sheets and presentation decks.",
+      "desc": "Quick references: study notes and locator cheat sheets.",
       "metric": "",
       "listLinks": true,
       "chapters": [
@@ -363,48 +363,6 @@
           "slug": "i33",
           "title": "Locator cheat sheets",
           "href": "/cs/"
-        },
-        {
-          "num": 34,
-          "slug": "i34",
-          "title": "Slides · JavaScript history",
-          "href": "/presentations/javascript-history-presentation.html"
-        },
-        {
-          "num": 35,
-          "slug": "i35",
-          "title": "Slides · JS, TS & Node.js for testers",
-          "href": "/presentations/js-ts-nodejs-for-testers.html"
-        },
-        {
-          "num": 36,
-          "slug": "i36",
-          "title": "Slides · Async, callbacks & promises",
-          "href": "/presentations/async-callbacks-promises.html"
-        },
-        {
-          "num": 37,
-          "slug": "i37",
-          "title": "Slides · Element inspection",
-          "href": "/presentations/element-inspection-presentation.html"
-        },
-        {
-          "num": 38,
-          "slug": "i38",
-          "title": "Slides · Locators masterclass",
-          "href": "/presentations/locators-masterclass.html"
-        },
-        {
-          "num": 39,
-          "slug": "i39",
-          "title": "Slides · Mobile application testing",
-          "href": "/appium/Mobile-Application-Testing-2026.html"
-        },
-        {
-          "num": 40,
-          "slug": "i40",
-          "title": "Slides · Why Playwright",
-          "href": "/presentations/playwright-superiority-presentation.html"
         }
       ]
     }

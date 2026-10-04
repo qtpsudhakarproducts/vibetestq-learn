@@ -70,6 +70,14 @@ assert training[0]['pricing'] == '\u20b930,000'
 assert training[0]['oneTimePayment'] == '\u20b927,000 (10% discount)'
 assert training[0]['contactUrl'] == 'https://wa.me/message/KUQXMGZALG4FE1'
 ElementTree.parse(ROOT / 'sitemap.xml')
+library = json.loads((ROOT / 'data/learn.json').read_text(encoding='utf-8'))
+assert library['meta'] == f"{len(library['parts'])} tracks · {sum(len(part['chapters']) for part in library['parts'])} sections"
+for part in library['parts']:
+    assert not re.search(r'\b(slides?|presentations?)\b', json.dumps(part), re.I)
+for retired in list((ROOT / 'presentations').glob('*.html')) + [ROOT / 'appium/Mobile-Application-Testing-2026.html']:
+    text = retired.read_text(encoding='utf-8')
+    assert 'http-equiv="refresh"' in text and 'name="robots" content="noindex"' in text
+    assert 'reveal' not in text and '<div class="slide' not in text
 for error in errors:
     print('FAIL:', *error)
 if errors:
