@@ -2,7 +2,7 @@
   "id": "projects",
   "title": "Automation Practice Lab",
   "sidebarIcon": "fas fa-flask",
-  "meta": "2 tracks · 6 items",
+  "meta": "3 tracks · 7 items",
   "pageTitle": "Automation Practice Lab | VibeTestQ Academy",
   "chapterTitle": "{title} | Automation Practice Lab | VibeTestQ Academy",
   "topbarChapter": "{title}",
@@ -11,16 +11,16 @@
     "eyebrow": "Automation Practice Lab",
     "eyebrowIcon": "fas fa-flask",
     "title": "The Automation <span class=\"g\">Practice</span> <span class=\"g2\">Lab</span>",
-    "sub": "An engineering-first approach to test automation: follow a 42-day program, then automate real applications and an isolated sandbox.",
-    "note": "<strong>Use it like this:</strong> start with the 42-day program, then apply it to the practice targets.",
+    "sub": "Follow the 42-day program, choose a practice application and its guide, or work through additional automation scenarios.",
+    "note": "<strong>Choose a practice target:</strong> browse the <a href=\"/practice/apps/\">full application directory and guides</a>, then build tests around a complete workflow.",
     "stats": [
       [
         "42",
         "Days"
       ],
       [
-        "3",
-        "Real apps"
+        "6",
+        "Practice apps"
       ],
       [
         "1",
@@ -106,6 +106,26 @@
           "slug": "sandbox",
           "title": "Sandbox Studio",
           "href": "https://vibetestq.com/testweb/sandbox/"
+        }
+      ]
+    },
+    {
+      "num": 3,
+      "slug": "applications",
+      "title": "Practice apps & guides",
+      "short": "Apps & guides",
+      "color": "#0284c7",
+      "rgb": "2,132,199",
+      "icon": "fas fa-laptop-code",
+      "desc": "CRM, HRMS, flight booking, loans, asset management, VegCart and Sandbox Studio, with guides and workflow examples.",
+      "metric": "",
+      "listLinks": true,
+      "chapters": [
+        {
+          "num": 7,
+          "slug": "directory",
+          "title": "Browse all practice apps & guides",
+          "href": "/practice/apps/"
         }
       ]
     }

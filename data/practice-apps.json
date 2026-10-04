@@ -1,0 +1,11 @@
+{
+  "apps": [
+    {"slug":"crm","title":"SalesCRM","category":"Customer relationships","description":"Practice customer, contact and sales workflows in a CRM application.","guide":"guide.html"},
+    {"slug":"hrms","title":"HRMS","category":"Human resources","description":"Practice employee and HR workflows, form validation and application navigation.","guide":"guide.html"},
+    {"slug":"flight","title":"Flight booking","category":"Travel","description":"Practice flight search, passenger details and booking workflows.","guide":"guide.html"},
+    {"slug":"loan","title":"LoanEdge","category":"Loan management","description":"Practice loan application and management workflows using the application’s user guide.","guide":"guide.html"},
+    {"slug":"asset","title":"AssetExplorer","category":"Asset management","description":"Practice asset inventory and management workflows in the training application.","guide":"guide.html"},
+    {"slug":"vegcart","title":"VegCart","category":"Shopping","description":"Practice product search, cart, checkout and order workflows. Explore 12 documented workflow examples.","guide":"guide.html","resources":[{"title":"Browse 12 workflows","path":"docs/flows.html"}]},
+    {"slug":"sandbox","title":"Sandbox Studio","category":"UI practice","description":"Practice individual UI interactions in the sandbox and try the legacy timesheet exercise.","resources":[{"title":"Open timesheet exercise","path":"timesheet.html"}]}
+  ]
+}

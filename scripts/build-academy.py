@@ -53,7 +53,22 @@ def sessions(trainings, limit=None):
     return f'<div class="ap-grid two" data-academy-sessions="{limit or 0}">' + ''.join(rows) + '</div>' if rows else '<div data-academy-sessions="0"><p>No sessions are listed right now. Email <a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a> for the next batch.</p></div>'
 
 
+def build_practice_apps():
+    apps = json.loads((ROOT / 'data/practice-apps.json').read_text(encoding='utf-8'))['apps']
+    body = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Practice · Application directory</span><h1>Put your testing skills<br><span>to work.</span></h1><p class="ap-lead">Choose a business application, read its guide, and build tests around a complete workflow. Explore six practice apps and Sandbox Studio.</p><div class="ap-actions"><a class="ap-button secondary" href="/practicehub/">Practice challenges →</a><a class="ap-button secondary" href="/projects/">42-day program &amp; Practice Lab →</a></div><p class="ap-fine">Applications and their guides open on vibetestq.com in a new tab.</p></div></section>'''
+    app_cards = []
+    for app in apps:
+        base = 'https://vibetestq.com/testweb/' + app['slug'] + '/'
+        links = f'<a class="ap-button" href="{base}" target="_blank" rel="noopener" aria-label="Open {html.escape(app["title"], quote=True)} app">Open app ↗</a>'
+        resources = ([{'title': 'Read testing guide' if app['slug'] != 'loan' else 'Read user guide', 'path': app['guide']}] if app.get('guide') else []) + app.get('resources', [])
+        links += ''.join(f'<a href="{base}{resource["path"]}" target="_blank" rel="noopener">{html.escape(resource["title"])} ↗</a>' for resource in resources)
+        app_cards.append(f'<article class="ap-card" id="{app["slug"]}"><span class="ap-tag">{html.escape(app["category"])}</span><h3>{html.escape(app["title"])}</h3><p>{html.escape(app["description"])}</p><div class="ap-actions">{links}</div></article>')
+    body += section('applications', 'Choose a practice target', 'Applications & guides.', 'Start with the guide, identify the expected result, then automate and verify the workflow.', '<div class="ap-grid two">' + ''.join(app_cards) + '</div>', True)
+    page('practice/apps/index.html', 'Practice Apps & Testing Guides | VibeTestQ Academy', 'Explore CRM, HRMS, flight booking, loans, asset management, VegCart and Sandbox Studio, with testing guides and workflow examples.', body, 'practice')
+
+
 def build():
+    build_practice_apps()
     trainings = json.loads((ROOT / 'upcoming-trainings.json').read_text(encoding='utf-8'))['trainings']
     body = '''<section class="ap-hero"><div class="ap-wrap ap-hero-grid"><div><span class="ap-eyebrow">VibeTestQ Academy · Quality Engineering education</span><h1>Learn the skills.<br>Practice the work.<br><span>Build your confidence.</span></h1><p class="ap-lead">Training, practical guides, and hands-on exercises for modern QA and automation. Choose a learning path, join a live program, or put your skills to work.</p><div class="ap-actions"><a class="ap-button" href="/learn/">Start Learning →</a><a class="ap-button secondary" href="#programs">Explore Live Programs</a></div><p class="ap-fine">Free lessons, practice sets, and quizzes. GitHub sign-in is required for learning pages.</p></div><aside class="ap-start" aria-label="Choose where to start"><span class="ap-eyebrow">Your next step</span><h2>What would you like to do?</h2><p>Pick the route that fits your goal.</p><a href="/playwright/"><strong>Learn automation from the foundations →</strong><span>Start with the Playwright curriculum and supporting guides.</span></a><a href="/practicehub/"><strong>Practice what you already know →</strong><span>Challenges with feedback, hints, and explanations.</span></a><a href="/upcoming-trainings.html"><strong>Learn with an instructor →</strong><span>See the upcoming live online training and contact us on WhatsApp.</span></a><a href="/iqs/"><strong>Prepare for your next interview →</strong><span>Study questions and build a focused preparation plan.</span></a></aside></div></section>'''
     body += section('paths', 'Learn at your pace', 'Find your learning path.', 'Read the guides, work through examples, and follow your progress in the learning library.', cards([
@@ -63,9 +78,10 @@ def build():
     ]), True, '<a href="/learn/">View the library →</a>')
     body += section('practice', 'Put learning into action', 'Read it. Try it. Check your understanding.', 'Move from an explanation to an exercise, then apply it to a larger workflow.', cards([
         ('Practice', 'Practice challenges', 'Work through JavaScript, TypeScript, and Playwright challenges with feedback and explanations.', '/practicehub/', 'Open Practice Hub'),
-        ('Build', 'Automation practice lab', 'Follow a structured practice program and apply automation to real application targets.', '/projects/', 'Open Practice Lab'),
+        ('Build', 'Practice apps & guides', 'Explore six business apps and Sandbox Studio, with testing guides and workflow examples.', '/practice/apps/', 'Browse practice apps'),
+        ('Program', 'Automation practice lab', 'Follow a structured 42-day practice program and apply automation to application targets.', '/projects/', 'Open Practice Lab'),
         ('Check', 'Quizzes & assessments', 'Check your understanding as you work through the Playwright curriculum.', '/playwright/assessments/', 'Explore quizzes'),
-    ]))
+    ], 'four'))
     body += section('programs', 'Instructor-led learning', 'Learn with a live program.', 'Explore the curriculum first, then check the schedule or ask which program fits your experience.', cards([
         ('Playwright + GenAI', 'Playwright GenAI Test Lead Training', 'JavaScript and TypeScript, Playwright, framework design, API testing, CI/CD, and GenAI workflows.', '/qa-ai-era-training.html', 'View curriculum'),
         ('AI-assisted QA', 'GenAI Manual Testing', 'Testing foundations, practical AI workflows, and applying GenAI to Quality Engineering work.', '/genai-manual-testing.html', 'View curriculum'),
@@ -108,7 +124,7 @@ def build():
     fallback = re.sub(r'<link rel="canonical"[^>]*>', '<meta name="robots" content="noindex">', fallback)
     (ROOT / '404.html').write_text(fallback, encoding='utf-8')
     (ROOT / 'robots.txt').write_text('User-agent: *\nAllow: /\nSitemap: https://academy.vibetestq.com/sitemap.xml\n', encoding='utf-8')
-    entries = ['', *PUBLIC, 'upcoming-trainings.html', 'learn/', 'playwright/', 'practicehub/', 'projects/', 'iqs/', 'profiles/', 'ai/', 'career-preparation/', 'career-preparation/job-market.html']
+    entries = ['', *PUBLIC, 'upcoming-trainings.html', 'learn/', 'playwright/', 'practicehub/', 'practice/apps/', 'projects/', 'iqs/', 'profiles/', 'ai/', 'career-preparation/', 'career-preparation/job-market.html']
     profile_data = ROOT / 'profiles/profiles.json'
     if profile_data.is_file():
         entries += ['profiles/' + item['path'] for item in json.loads(profile_data.read_text(encoding='utf-8'))['profiles']]

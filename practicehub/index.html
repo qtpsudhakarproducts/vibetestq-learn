@@ -53,6 +53,9 @@
   .row:hover .btn.primary{background:#0369a1;color:#fff}
   .done .ico{background:#dcfce7;color:#15803d}
   .note{margin-top:1.4rem;font-size:.78rem;color:#64748b;text-align:center}
+  .practice-apps{margin:0 0 1.5rem;padding:1.1rem;border:1px solid #e2e8f0;border-radius:14px;background:#fff}
+  .practice-apps h2{font-size:1.1rem;color:#0f172a;margin-bottom:.3rem}
+  .practice-apps p{color:#64748b;margin-bottom:.8rem}
   @media(max-width:860px){
     .head{display:none}
     .row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t btn" "lv lv" "prog prog";row-gap:.55rem}
@@ -75,6 +78,7 @@
     </div>
   </div>
   <div class="legend" aria-hidden="true"><b style="color:#475569">Difficulty</b><span><i style="background:#10b981"></i>Beginner</span><span><i style="background:#f59e0b"></i>Intermediate</span><span><i style="background:#e11d48"></i>Advanced</span></div>
+  <section class="practice-apps" aria-labelledby="practice-apps-title"><h2 id="practice-apps-title">Practice apps &amp; guides</h2><p>Build tests for CRM, HRMS, flight booking, loans, asset management and VegCart, or practice UI interactions in Sandbox Studio.</p><a class="go" href="/practice/apps/">Browse apps &amp; guides →</a></section>
   <div id="groups"></div>
   <p class="note">Your progress is saved in this browser.</p>
 </main>

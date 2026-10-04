@@ -2,7 +2,7 @@
   "id": "learn",
   "title": "Learning Library",
   "sidebarIcon": "fas fa-book-open",
-  "meta": "8 tracks · 40 sections",
+  "meta": "8 tracks · 41 sections",
   "pageTitle": "Learning Library | VibeTestQ Academy",
   "chapterTitle": "{title} | Learning Library | VibeTestQ Academy",
   "topbarChapter": "{title}",
@@ -159,6 +159,12 @@
           "slug": "i14",
           "title": "Practice Lab & 42-day program",
           "href": "/projects/"
+        },
+        {
+          "num": 41,
+          "slug": "practice-apps",
+          "title": "Practice apps & testing guides",
+          "href": "/practice/apps/"
         }
       ]
     },
