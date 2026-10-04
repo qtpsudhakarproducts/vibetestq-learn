@@ -76,7 +76,7 @@ Every artifact has a file. Every file is version-controlled. AI can read the who
 
 ## What stays outside the repo (important nuance)
 
-You are **not replacing Jira** (see slide 8 in the deck — the reconciliation).
+Keep Jira for planning and tracking work; connect its requirements to executable specifications in the repository.
 
 Keep using your existing tools for:
 

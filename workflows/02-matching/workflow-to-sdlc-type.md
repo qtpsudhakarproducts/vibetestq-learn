@@ -1,6 +1,6 @@
 # Matching Workflows to Your SDLC Type
 
-> Start with your *actual* type. Not the one on your slides.
+> Start with the workflow your team actually follows.
 
 ---
 
