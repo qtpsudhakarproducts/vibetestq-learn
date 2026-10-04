@@ -1,0 +1,45 @@
+# Mukesh Agarwal
+
+- **Name:** Mukesh Agarwal
+- **Role:** Senior SDET (Software Development Engineer in Test)
+- **Experience level:** Senior (9 years)
+- **Location:** Kolkata, West Bengal
+- **Email:** mukesh.agarwal.sdet@email.com
+- **LinkedIn:** linkedin.com/in/mukesh-agarwal-sdet
+- **GitHub:** github.com/mukeshagarwalsdet
+- **10-point profile summary:**
+  - Accomplished Senior SDET with 9 years of expertise in building scalable test automation frameworks and reliability engineering
+  - Proficient in Java, Python, and JavaScript for developing robust automation solutions and custom testing tools
+  - Skilled in CI/CD integration, flaky test reduction, and distributed systems testing
+  - Experienced in API testing, performance testing, and security testing for microservices architectures
+  - Knowledgeable in Agile/Scrum methodologies, TDD, and BDD approaches for quality-driven development
+  - Familiar with cloud platforms, containerization, and advanced automation techniques
+  - Strong background in framework design, reliability checks, and instrumentation for large-scale applications
+  - Collaborative leader adept at mentoring junior engineers and establishing automation best practices
+  - Expert in database testing, REST API validation, and integration testing across complex systems
+  - Expert in 2026 AI reliability engineering: designing flaky test elimination strategies enhanced with ML-based test selection, LLM output validation frameworks, and agentic workflow reliability testing at scale
+  - Strategic innovator in AI-native SDET practices: building GitHub Copilot-accelerated frameworks, OpenTelemetry-integrated observability, and organizational standards for prompt injection testing and RAG pipeline validation
+- **Technologies:** Automation Testing, SDET, Java, Selenium, Python, CI/CD, Software Testing, Agile, Test Automation, Rest Assured, Playwright, API Testing, Performance Testing, Microservices, Git, JIRA, TestNG, Framework Design, Framework Development, Development, Quality Assurance, Kotlin, Linux, Automation, TypeScript, JavaScript, Cypress, GitHub Actions, Jenkins, Azure DevOps, BDD, TDD, SQL, Oracle, SQLite, REST, JSON, XML, HTTP, GitHub Copilot, LLM Pipeline Testing, Agentic Workflow Testing, Prompt Injection Testing, DeepEval, OpenTelemetry, AI-Powered Test Selection, Self-Healing Tests, Playwright Fixtures, Network Interception, Page Object Model, Playwright Agents
+- **Experience:** 9 years of experience as a Senior SDET at technology firms in Kolkata, specializing in test framework development and reliability engineering. Led automation initiatives for 15+ projects, improving test reliability by 85% and reducing flaky tests by 70%.
+- **Projects:**
+  - Distributed Systems Test Framework: Developed comprehensive test automation framework for distributed microservices using Playwright and Rest Assured. Implemented retry/backoff strategies and observability hooks, achieving 99% test stability in CI pipelines. Technologies: Playwright, Java, Python, Rest Assured, Kubernetes, Jenkins, GitHub Actions.
+  - Flaky Test Reduction Initiative: Led cross-team initiative to identify and eliminate flaky tests across 50+ repositories. Implemented intelligent retry mechanisms and environment stabilization, reducing false positives by 80%. Technologies: Selenium, Python, CI/CD, TestNG, JIRA, Monitoring Tools.
+  - AI-Powered Test Automation: Built advanced test framework incorporating AI for smart test case generation and execution. Integrated with cloud platforms for scalable testing of machine learning pipelines. Technologies: Python, Playwright, TensorFlow, AWS, Azure DevOps, Git, Jenkins.
+  - AI-Enhanced Flaky Test Detection and LLM Validation: Built ML-powered test selection system that predicts high-risk tests based on code change patterns, reducing CI time by 45% while maintaining coverage. Extended framework with DeepEval-based LLM output validation and agentic workflow reliability tests for a financial AI assistant platform. Technologies: Python, Playwright, DeepEval, GitHub Copilot, OpenTelemetry, ML-based Test Selection, GitHub Actions, AI Reliability Testing.
+- **Roles and Responsibilities:**
+  - Design, develop, and maintain automated test frameworks and scripts using Selenium, Playwright, Rest Assured, and custom development tools
+  - Implement CI/CD pipelines with comprehensive automated testing integration and reliability checks
+  - Perform API, performance, security, and integration testing for microservices, web applications, and mobile platforms
+  - Lead initiatives for flaky test reduction, retry strategies, and test stability improvements
+  - Collaborate with development teams in Agile/Scrum environments to ensure testability and quality throughout the SDLC
+  - Develop and execute test strategies for complex distributed systems and cloud-native applications
+  - Analyze test results, identify defects, and lead root cause analysis with cross-functional teams
+  - Mentor junior SDETs, conduct code reviews, and establish best practices for automation and quality engineering
+  - Integrate security testing, vulnerability assessments, and performance monitoring into testing processes
+  - Work on advanced automation projects involving AI, machine learning, and enterprise system integrations
+  - Contribute to development standards, provide feedback on code quality, and participate in architectural decisions
+  - Build AI reliability testing platforms: LLM output validation, agentic workflow testing, ML-based intelligent test selection, prompt injection defenses, and GitHub Copilot-accelerated test engineering at organizational scale
+  - Integrate OpenTelemetry observability into AI test execution pipelines for comprehensive trace correlation
+- **Certifications:** ISTQB Advanced Level, AWS Certified Developer - Associate, Certified Kubernetes Administrator (CKA), Certified Scrum Master (CSM)
+- **Education:** B.Tech in Computer Science and Engineering from Jadavpur University, Kolkata (2012-2016, 9.0 CGPA)
+- **Achievements:** Awarded "Reliability Engineering Excellence" for flaky test reduction; Published 4 technical articles on test automation; Led team that achieved 99.9% CI pipeline stability

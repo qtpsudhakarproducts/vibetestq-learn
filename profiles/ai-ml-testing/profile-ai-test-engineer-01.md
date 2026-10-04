@@ -1,0 +1,43 @@
+# Neha Gupta
+
+- **Name:** Neha Gupta
+- **Role:** Senior QA Engineer - AI Testing Specialist
+- **Experience level:** Senior (6 years)
+- **Location:** Hyderabad, Telangana
+- **Email:** neha.gupta.ai.qa@email.com
+- **LinkedIn:** linkedin.com/in/neha-gupta-ai-qa
+- **GitHub:** github.com/nehaguptaaiqa
+- **10-point profile summary:**
+  - Expert QA Engineer with 6 years of specialized experience in testing AI and machine learning systems, ensuring reliability and ethical deployment
+  - Proficient in automation testing using Selenium, Cypress, and Playwright for web, mobile, and API applications
+  - Skilled in developing comprehensive test strategies for AI-driven features, including model validation, bias detection, and performance testing
+  - Experienced in manual and automated testing across diverse domains including e-commerce, fintech, and SaaS platforms
+  - Knowledgeable in API testing, performance testing with JMeter and Locust, and database testing with SQL and DynamoDB
+  - Familiar with cloud platforms like AWS and modern frameworks like Angular and React for full-stack testing
+  - Strong advocate for quality assurance in AI, implementing testing for fairness, accuracy, and data drift in ML models
+  - Collaborative leader in Agile/Scrum environments, mentoring junior testers and driving continuous improvement initiatives
+  - Pioneer in 2026 AI production testing: LLM safety alignment testing, adversarial prompt injection red-teaming, RAG pipeline RAGAS evaluation, agentic multi-step workflow reliability, and OWASP LLM Top 10 compliance
+  - Strategic AI quality leader: establishing organizational LLM testing standards using DeepEval, LangSmith, PromptBench, and continuous AI evaluation pipelines integrated into MLOps CI/CD
+- **Technologies:** Automation Testing, Manual Testing, API Testing, Selenium, Java, Python, TensorFlow, Cypress, Playwright, QA, Software Testing, Agile, CI/CD, JIRA, Git, REST Assured, Performance Testing, Test Automation, JavaScript, API Automation, Test Management, Regression Testing, Functional Testing, Web Services, SDLC, Quality Assurance Engineering, SQL, DynamoDB, AWS, Angular, SAAS, JMeter, PySpark, Databricks, Azure DevOps, Pytest, Microservices, Locust, Continuous Integration, Automation Framework, DeepEval, RAGAS, PromptBench, LangSmith, LangChain Testing, Hallucination Detection, RAG Pipeline Testing, Agentic Workflow Testing, Prompt Injection Testing, OWASP LLM Top 10, AI Safety Testing, AI Alignment Testing
+- **Experience:** 6 years of progressive experience as a QA Engineer at leading tech companies in Hyderabad, with the last 3 years focused on AI and ML testing. Led QA efforts for 20+ projects, implementing AI-specific testing frameworks that improved model accuracy by 25% and reduced deployment risks.
+- **Projects:**
+  - AI-Powered E-commerce Recommendation System: Designed and executed comprehensive testing strategy for an AI-driven product recommendation engine, validating model accuracy, bias detection, and A/B testing frameworks. Implemented automated tests for data drift and performance degradation, ensuring 99.5% uptime. Technologies: Python, TensorFlow, Selenium, JMeter, AWS, Databricks, PySpark.
+  - Fintech Fraud Detection AI Model: Led testing efforts for machine learning models detecting fraudulent transactions, focusing on precision, recall, and false positive rates. Developed custom test suites for edge cases and regulatory compliance, integrating with CI/CD pipelines. Technologies: Java, REST Assured, Azure DevOps, SQL, DynamoDB, Locust.
+  - Healthcare AI Diagnostic Tool: Conducted thorough validation of AI models for medical image analysis, ensuring compliance with HIPAA and FDA guidelines. Implemented testing for model explainability, bias mitigation, and performance across diverse datasets. Technologies: Cypress, Playwright, Python, Pytest, AWS, Angular, Microservices.
+  - Agentic AI Red-Teaming and RAG Validation: Led adversarial red-team testing of an enterprise multi-agent LLM system (LangChain-based), executing 500+ prompt injection attacks, jailbreak attempts, and goal-hijacking scenarios per OWASP LLM Top 10. Implemented RAG pipeline evaluation using RAGAS and continuous LLM evaluation with DeepEval + LangSmith production tracing. Achieved 92% hallucination reduction. Technologies: DeepEval, RAGAS, PromptBench, LangSmith, LangChain Testing, Agentic Workflow Testing, OWASP LLM Top 10, RAG Pipeline Testing, Prompt Injection Testing, Python.
+- **Roles and Responsibilities:**
+  - Design, develop, and execute comprehensive test plans and test cases for web, mobile, and API applications, including AI-driven features
+  - Develop and maintain automated test scripts using Selenium, Cypress, Playwright, and REST Assured for regression and functional testing
+  - Perform manual testing including functional, regression, performance, and API testing, with specialized focus on AI model validation
+  - Collaborate with cross-functional teams in Agile/Scrum environments to ensure quality throughout the SDLC
+  - Integrate automated testing into CI/CD pipelines using Jenkins, GitHub Actions, and Azure DevOps
+  - Identify, document, and track defects using JIRA, providing detailed analysis and reproduction steps
+  - Conduct performance testing using JMeter, Locust, and other tools for load, stress, and scalability validation
+  - Mentor junior QA engineers and lead knowledge sharing sessions on testing best practices and AI testing methodologies
+  - Ensure compliance with QA methodologies, industry standards, and ethical AI guidelines
+  - Work on specialized testing for AI features, including bias detection, model drift, and explainability testing
+  - Lead 2026 AI testing practice: LLM hallucination testing, RAG pipeline evaluation (RAGAS), agentic workflow multi-step validation, adversarial prompt injection red-teaming, OWASP LLM Top 10 compliance, and AI safety/alignment assessment
+  - Establish organizational LLM testing standards with DeepEval, LangSmith production monitoring, and continuous AI evaluation pipelines in MLOps CI/CD
+- **Certifications:** ISTQB Advanced Level - Technical Test Analyst, AWS Certified Solutions Architect, Certified Ethical Hacker (CEH), TensorFlow Developer Certificate
+- **Education:** B.Tech in Electronics and Communication Engineering from Jawaharlal Nehru Technological University, Hyderabad (2015-2019, 8.9 CGPA)
+- **Achievements:** Published research paper on "Bias Detection in AI Models" at QA Conference 2023; Led AI testing initiative that won "Innovation Award" for ethical AI deployment; Reduced AI model failure rate by 40% through proactive testing strategies

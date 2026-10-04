@@ -1,0 +1,43 @@
+# Shivani Mishra
+
+- **Name:** Shivani Mishra
+- **Role:** Lead QA Engineer - Accessibility Specialist
+- **Experience level:** Senior (8 years)
+- **Location:** Lucknow, Uttar Pradesh
+- **Email:** shivani.mishra.qa@email.com
+- **LinkedIn:** linkedin.com/in/shivani-mishra-accessibility
+- **GitHub:** github.com/shivanimishraaccessibility
+- **10-point profile summary:**
+  - Accomplished Lead QA Engineer with 8 years of expertise in accessibility testing and inclusive design for web and mobile applications
+  - Proficient in WCAG guidelines, Section 508 compliance, and assistive technology validation for diverse user needs
+  - Skilled in leading accessibility audits, remediation strategies, and training programs for development teams
+  - Experienced in automated accessibility testing tools and manual evaluation techniques for comprehensive coverage
+  - Knowledgeable in UX/UI design principles, user research, and inclusive design methodologies
+  - Familiar with screen readers, keyboard navigation, color contrast analysis, and semantic HTML validation
+  - Strong background in cross-functional collaboration with designers, developers, and product teams
+  - Expert in accessibility testing for React applications, mobile apps, and enterprise software
+  - Expert in 2026 AI accessibility leadership: WCAG 2.2 compliance governance, AI-assisted accessibility scanning with automated LLM remediation guidance, inclusive design standards for AI-generated UI content, and testing AI chatbot interfaces for screen reader compatibility
+  - Visionary QA leader driving org-wide accessibility AI strategy: embedding AI-powered a11y tools, training teams on WCAG 2.2 new criteria (Focus Appearance, Dragging Movements), and establishing cognitive accessibility standards for conversational AI
+- **Technologies:** Accessibility Testing, WCAG 2.2, WCAG 2.1, Section 508, Assistive Technologies, Screen Readers, Keyboard Navigation, Color Contrast, Semantic HTML, Automated Testing Tools, Manual Evaluation, UX/UI Design, Inclusive Design, React, Mobile Testing, Enterprise Software, JIRA, Confluence, Selenium, Playwright, Axe, WAVE, Lighthouse, NVDA, JAWS, VoiceOver, AI-Assisted A11y Scanning, AI Chatbot Accessibility Testing, LLM Content Accessibility, Automated Remediation Guidance
+- **Experience:** 8 years of progressive experience as a Lead QA Engineer at technology companies in Lucknow, specializing in accessibility and inclusive design. Led accessibility initiatives for 15+ products, achieving 100% WCAG AA compliance and improving user satisfaction by 40%.
+- **Projects:**
+  - Government Services Portal Accessibility Overhaul: Led comprehensive accessibility audit and remediation for a major government portal serving 2M+ users. Implemented automated testing pipelines and trained 50+ developers on accessibility best practices, achieving full WCAG 2.1 AA compliance. Technologies: WCAG, Axe, Selenium, React, JIRA, NVDA.
+  - E-commerce Platform Inclusive Design: Directed accessibility testing and UX improvements for a large e-commerce site, focusing on mobile accessibility and screen reader compatibility. Collaborated with design team to implement inclusive design patterns, resulting in 30% increase in accessibility scores. Technologies: Playwright, WAVE, Mobile Testing, VoiceOver, JAWS.
+  - Enterprise SaaS Application Compliance: Managed accessibility compliance for a complex enterprise application used by users with disabilities. Developed custom testing frameworks and conducted user testing sessions, ensuring Section 508 compliance across all modules. Technologies: Automated Testing Tools, Semantic HTML, Lighthouse, Confluence.
+- **Roles and Responsibilities:**
+  - Lead accessibility testing initiatives and ensure compliance with WCAG, Section 508, and other accessibility standards
+  - Design and implement accessibility testing strategies for web, mobile, and desktop applications
+  - Conduct comprehensive accessibility audits using automated tools and manual evaluation techniques
+  - Collaborate with UX/UI designers to implement inclusive design principles and accessible components
+  - Train development and QA teams on accessibility best practices and assistive technology usage
+  - Perform screen reader testing, keyboard navigation validation, and color contrast analysis
+  - Work with product teams to prioritize accessibility requirements and remediation efforts
+  - Develop and maintain accessibility testing frameworks and automated test suites
+  - Participate in user research and testing sessions with users who have disabilities
+  - Mentor junior QA engineers and establish accessibility quality standards across projects
+  - Monitor industry trends and update accessibility testing methodologies accordingly
+  - Provide accessibility expertise for regulatory compliance and audit preparations
+  - Apply WCAG 2.2 governance, implement AI-assisted accessibility scanning for contextual issue detection, train teams on AI chatbot interface accessibility, validate LLM-generated UI content for inclusive design, and establish cognitive accessibility standards for conversational AI
+- **Certifications:** Certified Accessibility Specialist (CAS), ISTQB Foundation Level, WCAG 2.1 Expert Certification
+- **Education:** MA in Human Computer Interaction from Banaras Hindu University, Varanasi (2012-2014, 8.9 CGPA)
+- **Achievements:** Awarded "Accessibility Champion of the Year" 2024 for government portal compliance; Published 3 articles on inclusive design; Led accessibility training program for 200+ employees

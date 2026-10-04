@@ -1,0 +1,44 @@
+# Kunal Bhatia
+
+- **Name:** Kunal Bhatia
+- **Role:** MCP Integration Developer
+- **Experience level:** Mid-level (3 years)
+- **Location:** Pune, Maharashtra
+- **Email:** kunal.bhatia.mcp@email.com
+- **LinkedIn:** linkedin.com/in/kunal-bhatia-mcp
+- **GitHub:** github.com/kunalbhatiamcp
+- **10-point profile summary:**
+  - Innovative MCP Integration Developer with 3 years of experience in building test observability and automation tools
+  - Proficient in Node.js, TypeScript, and Playwright for developing robust test integration frameworks
+  - Skilled in designing MCP connectors, instrumentation libraries, and debugging utilities for QA teams
+  - Experienced in creating playback tools, test runners, and structured logging systems for enhanced observability
+  - Knowledgeable in cross-team collaboration, reusable test utilities, and CI/CD integration
+  - Familiar with API testing, performance monitoring, and automated test execution environments
+  - Strong background in software development practices, version control, and agile methodologies
+  - Collaborative developer working with QA engineers to improve testing workflows and reliability
+  - Expert in 2026 agentic testing engineering: MCP tool-call validation, LangGraph agent workflow testing, agentic AI orchestration testing, agent memory persistence validation, and multi-step tool-use reliability testing
+  - Skilled in AI-native test infrastructure: building MCP server testing harnesses, validating agent decision-making under adversarial inputs, testing LLM agent loops for correctness, termination safety, and observability
+- **Technologies:** MCP, Playwright, Node.js, TypeScript, Integration Testing, Test Observability, Debugging Tools, Test Runners, Structured Logging, API Testing, CI/CD, Git, Docker, Kubernetes, REST APIs, GraphQL, WebSockets, Jest, Express.js, MongoDB, PostgreSQL, LangGraph Testing, Agentic Workflow Testing, MCP Tool-Call Validation, Agent Memory Testing, Multi-Step Tool Reliability, Agent Decision Validation, LLM Agent Loop Testing
+- **Experience:** 3 years of experience as an MCP Integration Developer at tech companies in Pune. Developed MCP-based tools that improved test observability by 80% and reduced debugging time by 50% across multiple teams.
+- **Projects:**
+  - MCP-Based Test Runner with Observability: Built a comprehensive test runner using MCP connectors that captures structured logs, traces, and performance metrics. Integrated with Playwright for end-to-end testing, enabling real-time monitoring and debugging for QA teams. Technologies: MCP, Playwright, Node.js, TypeScript, REST APIs, Docker.
+  - Cross-Team Test Utilities Library: Developed reusable test utilities and instrumentation libraries for multiple teams, including API mocking, data seeding, and environment management. Created MCP integrations for centralized test execution and reporting. Technologies: Node.js, TypeScript, Express.js, MongoDB, Kubernetes, Jest.
+  - Playback and Debugging Platform: Created a playback tool for test failures with MCP instrumentation, allowing QA engineers to replay test scenarios with detailed step-by-step execution. Implemented advanced debugging features and integration with CI/CD pipelines. Technologies: Playwright, MCP, WebSockets, GraphQL, PostgreSQL, Git.
+  - LangGraph Agent Workflow Testing Framework: Architected comprehensive testing harness for LangGraph-based multi-agent orchestration system, validating tool-call sequences, agent state transitions, memory persistence across turns, and termination safety under adversarial inputs. Built MCP server contract tests for all 12 tool integrations and agentic loop correctness validation under edge conditions. Technologies: LangGraph Testing, Agentic Workflow Testing, MCP Tool-Call Validation, Agent Memory Testing, Node.js, TypeScript, Jest, Docker.
+- **Roles and Responsibilities:**
+  - Design and develop MCP connectors and instrumentation for test suites and automation frameworks
+  - Build playback and debugging tools to enhance QA workflows and issue resolution
+  - Create reusable test utilities and libraries for cross-team collaboration
+  - Implement structured logging and tracing systems for improved test observability
+  - Collaborate with QA teams to integrate MCP tools into existing testing processes
+  - Develop API integrations and webhooks for automated test execution and notifications
+  - Maintain and update test infrastructure, including CI/CD pipelines and deployment scripts
+  - Provide technical support and training for MCP tools and integrations
+  - Monitor performance and reliability of MCP-based systems and tools
+  - Contribute to open-source projects and community initiatives related to test automation
+  - Document APIs, tools, and best practices for team knowledge sharing
+  - Stay updated with latest technologies and trends in test automation and observability
+  - Validate MCP tool-call sequences, test LangGraph agent workflows, verify agent memory and state persistence, ensure multi-step tool reliability, and test agentic AI loops for correctness and termination safety
+- **Certifications:** MCP Developer Certification, Node.js Certified Developer, Docker Certified Associate
+- **Education:** B.Tech in Computer Science from College of Engineering Pune, Pune (2018-2022, 8.7 CGPA)
+- **Achievements:** Awarded "Innovation in Testing" for MCP test runner development; Contributed to open-source MCP libraries; Reduced test debugging time by 50% through playback tools

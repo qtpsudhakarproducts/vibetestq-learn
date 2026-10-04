@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Rekha Singh — Release Test Manager</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Georgia',serif;background:#fafaf8;color:#1a1a1a;font-size:14.5px;line-height:1.7}
+a{color:#b45309;text-decoration:none}a:hover{text-decoration:underline}
+.mhdr{display:flex;align-items:stretch;min-height:110px;border-bottom:4px solid #1a1a1a}
+.m-stripe{width:14px;background:linear-gradient(180deg,#92400e,#b45309,#d97706);flex-shrink:0}
+.m-center{flex:1;padding:1.5rem 2rem;display:flex;align-items:center;gap:1.2rem;border-right:3px solid #1a1a1a}
+.m-av{width:72px;height:72px;background:#1a1a1a;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:#fff;flex-shrink:0;font-family:'Segoe UI',sans-serif}
+.m-name{font-size:2rem;font-weight:700;letter-spacing:-.02em;line-height:1.1;font-family:'Georgia',serif}
+.m-role{font-size:.88rem;color:#6b7280;margin:.3rem 0 .5rem;font-style:italic}
+.m-tags{display:flex;flex-wrap:wrap;gap:.28rem}
+.m-tag{background:#1a1a1a;color:#fff;border-radius:3px;padding:.1rem .55rem;font-size:.68rem;font-family:'Segoe UI',sans-serif;font-style:normal}
+.m-right{width:220px;flex-shrink:0;padding:1.35rem 1.5rem;background:#f5f0e8;display:flex;flex-direction:column;justify-content:center;gap:.35rem;font-family:'Segoe UI',sans-serif}
+.m-right .lbl{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:#9ca3af;margin-top:.5rem}
+.m-right .val{font-size:.82rem;color:#374151;word-break:break-all}
+.m-right a{color:#b45309}
+.m-body{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:200px 1fr 220px;gap:0}
+@media(max-width:820px){.m-body{grid-template-columns:1fr}.m-left,.m-right-col{display:none}}
+@media(max-width:620px){.mhdr{flex-direction:column}.m-stripe{width:100%;height:8px;background:linear-gradient(90deg,#92400e,#b45309,#d97706)}.m-center{border-right:none;border-bottom:3px solid #1a1a1a;padding:1.25rem 1.25rem}.m-right{width:100%;flex-direction:row;flex-wrap:wrap;gap:.2rem .75rem;padding:.85rem 1.25rem}}
+.m-left{padding:1.65rem 1rem 2rem 1.5rem;border-right:1px solid #e5e5e5;background:#fafaf8}
+.m-main{padding:1.65rem 1.85rem 2rem;border-right:1px solid #e5e5e5}
+.m-right-col{padding:1.65rem 1.25rem 2rem;background:#f5f0e8}
+.sec-h{display:flex;align-items:baseline;gap:.5rem;margin-bottom:.85rem;margin-top:1.5rem}
+.sec-h:first-child{margin-top:0}
+.sec-num{font-size:1.8rem;font-weight:700;color:#e5e5e5;line-height:1;font-family:'Georgia',serif}
+.sec-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:#1a1a1a;border-bottom:2px solid #b45309;padding-bottom:.2rem}
+.s-ul{list-style:none}.s-ul li{font-size:.86rem;color:#374151;padding:.26rem 0 .26rem .9rem;position:relative;font-family:'Segoe UI',sans-serif}
+.s-ul li::before{content:'▶';color:#b45309;font-size:.55em;position:absolute;left:0;top:.5em}
+.exp{font-size:.86rem;color:#374151;font-family:'Segoe UI',sans-serif}
+.pcard{border-left:3px solid #b45309;padding:.6rem 0 .6rem .85rem;margin-bottom:.85rem}
+.pt{font-weight:700;font-size:.92rem;color:#1a1a1a;font-family:'Segoe UI',sans-serif}
+.pd{font-size:.82rem;color:#4b5563;font-family:'Segoe UI',sans-serif;margin-top:.12rem}
+.ptech{font-size:.76rem;color:#b45309;margin-top:.22rem;font-style:italic}
+.r-ul{list-style:none}.r-ul li{font-size:.83rem;color:#374151;padding:.22rem 0 .22rem .85rem;position:relative;font-family:'Segoe UI',sans-serif}
+.r-ul li::before{content:'→';color:#d97706;font-weight:700;position:absolute;left:0}
+.tags{display:flex;flex-wrap:wrap;gap:.28rem}
+.tag{border:1px solid #d4c5a9;border-radius:3px;padding:.14rem .52rem;font-size:.72rem;color:#555;font-family:'Segoe UI',sans-serif}
+.g-ul{list-style:none}.g-ul li{font-size:.81rem;color:#4b5563;padding:.18rem 0 .18rem .7rem;position:relative;font-family:'Segoe UI',sans-serif}
+.g-ul li::before{content:'·';color:#b45309;font-size:1.4em;position:absolute;left:0;top:0;line-height:1.2}
+.side-h{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#9ca3af;margin-bottom:.4rem;margin-top:1rem;font-family:'Segoe UI',sans-serif}
+.side-h:first-child{margin-top:0}
+.footer{grid-column:1/-1;text-align:center;font-size:.73rem;color:#9ca3af;padding:.85rem;border-top:2px solid #1a1a1a;font-family:'Segoe UI',sans-serif}
+</style></head><body>
+<div class="mhdr">
+  <div class="m-stripe"></div>
+  <div class="m-center">
+    <div class="m-av">RS</div>
+    <div><div class="m-name">Rekha Singh</div>
+      <div class="m-role">Release Test Manager</div>
+      <div class="m-tags"><span class="m-tag">Release Management Tools</span><span class="m-tag">JIRA</span><span class="m-tag">Test Management Systems</span><span class="m-tag">Risk Assessment Tools</span><span class="m-tag">CI/CD Pipelines</span><span class="m-tag">Monitoring Tools</span><span class="m-tag">Communication Platforms</span><span class="m-tag">Documentation Tools</span><span class="m-tag">+9 more</span></div>
+    </div>
+  </div>
+  <div class="m-right">
+    <span class="lbl">Experience</span><span class="val">Senior/Lead (11 years)</span>
+    <span class="lbl">Location</span><span class="val">Lucknow, Uttar Pradesh</span>
+    <span class="lbl">Email</span><span class="val"><a href="mailto:rekha.singh.qa@email.com">rekha.singh.qa@email.com</a></span>
+    <span class="lbl">LinkedIn</span><span class="val"><a href="https://linkedin.com/in/rekha-singh-release-testing" target="_blank">linkedin.com/in/rekha-singh-release-testing</a></span>
+  </div>
+</div>
+<div class="m-body">
+  <div class="m-left">
+    <div class="sec-h"><span class="sec-num">01</span><span class="sec-title">Experience</span></div><p class="exp" style="font-size:.82rem">11 years of progressive experience as a Release Test Manager at a major enterprise software company in Lucknow. Specialized in release coordination, risk assessment, and QA governance for critical enterprise applications.</p>
+    <div class="sec-h"><span class="sec-num" style="font-size:1.2rem">02</span><span class="sec-title">Certifications</span></div><ul class="g-ul"><li>Certified Scrum Master (CSM)</li><li>ITIL Foundation</li><li>PMP (Project Management Professional)</li></ul>
+    <div class="sec-h"><span class="sec-num" style="font-size:1.2rem">03</span><span class="sec-title">Education</span></div><p class="exp" style="font-size:.82rem">MBA in Operations Management from Lucknow University, Lucknow (2010-2012, 8.2 CGPA)</p>
+    <div class="sec-h"><span class="sec-num" style="font-size:1.2rem">04</span><span class="sec-title">Technologies</span></div>
+    <div class="tags"><span class="tag">Release Management Tools</span><span class="tag">JIRA</span><span class="tag">Test Management Systems</span><span class="tag">Risk Assessment Tools</span><span class="tag">CI/CD Pipelines</span><span class="tag">Monitoring Tools</span><span class="tag">Communication Platforms</span><span class="tag">Documentation Tools</span><span class="tag">Compliance Frameworks</span><span class="tag">Quality Metrics</span><span class="tag">AI-Gated Release Management</span><span class="tag">LLM Deployment Quality Gates</span><span class="tag">AI Release Risk Prediction</span><span class="tag">Predictive Rollback Systems</span><span class="tag">AI Smoke Testing</span><span class="tag">AI Observability</span><span class="tag">ArgoCD</span></div>
+  </div>
+  <div class="m-main">
+    <div class="sec-h"><span class="sec-num">05</span><span class="sec-title">Profile Summary</span></div>
+    <ul class="s-ul"><li>Seasoned Release Test Manager with 11 years of experience in managing release quality and coordinating cross-functional validations</li><li>Expert in gating releases based on comprehensive test results and thorough risk assessments</li><li>Proficient in coordinating last-mile validations, hotfix testing, and emergency releases</li><li>Skilled in communicating release health and status to stakeholders at all levels</li><li>Experienced in developing and maintaining rollback and hotfix playbooks for enterprise applications</li><li>Knowledgeable in QA governance and ensuring compliance with release criteria and standards</li><li>Strong leadership in managing high-risk releases and mitigating potential issues</li><li>Expert in 2026 AI-gated release management: implementing AI-powered release risk prediction, LLM deployment quality gates, automated AI smoke testing for releases, and predictive rollback decision systems</li><li>Strategic release quality leader: governing AI feature release readiness assessment, validating LLM model deployments against accuracy SLAs, establishing AI observability checkpoints in release pipelines, and leading agentic release risk mitigation</li></ul>
+    <div class="sec-h"><span class="sec-num">06</span><span class="sec-title">Projects</span></div><div class="pcard"><div class="pt">Enterprise Application Release Management</div><div class="pd">Managed high-risk releases for a suite of enterprise applications, implementing rollback and hotfix playbooks that reduced downtime by 40% and improved release success rate to 98%.</div><div class="ptech">JIRA, CI/CD Pipelines, Monitoring Tools</div></div><div class="pcard"><div class="pt">Cross-functional Release Coordination</div><div class="pd">Coordinated last-mile validations and testing across development, QA, and operations teams for a major product launch, ensuring compliance with regulatory standards and stakeholder requirements.</div><div class="ptech">Test Management Systems, Communication Platforms, Compliance Frameworks</div></div><div class="pcard"><div class="pt">Risk Assessment and Mitigation</div><div class="pd">Developed comprehensive risk assessment frameworks for releases, identifying potential issues early and implementing preventive measures, resulting in zero critical post-release defects.</div><div class="ptech">Risk Assessment Tools, Quality Metrics, Documentation Tools</div></div><div class="pcard"><div class="pt">AI-Gated Release Pipeline for LLM Deployment</div><div class="pd">Implemented AI-powered release management system for a generative AI SaaS platform, building LLM deployment quality gates that enforce accuracy, latency, and hallucination rate SLAs before production promotion. Deployed ArgoCD-integrated automated AI smoke tests, AI release risk prediction scoring, and predictive rollback triggers based on OpenTelemetry LLM performance signals, achieving zero unplanned LLM rollbacks in 6 months.</div><div class="ptech">AI-Gated Release Management, LLM Deployment Quality Gates, AI Release Risk Prediction, Predictive Rollback Systems, AI Smoke Testing, ArgoCD, OpenTelemetry, JIRA</div></div>
+    <div class="sec-h"><span class="sec-num">07</span><span class="sec-title">Roles &amp; Responsibilities</span></div><ul class="r-ul"><li>Gate releases based on thorough test results and risk assessments</li><li>Coordinate last-mile validations and hotfix testing activities</li><li>Communicate release health and status to all stakeholders</li><li>Develop and maintain rollback and hotfix playbooks</li><li>Ensure compliance with release criteria and QA governance standards</li><li>Manage high-risk releases and mitigate potential issues</li><li>Collaborate with cross-functional teams for smooth releases</li><li>Monitor release processes and implement continuous improvements</li><li>Implement AI-powered release risk prediction, enforce LLM deployment quality gates, deploy automated AI smoke testing, establish AI observability checkpoints, govern agentic release readiness assessment, and lead predictive rollback decision systems</li></ul>
+  </div>
+  <div class="m-right-col">
+    <div class="side-h">Achievements</div><ul class="g-ul"><li>Awarded "Release Excellence Champion" for managing zero-downtime releases in 2024</li><li>Led team to achieve 99% on-time delivery</li><li>Implemented automated release monitoring reducing manual effort by 50%</li><li>Recognized for crisis management during critical hotfix deployments</li></ul>
+    <div class="side-h" style="margin-top:1.5rem">Contact</div>
+    <p class="exp" style="font-size:.8rem;margin-bottom:.3rem"><a href="mailto:rekha.singh.qa@email.com">rekha.singh.qa@email.com</a></p>
+    <p class="exp" style="font-size:.8rem;margin-bottom:.3rem"><a href="https://linkedin.com/in/rekha-singh-release-testing" target="_blank">linkedin.com/in/rekha-singh-release-testing</a></p>
+    <p class="exp" style="font-size:.8rem;margin-bottom:.3rem"><a href="https://github.com/rekhaqa" target="_blank">github.com/rekhaqa</a></p>
+  </div>
+</div></body></html>

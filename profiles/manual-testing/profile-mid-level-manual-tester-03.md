@@ -1,0 +1,40 @@
+# Bhavana Roy
+
+- **Name:** Bhavana Roy
+- **Role:** Test Analyst
+- **Experience level:** Mid-level (4 years)
+- **Location:** Kolkata, West Bengal
+- **Email:** bhavana.roy.testanalyst@email.com
+- **LinkedIn:** linkedin.com/in/bhavana-roy-testanalyst
+- **GitHub:** github.com/bhavanatest
+- **10-point profile summary:**
+  - Dedicated Test Analyst with 4 years of experience in requirement traceability and manual testing
+  - Proficient in maintaining traceability matrices for complete coverage
+  - Skilled in executing comprehensive manual test suites
+  - Experienced in communicating defects with detailed reproducible steps
+  - Knowledgeable in assisting automation teams with test scenarios
+  - AI-SDLC practitioner — applying 7-phase AI lifecycle principles to testing workflows, from requirements analysis to AI-augmented test execution and validation
+  - Collaborative professional bridging manual and automation testing
+  - Strong analytical skills for identifying test gaps and risks
+  - Committed to delivering high-quality software products
+  - Experienced with Human-in-the-Loop (HITL) methodology — critically evaluating AI-generated test cases, prompts, and outputs for quality, hallucinations, and completeness
+- **Technologies:** Manual Testing, Requirement Traceability, Test Case Execution, Defect Reporting, JIRA, TestRail, Xray, Bugasura, Test Management Tools, SQL, Agile Methodologies, Test Data Management, Quality Assurance, ChatGPT, GitHub Copilot, AI-Assisted Testing, Prompt Engineering, AI-SDLC, Claude Desktop, MCP Integration, HITL Testing
+- **Experience:** 4 years of experience as a Test Analyst at software companies in Kolkata. Focused on functional testing, traceability, and defect reporting.
+- **Projects:**
+  - Billing Engine Testing: Conducted thorough functional testing for billing engine, ensuring accurate invoicing workflows and calculations. Technologies: Manual Testing, SQL, JIRA.
+  - Traceability Matrix Maintenance: Maintained comprehensive traceability matrices, achieving full requirement coverage and reducing gaps. Technologies: Test Management Tools, Requirement Traceability.
+  - Defect Communication Enhancement: Improved defect reporting with detailed steps, reducing resolution time by 30%. Technologies: Defect Reporting, Quality Assurance.
+  - AI-Powered Billing Feature Validation: Validated AI-driven billing calculation recommendations in a fintech platform, using ChatGPT to generate test data scenarios and edge-case matrix. Ensured AI outputs matched business rules, detected 3 critical rounding-error hallucinations pre-release. Technologies: ChatGPT, Prompt Engineering, JIRA, SQL, Manual Testing.
+- **Roles and Responsibilities:**
+  - Maintain requirement-to-test traceability matrices
+  - Execute manual test cases across multiple scenarios
+  - Communicate defects with clear reproduction steps
+  - Assist automation team with test data and scenarios
+  - Report test execution results and quality metrics
+  - Participate in requirement review and test planning
+  - Collaborate on defect triage and resolution processes
+  - Ensure test coverage for all functional requirements
+  - Use AI tools (ChatGPT, GitHub Copilot, Claude Desktop with MCP integrations for Jira and TestRail) to enhance test scenario design, validate AI-generated feature outputs, apply prompt engineering, and apply HITL workflows for quality assurance
+- **Certifications:** ISTQB Foundation Level, Test Analyst Certification, Manual Testing Specialist
+- **Education:** B.Sc. (Information Technology) from University of Calcutta, Kolkata (2017-2020, 8.2 CGPA)
+- **Achievements:** Maintained 100% traceability coverage; Improved defect communication efficiency; Awarded "Test Excellence" for comprehensive coverage; Developed test reporting templates

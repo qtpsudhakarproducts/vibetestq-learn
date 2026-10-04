@@ -1,0 +1,87 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dinesh Kumar — Load & Performance Engineer</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1923;color:#e2e8f0;font-size:14px;line-height:1.65}
+a{color:#38bdf8;text-decoration:none}a:hover{text-decoration:underline}
+.d-hdr{background:linear-gradient(135deg,#0f1923,#1a2f3d);border-bottom:3px solid #1e4976;padding:1.65rem 2rem}
+.d-top{display:flex;align-items:center;gap:1.25rem;margin-bottom:1.2rem}
+.d-av{width:70px;height:70px;border-radius:14px;background:linear-gradient(135deg,#0369a1,#0284c7);display:flex;align-items:center;justify-content:center;font-size:1.65rem;font-weight:700;color:#fff;flex-shrink:0;box-shadow:0 4px 16px rgba(3,105,161,.4)}
+.d-name{font-size:1.6rem;font-weight:700;color:#f0f9ff}
+.d-role{font-size:.86rem;color:#7dd3fc;margin:.18rem 0 .5rem}
+.d-meta{display:flex;flex-wrap:wrap;gap:.35rem .8rem;font-size:.78rem;color:#64748b}
+.d-meta a{color:#38bdf8}
+.d-badge{background:rgba(14,116,144,.25);border:1px solid rgba(14,116,144,.45);border-radius:4px;padding:.1rem .55rem;color:#7dd3fc;font-size:.75rem}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem}
+@media(max-width:680px){.metrics{grid-template-columns:repeat(2,1fr)}}
+.met{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:.85rem 1rem;text-align:center}
+.met-n{font-size:1.65rem;font-weight:700;color:#38bdf8;line-height:1}
+.met-l{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:#64748b;margin-top:.28rem}
+.d-body{max-width:1020px;margin:1.35rem auto;padding:0 .9rem 2.5rem;display:grid;grid-template-columns:240px 1fr;gap:1.15rem}
+@media(max-width:760px){.d-body{grid-template-columns:1fr}}
+.d-side{display:flex;flex-direction:column;gap:1rem}
+.d-panel{background:#1e293b;border-radius:12px;padding:1rem 1.1rem;border:1px solid #334155}
+.dp-h{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#0ea5e9;margin-bottom:.75rem;padding-bottom:.3rem;border-bottom:1px solid #334155}
+.skill-bar{margin-bottom:.5rem}
+.sb-label{font-size:.76rem;color:#94a3b8;margin-bottom:.22rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-track{background:#0f1923;border-radius:4px;height:5px;overflow:hidden}
+.sb-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#0369a1,#38bdf8)}
+.g-ul{list-style:none}.g-ul li{font-size:.8rem;color:#94a3b8;padding:.18rem 0 .18rem .85rem;position:relative}
+.g-ul li::before{content:'►';color:#0ea5e9;position:absolute;left:0;font-size:.7em;top:.3em}
+.d-main{display:flex;flex-direction:column;gap:1rem}
+.dm{background:#1e293b;border-radius:12px;padding:1.1rem 1.25rem;border:1px solid #334155}
+.dm-h{font-size:.64rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#0ea5e9;margin-bottom:.85rem;padding-bottom:.3rem;border-bottom:1px solid #334155}
+.s-ul{list-style:none}.s-ul li{font-size:.87rem;color:#cbd5e1;padding:.26rem 0 .26rem 1rem;position:relative}
+.s-ul li::before{content:'►';color:#38bdf8;position:absolute;left:0;font-size:.7em;top:.38em}
+.exp{font-size:.86rem;color:#94a3b8}
+.proj-row{display:flex;gap:1rem;padding:.65rem 0;border-bottom:1px solid #334155;align-items:flex-start}
+.proj-row:last-child{border-bottom:none;padding-bottom:0}
+.proj-idx{font-size:1.1rem;font-weight:700;min-width:28px;text-align:right;padding-top:.08rem;color:#0ea5e9}
+.proj-body .pt{font-weight:700;color:#f0f9ff;font-size:.92rem}
+.proj-body .pd{font-size:.82rem;color:#64748b;margin-top:.1rem}
+.proj-body .ptech{font-size:.75rem;color:#0ea5e9;margin-top:.2rem}
+.r-g{display:grid;grid-template-columns:1fr 1fr;gap:.28rem .7rem}
+@media(max-width:500px){.r-g{grid-template-columns:1fr}}
+.ri{font-size:.83rem;color:#94a3b8;padding:.22rem 0 .22rem .9rem;position:relative}
+.ri::before{content:'✓';color:#14b8a6;font-weight:700;position:absolute;left:0}
+.ach-ul{list-style:none}.ach-ul li{font-size:.83rem;color:#94a3b8;padding:.2rem 0 .2rem .9rem;position:relative}
+.ach-ul li::before{content:'★';color:#f59e0b;font-size:.65em;position:absolute;left:0;top:.32em}
+.footer{grid-column:1/-1;text-align:center;font-size:.73rem;color:#334155;padding-top:.8rem;border-top:1px solid #1e293b}
+</style></head><body>
+<div class="d-hdr">
+  <div class="d-top">
+    <div class="d-av">DK</div>
+    <div><div class="d-name">Dinesh Kumar</div><div class="d-role">Load & Performance Engineer</div>
+      <div class="d-meta">
+        <span>&#128205; Jaipur, Rajasthan</span>
+        <span class="d-badge">&#128336; Mid-level (5 years)</span>
+        <a href="mailto:dinesh.kumar.performance@email.com">&#9993; dinesh.kumar.performance@email.com</a>
+        <a href="https://linkedin.com/in/dinesh-kumar-performance" target="_blank">&#128279; linkedin.com/in/dinesh-kumar-performance</a>
+        <a href="https://github.com/dineshkumarperf" target="_blank">&#9997; github.com/dineshkumarperf</a>
+      </div>
+    </div>
+  </div>
+  <div class="metrics">
+    <div class="met"><div class="met-n">10</div><div class="met-l">Summary Points</div></div>
+    <div class="met"><div class="met-n">20</div><div class="met-l">Technologies</div></div>
+    <div class="met"><div class="met-n">4</div><div class="met-l">Projects</div></div>
+    <div class="met"><div class="met-n">9</div><div class="met-l">Responsibilities</div></div>
+  </div>
+</div>
+<div class="d-body">
+  <div class="d-side">
+    <div class="d-panel"><div class="dp-h">Technologies</div>
+      <div class="skill-bar"><div class="sb-label">JMeter</div><div class="sb-track"><div class="sb-fill" style="width:100%"></div></div></div><div class="skill-bar"><div class="sb-label">Gatling</div><div class="sb-track"><div class="sb-fill" style="width:97%"></div></div></div><div class="skill-bar"><div class="sb-label">k6</div><div class="sb-track"><div class="sb-fill" style="width:95%"></div></div></div><div class="skill-bar"><div class="sb-label">Load Testing</div><div class="sb-track"><div class="sb-fill" style="width:92%"></div></div></div><div class="skill-bar"><div class="sb-label">Performance Testing</div><div class="sb-track"><div class="sb-fill" style="width:89%"></div></div></div><div class="skill-bar"><div class="sb-label">Cloud Platforms (AWS</div><div class="sb-track"><div class="sb-fill" style="width:86%"></div></div></div><div class="skill-bar"><div class="sb-label">Azure)</div><div class="sb-track"><div class="sb-fill" style="width:84%"></div></div></div><div class="skill-bar"><div class="sb-label">Monitoring Tools (New Relic</div><div class="sb-track"><div class="sb-fill" style="width:81%"></div></div></div><div class="skill-bar"><div class="sb-label">AppDynamics</div><div class="sb-track"><div class="sb-fill" style="width:78%"></div></div></div><div class="skill-bar"><div class="sb-label">Grafana)</div><div class="sb-track"><div class="sb-fill" style="width:75%"></div></div></div><div class="skill-bar"><div class="sb-label">Profiling Tools</div><div class="sb-track"><div class="sb-fill" style="width:73%"></div></div></div><div class="skill-bar"><div class="sb-label">SQL</div><div class="sb-track"><div class="sb-fill" style="width:70%"></div></div></div><div class="skill-bar"><div class="sb-label">Linux</div><div class="sb-track"><div class="sb-fill" style="width:67%"></div></div></div><div class="skill-bar"><div class="sb-label">Bash Scripting</div><div class="sb-track"><div class="sb-fill" style="width:64%"></div></div></div><div class="skill-bar"><div class="sb-label">Docker</div><div class="sb-track"><div class="sb-fill" style="width:62%"></div></div></div><div class="skill-bar"><div class="sb-label">Kubernetes</div><div class="sb-track"><div class="sb-fill" style="width:59%"></div></div></div><div class="skill-bar"><div class="sb-label">AI Anomaly Detection</div><div class="sb-track"><div class="sb-fill" style="width:56%"></div></div></div><div class="skill-bar"><div class="sb-label">ML-based Capacity Planning</div><div class="sb-track"><div class="sb-fill" style="width:53%"></div></div></div><div class="skill-bar"><div class="sb-label">LLM Latency Testing</div><div class="sb-track"><div class="sb-fill" style="width:51%"></div></div></div><div class="skill-bar"><div class="sb-label">Predictive Performance Testing</div><div class="sb-track"><div class="sb-fill" style="width:48%"></div></div></div>
+    </div>
+    <div class="d-panel"><div class="dp-h">Certifications</div><ul class="g-ul"><li>ISTQB Performance Testing</li><li>JMeter Professional Certification</li><li>AWS Performance Optimization</li></ul></div>
+    <div class="d-panel"><div class="dp-h">Education</div><p class="exp" style="font-size:.82rem">B.Tech in Computer Science from MNIT Jaipur, Jaipur (2017-2021, 8.2 CGPA)</p></div>
+  </div>
+  <div class="d-main">
+    <div class="dm"><div class="dm-h">Profile Summary</div><ul class="s-ul"><li>Skilled Load & Performance Engineer with 5 years of expertise in designing and executing load tests for high-traffic services</li><li>Proficient in JMeter and Gatling for comprehensive performance testing</li><li>Experienced in cloud-based load testing and capacity planning</li><li>Knowledgeable in performance tuning and bottleneck identification</li><li>Adept at creating monitoring dashboards for performance metrics</li><li>Familiar with scalability testing and promotional event capacity planning</li><li>Collaborative professional working with development teams on optimizations</li><li>Strong analytical skills for performance data analysis and recommendations</li><li>Expert in 2026 performance testing: k6 modern load testing, AI-driven anomaly detection in performance metrics, predictive capacity planning using ML-based traffic forecasting, and LLM inference latency profiling</li><li>Skilled in intelligent performance engineering: AI-powered bottleneck identification, adaptive load testing that adjusts based on real-time system response, and cloud-native performance testing at scale</li></ul></div>
+    <div class="dm"><div class="dm-h">Experience</div><p class="exp">5 years of experience as a Load & Performance Engineer at tech companies in Jaipur. Specialized in load testing, capacity planning, and performance optimization for web services.</p></div>
+    <div class="dm"><div class="dm-h">Projects</div><div class="proj-row"><span class="proj-idx">01</span><div class="proj-body"><div class="pt">Streaming Platform Capacity Planning</div><div class="pd">Conducted load testing for a streaming platform during promotional events, planning capacity for 1M+ concurrent users and optimizing performance.</div><div class="ptech">&#9881; JMeter, Cloud Platforms, Monitoring Tools</div></div></div><div class="proj-row"><span class="proj-idx">02</span><div class="proj-body"><div class="pt">E-commerce Peak Load Testing</div><div class="pd">Designed and executed load tests for e-commerce platform, identifying bottlenecks and recommending optimizations for Black Friday traffic.</div><div class="ptech">&#9881; Gatling, Profiling Tools, SQL</div></div></div><div class="proj-row"><span class="proj-idx">03</span><div class="proj-body"><div class="pt">API Performance Validation</div><div class="pd">Performed load testing on REST APIs, creating dashboards for metrics tracking and ensuring scalability under high loads.</div><div class="ptech">&#9881; JMeter, Monitoring Tools, Docker</div></div></div><div class="proj-row"><span class="proj-idx">04</span><div class="proj-body"><div class="pt">AI-Driven Load Testing for LLM Inference API</div><div class="pd">Implemented k6 load testing for an LLM inference API endpoint, profiling latency under concurrent requests (10/100/1000 TPS), detecting P95 response time degradation, and implementing AI anomaly detection on metrics time-series for automatic threshold alerting. Used ML-based traffic forecasting for proactive capacity planning.</div><div class="ptech">&#9881; k6, AI Anomaly Detection, ML-based Capacity Planning, LLM Latency Testing, Prometheus, Grafana, AWS</div></div></div></div>
+    <div class="dm"><div class="dm-h">Roles &amp; Responsibilities</div><div class="r-g"><div class="ri">Design and execute load test scenarios for applications</div><div class="ri">Run scalability tests and analyze performance under load</div><div class="ri">Profile system bottlenecks and provide optimization recommendations</div><div class="ri">Create monitoring dashboards for performance metrics</div><div class="ri">Collaborate with development teams on performance fixes</div><div class="ri">Plan capacity for high-traffic events and promotions</div><div class="ri">Document performance testing results and recommendations</div><div class="ri">Maintain performance testing environments and tools</div><div class="ri">Use k6 for modern cloud-native load testing, implement AI anomaly detection on performance metrics, profile LLM inference latency, and apply ML-based capacity planning for peak traffic prediction</div></div></div>
+    <div class="dm"><div class="dm-h">Achievements</div><ul class="ach-ul"><li>Optimized streaming platform for 2x peak capacity</li><li>Reduced response times by 30% through bottleneck identification</li><li>Awarded "Performance Excellence" for load testing innovations</li><li>Led performance testing for 10+ major events</li></ul></div>
+  </div>
+</div></body></html>

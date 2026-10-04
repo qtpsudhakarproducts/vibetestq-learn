@@ -1,0 +1,39 @@
+# Rekha Singh
+
+- **Name:** Rekha Singh
+- **Role:** Release Test Manager
+- **Experience level:** Senior/Lead (11 years)
+- **Location:** Lucknow, Uttar Pradesh
+- **Email:** rekha.singh.qa@email.com
+- **LinkedIn:** linkedin.com/in/rekha-singh-release-testing
+- **GitHub:** github.com/rekhaqa
+- **10-point profile summary:**
+  - Seasoned Release Test Manager with 11 years of experience in managing release quality and coordinating cross-functional validations
+  - Expert in gating releases based on comprehensive test results and thorough risk assessments
+  - Proficient in coordinating last-mile validations, hotfix testing, and emergency releases
+  - Skilled in communicating release health and status to stakeholders at all levels
+  - Experienced in developing and maintaining rollback and hotfix playbooks for enterprise applications
+  - Knowledgeable in QA governance and ensuring compliance with release criteria and standards
+  - Strong leadership in managing high-risk releases and mitigating potential issues
+  - Expert in 2026 AI-gated release management: implementing AI-powered release risk prediction, LLM deployment quality gates, automated AI smoke testing for releases, and predictive rollback decision systems
+  - Strategic release quality leader: governing AI feature release readiness assessment, validating LLM model deployments against accuracy SLAs, establishing AI observability checkpoints in release pipelines, and leading agentic release risk mitigation
+- **Technologies:** Release Management Tools, JIRA, Test Management Systems, Risk Assessment Tools, CI/CD Pipelines, Monitoring Tools, Communication Platforms, Documentation Tools, Compliance Frameworks, Quality Metrics, AI-Gated Release Management, LLM Deployment Quality Gates, AI Release Risk Prediction, Predictive Rollback Systems, AI Smoke Testing, AI Observability, ArgoCD
+- **Experience:** 11 years of progressive experience as a Release Test Manager at a major enterprise software company in Lucknow. Specialized in release coordination, risk assessment, and QA governance for critical enterprise applications.
+- **Projects:**
+  - Enterprise Application Release Management: Managed high-risk releases for a suite of enterprise applications, implementing rollback and hotfix playbooks that reduced downtime by 40% and improved release success rate to 98%. Technologies: JIRA, CI/CD Pipelines, Monitoring Tools.
+  - Cross-functional Release Coordination: Coordinated last-mile validations and testing across development, QA, and operations teams for a major product launch, ensuring compliance with regulatory standards and stakeholder requirements. Technologies: Test Management Systems, Communication Platforms, Compliance Frameworks.
+  - Risk Assessment and Mitigation: Developed comprehensive risk assessment frameworks for releases, identifying potential issues early and implementing preventive measures, resulting in zero critical post-release defects. Technologies: Risk Assessment Tools, Quality Metrics, Documentation Tools.
+  - AI-Gated Release Pipeline for LLM Deployment: Implemented AI-powered release management system for a generative AI SaaS platform, building LLM deployment quality gates that enforce accuracy, latency, and hallucination rate SLAs before production promotion. Deployed ArgoCD-integrated automated AI smoke tests, AI release risk prediction scoring, and predictive rollback triggers based on OpenTelemetry LLM performance signals, achieving zero unplanned LLM rollbacks in 6 months. Technologies: AI-Gated Release Management, LLM Deployment Quality Gates, AI Release Risk Prediction, Predictive Rollback Systems, AI Smoke Testing, ArgoCD, OpenTelemetry, JIRA.
+- **Roles and Responsibilities:**
+  - Gate releases based on thorough test results and risk assessments
+  - Coordinate last-mile validations and hotfix testing activities
+  - Communicate release health and status to all stakeholders
+  - Develop and maintain rollback and hotfix playbooks
+  - Ensure compliance with release criteria and QA governance standards
+  - Manage high-risk releases and mitigate potential issues
+  - Collaborate with cross-functional teams for smooth releases
+  - Monitor release processes and implement continuous improvements
+  - Implement AI-powered release risk prediction, enforce LLM deployment quality gates, deploy automated AI smoke testing, establish AI observability checkpoints, govern agentic release readiness assessment, and lead predictive rollback decision systems
+- **Certifications:** Certified Scrum Master (CSM), ITIL Foundation, PMP (Project Management Professional)
+- **Education:** MBA in Operations Management from Lucknow University, Lucknow (2010-2012, 8.2 CGPA)
+- **Achievements:** Awarded "Release Excellence Champion" for managing zero-downtime releases in 2024; Led team to achieve 99% on-time delivery; Implemented automated release monitoring reducing manual effort by 50%; Recognized for crisis management during critical hotfix deployments

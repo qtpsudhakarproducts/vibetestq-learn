@@ -1,0 +1,41 @@
+# Saloni Shah
+
+- **Name:** Saloni Shah
+- **Role:** Automation Quality Analyst
+- **Experience level:** Mid-level (4 years)
+- **Location:** Surat, Gujarat
+- **Email:** saloni.shah.automation@email.com
+- **LinkedIn:** linkedin.com/in/saloni-shah-automation
+- **GitHub:** github.com/salonishahauto
+- **10-point profile summary:**
+  - Experienced Automation Quality Analyst with 4 years of expertise in combining domain testing with automation
+  - Proficient in BDD frameworks and implementing automated test scenarios
+  - Skilled in Playwright for end-to-end automation and quality assurance
+  - Experienced in maintaining automated test reports and dashboards
+  - Knowledgeable in ensuring testable requirements and BDD alignment
+  - Familiar with test automation for CRM modules and business workflows
+  - Collaborative professional working with product teams on acceptance criteria
+  - Strong analytical skills for test result analysis and improvement
+  - Committed to high-quality releases through automated validation
+  - Skilled in 2026 BDD automation: GitHub Copilot-generated Gherkin scenarios, self-healing Playwright steps, AI-enhanced test reporting dashboards, and LLM feature acceptance automation
+  - Adopting AI-native QA tools: Applitools visual regression, automated test gap analysis, and k6 integration for performance-aware CI/CD pipelines
+- **Technologies:** Playwright, Cucumber, BDD Frameworks, JavaScript, TypeScript, Test Automation, Test Reporting, Dashboards, CRM Testing, API Testing, CI/CD, Git, Agile, Scrum, GitHub Copilot, Self-Healing Tests, Applitools, k6, LLM Feature Acceptance Testing, AI-Enhanced Reporting, RAGAS (Basic), Playwright Fixtures, Network Interception, Page Object Model
+- **Experience:** 4 years of experience as an Automation Quality Analyst at software firms in Surat. Focused on BDD-driven automation, test reporting, and ensuring quality in releases.
+- **Projects:**
+  - CRM Module BDD Automation: Implemented BDD scenarios for CRM module using Cucumber and Playwright, enabling clear acceptance criteria and automated validation. Technologies: Cucumber, Playwright, JavaScript, CI/CD.
+  - Test Reporting Dashboard: Developed automated test reports and dashboards, providing real-time metrics for quality tracking and decision-making. Technologies: Test Reporting Tools, Dashboards, API Testing.
+  - Product Requirements Automation: Worked with product teams to ensure testable requirements, implementing automation for user stories and acceptance tests. Technologies: BDD Frameworks, Playwright, Agile.
+  - AI Feature BDD Automation with GitHub Copilot: Used GitHub Copilot to generate Cucumber feature files and Playwright step definitions for an AI personalization engine on CRM module. Implemented Applitools visual checks for the AI-generated UI and RAGAS-inspired acceptance metrics for recommendation quality. Created live dashboards tracking AI feature quality gates. Technologies: Playwright, Cucumber, GitHub Copilot, Applitools, RAGAS, BDD Frameworks, CI/CD, LLM Feature Acceptance Testing.
+- **Roles and Responsibilities:**
+  - Implement BDD scenarios and automated test cases
+  - Maintain automated test reports and dashboards
+  - Ensure testable requirements and BDD alignment
+  - Collaborate with product teams on acceptance criteria
+  - Analyze test results and provide quality insights
+  - Support automation framework maintenance
+  - Document automation processes and best practices
+  - Train team members on BDD and automation tools
+  - Use GitHub Copilot for AI-assisted Gherkin and step definition generation, implement self-healing selectors in Playwright, validate AI feature acceptance with automated LLM output quality checks
+- **Certifications:** ISTQB Advanced Level - Test Automation, BDD Specialist Certification, Playwright Certified
+- **Education:** B.Sc. in Information Technology from Gujarat University, Ahmedabad (2018-2021, 8.3 CGPA)
+- **Achievements:** Implemented BDD automation increasing test coverage by 50%; Created dashboards reducing manual reporting by 60%; Awarded "Automation Quality" for CRM testing excellence; Led automation for 5+ product releases

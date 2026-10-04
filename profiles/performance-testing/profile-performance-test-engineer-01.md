@@ -1,0 +1,42 @@
+# Deepa Nair
+
+- **Name:** Deepa Nair
+- **Role:** Senior QA Engineer - Performance Testing Specialist
+- **Experience level:** Senior (6 years)
+- **Location:** Kochi, Kerala
+- **Email:** deepa.nair.performance@email.com
+- **LinkedIn:** linkedin.com/in/deepa-nair-performance
+- **GitHub:** github.com/deepanairperformance
+- **10-point profile summary:**
+  - Expert QA Engineer with 6 years of specialized experience in performance testing and optimization across web, mobile, and enterprise applications
+  - Proficient in automation testing using Selenium, Java, Python, and Cypress for comprehensive test coverage
+  - Skilled in API testing, performance testing with JMeter and Locust, and database validation with SQL and DynamoDB
+  - Experienced in Agile environments, CI/CD integration with Jenkins and GitHub Actions, and REST Assured for API automation
+  - Knowledgeable in JavaScript, API automation, and test management for complex software systems
+  - Familiar with regression testing, functional testing, and web services validation for diverse platforms
+  - Strong advocate for quality assurance engineering, debugging, and application development best practices
+  - Collaborative professional working with cross-functional teams to ensure software reliability and performance
+  - Expert in 2026 performance engineering: k6 modern load testing, AI-powered anomaly detection in performance time-series, LLM inference throughput profiling, predictive scaling validation, and AI-native SaaS performance quality gates
+  - Strategic performance leader: establishing intelligent performance engineering culture with ML-based regression detection, adaptive load profiles, and automated AI anomaly alerts integrated into CI/CD pipelines
+- **Technologies:** Automation Testing, Manual Testing, API Testing, Selenium, Java, Python, Cypress, Playwright, QA, Software Testing, Agile, CI/CD, JIRA, Git, REST Assured, Performance Testing, Test Automation, JavaScript, API Automation, SQL, DynamoDB, AWS, SAAS, JMeter, Databricks, Azure DevOps, Pytest, Microservices, Locust, k6, AI Anomaly Detection, ML-based Performance Regression, LLM Latency Testing, Predictive Scaling Validation, Grafana, OpenTelemetry
+- **Experience:** 6 years of specialized experience as a Performance Tester and QA Engineer at technology firms in Kochi, focusing on performance optimization and quality assurance. Led performance testing initiatives for 15+ high-traffic applications, improving response times by 40% and scalability by 200%.
+- **Projects:**
+  - E-commerce Platform Performance Optimization: Designed and executed comprehensive load testing for a high-traffic online marketplace using JMeter and Locust. Identified and resolved performance bottlenecks, ensuring support for 100K+ concurrent users during peak sales. Technologies: JMeter, Locust, Python, AWS, Databricks, Selenium, REST Assured.
+  - Fintech Mobile Application: Conducted performance testing for a banking app with real-time transaction processing. Implemented monitoring and profiling to optimize API response times and memory usage, achieving 99.9% uptime. Technologies: JMeter, Java, Azure DevOps, SQL, DynamoDB, Mobile Testing Tools.
+  - SaaS Analytics Dashboard: Led performance validation for an AI-powered analytics platform, focusing on data processing pipelines and user interface responsiveness. Integrated automated performance tests into CI/CD, reducing regression issues by 60%. Technologies: Locust, Python, Pytest Framework, AWS, Angular, Microservices.
+  - AI Anomaly Detection for LLM Performance: Built intelligent performance monitoring system for a generative AI SaaS platform using k6 load tests combined with AI anomaly detection algorithms for real-time P99 latency alerts. Implemented OpenTelemetry traces for LLM token-generation throughput profiling and predictive scaling validation under simulated viral usage spikes. Technologies: k6, AI Anomaly Detection, OpenTelemetry, LLM Latency Testing, Predictive Scaling Validation, Grafana, AWS, Python.
+- **Roles and Responsibilities:**
+  - Design, develop, and execute comprehensive test plans and test cases for web, mobile, and API applications with emphasis on performance
+  - Develop and maintain automated test scripts using Selenium, Cypress, Playwright, and REST Assured for functional and regression testing
+  - Perform manual testing including functional, regression, performance, and API testing to ensure software quality
+  - Collaborate with cross-functional teams in Agile/Scrum environments to integrate quality throughout the SDLC
+  - Integrate automated testing into CI/CD pipelines using Jenkins, GitHub Actions, and Azure DevOps
+  - Identify, document, and track defects using JIRA, providing detailed analysis and performance metrics
+  - Conduct performance testing using JMeter, Locust, and other tools for load, stress, and scalability validation
+  - Mentor junior QA engineers and lead knowledge sharing on performance testing best practices
+  - Ensure compliance with QA methodologies and industry standards for high-performance applications
+  - Work on specialized testing for performance-critical features, AI systems, and e-commerce platforms
+  - Apply 2026 performance engineering: k6 cloud-native load testing, AI anomaly detection on metrics, LLM inference latency profiling, predictive scaling validation, and intelligent performance quality gates in CI/CD
+- **Certifications:** ISTQB Advanced Level - Performance Testing, AWS Certified Solutions Architect, Certified Scrum Master (CSM), JMeter Professional Certification
+- **Education:** B.Tech in Mechanical Engineering from National Institute of Technology, Calicut (2015-2019, 8.7 CGPA)
+- **Achievements:** Awarded "Performance Excellence Award" for optimizing e-commerce platform handling Black Friday traffic; Published article on "Performance Testing in Microservices" in QA Journal; Reduced application response time by 50% through bottleneck analysis
