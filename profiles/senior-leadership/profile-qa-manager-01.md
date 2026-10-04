@@ -1,77 +1,76 @@
-# QA Manager
+# Priya Krishnan
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+QA Manager | 11 years experience | Mumbai, Maharashtra
 
-**Example experience:** 11 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** People leadership and release quality
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality leader focused on people leadership and release quality.
-- Demonstrates quality strategy and measurable goals, cross-team influence and stakeholder alignment, delivery-risk and investment decisions through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Eleven-year veteran in software quality engineering with 3+ years in management, overseeing a 15-person QA team across fintech and digital banking products
+- Championed AI testing adoption by deploying GitHub Copilot for test generation and DeepEval for LLM feature validation across 4 product lines
+- Delivered 99.8% test coverage SLAs across digital banking products serving 2M+ users with zero critical-severity escapes in 8 consecutive production releases
+- Established company-wide AI quality governance framework integrating hallucination rate monitoring, toxicity scoring, and bias detection metrics
+- Reduced regression cycle time by 65% through AI-assisted test selection, intelligent orchestration, and parallel cloud execution
+- Led cross-functional alignment between Dev, QA, and Product teams embedding quality gates at every sprint planning and design review phase
+- Built QA hiring pipeline and onboarding curriculum that scaled the team from 6 to 15 engineers in 18 months with 90% retention rate
+- Defined comprehensive OKRs and quality KPIs including DQPI, defect escapement rate, MTTD, and AI model drift alert thresholds
 
-## Responsibilities
+## Technical Skills
 
-- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
-- Agree quality goals with product and engineering and define how they are evaluated.
-- Develop team capability or technical standards according to the role.
-- Use delivery evidence to prioritize improvements and explain investment trade-offs.
+Test Management, Team Leadership, JIRA, TestRail, Zephyr Scale, Agile, SAFe, Selenium, Playwright, Python, RestAssured, GitHub Actions, Azure DevOps, AWS CloudWatch, DeepEval, GitHub Copilot, LLM Feature Testing, Quality KPIs, OKRs, Risk Management, ISTQB, PMP
 
-## Core skills
+## Work Experience
 
-- Quality strategy and measurable goals
-- Cross-team influence and stakeholder alignment
-- Delivery-risk and investment decisions
-- Technical or people leadership
-- Capability development
-- Evidence-based improvement
+### QA Manager
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- AI product quality as a portfolio specialization
-- Test platform architecture for technical leaders
-- Organization-specific tooling and governance
+11 years in software quality engineering across fintech, e-commerce, and insurance domains. Led teams of up to 15 QA engineers handling functional, regression, API, performance, and AI model testing. Managed release calendars, defect SLAs, and QA tool licensing budgets of Rs. 40L annually. Partnered with engineering directors to define quarterly quality OKRs and report quality metrics to C-suite stakeholders at fortnightly leadership reviews.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Manage and mentor a 15-person QA team spanning functional, automation, API, and AI testing disciplines
+- Define quarterly quality OKRs aligned to engineering and business objectives, reported to Director Engineering
+- Drive AI testing adoption including LLM evaluation, hallucination testing, and AI safety acceptance criteria
+- Own test strategy, risk-based testing plans, and execution governance across 4 digital banking product lines
+- Partner with product managers to embed quality acceptance criteria at sprint planning and story refinement
+- Report quality KPIs — defect escapement, MTTD, coverage metrics, AI drift alerts — to senior leadership
+- Manage QA tool stack budget including TestRail, JIRA, Playwright, and AWS test infrastructure licensing
+- Conduct performance reviews, career development plans, and quarterly feedback sessions for all team engineers
+- Oversee CI/CD quality gates, gate-failed build triage process, and hot-fix release quality sign-off
+- Champion shift-left testing and developer testing culture through pair-testing sessions and QA-dev guilds
+- Lead retrospectives and quarterly process improvement programs using Lean and Six Sigma methodologies
+- Coordinate with security, DevOps, and data teams for end-to-end coverage of OWASP and compliance requirements
 
-### People leadership and release quality - practical example
+## Project Experience
 
-Create a quality improvement plan for a product portfolio. Tie proposed changes to observed problems, owners, baseline measures, and review dates.
+### AI-Assisted Mobile Banking Test Suite
 
-- Evidence: A roadmap tied to business and delivery outcomes
-- Evidence: A capability plan or technical standards proposal
-- Evidence: A review dashboard with definitions and decision notes
+Built an AI-powered test suite for a mobile banking app using Playwright and GitHub Copilot, reducing manual test scripting effort by 60% and achieving full API coverage. Technologies: Playwright, Python, GitHub Copilot, Azure DevOps, Appium.
 
-### People leadership and release quality - failure investigation
+### LLM Feature Validation Framework
 
-Extend the example with one failure or change relevant to people leadership and release quality. Explain how it was detected, investigated, corrected, and checked again.
+Designed acceptance criteria and validation workflows for 12 LLM-powered chatbot features using DeepEval for hallucination, toxicity, and coherence scoring integrated into CI/CD. Technologies: DeepEval, Python, LangSmith, JIRA, Gherkin.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### QA Transformation Program
 
-## Evidence to prepare
+Spearheaded a 12-month quality transformation covering shift-left adoption, AI tool deployment, and team upskilling across 3 product lines serving enterprise fintech clients. Technologies: JIRA, TestRail, GitHub Copilot, Confluence, Agile Coaching.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### Regression Optimization Initiative
 
-Use only your own verified qualifications and measured outcomes.
+Reduced nightly regression suite runtime from 4.5 hours to 95 minutes through AI-based flaky test elimination, parallel execution, and intelligent test selection algorithms. Technologies: TestNG, Selenium Grid, Python, GitHub Actions, Test Impact Analysis.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.E. Computer Engineering – Mumbai University, 2013; Executive Program in Product Management – IIM Bangalore, 2020
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Certified Test Manager (CTTM); PMP – Project Management Professional; AWS Certified Cloud Practitioner; Certified SAFe 6.0 Agilist; GitHub Copilot for Enterprise Certification
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Named QA Manager of the Year by CIO Review India 2024; Built career growth framework adopted by 3 business units; Zero critical escapes in 8 consecutive production releases; Reduced new-hire onboarding time from 6 weeks to 2.5 weeks; Speaker at STeP-IN QA Summit 2023

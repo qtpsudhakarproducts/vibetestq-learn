@@ -1,76 +1,74 @@
-# Junior Manual Tester
+# Ravi Kumar
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Junior Manual Tester | 1 years experience | Bangalore, Karnataka
 
-**Example experience:** 1 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Checkout and payment-state investigation
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Building practical experience in checkout and payment-state investigation.
-- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Dedicated quality assurance professional with a strong foundation in manual testing methodologies and a passion for delivering high-quality software products
+- Proficient in creating, executing, and maintaining comprehensive manual test cases for web and mobile applications
+- Experienced in performing functional, regression, sanity, and user acceptance testing to ensure software reliability
+- Skilled in identifying, documenting, and tracking software defects using industry-standard tools like JIRA
+- Knowledgeable in SQL for database testing and validation of data integrity across different environments
+- Familiar with Agile and Scrum methodologies, actively participating in sprint planning, daily stand-ups, and retrospectives
+- Strong analytical skills for breaking down complex requirements into testable scenarios and edge cases
+- Effective communicator with excellent collaboration skills, working closely with developers, product owners, and stakeholders
 
-## Responsibilities
+## Technical Skills
 
-- Works on a defined feature or test slice with review. Builds fundamentals, reports evidence clearly, and asks for help when expected behavior is unclear.
-- Clarify acceptance criteria and investigate ambiguous behavior.
-- Design positive, negative, and boundary scenarios around user workflows.
-- Capture reproducible defects and verify fixes with product and engineering.
+Manual Testing, Test Cases, Functional Testing, Regression Testing, Sanity Testing, Agile Methodology, SDLC, STLC, AI-SDLC, SQL, JIRA, Xray (Basic), ChatGPT, GitHub Copilot, AI-Assisted Testing, Prompt Engineering, Claude Desktop (Basic), HITL Testing, No-code API Testing with GenAI, Selenium, Playwright (Basic), Analytical Skills, Testing Tools, Web Technologies, User Acceptance Testing
 
-## Core skills
+## Work Experience
 
-- Test design and boundary analysis
-- Exploratory testing
-- Web and REST API validation
-- Postman and browser developer tools
-- SQL data checks
-- Defect reporting and retesting
+### Junior Manual Tester
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Basic scripting and a small automation suite
-- Domain-specific workflows
-- AI-assisted scenario drafting with human review
+1 year of hands-on experience as a Junior Manual Tester at a mid-sized software development company in Bangalore. Focused on testing web applications and mobile apps, contributing to a 20% reduction in post-release defects through meticulous test execution and defect reporting.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Create, execute, and maintain manual test cases and test scripts
+- Perform functional, regression, sanity, and user acceptance testing
+- Identify, document, and track software defects and issues
+- Collaborate with development teams to understand requirements and provide feedback
+- Participate in agile development processes and sprint planning
+- Analyze test results and provide detailed reports on software quality
+- Ensure compliance with testing standards and best practices
+- Assist in the preparation of test plans and test strategies
+- Use AI tools (ChatGPT, GitHub Copilot) to generate test cases, edge case scenarios, and test data for efficient coverage
+- Apply prompt engineering to create exploratory test charters and validate AI-generated feature outputs
 
-### Checkout and payment-state investigation - practical example
+## Project Experience
 
-Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+### E-commerce Website Testing
 
-- Evidence: A risk-based test charter and scenario matrix
-- Evidence: Defect evidence with expected versus actual behavior
-- Evidence: API collections and SQL checks linked to the workflow
+Contributed to testing the comprehensive e-commerce platform, executing 200+ test cases covering user registration, login, shopping cart, payment processing, and order tracking. Identified and reported 50+ defects, including security vulnerabilities, ensuring a seamless user experience. Technologies: JIRA, SQL, Selenium.
 
-### Checkout and payment-state investigation - failure investigation
+### Mobile Banking App Testing
 
-Extend the example with one failure or change relevant to checkout and payment-state investigation. Explain how it was detected, investigated, corrected, and checked again.
+Performed end-to-end manual testing for a banking application's mobile version, focusing on usability, functional flows, and compliance with banking regulations. Conducted cross-device testing on Android and iOS platforms, validating features like fund transfers, bill payments, and account management. Technologies: JIRA, SQL, User Acceptance Testing.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### API Testing for Fintech Platform
 
-## Evidence to prepare
+Executed manual API testing for a financial technology platform's REST endpoints, validating data flows, error handling, and integration with third-party services. Created detailed test scenarios for authentication, transaction processing, and data synchronization. Technologies: SQL, JIRA, Functional Testing.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Assisted Test Case Suite for Banking Portal
 
-Use only your own verified qualifications and measured outcomes.
+Leveraged ChatGPT and GitHub Copilot to generate comprehensive test case suites covering edge cases, negative scenarios, and boundary value analysis for a banking portal. Used prompt engineering to draft test plans 3x faster, reviewed outputs for quality, and integrated into JIRA. Technologies: ChatGPT, GitHub Copilot, Prompt Engineering, JIRA, Manual Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Tech in Computer Science from Bangalore Institute of Technology, Bangalore (2019-2023, 8.2 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level Certification (In Progress), Certified Scrum Master (CSM) Foundation
 
-- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Recognized as "Rising Star Tester" in Q4 2023 for exceptional defect detection rate; Contributed to achieving 95% test case execution coverage in major release cycles; Active participant in company-wide quality improvement initiatives

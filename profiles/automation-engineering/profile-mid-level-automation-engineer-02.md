@@ -1,76 +1,73 @@
-# Automation Quality Analyst
+# Saloni Shah
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Automation Quality Analyst | 4 years experience | Surat, Gujarat
 
-**Example experience:** 4 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Business-critical workflow automation
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on business-critical workflow automation.
-- Demonstrates typescript and playwright, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Experienced Automation Quality Analyst with 4 years of expertise in combining domain testing with automation
+- Proficient in BDD frameworks and implementing automated test scenarios
+- Skilled in Playwright for end-to-end automation and quality assurance
+- Experienced in maintaining automated test reports and dashboards
+- Knowledgeable in ensuring testable requirements and BDD alignment
+- Familiar with test automation for CRM modules and business workflows
+- Collaborative professional working with product teams on acceptance criteria
+- Strong analytical skills for test result analysis and improvement
 
-## Responsibilities
+## Technical Skills
 
-- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
-- Choose a small repeatable regression slice based on product risk.
-- Refactor duplication and keep test data independent between cases.
-- Document maintenance decisions and diagnose application versus test failures.
+Playwright, Cucumber, BDD Frameworks, JavaScript, TypeScript, Test Automation, Test Reporting, Dashboards, CRM Testing, API Testing, CI/CD, Git, Agile, Scrum, GitHub Copilot, Test Maintenance, Applitools, k6, LLM Feature Acceptance Testing, AI-Enhanced Reporting, RAGAS (Basic), Playwright Fixtures, Network Interception, Page Object Model
 
-## Core skills
+## Work Experience
 
-- TypeScript and Playwright
-- JavaScript/TypeScript or Java fundamentals
-- API checks and deterministic setup
-- Stable locators and assertions
-- Git and CI execution
-- Test maintenance and failure triage
+### Automation Quality Analyst
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Visual regression where it adds value
-- Component testing
-- AI-assisted test authoring with code review
+4 years of experience as an Automation Quality Analyst at software firms in Surat. Focused on BDD-driven automation, test reporting, and ensuring quality in releases.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Implement BDD scenarios and automated test cases
+- Maintain automated test reports and dashboards
+- Ensure testable requirements and BDD alignment
+- Collaborate with product teams on acceptance criteria
+- Analyze test results and provide quality insights
+- Support automation framework maintenance
+- Document automation processes and best practices
+- Train team members on BDD and automation tools
+- Use GitHub Copilot for AI-assisted Gherkin and step definition generation, implement stable locators in Playwright, validate AI feature acceptance with automated LLM output quality checks
 
-### Business-critical workflow automation - practical example
+## Project Experience
 
-Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+### CRM Module BDD Automation
 
-- Evidence: A test suite with independent cases
-- Evidence: A locator or synchronization issue and its verified fix
-- Evidence: A CI report with failed-test evidence
+Implemented BDD scenarios for CRM module using Cucumber and Playwright, enabling clear acceptance criteria and automated validation. Technologies: Cucumber, Playwright, JavaScript, CI/CD.
 
-### Business-critical workflow automation - failure investigation
+### Test Reporting Dashboard
 
-Extend the example with one failure or change relevant to business-critical workflow automation. Explain how it was detected, investigated, corrected, and checked again.
+Developed automated test reports and dashboards, providing real-time metrics for quality tracking and decision-making. Technologies: Test Reporting Tools, Dashboards, API Testing.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Product Requirements Automation
 
-## Evidence to prepare
+Worked with product teams to ensure testable requirements, implementing automation for user stories and acceptance tests. Technologies: BDD Frameworks, Playwright, Agile.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI Feature BDD Automation with GitHub Copilot
 
-Use only your own verified qualifications and measured outcomes.
+Used GitHub Copilot to generate Cucumber feature files and Playwright step definitions for an AI personalization engine on CRM module. Implemented Applitools visual checks for the AI-generated UI and RAGAS-inspired acceptance metrics for recommendation quality. Created live dashboards tracking AI feature quality gates. Technologies: Playwright, Cucumber, GitHub Copilot, Applitools, RAGAS, BDD Frameworks, CI/CD, LLM Feature Acceptance Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Sc. in Information Technology from Gujarat University, Ahmedabad (2018-2021, 8.3 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Advanced Level - Test Automation, BDD Specialist Certification, Playwright Certified
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Implemented BDD automation increasing test coverage by 50%; Created dashboards reducing manual reporting by 60%; Awarded "Automation Quality" for CRM testing excellence; Led automation for 5+ product releases

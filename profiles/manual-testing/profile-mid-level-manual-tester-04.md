@@ -1,76 +1,75 @@
-# Functional Tester
+# Rahul Modi
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Functional Tester | 4 years experience | Surat, India
 
-**Example experience:** 4 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Cross-browser functional coverage
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on cross-browser functional coverage.
-- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Experienced Functional Tester with 4 years specializing in comprehensive manual testing methodologies
+- Proficient in executing functional, regression, and integration testing across web and mobile applications
+- Skilled in creating detailed test cases, test scripts, and test execution plans
+- Experienced in defect tracking, bug lifecycle management, and providing clear reproduction steps
+- Adept at user acceptance testing and validating business requirements against system behavior
+- Knowledgeable in backend testing, database validation, and API testing using manual approaches
+- Collaborative tester who works closely with development teams for requirement clarification
+- Strong focus on test documentation, traceability matrices, and quality assurance processes
 
-## Responsibilities
+## Technical Skills
 
-- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
-- Clarify acceptance criteria and investigate ambiguous behavior.
-- Design positive, negative, and boundary scenarios around user workflows.
-- Capture reproducible defects and verify fixes with product and engineering.
+JIRA, Bugzilla, TestRail, Xray, Zephyr, Bugasura, SQL, MySQL, PostgreSQL, Git, SVN, Postman, Chrome DevTools, Firefox Developer Tools, Android Studio, Xcode, Confluence, Google Docs, Selenium (Basic), Playwright (Basic), SDLC, STLC, AI-SDLC, Agile, Waterfall, GitHub Copilot, ChatGPT, AI-Assisted Testing, Prompt Engineering, LLM Feature Validation, Claude Desktop, MCP Integration, HITL Testing, Bias Testing, Hallucination Detection, Prompt Injection Testing
 
-## Core skills
+## Work Experience
 
-- Test design and boundary analysis
-- Exploratory testing
-- Web and REST API validation
-- Postman and browser developer tools
-- SQL data checks
-- Defect reporting and retesting
+### Functional Tester
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Basic scripting and a small automation suite
-- Domain-specific workflows
-- AI-assisted scenario drafting with human review
+4 years in manual testing with strong expertise in functional validation, defect management, and quality assurance processes. Career focused on ensuring software reliability through thorough testing approaches, working in agile environments, and collaborating with cross-functional teams.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Execute manual test cases for functional, regression, and integration testing
+- Create and maintain detailed test cases, scripts, and execution plans
+- Identify, document, and track software defects with clear reproduction steps
+- Perform user acceptance testing and validate business requirements
+- Collaborate with developers and stakeholders for requirement understanding
+- Analyze test results and provide comprehensive test summary reports
+- Maintain test documentation, traceability matrices, and test environments
+- Participate in test planning, strategy development, and sprint planning
+- Assist in automation testing initiatives and tool evaluations
+- Ensure adherence to testing standards, SDLC, and STLC processes
+- Use AI tools (GitHub Copilot, ChatGPT) to generate test cases, validate AI-feature outputs, and apply prompt engineering for faster test design and coverage optimization
 
-### Cross-browser functional coverage - practical example
+## Project Experience
 
-Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+### Billing System Validation
 
-- Evidence: A risk-based test charter and scenario matrix
-- Evidence: Defect evidence with expected versus actual behavior
-- Evidence: API collections and SQL checks linked to the workflow
+Conducted comprehensive functional testing for billing and reconciliation modules in financial software. Technologies: JIRA, SQL, Postman, Excel. Identified 40+ critical defects and ensured 100% requirement coverage.
 
-### Cross-browser functional coverage - failure investigation
+### E-Commerce Platform Testing
 
-Extend the example with one failure or change relevant to cross-browser functional coverage. Explain how it was detected, investigated, corrected, and checked again.
+Performed end-to-end testing for e-commerce platform including payment flows and user journeys. Technologies: TestRail, MySQL, Browser DevTools, JIRA. Improved checkout success rate by 25% through detailed bug reporting.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Mobile App Feature Testing
 
-## Evidence to prepare
+Executed functional testing for mobile application features across Android and iOS platforms. Technologies: Android Studio, Xcode, Bugzilla, Confluence. Ensured cross-platform compatibility and reduced post-release defects by 60%.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Assisted UAT Validation for E-commerce Platform
 
-Use only your own verified qualifications and measured outcomes.
+Leveraged ChatGPT to generate comprehensive UAT test scenarios from business requirements, covering AI-driven product recommendation outputs and chatbot interaction flows. Validated LLM-generated content for accuracy and consistency, identified 2 hallucination-type defects before release. Technologies: ChatGPT, GitHub Copilot, Prompt Engineering, TestRail, JIRA, Manual Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+Bachelor of Commerce from Veer Narmad South Gujarat University, Surat, India (2019)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level, Certified Scrum Master (CSM), JIRA Administration Certification, SQL Fundamentals Certification, Manual Testing Professional Certification
 
-- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Consistently achieved 95%+ test case execution coverage across projects; Recognized as "Defect Hunter" for identifying critical production issues; Improved team efficiency by 30% through optimized test case management; Led UAT efforts that resulted in zero critical defects in major releases

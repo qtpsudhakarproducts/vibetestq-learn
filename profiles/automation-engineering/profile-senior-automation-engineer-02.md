@@ -1,76 +1,76 @@
-# Senior Automation Engineer
+# Vidya Narayan
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Senior Automation Engineer | 8 years experience | Kolkata, West Bengal
 
-**Example experience:** 8 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Cross-browser reliability and maintainability
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on cross-browser reliability and maintainability.
-- Demonstrates typescript and playwright, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Seasoned Senior Automation Engineer with 8 years of expertise leading automation initiatives and framework development
+- Specialized in designing scalable automation frameworks using Selenium, Playwright, and UiPath for enterprise applications
+- Expert in implementing CI/CD pipelines with comprehensive automation integration using Jenkins, GitHub Actions, and Azure DevOps
+- Proficient in API testing, UI automation, and performance testing with tools like Rest Assured and JMeter
+- Experienced mentor who guides junior engineers in automation best practices and coding standards
+- Skilled in cloud-based testing with AWS, Azure, and Kubernetes for distributed and containerized environments
+- Adept at data-driven testing approaches and test analytics to improve test effectiveness and reliability
+- Collaborative leader who works with cross-functional teams to establish automation strategies and improve coverage
 
-## Responsibilities
+## Technical Skills
 
-- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
-- Choose a small repeatable regression slice based on product risk.
-- Refactor duplication and keep test data independent between cases.
-- Document maintenance decisions and diagnose application versus test failures.
+Selenium, Playwright, UiPath, Robot Framework, pytest, Java, Python, JavaScript, C#, Jenkins, GitHub Actions, Azure DevOps, Rest Assured, Postman, AWS, Azure, GCP, Docker, Kubernetes, SQL, NoSQL, Git, TestNG, JUnit, SpecFlow, BDD, TDD, Agile, Performance Testing, Test Analytics, GitHub Copilot, Applitools, k6, LLM Integration Testing, Agentic Workflow Testing, DeepEval, AI-Powered Test Selection, Test Maintenance, OpenTelemetry, Playwright Fixtures, Network Interception, Page Object Model, Playwright Agents
 
-## Core skills
+## Work Experience
 
-- TypeScript and Playwright
-- JavaScript/TypeScript or Java fundamentals
-- API checks and deterministic setup
-- Stable locators and assertions
-- Git and CI execution
-- Test maintenance and failure triage
+### Senior Automation Engineer
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Visual regression where it adds value
-- Component testing
-- AI-assisted test authoring with code review
+8 years in automation engineering leading initiatives to modernize testing practices and improve software quality. Extensive experience with both traditional and modern automation tools including RPA and AI-assisted testing, with deep expertise in framework architecture and driving adoption across organizations.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Lead automation framework design and development using industry-standard tools
+- Implement and maintain CI/CD pipelines with integrated automation testing
+- Perform comprehensive testing including API, UI, performance, and RPA validation
+- Mentor junior engineers and establish coding standards and best practices
+- Collaborate with teams to identify automation opportunities and improve test strategies
+- Design data-driven testing approaches and implement test analytics
+- Work with cloud platforms and containerization technologies for scalable testing
+- Participate in code reviews and provide feedback on automation potential
+- Drive adoption of modern testing methodologies and tools
+- Contribute to organizational automation strategy and roadmap
+- Lead organizational AI testing transformation: GitHub Copilot program management, Applitools visual AI governance, DeepEval-based LLM testing frameworks, and agentic workflow validation standards at enterprise scale
+- Establish intelligent test infrastructure: ML-based test selection, self-healing automation ecosystems, and OpenTelemetry-integrated AI observability
 
-### Cross-browser reliability and maintainability - practical example
+## Project Experience
 
-Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+### Enterprise ERP Automation Migration
 
-- Evidence: A test suite with independent cases
-- Evidence: A locator or synchronization issue and its verified fix
-- Evidence: A CI report with failed-test evidence
+Led the migration from legacy automation tools to a modern Selenium-based framework for a large ERP system. Technologies: Selenium, Java, TestNG, Jenkins, AWS. Improved test execution speed by 65% and introduced test analytics dashboard.
 
-### Cross-browser reliability and maintainability - failure investigation
+### Cloud-Native Application Test Suite
 
-Extend the example with one failure or change relevant to cross-browser reliability and maintainability. Explain how it was detected, investigated, corrected, and checked again.
+Developed comprehensive test automation for cloud-native applications with microservices architecture. Technologies: Playwright, Python, pytest, GitHub Actions, Azure. Achieved 90% automation coverage and reduced release cycle time by 40%.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### RPA Process Automation
 
-## Evidence to prepare
+Implemented RPA solutions for business process automation and testing workflows. Technologies: UiPath, C#, .NET, UiPath Orchestrator, Azure. Automated 15+ manual processes saving 200+ hours monthly.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI Test Innovation Program
 
-Use only your own verified qualifications and measured outcomes.
+Directed enterprise-wide AI testing transformation: deployed GitHub Copilot for test engineering teams (saving 120+ hours/month), introduced Applitools Eyes for visual AI testing across 5 product lines, implemented DeepEval for LLM feature quality gates, and established agentic workflow testing standards with OpenTelemetry observability. Technologies: GitHub Copilot, Applitools, DeepEval, k6, Agentic Workflow Testing, OpenTelemetry, Playwright, Azure DevOps.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+Master of Science in Computer Science from Jadavpur University, Kolkata, India (2015)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Advanced Level – Test Manager, AWS Certified Solutions Architect - Associate, UiPath RPA Solution Architect Certification, Certified Kubernetes Administrator (CKA), Prince2 Foundation Certification
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Led automation transformation that increased test efficiency by 70% across 5 product lines; Awarded "Innovation Leader" for implementing RPA solutions that saved $500K annually; Published 5 articles on automation frameworks; Successfully mentored 8 engineers who became team leads; Presented at 3 international testing conferences

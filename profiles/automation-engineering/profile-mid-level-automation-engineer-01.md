@@ -1,76 +1,75 @@
-# Automation Engineer - Cypress Specialist
+# Sneha Iyer
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Mid-level Automation Engineer - Cypress Specialist | 4 years experience | Chennai, Tamil Nadu
 
-**Example experience:** 4 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Cypress regression and network behavior
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on cypress regression and network behavior.
-- Demonstrates javascript/typescript and cypress, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Skilled Automation Engineer with 4 years of expertise in designing and implementing test automation frameworks using Cypress
+- Proficient in Java and Python for developing scalable automation scripts and custom testing solutions
+- Experienced in test execution, debugging, and build management for efficient software delivery cycles
+- Knowledgeable in API testing with Rest Assured and BDD frameworks like Cucumber for comprehensive validation
+- Familiar with quality engineering practices, infrastructure automation, and deployment processes
+- Strong analytical skills for troubleshooting automation issues and optimizing performance
+- Collaborative professional working in Agile environments to integrate testing into development workflows
+- Expert in version control with Git and Maven for build management and dependency handling
 
-## Responsibilities
+## Technical Skills
 
-- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
-- Choose a small repeatable regression slice based on product risk.
-- Refactor duplication and keep test data independent between cases.
-- Document maintenance decisions and diagnose application versus test failures.
+Automation Testing, Selenium, Java, Python, Test Execution, Debugging, Build Management, GIT, Maven, API Testing, Rest Assured, BDD, Cucumber, Quality Engineering, Infrastructure, Deployment, Playwright, Cypress, GitHub Actions, MCP, Jenkins, Docker, Kubernetes, YAML, CI/CD, Agile, Test Orchestration, JavaScript, Mocha, API Mocking, GitHub Copilot, Test Maintenance, LLM Integration Testing, k6, AI-Assisted Test Maintenance, TypeScript, Playwright Fixtures, Network Interception, Page Object Model
 
-## Core skills
+## Work Experience
 
-- JavaScript/TypeScript and Cypress
-- JavaScript/TypeScript or Java fundamentals
-- API checks and deterministic setup
-- Stable locators and assertions
-- Git and CI execution
-- Test maintenance and failure triage
+### Mid-level Automation Engineer - Cypress Specialist
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Visual regression where it adds value
-- Component testing
-- AI-assisted test authoring with code review
+4 years of progressive experience as an Automation Engineer at software companies in Chennai, specializing in Cypress-based end-to-end testing frameworks. Developed automation solutions that reduced manual testing efforts by 75% and improved release quality by 60%.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Design and develop automated test frameworks and scripts using Cypress, Selenium, and Playwright for web applications
+- Execute automated test suites and analyze results to identify defects and performance issues
+- Collaborate with development teams to integrate testing into CI/CD pipelines using GitHub Actions and Jenkins
+- Maintain and update existing automation infrastructure, including test environments and build scripts
+- Perform API and UI automation testing with Rest Assured and specialized tools
+- Debug and troubleshoot automation issues, optimizing scripts for reliability and efficiency
+- Document automation processes and best practices for team knowledge sharing
+- Participate in code reviews and provide feedback on testability and automation potential
+- Implement quality engineering practices and infrastructure automation for scalable testing
+- Stay updated with emerging technologies and tools for continuous improvement of automation strategies
+- Use GitHub Copilot for AI-generated test code, implement stable locators, integrate k6 performance testing, and validate LLM-powered features with automated consistency and hallucination checks
 
-### Cypress regression and network behavior - practical example
+## Project Experience
 
-Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+### Single-Page Application Testing
 
-- Evidence: A test suite with independent cases
-- Evidence: A locator or synchronization issue and its verified fix
-- Evidence: A CI report with failed-test evidence
+Designed and implemented comprehensive Cypress test suites for a React-based SPA, including visual regression checks and API mocking. Achieved 95% test coverage with reliable execution in CI/CD pipelines. Technologies: Cypress, JavaScript, Mocha, GitHub Actions, Docker, API Mocking Tools.
 
-### Cypress regression and network behavior - failure investigation
+### E-commerce Platform Automation
 
-Extend the example with one failure or change relevant to cypress regression and network behavior. Explain how it was detected, investigated, corrected, and checked again.
+Developed automated test frameworks for API and UI testing using Cypress and Rest Assured. Integrated with Jenkins for nightly regression testing and performance validation, ensuring seamless user experience. Technologies: Cypress, Java, Rest Assured, Jenkins, Maven, Kubernetes.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Mobile Web Application Testing
 
-## Evidence to prepare
+Created automation scripts for responsive web applications using Cypress with cross-browser testing. Implemented BDD with Cucumber for maintainable test scenarios and CI integration. Technologies: Cypress, Python, Cucumber, GitHub Actions, BrowserStack, API Testing.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Assisted Test Automation Migration
 
-Use only your own verified qualifications and measured outcomes.
+Leveraged GitHub Copilot to migrate 400+ Selenium tests to Playwright TypeScript, generating robust locator strategies and AI-enhanced test code. Integrated k6 performance tests and LLM response validation for a React-based SPA with AI recommendation features. Reduced maintenance overhead by 65%. Technologies: Playwright, TypeScript, GitHub Copilot, Test Maintenance, k6, LLM Integration Testing, MCP, GitHub Actions.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Sc. in Computer Science from University of Madras, Chennai (2017-2020, 8.5 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level, AWS Certified Developer - Associate, Docker Certified Associate
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Awarded "Automation Innovation Award" for Cypress framework implementation; Reduced test execution time by 50% through optimization; Contributed to open-source Cypress plugins used by 200+ developers

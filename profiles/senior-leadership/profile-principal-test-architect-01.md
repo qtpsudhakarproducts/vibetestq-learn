@@ -1,77 +1,75 @@
-# Principal Test Architect
+# Meghna Bose
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Principal Test Architect | 17 years experience | Hyderabad, Telangana
 
-**Example experience:** 17 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Principal technical influence and test architecture
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality leader focused on principal technical influence and test architecture.
-- Demonstrates quality strategy and measurable goals, cross-team influence and stakeholder alignment, delivery-risk and investment decisions through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Seventeen-year principal engineer in test architecture, defining enterprise AI quality standards for a Fortune 500 software company with 30,000 engineers across 14 global development centers
+- Designed the world's first AI Test Pyramid standard adopted as the company's engineering guideline for LLM-powered application testing across 120 AI product teams
+- Architects cross-product LLM evaluation infrastructure processing 2M+ evaluation requests daily using DeepEval, RAGAS, and 8 custom-built metric engine plugins
+- Established the AI Quality Standards Board governing hallucination rate, coherence, safety, and contextual relevancy evaluation criteria across 120 production AI features
+- Patent holder for Distributed LLM Evaluation Orchestration enabling parallel multi-dimension LLM quality assessment at enterprise scale with pluggable evaluator architecture
+- Leads a Principal Architecture team of 3 engineers responsible for AI testing innovation research, standards definition, and proof-of-concept prototyping for agentic systems
+- Principal architect of the company's AI Observability platform built on OpenTelemetry with LLM-specific distributed tracing spans covering token usage, latency, and quality drift signals
+- Expert in agentic test architecture: designed test harnesses for LangGraph and AutoGen-based multi-agent orchestration systems deployed in enterprise customer environments
 
-## Responsibilities
+## Technical Skills
 
-- Provides technical direction across teams as an individual contributor. Builds reference designs, reviews trade-offs, and supports adoption; people management is not implied.
-- Agree quality goals with product and engineering and define how they are evaluated.
-- Develop team capability or technical standards according to the role.
-- Use delivery evidence to prioritize improvements and explain investment trade-offs.
+Enterprise Test Architecture, AI Quality Engineering, LLM Evaluation Architecture, DeepEval, RAGAS, LangSmith, PromptBench, OpenTelemetry, LLM Observability, Cloud Native Testing, Python, TypeScript, Kubernetes, Istio, Docker, GitHub Copilot Enterprise, Self-Healing Automation, k6, Playwright, MCP Protocol, LangGraph, AutoGen, AI Safety Evaluation, Distributed Systems, eBPF, Prometheus, Grafana, ISO 42001
 
-## Core skills
+## Work Experience
 
-- Quality strategy and measurable goals
-- Cross-team influence and stakeholder alignment
-- Delivery-risk and investment decisions
-- Technical or people leadership
-- Capability development
-- Evidence-based improvement
+### Principal Test Architect
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- AI product quality as a portfolio specialization
-- Test platform architecture for technical leaders
-- Organization-specific tooling and governance
+17 years in software engineering with deep specialization in test architecture and AI quality systems. Currently Principal Test Architect at a Fortune 500 technology company (50,000+ employees). Defined global test architecture standards used across all engineering divisions worldwide. Managed quarterly architecture review boards. Led a 3-person Principal Architecture team and contributed directly to the company's AI strategy through the Office of the CTO.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Define enterprise AI quality architecture standards adopted across all engineering divisions globally
+- Chair the AI Quality Standards Board governing LLM evaluation criteria for 120 production AI features
+- Architect and continuously evolve the distributed LLM evaluation platform and AI observability infrastructure
+- Lead Principal Architecture team of 3 for AI testing innovation research and next-generation prototyping
+- Review architecture proposals for AI-powered products at the company's Architecture Review Board
+- Partner with the Office of the CTO on AI safety strategy, responsible AI standards, and model risk governance
+- Represent the company at ISO/IEC and IEEE AI quality standards bodies and industry working groups
+- Publish technical guidance documents, reference architectures, and design patterns for the engineering community
+- Prototype and evaluate emerging AI testing technologies including MCP tool testing and agentic evaluation
+- Mentor senior engineers pursuing principal and staff engineering career paths through structured sponsorship
+- Present AI quality architecture research at major industry conferences and academic institutions
 
-### Principal technical influence and test architecture - practical example
+## Project Experience
 
-Create a quality improvement plan for a product portfolio. Tie proposed changes to observed problems, owners, baseline measures, and review dates.
+### AI Test Pyramid Standard
 
-- Evidence: A roadmap tied to business and delivery outcomes
-- Evidence: A capability plan or technical standards proposal
-- Evidence: A review dashboard with definitions and decision notes
+Authored and socialized the company's global AI Test Pyramid standard defining unit-level LLM component tests, integration-level RAG pipeline tests, and end-to-end agentic workflow tests — adopted as mandatory engineering guideline by 120 AI product teams. Technologies: DeepEval, RAGAS, Python, TypeScript, Architecture Frameworks, Confluence.
 
-### Principal technical influence and test architecture - failure investigation
+### Distributed LLM Evaluation Platform
 
-Extend the example with one failure or change relevant to principal technical influence and test architecture. Explain how it was detected, investigated, corrected, and checked again.
+Architected a distributed LLM evaluation platform processing 2M+ evaluation calls daily with pluggable metrics, multi-model provider support, real-time quality dashboards, and automated regression scoring for model version comparisons. Technologies: Python, Kubernetes, Apache Kafka, DeepEval, Redis, OpenTelemetry, Grafana.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### AI Observability Platform
 
-## Evidence to prepare
+Built LLM observability layer on OpenTelemetry with custom LLM spans tracking token consumption, hallucination rate, response latency, context window utilization, and model version drift across 120 production AI features. Technologies: OpenTelemetry, Python, Jaeger, Prometheus, Grafana, LangSmith.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### Agentic System Test Framework
 
-Use only your own verified qualifications and measured outcomes.
+Designed enterprise-grade behavioral test harness for LangGraph and AutoGen multi-agent pipelines validating tool selection accuracy, loop prevention, goal completion rates, and inter-agent communication protocol correctness. Technologies: LangGraph, AutoGen, Python, DeepEval, Playwright, Pytest, Behavioral Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+M.Tech Computer Science – IIT Hyderabad, 2007; B.Tech CSE – BITS Pilani, 2005; Author: Quality Architecture for LLM Applications – O'Reilly Media, 2025
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Expert Level (CTEL-TAE Advanced); AWS Certified Solutions Architect Professional; Google Professional Cloud Architect; Certified Kubernetes Administrator (CKA); OWASP LLM Security Architecture Expert; ISO/IEC 42001 AI Management Auditor; GitHub Copilot Enterprise Architect
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Patent holder for Distributed LLM Evaluation Orchestration; AI Test Pyramid Standard adopted by 120 product teams globally; O'Reilly book 5-star rated with 200+ enterprise adoptions; Board member of International AI Testing Standards Consortium; IEEE Senior Member; Recognized as Top 10 AI Quality Engineers globally by TestCraft Awards 2024; Google Developer Expert in AI Quality Testing

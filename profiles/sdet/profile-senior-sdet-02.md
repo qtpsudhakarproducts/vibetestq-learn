@@ -1,76 +1,77 @@
-# Senior SDET
+# Mukesh Agarwal
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Senior SDET (Software Development Engineer in Test) | 9 years experience | Kolkata, West Bengal
 
-**Example experience:** 9 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Framework design and service integration
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on framework design and service integration.
-- Demonstrates typescript and playwright, ui and api automation, fixtures and isolated test data through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Accomplished Senior SDET with 9 years of expertise in building scalable test automation frameworks and reliability engineering
+- Proficient in Java, Python, and JavaScript for developing robust automation solutions and custom testing tools
+- Skilled in CI/CD integration, flaky test reduction, and distributed systems testing
+- Experienced in API testing, performance testing, and security testing for microservices architectures
+- Knowledgeable in Agile/Scrum methodologies, TDD, and BDD approaches for quality-driven development
+- Familiar with cloud platforms, containerization, and advanced automation techniques
+- Strong background in framework design, reliability checks, and instrumentation for large-scale applications
+- Collaborative leader adept at mentoring junior engineers and establishing automation best practices
 
-## Responsibilities
+## Technical Skills
 
-- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
-- Write test code that checks business outcomes rather than only element presence.
-- Keep data setup repeatable and investigate failures before adding retries.
-- Review test changes and publish useful diagnostic artifacts in CI.
+Automation Testing, SDET, Java, Selenium, Python, CI/CD, Software Testing, Agile, Test Automation, Rest Assured, Playwright, API Testing, Performance Testing, Microservices, Git, JIRA, TestNG, Framework Design, Framework Development, Development, Quality Assurance, Kotlin, Linux, Automation, TypeScript, JavaScript, Cypress, GitHub Actions, Jenkins, Azure DevOps, BDD, TDD, SQL, Oracle, SQLite, REST, JSON, XML, HTTP, GitHub Copilot, LLM Pipeline Testing, Agentic Workflow Testing, Prompt Injection Testing, DeepEval, OpenTelemetry, AI-Powered Test Selection, Test Maintenance, Playwright Fixtures, Network Interception, Page Object Model, Playwright Agents
 
-## Core skills
+## Work Experience
 
-- TypeScript and Playwright
-- UI and API automation
-- Fixtures and isolated test data
-- Git and code review
-- CI test execution and artifacts
-- Failure diagnosis and meaningful assertions
+### Senior SDET (Software Development Engineer in Test)
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Contract testing for service boundaries
-- Containers and distributed-system testing
-- AI-assisted coding with review and validation
+9 years of experience as a Senior SDET at technology firms in Kolkata, specializing in test framework development and reliability engineering. Led automation initiatives for 15+ projects, improving test reliability by 85% and reducing flaky tests by 70%.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Design, develop, and maintain automated test frameworks and scripts using Selenium, Playwright, Rest Assured, and custom development tools
+- Implement CI/CD pipelines with comprehensive automated testing integration and reliability checks
+- Perform API, performance, security, and integration testing for microservices, web applications, and mobile platforms
+- Lead initiatives for flaky test reduction, retry strategies, and test stability improvements
+- Collaborate with development teams in Agile/Scrum environments to ensure testability and quality throughout the SDLC
+- Develop and execute test strategies for complex distributed systems and cloud-native applications
+- Analyze test results, identify defects, and lead root cause analysis with cross-functional teams
+- Mentor junior SDETs, conduct code reviews, and establish best practices for automation and quality engineering
+- Integrate security testing, vulnerability assessments, and performance monitoring into testing processes
+- Work on advanced automation projects involving AI, machine learning, and enterprise system integrations
+- Contribute to development standards, provide feedback on code quality, and participate in architectural decisions
+- Build AI reliability testing platforms: LLM output validation, agentic workflow testing, ML-based intelligent test selection, prompt injection defenses, and GitHub Copilot-accelerated test engineering at organizational scale
+- Integrate OpenTelemetry observability into AI test execution pipelines for comprehensive trace correlation
 
-### Framework design and service integration - practical example
+## Project Experience
 
-Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+### Distributed Systems Test Framework
 
-- Evidence: A runnable repository with a clear setup guide
-- Evidence: A CI run with trace or log artifacts
-- Evidence: A deliberately broken case caught by a meaningful assertion
+Developed comprehensive test automation framework for distributed microservices using Playwright and Rest Assured. Implemented retry/backoff strategies and observability hooks, achieving 99% test stability in CI pipelines. Technologies: Playwright, Java, Python, Rest Assured, Kubernetes, Jenkins, GitHub Actions.
 
-### Framework design and service integration - failure investigation
+### Flaky Test Reduction Initiative
 
-Extend the example with one failure or change relevant to framework design and service integration. Explain how it was detected, investigated, corrected, and checked again.
+Led cross-team initiative to identify and eliminate flaky tests across 50+ repositories. Implemented intelligent retry mechanisms and environment stabilization, reducing false positives by 80%. Technologies: Selenium, Python, CI/CD, TestNG, JIRA, Monitoring Tools.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### AI-Powered Test Automation
 
-## Evidence to prepare
+Built advanced test framework incorporating AI for smart test case generation and execution. Integrated with cloud platforms for scalable testing of machine learning pipelines. Technologies: Python, Playwright, TensorFlow, AWS, Azure DevOps, Git, Jenkins.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Enhanced Flaky Test Detection and LLM Validation
 
-Use only your own verified qualifications and measured outcomes.
+Built ML-powered test selection system that predicts high-risk tests based on code change patterns, reducing CI time by 45% while maintaining coverage. Extended framework with DeepEval-based LLM output validation and agentic workflow reliability tests for a financial AI assistant platform. Technologies: Python, Playwright, DeepEval, GitHub Copilot, OpenTelemetry, ML-based Test Selection, GitHub Actions, AI Reliability Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Tech in Computer Science and Engineering from Jadavpur University, Kolkata (2012-2016, 9.0 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Advanced Level, AWS Certified Developer - Associate, Certified Kubernetes Administrator (CKA), Certified Scrum Master (CSM)
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Awarded "Reliability Engineering Excellence" for flaky test reduction; Published 4 technical articles on test automation; Led team that achieved 99.9% CI pipeline stability

@@ -1,76 +1,77 @@
-# MCP Integration Developer
+# Kunal Bhatia
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+MCP Integration Developer | 3 years experience | Pune, Maharashtra
 
-**Example experience:** 3 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Software development with tool and workflow validation
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on software development with tool and workflow validation.
-- Demonstrates programming and api fundamentals, json schemas and contract checks, tool input and output validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Innovative MCP Integration Developer with 3 years of experience in building test observability and automation tools
+- Proficient in Node.js, TypeScript, and Playwright for developing robust test integration frameworks
+- Skilled in designing MCP connectors, instrumentation libraries, and debugging utilities for QA teams
+- Experienced in creating playback tools, test runners, and structured logging systems for enhanced observability
+- Knowledgeable in cross-team collaboration, reusable test utilities, and CI/CD integration
+- Familiar with API testing, performance monitoring, and automated test execution environments
+- Strong background in software development practices, version control, and agile methodologies
+- Collaborative developer working with QA engineers to improve testing workflows and reliability
 
-## Responsibilities
+## Technical Skills
 
-- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
-- Verify tool contracts with controlled inputs and explicit expected outcomes.
-- Exercise missing arguments, failures, and incomplete workflows.
-- Review generated code and retain evidence of actual execution.
+MCP, Playwright, Node.js, TypeScript, Integration Testing, Test Observability, Debugging Tools, Test Runners, Structured Logging, API Testing, CI/CD, Git, Docker, Kubernetes, REST APIs, GraphQL, WebSockets, Jest, Express.js, MongoDB, PostgreSQL, LangGraph Testing, Agentic Workflow Testing, MCP Tool-Call Validation, Agent Memory Testing, Multi-Step Tool Reliability, Agent Decision Validation, LLM Agent Loop Testing
 
-## Core skills
+## Work Experience
 
-- Programming and API fundamentals
-- JSON schemas and contract checks
-- Tool input and output validation
-- Error handling and workflow tests
-- Git and code review
-- Execution traces and reproducible examples
+### MCP Integration Developer
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- MCP integration as a project specialization
-- Agent workflow evaluation
-- AI-assisted engineering with reviewed changes
+3 years of experience as an MCP Integration Developer at tech companies in Pune. Developed MCP-based tools that improved test observability by 80% and reduced debugging time by 50% across multiple teams.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Design and develop MCP connectors and instrumentation for test suites and automation frameworks
+- Build playback and debugging tools to enhance QA workflows and issue resolution
+- Create reusable test utilities and libraries for cross-team collaboration
+- Implement structured logging and tracing systems for improved test observability
+- Collaborate with QA teams to integrate MCP tools into existing testing processes
+- Develop API integrations and webhooks for automated test execution and notifications
+- Maintain and update test infrastructure, including CI/CD pipelines and deployment scripts
+- Provide technical support and training for MCP tools and integrations
+- Monitor performance and reliability of MCP-based systems and tools
+- Contribute to open-source projects and community initiatives related to test automation
+- Document APIs, tools, and best practices for team knowledge sharing
+- Stay updated with latest technologies and trends in test automation and observability
+- Validate MCP tool-call sequences, test LangGraph agent workflows, verify agent memory and state persistence, ensure multi-step tool reliability, and test agentic AI loops for correctness and termination safety
 
-### Software development with tool and workflow validation - practical example
+## Project Experience
 
-Build a small tool integration in a local practice repository. Validate inputs and outputs, simulate a failed tool call, and explain recovery behavior.
+### MCP-Based Test Runner with Observability
 
-- Evidence: A tool contract and deterministic examples
-- Evidence: Tests for success, invalid arguments, and errors
-- Evidence: Execution traces with a review checklist
+Built a comprehensive test runner using MCP connectors that captures structured logs, traces, and performance metrics. Integrated with Playwright for end-to-end testing, enabling real-time monitoring and debugging for QA teams. Technologies: MCP, Playwright, Node.js, TypeScript, REST APIs, Docker.
 
-### Software development with tool and workflow validation - failure investigation
+### Cross-Team Test Utilities Library
 
-Extend the example with one failure or change relevant to software development with tool and workflow validation. Explain how it was detected, investigated, corrected, and checked again.
+Developed reusable test utilities and instrumentation libraries for multiple teams, including API mocking, data seeding, and environment management. Created MCP integrations for centralized test execution and reporting. Technologies: Node.js, TypeScript, Express.js, MongoDB, Kubernetes, Jest.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Playback and Debugging Platform
 
-## Evidence to prepare
+Created a playback tool for test failures with MCP instrumentation, allowing QA engineers to replay test scenarios with detailed step-by-step execution. Implemented advanced debugging features and integration with CI/CD pipelines. Technologies: Playwright, MCP, WebSockets, GraphQL, PostgreSQL, Git.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### LangGraph Agent Workflow Testing Framework
 
-Use only your own verified qualifications and measured outcomes.
+Architected comprehensive testing harness for LangGraph-based multi-agent orchestration system, validating tool-call sequences, agent state transitions, memory persistence across turns, and termination safety under adversarial inputs. Built MCP server contract tests for all 12 tool integrations and agentic loop correctness validation under edge conditions. Technologies: LangGraph Testing, Agentic Workflow Testing, MCP Tool-Call Validation, Agent Memory Testing, Node.js, TypeScript, Jest, Docker.
 
-## Continue learning
+## Education
 
-- [AI for Testers](https://academy.vibetestq.com/ai/)
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Tech in Computer Science from College of Engineering Pune, Pune (2018-2022, 8.7 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+MCP Developer Certification, Node.js Certified Developer, Docker Certified Associate
 
-- [MillionLogics · Senior QA Engineer, AI Model Evaluation · Foundit India](https://www.foundit.in/job/senior-qa-engineer-ai-model-evaluation-millionlogics-india-51782705)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Awarded "Innovation in Testing" for MCP test runner development; Contributed to open-source MCP libraries; Reduced test debugging time by 50% through playback tools

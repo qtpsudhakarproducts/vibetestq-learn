@@ -1,75 +1,75 @@
-# Junior SDET
+# Amit Chaudhary
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Junior SDET | 1 years experience | Bengaluru, Karnataka
 
-**Example experience:** 1 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** API validation and service boundaries
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Building practical experience in api validation and service boundaries.
-- Demonstrates typescript and playwright, ui and api automation, fixtures and isolated test data through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Enthusiastic Junior SDET with a solid foundation in automation testing and a passion for developing reliable software solutions
+- Proficient in writing and maintaining automated test scripts using Selenium and Playwright for web application testing
+- Experienced in performing API testing, database testing, and backend testing to ensure data integrity and system reliability
+- Skilled in creating test cases and scenarios for functional and exploratory testing across different platforms
+- Knowledgeable in programming languages such as Java and Python for developing custom test automation frameworks
+- Familiar with CI/CD processes using GitHub Actions to integrate automated testing into development pipelines
+- Adept at collaborating with development teams to understand code changes and implement appropriate test coverage
+- Strong analytical skills for identifying bugs, analyzing test results, and providing detailed defect reports
 
-## Responsibilities
+## Technical Skills
 
-- Works on a defined feature or test slice with review. Builds fundamentals, reports evidence clearly, and asks for help when expected behavior is unclear.
-- Write test code that checks business outcomes rather than only element presence.
-- Keep data setup repeatable and investigate failures before adding retries.
-- Review test changes and publish useful diagnostic artifacts in CI.
+Automation Testing, Test Scripts, Test Cases, Test Scenarios, Coding, Java, Python, Selenium, API Testing, Database Testing, Backend Testing, Exploratory Testing, Web Application Testing, MySQL, MongoDB, Mobile Automation, White Box Testing, SDLC, Agile, GitHub Actions, Playwright, Cypress, MCP (Model Context Protocol), GitHub Copilot, Test Maintenance, LLM Integration Testing, AI-Assisted Test Generation, Playwright Fixtures, Network Interception, Page Object Model
 
-## Core skills
+## Work Experience
 
-- TypeScript and Playwright
-- UI and API automation
-- Fixtures and isolated test data
-- Git and code review
-- Reading CI reports and failure artifacts
-- Failure diagnosis and meaningful assertions
+### Junior SDET
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Contract testing for service boundaries
-- AI-assisted coding with review and validation
+1 year of hands-on experience as a Junior SDET at a software development company in Bengaluru. Focused on building automated test frameworks and executing comprehensive testing strategies, contributing to improved software quality and faster release cycles.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Develop and maintain automated test scripts and frameworks using Selenium, Playwright, and Cypress
+- Perform API testing, database testing, and backend testing to validate system functionality
+- Collaborate with developers to understand code changes and create appropriate automated tests
+- Execute automated test suites and analyze test results for defects and performance issues
+- Identify and report bugs, working closely with teams to resolve issues efficiently
+- Participate in code reviews and provide feedback on code testability and quality
+- Assist in continuous integration and deployment processes using GitHub Actions
+- Learn and apply new testing tools and methodologies, including MCP and advanced automation techniques
+- Document test procedures, maintain test environments, and ensure compliance with SDLC standards
+- Contribute to agile development processes, participating in sprint planning and daily stand-ups
+- Use GitHub Copilot for AI-assisted test code generation, adopt stable locators, and build LLM integration tests for AI-powered application features
 
-### API validation and service boundaries - practical example
+## Project Experience
 
-Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+### E-commerce Web Application Automation
 
-- Evidence: A runnable repository with a clear setup guide
-- Evidence: A CI run with trace or log artifacts
-- Evidence: A deliberately broken case caught by a meaningful assertion
+Developed automated test scripts using Selenium and Java for an e-commerce platform, covering user registration, login, and checkout processes. Performed API testing with Postman and database validation using MySQL, identifying and reporting 30+ defects. Technologies: Selenium, Java, API Testing, MySQL, JIRA.
 
-### API validation and service boundaries - failure investigation
+### Mobile App Testing Framework
 
-Extend the example with one failure or change relevant to api validation and service boundaries. Explain how it was detected, investigated, corrected, and checked again.
+Created a basic automation framework using Playwright for a mobile-responsive web application, implementing test scenarios for cross-device compatibility and user interactions. Integrated with GitHub Actions for continuous testing. Technologies: Playwright, JavaScript, GitHub Actions, Mobile Automation.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Backend API Testing Suite
 
-## Evidence to prepare
+Built automated tests for REST APIs using Python and requests library, validating data flows, error handling, and integration with MongoDB. Conducted exploratory testing and white box testing to ensure backend reliability. Technologies: Python, API Testing, MongoDB, Backend Testing.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI Feature Automation with GitHub Copilot
 
-Use only your own verified qualifications and measured outcomes.
+Used GitHub Copilot to generate Playwright test scripts for an AI-powered product search feature, validating intelligent ranking results, typo-tolerance, and semantic search accuracy. Implemented MCP-based observability hooks for real-time test monitoring and failure replay. Technologies: Playwright, GitHub Copilot, MCP, JavaScript, GitHub Actions, LLM Integration Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Tech in Computer Science from BMS College of Engineering, Bengaluru (2019-2023, 8.5 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level Certification, Certified Scrum Master (CSM) Foundation
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Recognized as "Emerging Talent" in Q2 2024 for quick adaptation to automation tools; Contributed to reducing regression testing time by 40% through script optimization; Active participant in internal tech talks on testing best practices

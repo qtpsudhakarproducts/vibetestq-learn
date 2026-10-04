@@ -1,77 +1,76 @@
-# QA Director
+# Ramesh Iyer
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+QA Director | 16 years experience | Chennai, Tamil Nadu
 
-**Example experience:** 16 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Quality strategy across product teams
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality leader focused on quality strategy across product teams.
-- Demonstrates quality strategy and measurable goals, cross-team influence and stakeholder alignment, delivery-risk and investment decisions through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Sixteen-year quality engineering leader directing a 65-person global QA organization across product engineering, cloud platforms, and AI-powered features in an enterprise SaaS company
+- Transformed the QA organization from a traditional testing team to an AI-native quality center within 18 months, achieving the industry's first AI Testing Maturity Score of Level 4 in India
+- Owns the company's AI Quality Governance framework mandating AI safety testing, LLM evaluation gates, and OWASP LLM Top 10 compliance for every AI feature before production deployment
+- Secured $2.4M in engineering investment for AI testing tooling, cloud test infrastructure, and team upskilling programs including DeepEval, LangSmith, and Garak deployments
+- Drives C-suite quality reporting with AI quality metrics dashboard covering hallucination rates, model drift indicators, defect prediction accuracy, and automation ROI metrics
+- Led the company's EU AI Act compliance readiness assessment and testing program covering 14 AI-powered features across EU-regulated markets in financial services and healthcare
+- Established Quality Engineering as a Platform strategy providing shared AI testing services, automation frameworks, and quality APIs to 12 product squads as internal customers
+- Reduced post-release critical defects by 78% over 3 years through risk-based testing, AI defect prediction models, and enforced quality gates in the CI/CD pipeline
 
-## Responsibilities
+## Technical Skills
 
-- Works across product teams or an organization. Sets direction and investment priorities, supports leaders, and evaluates outcomes beyond individual test execution.
-- Agree quality goals with product and engineering and define how they are evaluated.
-- Develop team capability or technical standards according to the role.
-- Use delivery evidence to prioritize improvements and explain investment trade-offs.
+QA Strategy, Quality Governance, AI Testing Governance, Team Leadership, Budget Management, Risk Management, Stakeholder Management, Agile Transformation, AI Quality Gates, DeepEval, LLM Quality SLAs, OpenTelemetry, GitHub Copilot Enterprise, OWASP LLM Top 10, EU AI Act Compliance, Azure DevOps, Jira Align, Executive Reporting, OKR Framework, Lean Six Sigma, PMP, ISTQB Expert
 
-## Core skills
+## Work Experience
 
-- Quality strategy and measurable goals
-- Cross-team influence and stakeholder alignment
-- Delivery-risk and investment decisions
-- Technical or people leadership
-- Capability development
-- Evidence-based improvement
+### QA Director
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- AI product quality as a portfolio specialization
-- Test platform architecture for technical leaders
-- Organization-specific tooling and governance
+16 years in quality engineering managing progressively larger organizations from QA Lead (3 engineers) to QA Director (65 engineers) across banking, insurance, and enterprise SaaS domains. Managed QA P&L of Rs. 8.5Cr annually. Reported to the VP Engineering in a 4,000-person global technology organization. Oversaw quality engineering for products generating $180M ARR across enterprise and mid-market customer segments.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Direct a 65-person global QA organization structured across 5 domain teams: functional, automation, AI quality, performance, and security testing
+- Define AI quality strategy and governance framework aligned to company AI product roadmap and EU AI Act obligations
+- Own AI testing governance policy: hallucination rate SLAs, safety evaluation gates, and LLM red teaming calendar
+- Manage Rs. 8.5Cr annual QA budget across tooling procurement, cloud infrastructure, talent acquisition, and training
+- Present quality health metrics, defect trends, AI risk assessments, and regulatory compliance status to VP Engineering and CEO
+- Represent QA on company AI Ethics Committee and Enterprise Architecture Review Board for strategic decisions
+- Partner with CISO on AI security testing strategy, OWASP LLM Top 10 compliance, and vulnerability disclosure
+- Drive Agile transformation and quality maturity improvements using Lean principles across 12 product squads
+- Lead executive talent management including QA Director and Manager hiring, succession planning, and retention
+- Define 3-year quality engineering technology roadmap aligned to the company's AI-first product strategy
+- Negotiate enterprise contracts with test tool vendors, cloud platform providers, and AI evaluation tool companies
+- Chair quarterly QA Community of Practice for knowledge sharing, innovation showcasing, and cross-team alignment
 
-### Quality strategy across product teams - practical example
+## Project Experience
 
-Create a quality improvement plan for a product portfolio. Tie proposed changes to observed problems, owners, baseline measures, and review dates.
+### AI Quality Governance Framework
 
-- Evidence: A roadmap tied to business and delivery outcomes
-- Evidence: A capability plan or technical standards proposal
-- Evidence: A review dashboard with definitions and decision notes
+Built the company's AI quality governance framework mandating DeepEval-based acceptance criteria, OWASP LLM Top 10 security gates, and AI ethics review checklists for all 14 AI-powered product features. Technologies: DeepEval, RAGAS, LangSmith, OWASP LLM Top 10, Governance Workflow Automation.
 
-### Quality strategy across product teams - failure investigation
+### EU AI Act Compliance Testing Program
 
-Extend the example with one failure or change relevant to quality strategy across product teams. Explain how it was detected, investigated, corrected, and checked again.
+Led the company's EU AI Act readiness assessment across 14 AI features, defining test coverage for high-risk AI obligations covering transparency, data quality validation, human oversight verification, and bias detection. Technologies: Risk Assessment Frameworks, DeepEval, RAGAS, Compliance Dashboards, Explainability Testing.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Quality Engineering Platform
 
-## Evidence to prepare
+Transformed QA from a project-based team to a platform model providing shared automation frameworks, AI evaluation APIs, and testing infrastructure to 12 product squads with SLA-backed service delivery. Technologies: GitHub Actions, API Gateway, DeepEval, Playwright, OpenTelemetry, Service Catalog.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### AI Defect Prediction System
 
-Use only your own verified qualifications and measured outcomes.
+Deployed ML-based defect prediction models in the CI pipeline using historical defect data, code change patterns, and test coverage metrics, reducing critical defect escapes to production by 78% over 3 years. Technologies: Python, Scikit-learn, JIRA API, GitHub Actions, OpenTelemetry, MLflow.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+M.Tech Software Engineering – IIT Madras, 2008; B.Tech CSE – Anna University, 2006; Executive Leadership Program – IIM Chennai, 2019
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Expert Level – Advanced Test Manager (CTEL-ATT); PMP – Project Management Professional; Lean Six Sigma Black Belt; AWS Solutions Architect Professional; Certified SAFe Program Consultant (SPC6); GitHub Copilot Enterprise Administrator
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Named India's Top 25 QA Leaders by Software Testing Planet 2024; Reduced critical production defects by 78% in 3 years; Quality Engineering Platform adopted by all 12 product squads; Secured $2.4M AI testing investment approval; First Indian SaaS company to achieve Level 4 AI Testing Maturity Score; Invited board member for AI Ethics Committee

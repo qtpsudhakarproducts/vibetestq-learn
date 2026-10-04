@@ -1,76 +1,78 @@
-# UAT Coordinator
+# Anita Desai
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+UAT Coordinator | 7 years experience | Mumbai, Maharashtra
 
-**Example experience:** 7 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Business acceptance and sign-off coordination
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on business acceptance and sign-off coordination.
-- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Experienced UAT Coordinator with 7 years of expertise in managing user acceptance testing for enterprise applications
+- Proficient in UAT planning, stakeholder management, and coordinating testing activities across business teams
+- Skilled in defect triage, test reporting, and ensuring compliance with acceptance criteria
+- Experienced in onboarding participants, managing testing schedules, and facilitating sign-off processes
+- Knowledgeable in agile methodologies, requirement validation, and user story acceptance
+- Familiar with test management tools, defect tracking systems, and reporting dashboards
+- Strong communication skills for liaising between business users, developers, and QA teams
+- Expert in risk assessment, contingency planning, and managing UAT in complex environments
 
-## Responsibilities
+## Technical Skills
 
-- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
-- Clarify acceptance criteria and investigate ambiguous behavior.
-- Design positive, negative, and boundary scenarios around user workflows.
-- Capture reproducible defects and verify fixes with product and engineering.
+UAT Planning, Stakeholder Management, Defect Triage, Test Reporting, JIRA, Confluence, TestRail, Xray, Bugasura, HP ALM, Agile, Scrum, User Story Validation, Acceptance Criteria, Risk Assessment, Test Management, SQL, Excel, PowerPoint, SharePoint, Microsoft Teams, Zoom, ChatGPT, GitHub Copilot, AI-Assisted UAT, LLM Feature Acceptance Testing, Prompt Engineering, AI-SDLC, Claude Desktop, MCP Integration, HITL Testing, Bias Testing, Hallucination Detection
 
-## Core skills
+## Work Experience
 
-- Test design and boundary analysis
-- Exploratory testing
-- Web and REST API validation
-- Postman and browser developer tools
-- SQL data checks
-- Defect reporting and retesting
+### UAT Coordinator
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Basic scripting and a small automation suite
-- Domain-specific workflows
-- AI-assisted scenario drafting with human review
+7 years of experience as a UAT Coordinator at multinational corporations in Mumbai. Managed UAT for 20+ major releases, ensuring 100% stakeholder satisfaction and reducing post-release defects by 40%.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Plan and coordinate UAT cycles, including scheduling, resource allocation, and participant management
+- Develop UAT test plans, scripts, and acceptance criteria based on business requirements
+- Onboard and train business users on UAT processes and tools
+- Validate user stories and ensure alignment with business needs
+- Monitor test execution, track progress, and manage timelines
+- Perform defect triage, prioritization, and escalation to development teams
+- Generate comprehensive test reports and status updates for stakeholders
+- Facilitate sign-off meetings and ensure resolution of critical issues
+- Collaborate with QA, development, and business teams throughout the testing lifecycle
+- Implement best practices for UAT management and continuous improvement
+- Manage UAT environments, data setup, and access controls
+- Provide feedback on software quality and usability to product teams
+- Coordinate UAT for AI-powered features: define LLM output acceptance criteria, facilitate AI assistant testing sessions, and validate agentic workflow behavior with business users
+- Leverage ChatGPT and AI tools to accelerate UAT documentation, test scenario generation, and stakeholder communication
 
-### Business acceptance and sign-off coordination - practical example
+## Project Experience
 
-Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+### Enterprise ERP Rollout UAT
 
-- Evidence: A risk-based test charter and scenario matrix
-- Evidence: Defect evidence with expected versus actual behavior
-- Evidence: API collections and SQL checks linked to the workflow
+Coordinated UAT for a comprehensive ERP system implementation across 10 departments and 500+ users. Managed participant onboarding, test execution, and defect resolution, achieving timely sign-off and successful go-live. Technologies: JIRA, Confluence, TestRail, Agile, SharePoint.
 
-### Business acceptance and sign-off coordination - failure investigation
+### Financial Services Platform UAT
 
-Extend the example with one failure or change relevant to business acceptance and sign-off coordination. Explain how it was detected, investigated, corrected, and checked again.
+Led UAT coordination for a banking platform upgrade, validating business workflows and compliance requirements. Facilitated cross-functional collaboration and risk mitigation, ensuring zero critical defects in production. Technologies: HP ALM, Excel, Microsoft Teams, SQL, PowerPoint.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### E-commerce Website UAT
 
-## Evidence to prepare
+Managed UAT for a major e-commerce platform redesign, focusing on user experience and functionality validation. Coordinated with business stakeholders and development teams, delivering comprehensive test reports and recommendations. Technologies: JIRA, Test Management Tools, Zoom, Confluence, Agile.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Powered Chatbot UAT Coordination
 
-Use only your own verified qualifications and measured outcomes.
+Coordinated UAT for an enterprise AI assistant (LLM-based) deployed across 6 business units. Defined acceptance criteria for conversation quality, hallucination safeguards, and task completion rates. Onboarded 200+ business users for structured AI feature acceptance testing, facilitating sign-off with zero critical issues. Technologies: ChatGPT, GitHub Copilot, Prompt Engineering, JIRA, Confluence, AI Feature Testing, LLM Validation.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+BBA from University of Mumbai, Mumbai (2014-2017, 8.2 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+Certified Scrum Master (CSM), ISTQB Foundation Level, UAT Coordinator Certification
 
-- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Recognized as "UAT Excellence Award" winner for ERP rollout success; Improved UAT efficiency by 30% through process optimization; Led UAT for projects with 1000+ participants

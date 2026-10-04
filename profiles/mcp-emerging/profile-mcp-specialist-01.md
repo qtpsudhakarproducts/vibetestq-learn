@@ -1,77 +1,75 @@
-# Junior SDET - AI Tool Integration
+# Kavita Joshi
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Junior SDET (Software Development Engineer in Test) - MCP Specialist | 2 years experience | Mumbai, Maharashtra
 
-**Example experience:** 2 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Junior SDET learning AI tool integration
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Building practical experience in junior sdet learning ai tool integration.
-- Demonstrates programming and api fundamentals, json schemas and contract checks, tool input and output validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Dedicated Junior SDET with 2 years of experience in automation testing and framework development using Playwright
+- Proficient in Java, Python, and JavaScript for developing test scripts and automation solutions
+- Skilled in Selenium, API testing, database testing, and backend testing for comprehensive validation
+- Experienced in exploratory testing, web application testing, and white box testing methodologies
+- Knowledgeable in SDLC, Agile processes, and version control with GitHub Actions
+- Familiar with Playwright, Cypress, and MCP for advanced test automation and observability
+- Strong analytical skills for debugging test failures and optimizing automation performance
+- Collaborative team player working with developers to integrate testing into development workflows
 
-## Responsibilities
+## Technical Skills
 
-- Works on a defined feature or test slice with review. Builds fundamentals, reports evidence clearly, and asks for help when expected behavior is unclear.
-- Verify tool contracts with controlled inputs and explicit expected outcomes.
-- Exercise missing arguments, failures, and incomplete workflows.
-- Review generated code and retain evidence of actual execution.
+Automation Testing, Test Scripts, Test Cases, Test Scenarios, Coding, Java, Python, Selenium, API Testing, Database Testing, Backend Testing, Exploratory Testing, Web Application Testing, MySQL, MongoDB, Mobile Automation, White Box Testing, SDLC, Agile, GitHub Actions, Playwright, Cypress, MCP, Node.js, Observability, Test Automation, JavaScript, MCP Protocol Testing, Agent Behavior Validation, Tool-Call Contract Testing, LangGraph Testing, GitHub Copilot, Self-Healing Selectors, Agentic UI Testing
 
-## Core skills
+## Work Experience
 
-- Programming and API fundamentals
-- JSON schemas and contract checks
-- Tool input and output validation
-- Error handling and workflow tests
-- Git and code review
-- Execution traces and reproducible examples
+### Junior SDET (Software Development Engineer in Test) - MCP Specialist
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- MCP integration as a project specialization
-- Agent workflow evaluation
-- AI-assisted engineering with reviewed changes
-- MCP is an emerging specialization; it is not a baseline requirement for all junior SDET jobs.
+2 years of hands-on experience as a Junior SDET at tech startups in Mumbai, specializing in Playwright automation and MCP integrations. Developed test suites that improved UI testing reliability by 70% and reduced flaky scenarios by 50%.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Develop and maintain automated test scripts and frameworks using Playwright, Selenium, and MCP
+- Perform API testing, database testing, and backend testing for application validation
+- Collaborate with developers to understand code changes and create appropriate automated tests
+- Execute automated test suites and analyze results for defects and performance issues
+- Identify and report bugs, working with teams to resolve issues and improve code quality
+- Participate in code reviews and provide feedback on testability and automation potential
+- Assist in continuous integration and deployment processes using GitHub Actions
+- Learn and apply new testing tools and methodologies, including MCP and observability
+- Document test procedures and maintain test environments for reliable execution
+- Troubleshoot CI test failures and implement solutions for flaky test scenarios
+- Validate MCP protocol compliance, test LangGraph agent behaviors, verify tool-call contract schemas, use GitHub Copilot for accelerated test generation, and apply stable locators for resilient agentic UI automation
 
-### Junior SDET learning AI tool integration - practical example
+## Project Experience
 
-Build a small tool integration in a local practice repository. Validate inputs and outputs, simulate a failed tool call, and explain recovery behavior.
+### MCP-Based Test Harness
 
-- Evidence: A tool contract and deterministic examples
-- Evidence: Tests for success, invalid arguments, and errors
-- Evidence: Execution traces with a review checklist
+Implemented comprehensive test automation framework using Playwright with MCP integrations for visual and accessibility checks. Created observability hooks for real-time test monitoring and failure analysis. Technologies: Playwright, MCP, Node.js, JavaScript, GitHub Actions, Observability Tools.
 
-### Junior SDET learning AI tool integration - failure investigation
+### E-commerce Web Application Testing
 
-Extend the example with one failure or change relevant to junior sdet learning ai tool integration. Explain how it was detected, investigated, corrected, and checked again.
+Developed automated test scripts for user workflows, API validation, and cross-browser compatibility using Playwright. Integrated MCP for enhanced test reporting and troubleshooting. Technologies: Playwright, Python, API Testing, Selenium, GitHub Actions.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Mobile App Automation
 
-## Evidence to prepare
+Created test suites for mobile web applications using Playwright and MCP, focusing on responsive design and accessibility compliance. Implemented CI integration for nightly regression testing. Technologies: Playwright, MCP, JavaScript, Mobile Testing Tools, Cypress.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### MCP Agent Protocol Compliance Testing
 
-Use only your own verified qualifications and measured outcomes.
+Built comprehensive protocol compliance test suite for an MCP server powering a multi-agent customer service platform, validating tool-call JSON schema contracts, agent state machine transitions, error recovery behaviors, and conversation memory persistence. Used GitHub Copilot to accelerate test script generation. Implemented LangGraph agent interaction tests for multi-hop orchestration reliability. Technologies: MCP Protocol Testing, Agent Behavior Validation, Tool-Call Contract Testing, LangGraph Testing, GitHub Copilot, Self-Healing Selectors, Playwright, Node.js.
 
-## Continue learning
+## Education
 
-- [AI for Testers](https://academy.vibetestq.com/ai/)
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+BE in Electronics and Telecommunication from University of Mumbai, Mumbai (2019-2023, 8.6 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level, MCP Fundamentals Certification
 
-- [MillionLogics · Senior QA Engineer, AI Model Evaluation · Foundit India](https://www.foundit.in/job/senior-qa-engineer-ai-model-evaluation-millionlogics-india-51782705)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Recognized as "Rising Automation Talent" for MCP integration implementation; Reduced test flakiness by 50% in e-commerce project; Active contributor to internal testing tools library

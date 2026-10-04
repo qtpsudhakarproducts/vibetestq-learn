@@ -95,7 +95,7 @@ def build():
     ], 'four'), True, '<a href="/upcoming-trainings.html">View batch schedule →</a>')
     body += section('sessions', 'Live learning', 'Upcoming live online training.', 'Starts November 10, 2026. Contact us on WhatsApp to join. Times are shown in IST.', sessions(trainings, 2), more='<a href="/upcoming-trainings.html">See all sessions →</a>')
     body += section('preparation', 'Prepare for your next step', 'Career Preparation.', 'Explore role expectations, build evidence of your skills, and prepare to explain your work.', cards([
-        ('Career examples', 'Sample QA profiles', 'Explore 57 sample profiles across QA roles and experience levels, with skills, projects, and responsibilities.', '/profiles/', 'Browse sample profiles'),
+        ('Sample resumes', 'Sample QA profiles', 'Browse 57 complete resume examples by role and experience, with summaries, skills, work experience, and projects.', '/profiles/', 'Browse sample profiles'),
         ('Study', 'Interview preparation', 'Browse questions and explanations across Quality Engineering topics.', '/iqs/', 'Browse questions'),
     ], 'two'), True, '<a href="/career-preparation/">Explore Career Preparation →</a>')
     body += '''<section class="ap-section"><div class="ap-wrap"><div class="ap-next"><div><span class="ap-eyebrow">Start with one topic</span><h2>Your next learning step is here.</h2><p>Open the library, choose a track, and work through it at your pace.</p></div><a class="ap-button" href="/learn/">Open Learning Library →</a></div><p class="ap-fine">Looking for the TAMASH product? Visit the <a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company website ↗</a>.</p></div></section>'''

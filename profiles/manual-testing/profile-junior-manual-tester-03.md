@@ -1,76 +1,74 @@
-# Quality Associate
+# Fatima Khan
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Quality Associate | 2 years experience | Patna, Bihar
 
-**Example experience:** 2 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Support ticket and notification workflows
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Building practical experience in support ticket and notification workflows.
-- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Dedicated Quality Associate with 2 years of experience supporting manual testing activities and learning automation fundamentals
+- Proficient in executing manual test cases and documenting results accurately
+- Skilled in reporting defects with clear steps for reproduction and severity assessment
+- Experienced in maintaining test documentation, logs, and test case repositories
+- Knowledgeable in supporting test environment setup and configuration
+- Familiar with cross-browser testing and UI enhancement validation
+- Collaborative team player assisting senior QA members in various testing tasks
+- Actively building AI-SDLC awareness — applying GenAI tools for test case generation, edge-case ideation, and AI-assisted defect descriptions
 
-## Responsibilities
+## Technical Skills
 
-- Works on a defined feature or test slice with review. Builds fundamentals, reports evidence clearly, and asks for help when expected behavior is unclear.
-- Clarify acceptance criteria and investigate ambiguous behavior.
-- Design positive, negative, and boundary scenarios around user workflows.
-- Capture reproducible defects and verify fixes with product and engineering.
+Manual Testing, Test Case Execution, Defect Reporting, JIRA, TestRail, SQL, Browser Testing Tools, UI Validation, Documentation Tools, Basic Automation (Selenium), Agile, Scrum, Communication Tools, ChatGPT, GitHub Copilot, AI-Assisted Testing, Prompt Engineering, AI-SDLC, HITL Testing
 
-## Core skills
+## Work Experience
 
-- Test design and boundary analysis
-- Exploratory testing
-- Web and REST API validation
-- Postman and browser developer tools
-- SQL data checks
-- Defect reporting and retesting
+### Quality Associate
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Basic scripting and a small automation suite
-- Domain-specific workflows
-- AI-assisted scenario drafting with human review
+2 years of experience as a Quality Associate at a software development firm in Patna. Focused on manual testing support, defect management, and learning automation basics.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Execute manual test cases and document test results
+- Report defects with detailed reproduction steps and severity levels
+- Maintain test documentation and update test case repositories
+- Support test environment setup and configuration
+- Assist in cross-browser and cross-device testing
+- Collaborate with team members on testing tasks and knowledge sharing
+- Learn and apply basic automation concepts and tools
+- Ensure compliance with testing standards and procedures
+- Use ChatGPT and GitHub Copilot for test scenario generation, defect description improvement, and exploratory test charter creation
+- Apply AI-SDLC principles and HITL review practices to validate AI-generated test outputs for quality and completeness
 
-### Support ticket and notification workflows - practical example
+## Project Experience
 
-Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+### UI Enhancements Testing
 
-- Evidence: A risk-based test charter and scenario matrix
-- Evidence: Defect evidence with expected versus actual behavior
-- Evidence: API collections and SQL checks linked to the workflow
+Assisted in testing UI enhancements for a web application, performing cross-browser checks and validating visual consistency across devices. Technologies: Browser Testing Tools, JIRA, Manual Testing.
 
-### Support ticket and notification workflows - failure investigation
+### Mobile App Feature Testing
 
-Extend the example with one failure or change relevant to support ticket and notification workflows. Explain how it was detected, investigated, corrected, and checked again.
+Supported testing of new features in a mobile app, executing test cases and reporting defects for timely fixes. Technologies: TestRail, SQL, Mobile Testing Tools.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### E-commerce Platform Validation
 
-## Evidence to prepare
+Helped validate user flows and functionality for an e-commerce platform, ensuring smooth checkout and payment processes. Technologies: Manual Testing, Defect Reporting, Agile.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Assisted Test Scenario Design
 
-Use only your own verified qualifications and measured outcomes.
+Practiced using ChatGPT to generate test scenarios for web form validations, identifying additional edge cases not captured in original requirements. Created prompt templates for consistent test case drafting, improving defect discovery rate by 25% during feature validation cycles. Technologies: ChatGPT, Prompt Engineering, Manual Testing, JIRA.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+BCA from Patna University, Patna (2019-2022, 8.0 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level (In Progress), Basic Software Testing Certification
 
-- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Recognized for thorough defect reporting in UI testing; Contributed to 95% test case execution coverage; Active participant in team knowledge sharing sessions

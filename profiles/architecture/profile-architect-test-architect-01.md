@@ -1,78 +1,77 @@
-# Test Architect
+# Vikram Rao
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Test Architect | 12 years experience | Bangalore, Karnataka
 
-**Example experience:** 12 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Test architecture and quality feedback across services
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on test architecture and quality feedback across services.
-- Demonstrates test-layer and coverage design, software design and code review, api contracts and integration boundaries through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Accomplished Test Architect with 12 years of expertise in designing comprehensive QA strategies and automation frameworks for enterprise-scale applications
+- Proficient in quality engineering, technical leadership, and performance testing across diverse technology stacks
+- Skilled in test automation using Selenium, Playwright, and generative AI-driven testing approaches
+- Experienced in Azure Cloud, automation testing, and data management for scalable testing solutions
+- Knowledgeable in Python, artificial intelligence, and framework design for modern application architectures
+- Familiar with SAP, Tosca, architecture principles, and UX testing methodologies
+- Strong background in solution architecture, data migration, and consulting for complex projects
+- Expert in test design, prototyping, wireframing, and user experience validation
 
-## Responsibilities
+## Technical Skills
 
-- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
-- Choose test boundaries based on failure risk and feedback needs.
-- Document trade-offs and provide a small reference implementation.
-- Help product teams adopt and maintain the design through review and feedback.
+Quality Engineering, Technical Leadership, Performance Testing, Test Automation, Test Architecture, Generative AI, Azure Cloud, Automation Testing, Databricks, Python, Framework Design, Test Strategy, SAP, Tosca, BDD, Appium, Selenium, Playwright, Data Migration, Data Management, Test Design, UX, Usability Testing, Prototyping, Wireframing, Automation Framework, CI/CD, Kubernetes, REST, JUnit, Load Testing, SAP Sales and Distribution, Agile, React, Git, DeepEval, RAGAS, LangSmith, LLM Evaluation Architecture, AI Observability Frameworks, Agentic System Testing, AI Test Pyramid, LLM Quality Gates, RAG Validation Architecture, AI Safety Evaluation, OpenTelemetry
 
-## Core skills
+## Work Experience
 
-- Test-layer and coverage design
-- Software design and code review
-- API contracts and integration boundaries
-- Test data and environment architecture
-- CI feedback and failure diagnostics
-- Technical decision communication
+### Test Architect
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Distributed-system test strategy
-- Performance and resilience specialization
-- AI-assisted engineering standards
+12 years of leadership experience as a Test Architect at multinational corporations in Bangalore, designing QA strategies for 50+ projects across cloud, AI, and enterprise domains. Architected automation frameworks that improved testing efficiency by 80% and reduced time-to-market by 40%.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Architect comprehensive QA strategies and automation frameworks for complex software projects and products
+- Lead quality engineering efforts, providing technical leadership and guidance on testing methodologies
+- Design and implement performance testing strategies for high-load applications and systems
+- Collaborate with development teams to integrate AI-driven testing and automation into CI/CD pipelines
+- Evaluate and select testing tools, frameworks, and technologies for long-term QA roadmap
+- Design test architectures for cloud-based solutions, data platforms, and enterprise applications
+- Lead UX testing, usability assessments, and user experience validation for software products
+- Architect solution designs for data migration, management, and integration testing
+- Provide consulting and presales support for QA strategy and test planning
+- Mentor teams and establish best practices for quality assurance and testing excellence
+- Research and implement emerging technologies like generative AI and advanced automation
+- Ensure compliance with industry standards and regulatory requirements for quality management
+- Architect LLM evaluation frameworks using DeepEval + RAGAS + LangSmith, design AI test pyramids for agentic systems, implement LLM quality gates in CI/CD, establish AI observability with OpenTelemetry, govern RAG pipeline validation, and set enterprise AI safety evaluation standards
 
-### Test architecture and quality feedback across services - practical example
+## Project Experience
 
-Design a reference test architecture for a multi-service product. Demonstrate a critical path and explain what belongs in unit, API, contract, and UI checks.
+### Organization-Wide Test Automation Framework
 
-- Evidence: Architecture decisions and alternatives considered
-- Evidence: A working reference implementation
-- Evidence: An adoption guide with ownership and maintenance rules
+Designed and implemented a comprehensive test automation framework using Selenium, Playwright, and AI-driven testing for 20+ products. Established standards for CI/CD integration, test data management, and quality metrics. Technologies: Selenium, Playwright, Python, Azure Cloud, Data Bricks, Generative AI, CI/CD, Kubernetes.
 
-### Test architecture and quality feedback across services - failure investigation
+### SAP Implementation Testing Architecture
 
-Extend the example with one failure or change relevant to test architecture and quality feedback across services. Explain how it was detected, investigated, corrected, and checked again.
+Architected QA strategy for SAP Sales and Distribution module implementation, including performance testing, load testing, and IVR system validation. Led team of 15 testers through complex data migration and integration testing. Technologies: SAP, Tosca, Load Testing Tools, Azure, Data Migration, REST, JUnit.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### AI-Driven Analytics Platform
 
-## Evidence to prepare
+Designed testing architecture for generative AI platform, focusing on model validation, UX testing, and performance optimization. Implemented automated testing for natural language processing and user experience workflows. Technologies: Python, Artificial Intelligence, React, UX Testing, Prototyping, Wireframing, Azure Cloud.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### Enterprise LLM Test Architecture and AI Quality Gates
 
-Use only your own verified qualifications and measured outcomes.
+Architected comprehensive enterprise AI testing framework for a Fortune 500 generative AI platform, designing the LLM evaluation layer using DeepEval + RAGAS + LangSmith, defining the AI test pyramid (unit prompt tests → integration chain tests → system behavioral tests → production shadow evaluation), implementing AI quality gates in CI/CD, and establishing OpenTelemetry observability for agentic workflow monitoring. Governed AI safety evaluation standards and RAG pipeline validation architecture for 8 LLM-powered applications. Technologies: DeepEval, RAGAS, LangSmith, LLM Evaluation Architecture, AI Observability Frameworks, Agentic System Testing, AI Test Pyramid, LLM Quality Gates, OpenTelemetry, Azure Cloud, Python.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+M.Tech in Software Engineering from Indian Institute of Science, Bangalore (2009-2011, 9.2 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+Certified Test Architect (CTA), AWS Certified Solutions Architect - Professional, Certified Scrum Master (CSM), SAP Testing Certification
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Awarded "Architectural Excellence Award" for organization-wide framework design; Published 10+ articles on test architecture; Led QA transformation that achieved 99.9% system reliability

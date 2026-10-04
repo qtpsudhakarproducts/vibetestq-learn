@@ -1,76 +1,73 @@
-# Regression Test Engineer
+# Gitanjali Saxena
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Regression Test Engineer | 3 years experience | Bhopal, Madhya Pradesh
 
-**Example experience:** 3 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Regression selection and suite maintenance
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on regression selection and suite maintenance.
-- Demonstrates typescript and playwright, javascript/typescript or java fundamentals, api checks and deterministic setup through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Dedicated Regression Test Engineer with 3 years of experience maintaining stable application behavior
+- Proficient in planning and executing regression test suites
+- Skilled in automation maintenance and release gating processes
+- Experienced in analyzing test failures and coordinating fixes
+- Knowledgeable in prioritizing test cases for nightly runs
+- Familiar with reducing false positives in regression testing
+- Collaborative professional working with development teams
+- Strong attention to detail for identifying regression issues
 
-## Responsibilities
+## Technical Skills
 
-- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
-- Choose a small repeatable regression slice based on product risk.
-- Refactor duplication and keep test data independent between cases.
-- Document maintenance decisions and diagnose application versus test failures.
+Regression Testing, Test Automation, Selenium, Playwright, TypeScript, TestNG, JIRA, CI/CD, SQL, Test Management Tools, Bug Tracking, Release Management, Performance Testing Basics, GitHub Copilot, Test Maintenance, AI-Powered Test Selection, k6, Playwright Fixtures, Network Interception, Page Object Model
 
-## Core skills
+## Work Experience
 
-- TypeScript and Playwright
-- JavaScript/TypeScript or Java fundamentals
-- API checks and deterministic setup
-- Stable locators and assertions
-- Git and CI execution
-- Test maintenance and failure triage
+### Regression Test Engineer
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Visual regression where it adds value
-- Component testing
-- AI-assisted test authoring with code review
+3 years of experience as a Regression Test Engineer at software companies in Bhopal. Focused on maintaining regression suites, analyzing failures, and ensuring release quality.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Plan and maintain regression test suites
+- Execute regression tests and analyze results
+- Coordinate fixes for identified issues
+- Prioritize test cases for efficient execution
+- Maintain automation scripts and frameworks
+- Report regression testing status and metrics
+- Collaborate with teams on release readiness
+- Optimize testing processes for better coverage
+- Use GitHub Copilot for AI-generated regression test code, implement stable locators, and apply AI-powered smart test selection to optimize CI/CD regression execution time
 
-### Regression selection and suite maintenance - practical example
+## Project Experience
 
-Build an automated regression slice with repeatable setup and clear assertions. Add a failure report that makes investigation practical.
+### Nightly Regression Suite Optimization
 
-- Evidence: A test suite with independent cases
-- Evidence: A locator or synchronization issue and its verified fix
-- Evidence: A CI report with failed-test evidence
+Optimized nightly regression suite, reducing false positives by 40% and improving execution reliability. Technologies: Selenium, TestNG, CI/CD.
 
-### Regression selection and suite maintenance - failure investigation
+### Release Gating Process
 
-Extend the example with one failure or change relevant to regression selection and suite maintenance. Explain how it was detected, investigated, corrected, and checked again.
+Implemented release gating with regression testing, preventing defective releases and ensuring stability. Technologies: JIRA, Test Management Tools, SQL.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Failure Analysis and Coordination
 
-## Evidence to prepare
+Analyzed regression failures, coordinated with developers for fixes, and maintained test suite health. Technologies: Bug Tracking, CI/CD, Performance Testing.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Powered Regression Suite Optimization
 
-Use only your own verified qualifications and measured outcomes.
+Implemented machine learning-based test selection model that analyzes code change impact and selects the minimal high-risk test subset, reducing nightly regression runtime by 55%. Used GitHub Copilot to refactor 200+ flaky Selenium tests to self-healing Playwright TypeScript. Technologies: Playwright, TypeScript, GitHub Copilot, Test Maintenance, AI-Powered Test Selection, CI/CD.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Tech in Information Technology from MANIT Bhopal, Bhopal (2019-2023, 8.0 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level, Regression Testing Specialist, Selenium Automation Certification
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Reduced regression false positives by 40%; Optimized suite runtime by 30%; Awarded "Regression Excellence" for suite maintenance; Implemented automated regression reporting

@@ -1,8 +1,4 @@
-"""Render role-focused career examples from profiles/profiles.json.
-
-Run after build-academy.py. Existing profile URLs and Markdown downloads are kept.
-The JSON is editorial content; refresh the research before changing its review date.
-"""
+﻿"""Build the sample resume directory and printable resumes from profiles.json."""
 from pathlib import Path
 import html
 import json
@@ -12,79 +8,90 @@ spec = importlib.util.spec_from_file_location('academy_builder', Path(__file__).
 academy = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(academy)
 page, section, cards = academy.page, academy.section, academy.cards
-
 ROOT = Path(__file__).resolve().parents[1]
 E = html.escape
 
 
 def bullets(items):
-    return '<ul class="cp-list">' + ''.join('<li>' + E(x) + '</li>' for x in items) + '</ul>'
+    return '<ul>' + ''.join('<li>' + E(x) + '</li>' for x in items) + '</ul>'
 
 
-def build():
-    data = json.loads((ROOT / 'profiles/profiles.json').read_text(encoding='utf-8'))
-    profiles, categories, sources = data['profiles'], data['categories'], data['sources']
-    career_intro = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">VibeTestQ Academy</span><h1>Career Preparation.<br><span>Show what you can do.</span></h1><p class="ap-lead">Understand the role you want, build evidence of your skills, and practice explaining your decisions. Use the examples to plan your next learning step.</p></div></section>'''
-    career_intro += section('resources', 'Prepare with purpose', 'Two ways to get started.', '', cards([
-        ('Role examples', 'Sample QA profiles', 'Explore 57 illustrative profiles with focused skills, ownership, project ideas, and evidence to prepare.', '/profiles/', 'Browse sample profiles'),
-        ('Interview study', 'Interview Preparation', 'Work through Quality Engineering questions and explanations, then practice with examples from your own experience.', '/iqs/', 'Browse interview questions')
-    ], 'two'), True)
-    page('career-preparation/index.html', 'Career Preparation | VibeTestQ Academy', 'Explore sample QA profiles, interview questions, project evidence, and learning next steps.', career_intro, 'career')
-    decorate('career-preparation/index.html')
-    intro = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Career Preparation</span><h1>Sample QA profiles.<br><span>Find your next step.</span></h1><p class="ap-lead">Explore role expectations, practical skills, and project ideas across Quality Engineering. Compare the examples with your experience and choose what to build next.</p><p class="cp-note">These are illustrative learning examples, not real candidates or vacancies. Experience ranges describe the examples; employers use different titles and expectations.</p><div class="ap-actions"><a class="ap-button secondary" href="/career-preparation/">Career Preparation</a></div></div></section>'''
-    options = ''.join(f'<option value="{E(k)}">{E(v["label"])}</option>' for k, v in categories.items())
-    filters = f'''<div class="cp-filters"><div><label for="profile-search">Search roles, skills, or project topics</label><input id="profile-search" type="search" placeholder="Try API, Playwright, data, or leadership"></div><div><label for="profile-category">Role family</label><select id="profile-category"><option value="all">All role families</option>{options}</select></div><div><label for="profile-level">Experience level</label><select id="profile-level"><option value="all">All levels</option><option value="junior">Junior</option><option value="mid">Mid-level</option><option value="senior">Senior</option><option value="lead">Lead / manager</option><option value="exec">Principal / leadership</option></select></div><button type="button" class="ap-button secondary" id="profile-reset">Reset filters</button></div><p id="profile-count" role="status" aria-live="polite">57 sample profiles</p><p id="profile-empty" hidden>No profiles match. Try another role family or clear the filters.</p>'''
-    directory = []
-    for p in profiles:
-        search = ' '.join([p['role'], p['focus'], *p['core'], *p['optional'], *(x['title'] for x in p['projects'])]).lower()
-        directory.append(f'''<article class="ap-card cp-card" data-category="{E(p['category'])}" data-level="{E(p['level'])}" data-search="{E(search, quote=True)}"><span class="ap-tag">{E(p['levelLabel'])} · {E(p['experience'])}</span><h3><a href="/profiles/{E(p['path'])}">{E(p['role'])}</a></h3><p>{E(p['focus'])}</p><p class="cp-skills">{' · '.join(E(x) for x in p['core'][:4])}</p><a href="/profiles/{E(p['path'])}">View sample profile →</a></article>''')
-    body = intro + section('examples', 'Choose a role', 'Build a profile you can explain.', 'Core skills, optional specializations, and evidence are separate in every example.', filters + '<div class="ap-grid three">' + ''.join(directory) + '</div>', True)
-    page('profiles/index.html', 'Sample QA Profiles | VibeTestQ Academy', 'Explore 57 illustrative Quality Engineering profiles, role expectations, portfolio projects, and learning next steps.', body, 'career')
-    decorate('profiles/index.html', directory=True)
-
-    for p in profiles:
-        family = categories[p['category']]
-        intro = f'''<section class="ap-hero"><div class="ap-wrap"><a href="/profiles/">← Sample QA Profiles</a><p class="ap-eyebrow">{E(family['label'])} · {E(p['levelLabel'])}</p><h1>{E(p['role'])}</h1><p class="ap-lead">{E(p['focus'])}</p><p class="cp-note">Illustrative profile · {E(p['experience'])} of example experience · Reviewed October 4, 2026. This is a learning example, not a real candidate or a hiring requirement.</p></div></section>'''
-        content = section('summary', 'Profile example', 'A focused professional summary.', '', bullets(p['summary']), True)
-        content += section('scope', 'Ownership at this level', 'What this role takes responsibility for.', '', '<p>' + E(p['scope']) + '</p>' + bullets(p['responsibilities']))
-        content += section('skills', 'Demonstrable skills', 'Core skills and optional specialization.', 'The primary stack is one example. Equivalent tools can fit another employer; list only what you can demonstrate.', '<div class="ap-grid two"><article class="ap-card"><h3>Core skills for this example</h3>' + bullets(p['core']) + '</article><article class="ap-card"><h3>Optional / role-dependent</h3>' + bullets(p['optional']) + '</article></div>', True)
-        portfolio = ''.join(f'<article class="ap-card"><span class="ap-tag">Portfolio idea</span><h3>{E(x["title"])}</h3><p>{E(x["description"])}</p><h4>Evidence to prepare</h4>{bullets(x["evidence"])}</article>' for x in p['projects'])
-        content += section('portfolio', 'Show the work', 'Two projects to discuss in an interview.', 'These are suggested projects, not claims of completed employment or measured results.', '<div class="ap-grid two">' + portfolio + '</div>')
-        content += section('evidence', 'Make it credible', 'Explain your contribution.', '', bullets(p['evidence']) + '<p>Replace these examples with your own work. Include measured outcomes only when you have a baseline, a method, and evidence. Add education or certifications only if they are yours.</p>', True)
-        learning = [(tag, title, text, url, 'Explore resource') for tag, title, text, url in family['learning']]
-        content += section('next', 'Build the missing skills', 'Continue in Academy.', 'These resources support part of this role. Specialist skills may require additional study and hands-on work.', cards(learning))
-        content += '<p class="ap-wrap"><a href="' + E(Path(p['path']).name.replace('.html', '.md')) + '" download>Download this example as Markdown</a></p>'
-        path = 'profiles/' + p['path']
-        page(path, p['role'] + ' | Sample QA Profile | VibeTestQ Academy', p['focus'], intro + content, 'career')
-        decorate(path)
-        write_markdown(p, family, sources)
-
-    (ROOT / 'career-preparation/job-market.html').write_text('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=/career-preparation/"><link rel="canonical" href="https://academy.vibetestq.com/career-preparation/"><title>Career Preparation | VibeTestQ Academy</title></head><body><p>Continue to <a href="/career-preparation/">Career Preparation</a>.</p></body></html>\n', encoding='utf-8')
+def resume_section(title, content):
+    return '<section class="resume-section"><h2>' + E(title) + '</h2>' + content + '</section>'
 
 
 def decorate(path, directory=False):
     file = ROOT / path
     source = file.read_text(encoding='utf-8')
-    extra = '<link rel="stylesheet" href="/assets/academy/profiles.css?v=20261004.1">'
+    extra = '<link rel="stylesheet" href="/assets/academy/profiles.css?v=20261005.1">'
     if directory:
-        extra += '<script defer src="/assets/academy/profiles.js?v=20261004.1"></script>'
+        extra += '<script defer src="/assets/academy/profiles.js?v=20261005.1"></script>'
     file.write_text(source.replace('</head>', extra + '</head>'), encoding='utf-8')
 
 
-def write_markdown(p, family, sources):
-    text = f'# {p["role"]}\n\nIllustrative learning example; not a real candidate. Reviewed October 4, 2026.\n\n'
-    text += f'**Example experience:** {p["experience"]}\n\n**Focus:** {p["focus"]}\n\n'
-    for title, items in [('Professional summary', p['summary']), ('Responsibilities', [p['scope'], *p['responsibilities']]), ('Core skills', p['core']), ('Optional / role-dependent', p['optional'])]:
-        text += '## ' + title + '\n\n' + ''.join('- ' + x + '\n' for x in items) + '\n'
-    text += '## Suggested portfolio projects\n\nThese are ideas, not completed-work claims.\n\n'
-    for x in p['projects']:
-        text += '### ' + x['title'] + '\n\n' + x['description'] + '\n\n' + ''.join('- Evidence: ' + e + '\n' for e in x['evidence']) + '\n'
-    text += '## Evidence to prepare\n\n' + ''.join('- ' + x + '\n' for x in p['evidence'])
-    text += '\nUse only your own verified qualifications and measured outcomes.\n\n## Continue learning\n\n'
-    text += ''.join(f'- [{title}](https://academy.vibetestq.com{url})\n' for _, title, _, url in family['learning'])
-    text += '\n## Research context\n\nAcademy editorial synthesis; requirements vary by employer.\n\n'
-    text += ''.join(f'- [{sources[k]["title"]}]({sources[k]["url"]})\n' for k in family['sources'])
-    (ROOT / 'profiles' / Path(p['path']).with_suffix('.md')).write_text(text, encoding='utf-8')
+def write_markdown(p):
+    r = p['resume']
+    text = f'# {r["name"]}\n\n{p["role"]} | {p["experience"]} experience | {r["location"]}\n\n'
+    text += 'Sample resume with fictional details. Replace the content with your own experience and qualifications.\n\n'
+    text += 'Email: [Your email] | Phone: [Your phone]\nLinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]\n\n'
+    text += '## Professional Summary\n\n' + ''.join('- ' + x + '\n' for x in r['summary'])
+    text += '\n## Technical Skills\n\n' + ', '.join(r['technologies']) + '\n'
+    text += '\n## Work Experience\n\n### ' + p['role'] + '\n\n[Company name] | [Start date - End date]\n\n' + r['experience'] + '\n\n'
+    text += '### Responsibilities\n\n' + ''.join('- ' + x + '\n' for x in r['responsibilities'])
+    text += '\n## Project Experience\n\n'
+    for x in r['projects']:
+        title, separator, description = x.partition(': ')
+        text += '### ' + title + '\n\n' + (description if separator else x) + '\n\n'
+    for title, key in [('Education', 'education'), ('Certifications', 'certifications'), ('Achievements', 'achievements')]:
+        if r[key]:
+            text += '## ' + title + '\n\n' + r[key] + '\n\n'
+    (ROOT / 'profiles' / Path(p['path']).with_suffix('.md')).write_text(text.rstrip() + '\n', encoding='utf-8')
+
+
+def build():
+    data = json.loads((ROOT / 'profiles/profiles.json').read_text(encoding='utf-8'))
+    profiles, categories = data['profiles'], data['categories']
+    career = '<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">VibeTestQ Academy</span><h1>Career Preparation.<br><span>Profiles &amp; interview practice.</span></h1><p class="ap-lead">Browse sample QA resumes or prepare with interview questions.</p></div></section>'
+    career += section('resources', 'Choose a resource', 'Two ways to get started.', '', cards([
+        ('Sample resumes', 'Sample QA profiles', 'Browse 57 resume examples by role and experience, with professional summaries, skills, work experience and projects.', '/profiles/', 'Browse sample profiles'),
+        ('Interview study', 'Interview Preparation', 'Review Quality Engineering questions and explanations.', '/iqs/', 'Browse interview questions')
+    ], 'two'), True)
+    page('career-preparation/index.html', 'Career Preparation | VibeTestQ Academy', 'Sample QA resumes and interview preparation resources.', career, 'career')
+    decorate('career-preparation/index.html')
+    intro = '<section class="ap-hero resume-directory-hero"><div class="ap-wrap"><span class="ap-eyebrow">Sample resumes</span><h1>Sample QA profiles.</h1><p class="ap-lead">Browse complete resume examples for QA, automation, SDET and test leadership roles. Choose a role and experience level, then open a sample to see how it is written.</p><p class="ap-fine">57 samples. Print or save as PDF, or download editable Markdown. Names and details are fictional; adapt the sample to your own experience.</p></div></section>'
+    options = ''.join(f'<option value="{E(k)}">{E(v["label"])}</option>' for k, v in categories.items())
+    filters = f'<div class="cp-filters"><div><label for="profile-search">Search roles or skills</label><input id="profile-search" type="search" placeholder="Try Playwright, API or test lead"></div><div><label for="profile-category">Role family</label><select id="profile-category"><option value="all">All role families</option>{options}</select></div><div><label for="profile-level">Experience level</label><select id="profile-level"><option value="all">All levels</option><option value="junior">Junior</option><option value="mid">Mid-level</option><option value="senior">Senior</option><option value="lead">Lead / manager</option><option value="exec">Principal / leadership</option></select></div><button type="button" class="ap-button secondary" id="profile-reset">Reset filters</button></div><p id="profile-count" role="status" aria-live="polite">57 sample profiles</p><p id="profile-empty" hidden>No profiles match. Try another role family or clear the filters.</p>'
+    directory = []
+    for p in profiles:
+        r = p['resume']
+        search = ' '.join([r['name'], p['role'], *r['technologies']]).lower()
+        skills = ' &middot; '.join(E(x) for x in r['technologies'][:6])
+        directory.append(f'<article class="ap-card cp-card" data-category="{E(p["category"])}" data-level="{E(p["level"])}" data-search="{E(search, quote=True)}"><span class="ap-tag">{E(p["levelLabel"])} &middot; {E(p["experience"].replace("1 years", "1 year"))}</span><h3><a href="/profiles/{E(p["path"])}">{E(p["role"])}</a></h3><p class="cp-sample-name">{E(r["name"])} &middot; Sample resume</p><p class="cp-skills">{skills}</p><a class="ap-button secondary" href="/profiles/{E(p["path"])}">View sample resume</a></article>')
+    body = intro + '<section class="ap-section white resume-directory-list" id="examples"><div class="ap-wrap">' + filters + '<div class="ap-grid three">' + ''.join(directory) + '</div></div></section>'
+    page('profiles/index.html', 'Sample QA Profiles & Resumes | VibeTestQ Academy', 'Browse 57 complete sample resumes for QA, automation, SDET, specialist and test leadership roles. Print, save as PDF or download editable Markdown.', body, 'career')
+    decorate('profiles/index.html', directory=True)
+    for p in profiles:
+        r = p['resume']
+        md = E(Path(p['path']).name.replace('.html', '.md'))
+        actions = f'<div class="ap-wrap resume-toolbar"><a href="/profiles/">&larr; All sample profiles</a><div><button type="button" class="ap-button" onclick="window.print()">Print / Save as PDF</button><a class="ap-button secondary" href="{md}" download>Download Markdown</a></div></div>'
+        header = f'<header class="resume-heading"><span class="ap-eyebrow">Sample resume</span><h1>{E(r["name"])}</h1><p class="resume-role">{E(p["role"])} &middot; {E(p["experience"].replace("1 years", "1 year"))} experience</p><p>{E(r["location"])}</p><p class="resume-contact">[Your email] &middot; [Your phone]<br>[Your LinkedIn URL] &middot; [Your GitHub / Portfolio URL]</p></header>'
+        main = resume_section('Professional Summary', bullets(r['summary']))
+        main += resume_section('Work Experience', f'<h3>{E(p["role"])}</h3><p class="resume-muted">[Company name] &middot; [Start date &ndash; End date]</p><p>{E(r["experience"])}</p><h3>Responsibilities</h3>' + bullets(r['responsibilities']))
+        projects = ''
+        for x in r['projects']:
+            title, separator, description = x.partition(': ')
+            projects += '<div class="resume-project"><h3>' + E(title) + '</h3><p>' + E(description if separator else x) + '</p></div>'
+        main += resume_section('Project Experience', projects)
+        side = resume_section('Technical Skills', '<div class="resume-tags">' + ''.join('<span>' + E(x) + '</span>' for x in r['technologies']) + '</div>')
+        for title, key in [('Education', 'education'), ('Certifications', 'certifications'), ('Achievements', 'achievements')]:
+            if r[key]:
+                side += resume_section(title, '<p>' + E(r[key]) + '</p>')
+        body = actions + '<div class="ap-wrap"><p class="resume-note">Sample resume with fictional details. Replace the content with your own experience and qualifications.</p><article class="resume-sheet">' + header + '<div class="resume-columns"><div>' + main + '</div><aside aria-label="Skills and qualifications">' + side + '</aside></div></article></div>'
+        path = 'profiles/' + p['path']
+        page(path, r['name'] + ' - ' + p['role'] + ' | Sample Resume | VibeTestQ Academy', 'Sample resume for ' + p['role'] + ' with summary, skills, experience, projects and qualifications.', body, 'career')
+        decorate(path)
+        write_markdown(p)
+    (ROOT / 'career-preparation/job-market.html').write_text('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=/career-preparation/"><link rel="canonical" href="https://academy.vibetestq.com/career-preparation/"><title>Career Preparation | VibeTestQ Academy</title></head><body><p>Continue to <a href="/career-preparation/">Career Preparation</a>.</p></body></html>\n', encoding='utf-8')
 
 
 if __name__ == '__main__':

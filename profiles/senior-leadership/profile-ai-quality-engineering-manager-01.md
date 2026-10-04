@@ -1,77 +1,74 @@
-# AI Quality Engineering Manager
+# Supriya Nair
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+AI Quality Engineering Manager | 12 years experience | Bangalore, Karnataka
 
-**Example experience:** 12 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** AI product evaluation practice and team development
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality leader focused on ai product evaluation practice and team development.
-- Demonstrates quality strategy and measurable goals, cross-team influence and stakeholder alignment, delivery-risk and investment decisions through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Twelve-year quality engineering professional who founded India's first dedicated AI Quality Centre of Excellence within a Series-D SaaS company, managing 10 specialist AI testing engineers
+- Manages a team exclusively focused on LLM evaluation, RAG pipeline testing, agentic workflow validation, hallucination detection, and AI safety for production AI systems
+- Owns the DeepEval and RAGAS evaluation pipeline delivering real-time hallucination, toxicity, context recall, and coherence metrics integrated into CI/CD quality gates
+- Designed the company's AI Red Teaming program aligned with OWASP LLM Top 10, covering 40+ prompt injection, jailbreak, and adversarial scenario test cases
+- Established company AI quality SLAs: hallucination rate below 2%, context recall above 92%, toxicity score below 0.05, maintained across all production LLM features
+- Created India's first OWASP LLM Testing curriculum in partnership with a national QA training institute, reaching 800+ testers in its first year
+- Leads evaluation of agentic AI systems built on LangGraph and AutoGen for tool-call accuracy, behavioral correctness, and goal completion reliability
+- Subject matter expert on responsible AI testing, EU AI Act compliance requirements, and AI ethics evaluation methodology for enterprise AI deployments
 
-## Responsibilities
+## Technical Skills
 
-- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
-- Agree quality goals with product and engineering and define how they are evaluated.
-- Develop team capability or technical standards according to the role.
-- Use delivery evidence to prioritize improvements and explain investment trade-offs.
+AI Testing Strategy, DeepEval, RAGAS, LangSmith, PromptBench, Garak, OWASP LLM Top 10, Hallucination Testing, RAG Pipeline Testing, Agentic Workflow Testing, LangGraph, AutoGen, Python, Playwright, OpenTelemetry, Prompt Injection Testing, Vector DB Testing, Pinecone, Weaviate, AI Safety Evaluation, EU AI Act, Team Leadership, Confluence, JIRA
 
-## Core skills
+## Work Experience
 
-- Quality strategy and measurable goals
-- Cross-team influence and stakeholder alignment
-- Delivery-risk and investment decisions
-- Technical or people leadership
-- Capability development
-- Evidence-based improvement
+### AI Quality Engineering Manager
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- AI product quality as a portfolio specialization
-- Test platform architecture for technical leaders
-- Organization-specific tooling and governance
+12 years in quality engineering progressing from manual QA to SDET to AI testing leadership. For the last 3 years, served as founding manager of the AI QE Centre of Excellence at a Series-D SaaS startup. Owned end-to-end AI testing strategy for products serving 500+ enterprise clients. Managed Rs. 55L annual budget for AI testing tooling and evaluation infrastructure. Reported to the Head of Engineering.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Lead and grow a 10-person AI QE CoE covering LLM evaluation, AI safety, RAG testing, and agentic systems testing
+- Define AI quality SLAs including hallucination rate, toxicity score, context recall, and answer faithfulness targets
+- Own the DeepEval and RAGAS evaluation pipeline integrated into CI/CD quality gates for all AI feature releases
+- Design and execute AI red teaming exercises aligned with OWASP LLM Top 10 and AI safety best practices
+- Advise product and engineering leadership on AI safety testing requirements, risk assessment, and regulatory readiness
+- Drive EU AI Act compliance testing readiness for AI-powered products targeting EU-regulated markets
+- Lead open-source AI testing contributions and publish AI quality research to build community thought leadership
+- Mentor QA engineers transitioning into AI testing roles through structured 90-day AI testing upskilling programs
+- Partner with ML team on model drift monitoring using OpenTelemetry and performance degradation alerting dashboards
+- Define AI testing career paths, hiring criteria, and interview processes for specialist AI QE roles
 
-### AI product evaluation practice and team development - practical example
+## Project Experience
 
-Create a quality improvement plan for a product portfolio. Tie proposed changes to observed problems, owners, baseline measures, and review dates.
+### Enterprise LLM Evaluation Platform
 
-- Evidence: A roadmap tied to business and delivery outcomes
-- Evidence: A capability plan or technical standards proposal
-- Evidence: A review dashboard with definitions and decision notes
+Built a self-service LLM evaluation platform using DeepEval and RAGAS enabling 12 product squads to run automated LLM quality checks in CI/CD pipelines with real-time hallucination dashboards. Technologies: DeepEval, RAGAS, Python, FastAPI, GitHub Actions, LangSmith, Grafana.
 
-### AI product evaluation practice and team development - failure investigation
+### AI Red Teaming Program
 
-Extend the example with one failure or change relevant to ai product evaluation practice and team development. Explain how it was detected, investigated, corrected, and checked again.
+Designed and executed the company's first AI red teaming exercise covering 40+ OWASP LLM Top 10 attack vectors including prompt injection, data poisoning, model inversion, and jailbreak scenarios. Technologies: Garak, PromptBench, Python, OWASP LLM Top 10 Framework.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### RAG Quality Framework
 
-## Evidence to prepare
+Established RAG pipeline evaluation standards covering context recall, answer relevancy, faithfulness, and hallucination rate across 8 customer-facing RAG-powered features with automated quality regression. Technologies: RAGAS, LangSmith, Python, OpenAI, Pinecone, Weaviate.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### Agentic Workflow Test Harness
 
-Use only your own verified qualifications and measured outcomes.
+Developed behavioral test harness for LangGraph-based multi-agent systems validating tool-call accuracy, loop detection, state transition correctness, and goal completion success rates. Technologies: LangGraph, Python, DeepEval, Playwright, Pytest.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+M.Tech Computer Science – NIT Calicut, 2012; B.Tech CSE – CUSAT Kochi, 2010
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Certified AI Testing (CTAL-TAE AI); OWASP LLM Security Tester Certification; AWS Certified Machine Learning Specialty; DeepEval Certified Evaluator; Python for Data Science – Coursera; Responsible AI Fundamentals – Google
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Founded AI QE CoE from scratch scaling to 10 specialists in 24 months; 3 merged contributions to DeepEval open-source project; Zero hallucination-caused production incidents since 2023 launch; Keynote speaker at NexGen QA Summit 2024; Published peer-reviewed paper on LLM test coverage in IEEE Software Testing journal; Co-developed India's first OWASP LLM Testing course reaching 800+ testers

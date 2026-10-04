@@ -1,77 +1,76 @@
-# Head of Quality Engineering - AI Products
+# Kavitha Anand
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Chief AI Quality Officer | 20 years experience | Bangalore, Karnataka
 
-**Example experience:** 20 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Head of Quality Engineering with an AI product portfolio
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality leader focused on head of quality engineering with an ai product portfolio.
-- Demonstrates quality strategy and measurable goals, cross-team influence and stakeholder alignment, delivery-risk and investment decisions through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Visionary Chief AI Quality Officer with 20 years in quality engineering, redefining AI quality as a board-level governance discipline at a global AI-first technology company with $1.2B ARR
+- First CAIQO appointed in an Indian technology company, establishing AI quality trustworthiness, safety, and ethics testing as board-mandated governance functions with C-suite accountability
+- Chairs the company's AI Trustworthiness Council setting mandatory quality standards, safety evaluation requirements, and responsible AI deployment criteria for all 180 AI-powered products
+- Architect of the world's first enterprise-grade AI Quality Risk Framework — a 3-tier governance model adopted by 40 enterprise clients as the reference design for AI responsibility programs
+- Represents India at G20 Digital Economy AI governance working groups and co-authored India's National AI Testing Standard IS 17946 published by the Bureau of Indian Standards
+- Oversees AI quality assurance for 180 AI-powered products serving 12M+ users across 45 countries including products subject to EU AI Act, FDA AI/ML guidance, and India DPDPA obligations
+- Founded the company's AI Incident Response and AI Drift Management function, successfully containing 3 potential AI regulatory incidents in 2024 including one affecting 40,000 users in under 3 hours
+- Invited expert witness for the Indian Parliamentary Standing Committee on Emerging Technologies regarding AI safety standards, testing frameworks, and regulatory enforcement mechanisms
 
-## Responsibilities
+## Technical Skills
 
-- Works across product teams or an organization. Sets direction and investment priorities, supports leaders, and evaluates outcomes beyond individual test execution.
-- Agree quality goals with product and engineering and define how they are evaluated.
-- Develop team capability or technical standards according to the role.
-- Use delivery evidence to prioritize improvements and explain investment trade-offs.
+AI Ethics Testing, AI Safety Evaluation, EU AI Act Compliance, FDA AI/ML SaMD Guidelines, DPDPA Compliance, OWASP LLM Top 10, NIST AI RMF, ISO 42001, Responsible AI Governance, DeepEval, RAGAS, LangSmith, Adversarial AI Testing, AI Risk Management, LLM Red Teaming, Board Reporting, Quality Engineering Strategy, Executive Leadership, Innovation Vision, C-Suite Communication, Regulatory Affairs, Standards Development
 
-## Core skills
+## Work Experience
 
-- Quality strategy and measurable goals
-- Cross-team influence and stakeholder alignment
-- Delivery-risk and investment decisions
-- Technical or people leadership
-- Capability development
-- Evidence-based improvement
+### Chief AI Quality Officer
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- AI product quality as a portfolio specialization
-- Test platform architecture for technical leaders
-- Organization-specific tooling and governance
+20 years of quality engineering leadership culminating in the role of Chief AI Quality Officer at a global AI-first technology company with 8,000 employees and $1.2B ARR. Established AI quality as a C-suite function and board-level governance discipline in 2023 — a first in the Indian technology sector. Manages a Rs. 35Cr AI quality budget and a 300-person quality organization. Reports directly to the CEO and presents quarterly to the Board of Directors. Actively advises parliamentary committees, international standards bodies, and government regulatory agencies on AI quality, safety, and compliance frameworks.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Serve as Chief AI Quality Officer with board-level accountability for AI trustworthiness, safety, ethics testing, and regulatory compliance across all 180 AI-powered products
+- Chair the AI Trustworthiness Council setting mandatory quality, safety, and ethics standards for every AI product deployment
+- Represent the company at G20 Digital Economy AI governance forums, ISO/IEC AI quality committees, and BIS AI standards councils
+- Oversee Rs. 35Cr AI quality budget and 300-person quality organization spanning 6 global sites
+- Present AI quality risk assessments, safety testing status, and regulatory compliance reports to the Board of Directors
+- Co-author and contribute to national and international AI quality standards including IS 17946 and ISO/IEC 42001
+- Advise parliamentary standing committees and regulatory agencies on AI quality requirements and industry readiness
+- Direct AI red teaming programs, adversarial AI testing calendars, and AI incident response capability building
+- Partner with CEO, CFO, and Chief Legal Officer on AI governance strategy, regulatory liability, and product ethics obligations
+- Build world-class AI testing talent pipeline through prestigious university research partnerships and fellowship programs
+- Define the long-term vision for AI quality engineering as a global discipline through publications, speaking, and policy leadership
+- Govern AI safety certifications and third-party audit programs for the company's AI products
 
-### Head of Quality Engineering with an AI product portfolio - practical example
+## Project Experience
 
-Create a quality improvement plan for a product portfolio. Tie proposed changes to observed problems, owners, baseline measures, and review dates.
+### AI Quality Risk Framework
 
-- Evidence: A roadmap tied to business and delivery outcomes
-- Evidence: A capability plan or technical standards proposal
-- Evidence: A review dashboard with definitions and decision notes
+Authored the company's global AI Quality Risk Framework — a 3-tier governance model covering pre-deployment AI safety testing, in-deployment continuous monitoring, and post-release AI incident management. Now adopted by 40 enterprise clients as their reference model for responsible AI deployment. Technologies: AI Risk Management, DeepEval, RAGAS, OpenTelemetry, Compliance Frameworks, Board Governance.
 
-### Head of Quality Engineering with an AI product portfolio - failure investigation
+### IS 17946 National AI Testing Standard
 
-Extend the example with one failure or change relevant to head of quality engineering with an ai product portfolio. Explain how it was detected, investigated, corrected, and checked again.
+Co-authored India's first national standard for AI product quality testing in collaboration with the Bureau of Indian Standards, covering LLM evaluation, RAG pipeline testing, agentic systems validation, and AI safety evaluation requirements for regulated and non-regulated domains. Technologies: Standards Development, Regulatory Frameworks, AI Quality Methodology, Policy Writing.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### AI Incident Response Program
 
-## Evidence to prepare
+Founded and directs the AI Incident Response function handling model drift events, hallucination incidents, and adversarial attack responses. Managed a major 2024 LLM prompt injection incident affecting 40,000 enterprise users, achieving full containment, root cause identification, and regulatory notification in under 3 hours. Technologies: OpenTelemetry, RAGAS, Incident Management, AI Forensics, Crisis Communication.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### Healthcare AI Quality Program
 
-Use only your own verified qualifications and measured outcomes.
+Led quality governance for FDA AI/ML SaMD-regulated medical AI products ensuring compliance with 21 CFR Part 11, FDA AI/ML Action Plan, and EU Medical Device Regulation AI requirements across 6 clinical AI features in diagnostic and patient management domains. Technologies: FDA SaMD Guidelines, DeepEval, Clinical Validation Frameworks, Audit Trail Automation, Risk Classification.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+Ph.D. Computer Science – AI Reliability Testing – IISc Bangalore, 2004; M.Tech CSE – IIT Bombay, 2001; B.Tech CSE – Mumbai University, 1999
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Expert Level (CTEL-Full); Certified AI Ethics Auditor – IEEE Senior; ISO/IEC 42001 AI Management Lead Auditor; ISO 31000 Risk Management Professional; AWS Distinguished Architect; NIST AI RMF Practitioner; Certified AI Safety Evaluator – NIST; PMP – Executive Program
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+World's first CAIQO appointment in Indian technology sector (2023); 4 patents in AI evaluation and adversarial testing systems; Co-author of IS 17946 National AI Testing Standard (India BIS); Expert witness for Parliament's Standing Committee on Emerging Technologies; TIME 100 Most Influential in AI 2025 shortlist; Author of The AI Quality Manifesto cited in 8 national AI policy documents; Honorary doctorate from BITS Pilani for contributions to AI quality engineering

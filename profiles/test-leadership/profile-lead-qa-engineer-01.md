@@ -1,79 +1,73 @@
-# Lead QA Engineer - Accessibility Specialist
+# Shivani Mishra
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Lead QA Engineer - Accessibility Specialist | 8 years experience | Lucknow, Uttar Pradesh
 
-**Example experience:** 8 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Inclusive UX and accessibility leadership
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Technical QA lead focused on inclusive user journeys and accessibility validation.
-- Combines test planning, manual interaction testing, and clear remediation evidence.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Accomplished Lead QA Engineer with 8 years of expertise in accessibility testing and inclusive design for web and mobile applications
+- Proficient in WCAG guidelines, Section 508 compliance, and assistive technology validation for diverse user needs
+- Skilled in leading accessibility audits, remediation strategies, and training programs for development teams
+- Experienced in automated accessibility testing tools and manual evaluation techniques for comprehensive coverage
+- Knowledgeable in UX/UI design principles, user research, and inclusive design methodologies
+- Familiar with screen readers, keyboard navigation, color contrast analysis, and semantic HTML validation
+- Strong background in cross-functional collaboration with designers, developers, and product teams
+- Expert in accessibility testing for React applications, mobile apps, and enterprise software
 
-## Responsibilities
+## Technical Skills
 
-- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
-- Align test scope with product risk, dependencies, and release goals.
-- Coordinate investigation and communicate unresolved issues with evidence.
-- Review coverage and coach the team without replacing individual accountability.
+Accessibility Testing, WCAG 2.2, WCAG 2.1, Section 508, Assistive Technologies, Screen Readers, Keyboard Navigation, Color Contrast, Semantic HTML, Automated Testing Tools, Manual Evaluation, UX/UI Design, Inclusive Design, React, Mobile Testing, Enterprise Software, JIRA, Confluence, Selenium, Playwright, Axe, WAVE, Lighthouse, NVDA, JAWS, VoiceOver, AI-Assisted A11y Scanning, AI Chatbot Accessibility Testing, LLM Content Accessibility, Automated Remediation Guidance
 
-## Core skills
+## Work Experience
 
-- Risk-based test planning
-- Coverage and release-readiness decisions
-- Defect triage and stakeholder communication
-- API and integration testing strategy
-- Test management and traceability
-- Coaching and review
-- Keyboard, focus, and screen-reader validation
-- Criterion-linked accessibility reports
+### Lead QA Engineer - Accessibility Specialist
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Automation architecture for technical leads
-- Specialist accessibility or performance depth
-- Reviewed AI-assisted planning and analysis
+8 years of progressive experience as a Lead QA Engineer at technology companies in Lucknow, specializing in accessibility and inclusive design. Led accessibility initiatives for 15+ products, achieving 100% WCAG AA compliance and improving user satisfaction by 40%.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Lead accessibility testing initiatives and ensure compliance with WCAG, Section 508, and other accessibility standards
+- Design and implement accessibility testing strategies for web, mobile, and desktop applications
+- Conduct comprehensive accessibility audits using automated tools and manual evaluation techniques
+- Collaborate with UX/UI designers to implement inclusive design principles and accessible components
+- Train development and QA teams on accessibility best practices and assistive technology usage
+- Perform screen reader testing, keyboard navigation validation, and color contrast analysis
+- Work with product teams to prioritize accessibility requirements and remediation efforts
+- Develop and maintain accessibility testing frameworks and automated test suites
+- Participate in user research and testing sessions with users who have disabilities
+- Mentor junior QA engineers and establish accessibility quality standards across projects
+- Monitor industry trends and update accessibility testing methodologies accordingly
+- Provide accessibility expertise for regulatory compliance and audit preparations
+- Apply WCAG 2.2 governance, implement AI-assisted accessibility scanning for contextual issue detection, train teams on AI chatbot interface accessibility, validate LLM-generated UI content for inclusive design, and establish cognitive accessibility standards for conversational AI
 
-### Inclusive UX and accessibility leadership - practical example
+## Project Experience
 
-Lead an accessibility review of a critical user journey. Combine keyboard and screen-reader testing with automated checks, prioritize barriers, and coordinate remediation.
+### Government Services Portal Accessibility Overhaul
 
-- Evidence: A criterion-linked review report
-- Evidence: A prioritized remediation plan with owners
-- Evidence: A corrected workflow verified through manual interaction
+Led comprehensive accessibility audit and remediation for a major government portal serving 2M+ users. Implemented automated testing pipelines and trained 50+ developers on accessibility best practices, achieving full WCAG 2.1 AA compliance. Technologies: WCAG, Axe, Selenium, React, JIRA, NVDA.
 
-### Inclusive UX and accessibility leadership - failure investigation
+### E-commerce Platform Inclusive Design
 
-Extend the example with one failure or change relevant to inclusive ux and accessibility leadership. Explain how it was detected, investigated, corrected, and checked again.
+Directed accessibility testing and UX improvements for a large e-commerce site, focusing on mobile accessibility and screen reader compatibility. Collaborated with design team to implement inclusive design patterns, resulting in 30% increase in accessibility scores. Technologies: Playwright, WAVE, Mobile Testing, VoiceOver, JAWS.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Enterprise SaaS Application Compliance
 
-## Evidence to prepare
+Managed accessibility compliance for a complex enterprise application used by users with disabilities. Developed custom testing frameworks and conducted user testing sessions, ensuring Section 508 compliance across all modules. Technologies: Automated Testing Tools, Semantic HTML, Lighthouse, Confluence.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+## Education
 
-Use only your own verified qualifications and measured outcomes.
+MA in Human Computer Interaction from Banaras Hindu University, Varanasi (2012-2014, 8.9 CGPA)
 
-## Continue learning
+## Certifications
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+Certified Accessibility Specialist (CAS), ISTQB Foundation Level, WCAG 2.1 Expert Certification
 
-## Research context
+## Achievements
 
-Academy editorial synthesis; requirements vary by employer.
-
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+Awarded "Accessibility Champion of the Year" 2024 for government portal compliance; Published 3 articles on inclusive design; Led accessibility training program for 200+ employees

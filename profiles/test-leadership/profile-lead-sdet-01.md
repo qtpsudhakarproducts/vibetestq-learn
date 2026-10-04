@@ -1,77 +1,73 @@
-# Automation Lead
+# Nitin Jain
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Automation Lead | 10 years experience | Gurgaon, Haryana
 
-**Example experience:** 10 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Automation standards and code review
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on automation standards and code review.
-- Demonstrates risk-based test planning, coverage and release-readiness decisions, defect triage and stakeholder communication through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Experienced Automation Lead with 10 years of expertise in defining automation strategies and leading framework development
+- Proficient in Selenium, Playwright, and modern automation tools for scalable test suites
+- Skilled in CI/CD integration and overseeing cross-team automation efforts
+- Knowledgeable in mentoring teams and establishing automation best practices
+- Experienced in ensuring maintainability and scalability of automation frameworks
+- Adept at consolidating automation across product lines and optimizing runtimes
+- Collaborative leader working with development and QA teams on automation initiatives
+- Strong strategic thinker for roadmap planning and technology evaluation
 
-## Responsibilities
+## Technical Skills
 
-- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
-- Align test scope with product risk, dependencies, and release goals.
-- Coordinate investigation and communicate unresolved issues with evidence.
-- Review coverage and coach the team without replacing individual accountability.
+Selenium, Playwright, Java, Python, TestNG, JUnit, CI/CD (Jenkins, GitHub Actions), Maven, Gradle, Docker, Kubernetes, Test Management Tools, Performance Testing, API Testing, GitHub Copilot, Test Maintenance, DeepEval, LLM API Testing, Agentic Workflow Testing, AI Test Tool Evaluation, AI-Native Test Infrastructure
 
-## Core skills
+## Work Experience
 
-- Risk-based test planning
-- Coverage and release-readiness decisions
-- Defect triage and stakeholder communication
-- API and integration testing strategy
-- Test management and traceability
-- Coaching and review
+### Automation Lead
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Automation architecture for technical leads
-- Specialist accessibility or performance depth
-- Reviewed AI-assisted planning and analysis
+10 years of experience as an Automation Lead at multinational companies in Gurgaon. Led automation initiatives, mentored teams, and drove quality improvements through strategic automation.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Define automation strategies and roadmaps for organizations
+- Lead framework development and ensure scalability
+- Mentor automation teams and establish best practices
+- Oversee cross-team automation efforts and CI integration
+- Ensure maintainability and quality of test suites
+- Collaborate with stakeholders on automation requirements
+- Evaluate and recommend automation tools and technologies
+- Monitor automation performance and optimize execution
+- Lead GitHub Copilot adoption for team test generation, deploy self-healing test infrastructure, establish DeepEval quality gates for LLM APIs, mentor teams on agentic workflow testing, and evaluate next-generation AI automation tools
 
-### Automation standards and code review - practical example
+## Project Experience
 
-Plan validation for a multi-team release. Show how you selected coverage, handled dependencies, and communicated remaining risk.
+### Product Line Automation Consolidation
 
-- Evidence: A release test strategy with explicit scope
-- Evidence: A traceability view and decision log
-- Evidence: A short stakeholder update with risks and next actions
+Consolidated automation across multiple product lines, reducing test runtime by 60% and improving coverage from 40% to 85%. Technologies: Selenium, Playwright, CI/CD, Docker.
 
-### Automation standards and code review - failure investigation
+### Framework Development and Scaling
 
-Extend the example with one failure or change relevant to automation standards and code review. Explain how it was detected, investigated, corrected, and checked again.
+Designed and implemented scalable automation frameworks, supporting 500+ test cases and enabling parallel execution. Technologies: Java, TestNG, Maven, Kubernetes.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### CI/CD Automation Integration
 
-## Evidence to prepare
+Led integration of automated tests into CI/CD pipelines, achieving continuous testing and faster release cycles. Technologies: Jenkins, GitHub Actions, API Testing, Performance Testing.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### AI-Native Automation Program Leadership
 
-Use only your own verified qualifications and measured outcomes.
+Led organization-wide adoption of GitHub Copilot for test generation, achieving 35% reduction in manual test writing effort. Deployed self-healing Playwright test infrastructure, evaluated and onboarded DeepEval for LLM API quality gates, and mentored 15 SDET team members on agentic workflow testing. Established AI testing playbook adopted across 6 product teams. Technologies: GitHub Copilot, Test Maintenance, DeepEval, LLM API Testing, Agentic Workflow Testing, AI-Native Test Infrastructure, Playwright, Docker, Kubernetes.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+M.Tech in Computer Science from IIT Delhi, Delhi (2012-2014, 8.6 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+Certified Scrum Master (CSM), ISTQB Expert Level, Automation Leadership Certification
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Reduced automation runtime by 60% across product lines; Led team of 15 automation engineers; Awarded "Automation Excellence" for framework innovation; Published articles on automation best practices

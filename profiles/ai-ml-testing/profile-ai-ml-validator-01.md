@@ -1,75 +1,74 @@
-# AI/ML Validator
+# Kishore Rao
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+AI/ML Validator | 4 years experience | Bangalore, Karnataka
 
-**Example experience:** 4 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Evaluation quality and reproducibility
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on evaluation quality and reproducibility.
-- Demonstrates python and api test fundamentals, evaluation datasets and grading rubrics, expected behavior and failure analysis through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Experienced AI/ML Validator with 4 years of expertise in validating model outputs and ensuring production reliability
+- Proficient in implementing A/B testing and canary deployment procedures for ML models
+- Skilled in monitoring model performance in production and setting up automated alerts for drift detection
+- Knowledgeable in defining success metrics, thresholds, and KPIs for ML model evaluation
+- Experienced in gradual rollout strategies and rollback mechanisms for safe model deployment
+- Familiar with data science tools, statistical analysis, and model interpretability techniques
+- Collaborative professional working with ML engineers and data scientists on model validation
+- Strong analytical skills for identifying model biases and performance degradation
 
-## Responsibilities
+## Technical Skills
 
-- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
-- Define expected behavior using examples and a documented rubric.
-- Keep evaluation inputs and model configuration versioned.
-- Separate application defects, data issues, and unacceptable model behavior.
+Python, TensorFlow, PyTorch, Scikit-learn, Pandas, NumPy, A/B Testing Tools, Canary Deployment, Monitoring Tools (Prometheus, Grafana), Statistical Analysis, Model Interpretability, Jupyter Notebook, Git, CI/CD, Cloud Platforms (AWS, GCP), DeepEval, RAGAS, PromptBench, LangSmith, LangChain Testing, Hallucination Detection, RAG Pipeline Testing, Agentic Workflow Testing, Prompt Injection Testing, LLM Safety Testing, AI Alignment Testing
 
-## Core skills
+## Work Experience
 
-- Python and API test fundamentals
-- Evaluation datasets and grading rubrics
-- Expected behavior and failure analysis
-- Data quality and reproducible experiments
-- Model or prompt regression comparison
-- Clear evaluation reports
+### AI/ML Validator
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- An evaluation framework appropriate to the project
-- Retrieval or agent workflow specialization
-- Statistical analysis and evaluation calibration
+4 years of experience as an AI/ML Validator at a leading AI company in Bangalore. Specialized in model validation, A/B testing, and production monitoring for machine learning applications.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Implement A/B testing and canary deployment procedures for ML models
+- Monitor model performance in production and set up alerts for drift
+- Define success metrics, thresholds, and KPIs for model evaluation
+- Collaborate with ML teams on model validation and deployment strategies
+- Analyze model biases and ensure fairness in production
+- Set up monitoring dashboards and automated reporting
+- Provide recommendations for model improvements and optimizations
+- Ensure compliance with ethical AI guidelines and standards
+- Validate LLM-powered AI systems: hallucination detection, RAG pipeline accuracy (RAGAS), agentic workflow reliability, prompt injection security testing, and AI safety/alignment assessment
+- Monitor production LLM systems with LangSmith tracing and implement continuous evaluation pipelines for deployed AI assistants
 
-### Evaluation quality and reproducibility - practical example
+## Project Experience
 
-Evaluate an AI feature with a small versioned dataset, a scoring rubric, and human-reviewed failures. Compare an intended change with a baseline.
+### ML Ranking Model Canary Testing
 
-- Evidence: A dataset with expected behavior and edge cases
-- Evidence: A rubric with examples of acceptable and unacceptable output
-- Evidence: A comparison report with failure categories and limitations
+Implemented canary testing for an ML ranking model with gradual rollout and monitoring, reducing production risks by 50% and ensuring stable performance. Technologies: Python, TensorFlow, Monitoring Tools, A/B Testing Tools.
 
-### Evaluation quality and reproducibility - failure investigation
+### Recommendation Engine Validation
 
-Extend the example with one failure or change relevant to evaluation quality and reproducibility. Explain how it was detected, investigated, corrected, and checked again.
+Validated model outputs for a recommendation engine, setting up performance monitoring and alerts, achieving 95% accuracy in drift detection. Technologies: PyTorch, Pandas, Grafana, Statistical Analysis.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Image Classification Model A/B Testing
 
-## Evidence to prepare
+Designed A/B testing procedures for image classification models, analyzing results and providing recommendations for model improvements. Technologies: Scikit-learn, NumPy, Jupyter Notebook, Cloud Platforms.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### RAG Pipeline and LLM Hallucination Validation
 
-Use only your own verified qualifications and measured outcomes.
+Designed and implemented validation framework for an enterprise RAG-based knowledge assistant, using RAGAS to measure faithfulness, answer relevancy, and context recall. Implemented DeepEval tests for hallucination detection and LangSmith-based tracing for production monitoring. Added adversarial prompt injection tests with PromptBench. Reduced hallucination rate by 45% pre-deployment. Technologies: RAGAS, DeepEval, LangSmith, PromptBench, RAG Pipeline Testing, Hallucination Detection, Prompt Injection Testing, Python, AWS.
 
-## Continue learning
+## Education
 
-- [AI for Testers](https://academy.vibetestq.com/ai/)
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+MSc in Computer Science from IIT Bangalore, Bangalore (2018-2020, 8.5 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+Certified Machine Learning Engineer, AI Ethics Certification, AWS Certified Machine Learning - Specialty
 
-- [MillionLogics · Senior QA Engineer, AI Model Evaluation · Foundit India](https://www.foundit.in/job/senior-qa-engineer-ai-model-evaluation-millionlogics-india-51782705)
+## Achievements
+
+Awarded "AI Validation Excellence" for successful canary deployments; Reduced model drift incidents by 60%; Published paper on A/B testing for ML models; Led team in implementing ethical AI monitoring

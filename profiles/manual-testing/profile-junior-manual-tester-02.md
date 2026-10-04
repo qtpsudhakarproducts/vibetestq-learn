@@ -1,76 +1,76 @@
-# Junior Manual Tester
+# Pooja Sharma
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Junior Manual Tester | 1 years experience | Jaipur, Rajasthan
 
-**Example experience:** 1 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Account onboarding and validation
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Building practical experience in account onboarding and validation.
-- Demonstrates test design and boundary analysis, exploratory testing, web and rest api validation through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Enthusiastic QA professional with 1 year of experience in manual testing fundamentals and defect management
+- Proficient in creating, executing, and maintaining manual test cases for web and mobile applications
+- Experienced in performing functional, regression, sanity, and user acceptance testing
+- Skilled in defect tracking using JIRA and providing clear reproduction steps for issues
+- Knowledgeable in basic SQL for database testing and data validation
+- Familiar with Agile and Scrum methodologies, participating in daily stand-ups and sprint reviews
+- Strong analytical skills for identifying test scenarios and potential edge cases
+- Effective communicator with good teamwork abilities for collaborating with development teams
 
-## Responsibilities
+## Technical Skills
 
-- Works on a defined feature or test slice with review. Builds fundamentals, reports evidence clearly, and asks for help when expected behavior is unclear.
-- Clarify acceptance criteria and investigate ambiguous behavior.
-- Design positive, negative, and boundary scenarios around user workflows.
-- Capture reproducible defects and verify fixes with product and engineering.
+Manual Testing, Test Cases, Functional Testing, Regression Testing, Sanity Testing, Agile Methodology, SDLC, STLC, AI-SDLC, SQL, JIRA, Xray (Basic), Selenium (Basic), Playwright (Basic), ChatGPT, GitHub Copilot, AI-Assisted Testing, Prompt Engineering, Claude Desktop (Basic), HITL Testing, No-code API Testing with GenAI, Postman, Excel, Confluence
 
-## Core skills
+## Work Experience
 
-- Test design and boundary analysis
-- Exploratory testing
-- Web and REST API validation
-- Postman and browser developer tools
-- SQL data checks
-- Defect reporting and retesting
+### Junior Manual Tester
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Basic scripting and a small automation suite
-- Domain-specific workflows
-- AI-assisted scenario drafting with human review
+1 year of experience as a Junior Manual Tester at a software development company in Jaipur, focusing on learning and applying manual testing methodologies. Contributed to testing internal portals and user-facing applications, identifying 100+ defects during internship and full-time roles.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Create, execute, and maintain manual test cases and test scripts based on functional requirements
+- Perform functional, regression, sanity, and user acceptance testing across web and mobile platforms
+- Identify, document, and track software defects using JIRA with detailed reproduction information
+- Collaborate with development teams to understand requirements and provide testing feedback
+- Participate in Agile development processes including daily stand-ups, sprint planning, and reviews
+- Analyze test results and prepare detailed test reports with defect metrics and quality insights
+- Ensure compliance with testing standards, best practices, and software development life cycle
+- Assist in the preparation of test plans, test strategies, and test data management
+- Conduct exploratory testing to uncover hidden defects and usability issues
+- Learn and adapt to new testing tools, methodologies, and industry trends
+- Use AI tools (ChatGPT, GitHub Copilot) to accelerate test case creation, scenario brainstorming, and defect classification
+- Apply prompt engineering techniques to design comprehensive exploratory test charters and validate AI-powered feature behavior
 
-### Account onboarding and validation - practical example
+## Project Experience
 
-Investigate a complete user workflow through the UI, API, and database. Cover invalid input, incomplete steps, and recovery after failure.
+### Internal Admin Portal Testing
 
-- Evidence: A risk-based test charter and scenario matrix
-- Evidence: Defect evidence with expected versus actual behavior
-- Evidence: API collections and SQL checks linked to the workflow
+Executed comprehensive manual test cases for admin dashboard features, user management, and workflow processes. Identified and reported defects related to data validation and user interface issues. Technologies: JIRA, SQL, Postman, Excel, Confluence.
 
-### Account onboarding and validation - failure investigation
+### Mobile App User Flows
 
-Extend the example with one failure or change relevant to account onboarding and validation. Explain how it was detected, investigated, corrected, and checked again.
+Performed manual testing for mobile application user registration, login, and navigation flows. Conducted cross-device testing on Android platforms and documented usability findings. Technologies: JIRA, Android Studio, TestRail, SQL.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### API Testing for Backend Services
 
-## Evidence to prepare
+Executed basic manual API testing using Postman for REST endpoints, validating request/response cycles and error handling. Assisted in creating test scenarios for data integrity. Technologies: Postman, Swagger, SQL, JIRA.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### AI-Assisted Exploratory Testing for Admin Portal
 
-Use only your own verified qualifications and measured outcomes.
+Used ChatGPT prompts to design exploratory test charters, generate diverse user flow scenarios, and draft bug reproduction steps for an admin portal. Reduced test design time by 40% while improving edge case coverage for 2026 quality standards. Technologies: ChatGPT, GitHub Copilot, Prompt Engineering, JIRA, Manual Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Sc. in Information Technology from University of Rajasthan, Jaipur (2018-2021, 8.4 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Foundation Level Certification (In Progress), Certified Scrum Master (CSM) Foundation
 
-- [Moolya · Manual Tester (Web, API, DB) · Cutshort](https://cutshort.io/job/Manual-Tester-Mumbai-Mumbai-Moolya-Software-Testing-Private-Limited-ECeahZOf)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Completed successful internship with 95% test case execution accuracy; Recognized for identifying critical defects in admin portal; Active participant in QA knowledge sharing sessions

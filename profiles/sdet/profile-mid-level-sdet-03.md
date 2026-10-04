@@ -1,76 +1,76 @@
-# SDET – TypeScript
+# Sachin Patil
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+SDET – TypeScript | 4 years experience | Pune, Maharashtra
 
-**Example experience:** 4 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** TypeScript test design and fixtures
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on typescript test design and fixtures.
-- Demonstrates typescript and playwright, ui and api automation, fixtures and isolated test data through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Specialized SDET with 4 years of expertise in TypeScript-based test automation frameworks
+- Proficient in Playwright for robust end-to-end and component testing with TypeScript
+- Experienced in building scalable test frameworks using Node.js, Mocha, and Jest
+- Skilled in creating reusable test helpers, fixtures, and page object models
+- Adept at mocking, stubbing, and test data management for reliable test execution
+- Knowledgeable in CI/CD integration with TypeScript test suites and parallel execution
+- Strong focus on code quality, test coverage metrics, and maintainable test code
+- Collaborative developer who works closely with frontend teams on component testing
 
-## Responsibilities
+## Technical Skills
 
-- Owns validation for a feature or service with regular collaboration. Maintains the work, investigates failures, and explains coverage choices.
-- Write test code that checks business outcomes rather than only element presence.
-- Keep data setup repeatable and investigate failures before adding retries.
-- Review test changes and publish useful diagnostic artifacts in CI.
+TypeScript, JavaScript, Node.js, Playwright, Jest, Mocha, Cypress, WebdriverIO, Puppeteer, GitHub Actions, Jenkins, CircleCI, Git, GitHub, Sinon, nock, Mock Service Worker, PostgreSQL, MongoDB, Redis, AWS, Docker, Kubernetes, BDD, TDD, GitHub Copilot, Test Maintenance, Applitools, DeepEval, LLM Integration Testing, Prompt Injection Testing, Agentic Workflow Testing, PromptBench, Playwright Fixtures, Network Interception, Page Object Model
 
-## Core skills
+## Work Experience
 
-- TypeScript and Playwright
-- UI and API automation
-- Fixtures and isolated test data
-- Git and code review
-- CI test execution and artifacts
-- Failure diagnosis and meaningful assertions
+### SDET – TypeScript
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Contract testing for service boundaries
-- Containers and distributed-system testing
-- AI-assisted coding with review and validation
+4 years as a TypeScript-focused SDET specializing in building modern, type-safe test automation frameworks. Expertise includes Playwright implementation, component testing, and API validation using TypeScript across various web applications.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Design and implement TypeScript-based test automation frameworks
+- Develop Playwright test suites for E2E and component testing
+- Create reusable test utilities, helpers, and page object models
+- Implement mocking and stubbing for isolated and reliable testing
+- Ensure high test coverage and code quality standards
+- Integrate test suites into CI/CD pipelines with parallel execution
+- Collaborate with development teams on test-driven development practices
+- Maintain test environments and troubleshoot test failures
+- Document testing frameworks and provide training to team members
+- Stay updated with TypeScript and testing tool advancements
+- Build TypeScript-native LLM test frameworks: implement hallucination detection, prompt injection testing, and agentic workflow validation using DeepEval and PromptBench
+- Use GitHub Copilot for accelerated test code generation and Applitools for visual AI regression testing
 
-### TypeScript test design and fixtures - practical example
+## Project Experience
 
-Implement repeatable API setup and a small set of critical browser checks. Explain test boundaries, cleanup, and how failures are diagnosed.
+### Playwright Framework Migration
 
-- Evidence: A runnable repository with a clear setup guide
-- Evidence: A CI run with trace or log artifacts
-- Evidence: A deliberately broken case caught by a meaningful assertion
+Led migration from legacy Selenium tests to modern TypeScript-based Playwright framework. Technologies: TypeScript, Playwright, Jest, GitHub Actions, Docker. Improved test execution speed by 60% and reduced flakiness by 80%.
 
-### TypeScript test design and fixtures - failure investigation
+### Component Testing Suite
 
-Extend the example with one failure or change relevant to typescript test design and fixtures. Explain how it was detected, investigated, corrected, and checked again.
+Developed comprehensive component testing framework for React application. Technologies: TypeScript, Jest, React Testing Library, Storybook. Achieved 90% component test coverage and reduced UI regression bugs by 50%.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### API Testing Framework
 
-## Evidence to prepare
+Built type-safe API testing framework with mocking and contract testing. Technologies: TypeScript, Supertest, Mocha, MongoDB, AWS. Enhanced API reliability by 70% through automated validation and early defect detection.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### LLM Feature Test Suite with TypeScript and DeepEval
 
-Use only your own verified qualifications and measured outcomes.
+Designed TypeScript-based test framework to validate a GPT-powered content generation API using DeepEval for hallucination scoring, faithfulness checks, and output relevancy metrics. Integrated GitHub Copilot for test scaffolding and PromptBench for adversarial prompt testing. CI pipeline achieved 100% automated LLM regression coverage. Technologies: TypeScript, DeepEval, PromptBench, GitHub Copilot, Playwright, GitHub Actions, LLM Integration Testing.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+Bachelor of Engineering in Computer Science from Savitribai Phule Pune University, Pune, India (2019)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+TypeScript Certification (Microsoft), ISTQB Foundation Level, AWS Certified Developer - Associate, React Developer Certification, Certified Scrum Master (CSM)
 
-- [Moolya · SDET (Playwright + JavaScript/TypeScript) · Cutshort](https://cutshort.io/job/SDET-Playwright-JavaScript-TypeScript-Bengaluru-Bangalore-Moolya-Software-Testing-Private-Limited-5BFwk0ng)
-- [Level AI · SDET · Employer posting](https://jobs.lever.co/levelai/55678283-3e23-46f0-baaa-48b91b5ff6ea)
+## Achievements
+
+Developed TypeScript testing framework adopted by 5 development teams; Reduced test maintenance effort by 70% through reusable components; Awarded "Testing Innovation" for Playwright migration success; Improved CI/CD pipeline efficiency by 50% through optimized test execution

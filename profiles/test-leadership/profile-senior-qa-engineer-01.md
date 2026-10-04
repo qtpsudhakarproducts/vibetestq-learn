@@ -1,76 +1,75 @@
-# Senior QA Engineer
+# Meena Kumar
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Senior QA Engineer | 6 years experience | Bhopal, Madhya Pradesh
 
-**Example experience:** 6 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** End-to-end feature quality ownership
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on end-to-end feature quality ownership.
-- Demonstrates risk-based test planning, coverage and release-readiness decisions, defect triage and stakeholder communication through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Experienced Senior QA Engineer with 6 years of expertise in manual and automated testing for web and mobile applications
+- Proficient in Selenium, Playwright, and Cypress for developing comprehensive test automation suites
+- Skilled in API testing, performance testing, and regression testing using REST Assured and JMeter
+- Experienced in Agile/Scrum environments, collaborating with cross-functional teams for quality assurance
+- Knowledgeable in CI/CD integration, test management with JIRA, and defect tracking processes
+- Familiar with database testing, cloud platforms, and microservices validation
+- Strong background in test planning, execution, and metrics analysis for quality improvement
+- Collaborative professional adept at mentoring junior engineers and establishing QA best practices
 
-## Responsibilities
+## Technical Skills
 
-- Owns complex workflows or a technical area. Reviews approaches, diagnoses difficult failures, and improves the team's validation practices.
-- Align test scope with product risk, dependencies, and release goals.
-- Coordinate investigation and communicate unresolved issues with evidence.
-- Review coverage and coach the team without replacing individual accountability.
+Automation Testing, Manual Testing, API Testing, Selenium, Java, Python, Cypress, Playwright, QA, Software Testing, Agile, CI/CD, JIRA, Git, REST Assured, Performance Testing, Test Automation, JavaScript, API Automation, Test Management, Regression Testing, Functional Testing, SQL, DynamoDB, AWS, Azure DevOps, JMeter, Locust, Pytest, Microservices, Web Technologies, GitHub Copilot, LLM Output Validation, AI Feature Testing, DeepEval, AI Quality Standards
 
-## Core skills
+## Work Experience
 
-- Risk-based test planning
-- Coverage and release-readiness decisions
-- Defect triage and stakeholder communication
-- API and integration testing strategy
-- Test management and traceability
-- Coaching and review
+### Senior QA Engineer
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Automation architecture for technical leads
-- Specialist accessibility or performance depth
-- Reviewed AI-assisted planning and analysis
+6 years of experience as a Senior QA Engineer at software companies in Bhopal. Managed QA processes for 20+ projects, reducing defect leakage by 65% and improving release quality through comprehensive testing.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Design and execute test plans, test cases, and test scripts for web, mobile, and API applications
+- Develop and maintain automated test frameworks using Selenium, Playwright, Cypress, and REST Assured
+- Perform manual testing including functional, regression, performance, and API validation
+- Integrate automated testing into CI/CD pipelines and monitor test execution
+- Track defects, analyze test metrics, and provide quality reports to stakeholders
+- Collaborate with development and product teams to ensure testing alignment with requirements
+- Mentor junior QA engineers and contribute to process improvements
+- Conduct performance testing and load testing using JMeter and Locust
+- Ensure compliance with QA methodologies and industry standards
+- Participate in code reviews and provide feedback on testability and quality
+- Lead LLM output validation with GitHub Copilot-assisted test generation, establish DeepEval quality gates for AI features in CI/CD, mentor teams on AI feature testing practices, and drive automated LLM acceptance testing for e-commerce and SaaS products
 
-### End-to-end feature quality ownership - practical example
+## Project Experience
 
-Plan validation for a multi-team release. Show how you selected coverage, handled dependencies, and communicated remaining risk.
+### SME Product QA Ownership
 
-- Evidence: A release test strategy with explicit scope
-- Evidence: A traceability view and decision log
-- Evidence: A short stakeholder update with risks and next actions
+Led QA efforts for small and medium enterprise software, including regression testing, release validation, and acceptance criteria coordination. Implemented automated test suites covering web and mobile platforms, achieving 95% test coverage. Technologies: Selenium, Playwright, JIRA, Python, CI/CD, REST Assured.
 
-### End-to-end feature quality ownership - failure investigation
+### E-commerce Platform Testing
 
-Extend the example with one failure or change relevant to end-to-end feature quality ownership. Explain how it was detected, investigated, corrected, and checked again.
+Performed comprehensive testing for e-commerce application including functional, performance, and API testing. Integrated automated testing into CI/CD pipelines and collaborated with product teams for feature validation. Technologies: Cypress, JMeter, SQL, AWS, Azure DevOps, Pytest.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### AI-Driven Feature Validation
 
-## Evidence to prepare
+Tested AI-powered features in SaaS application, focusing on data validation and model output testing. Developed test frameworks for microservices and conducted performance testing for scalability. Technologies: Playwright, Python, Databricks, PySpark, DynamoDB, Microservices.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
+### LLM Feature QA and GitHub Copilot Adoption
 
-Use only your own verified qualifications and measured outcomes.
+Led LLM feature acceptance testing for an e-commerce AI recommendation engine, validating personalization accuracy, hallucination detection, and latency SLAs using GitHub Copilot-accelerated test generation. Built DeepEval-based quality gates for LLM output scoring in CI/CD. Established AI quality standards for 3 SaaS product teams. Technologies: GitHub Copilot, LLM Output Validation, AI Feature Testing, DeepEval, AI Quality Standards, Playwright, Python, AWS.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+B.Sc. in Computer Science from Barkatullah University, Bhopal (2015-2018, 8.4 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+ISTQB Advanced Level, AWS Certified Cloud Practitioner, Certified Scrum Master (CSM)
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Recognized as "QA Excellence" for reducing defect leakage by 65%; Implemented automated testing saving 40% manual effort; Led QA for 20+ successful product releases

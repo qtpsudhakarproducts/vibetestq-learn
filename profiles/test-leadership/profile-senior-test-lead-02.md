@@ -1,77 +1,73 @@
-# Release Test Manager
+# Rekha Singh
 
-Illustrative learning example; not a real candidate. Reviewed October 4, 2026.
+Release Test Manager | 11 years experience | Lucknow, Uttar Pradesh
 
-**Example experience:** 11 years
+Sample resume with fictional details. Replace the content with your own experience and qualifications.
 
-**Focus:** Release readiness and dependency management
+Email: [Your email] | Phone: [Your phone]
+LinkedIn: [Your LinkedIn URL] | GitHub / Portfolio: [Your portfolio URL]
 
-## Professional summary
+## Professional Summary
 
-- Quality Engineering practitioner focused on release readiness and dependency management.
-- Demonstrates risk-based test planning, coverage and release-readiness decisions, defect triage and stakeholder communication through practical examples.
-- Explains test choices, findings, and limitations with reproducible evidence and clear collaboration.
+- Seasoned Release Test Manager with 11 years of experience in managing release quality and coordinating cross-functional validations
+- Expert in gating releases based on comprehensive test results and thorough risk assessments
+- Proficient in coordinating last-mile validations, hotfix testing, and emergency releases
+- Skilled in communicating release health and status to stakeholders at all levels
+- Experienced in developing and maintaining rollback and hotfix playbooks for enterprise applications
+- Knowledgeable in QA governance and ensuring compliance with release criteria and standards
+- Strong leadership in managing high-risk releases and mitigating potential issues
+- Expert in 2026 AI-gated release management: implementing AI-powered release risk prediction, LLM deployment quality gates, automated AI smoke testing for releases, and predictive rollback decision systems
 
-## Responsibilities
+## Technical Skills
 
-- Coordinates quality decisions across a team or release. Provides direction, reviews evidence, and keeps ownership and unresolved risks clear.
-- Align test scope with product risk, dependencies, and release goals.
-- Coordinate investigation and communicate unresolved issues with evidence.
-- Review coverage and coach the team without replacing individual accountability.
+Release Management Tools, JIRA, Test Management Systems, Risk Assessment Tools, CI/CD Pipelines, Monitoring Tools, Communication Platforms, Documentation Tools, Compliance Frameworks, Quality Metrics, AI-Gated Release Management, LLM Deployment Quality Gates, AI Release Risk Prediction, Predictive Rollback Systems, AI Smoke Testing, AI Observability, ArgoCD
 
-## Core skills
+## Work Experience
 
-- Risk-based test planning
-- Coverage and release-readiness decisions
-- Defect triage and stakeholder communication
-- API and integration testing strategy
-- Test management and traceability
-- Coaching and review
+### Release Test Manager
 
-## Optional / role-dependent
+[Company name] | [Start date - End date]
 
-- Automation architecture for technical leads
-- Specialist accessibility or performance depth
-- Reviewed AI-assisted planning and analysis
+11 years of progressive experience as a Release Test Manager at a major enterprise software company in Lucknow. Specialized in release coordination, risk assessment, and QA governance for critical enterprise applications.
 
-## Suggested portfolio projects
+### Responsibilities
 
-These are ideas, not completed-work claims.
+- Gate releases based on thorough test results and risk assessments
+- Coordinate last-mile validations and hotfix testing activities
+- Communicate release health and status to all stakeholders
+- Develop and maintain rollback and hotfix playbooks
+- Ensure compliance with release criteria and QA governance standards
+- Manage high-risk releases and mitigate potential issues
+- Collaborate with cross-functional teams for smooth releases
+- Monitor release processes and implement continuous improvements
+- Implement AI-powered release risk prediction, enforce LLM deployment quality gates, deploy automated AI smoke testing, establish AI observability checkpoints, govern agentic release readiness assessment, and lead predictive rollback decision systems
 
-### Release readiness and dependency management - practical example
+## Project Experience
 
-Plan validation for a multi-team release. Show how you selected coverage, handled dependencies, and communicated remaining risk.
+### Enterprise Application Release Management
 
-- Evidence: A release test strategy with explicit scope
-- Evidence: A traceability view and decision log
-- Evidence: A short stakeholder update with risks and next actions
+Managed high-risk releases for a suite of enterprise applications, implementing rollback and hotfix playbooks that reduced downtime by 40% and improved release success rate to 98%. Technologies: JIRA, CI/CD Pipelines, Monitoring Tools.
 
-### Release readiness and dependency management - failure investigation
+### Cross-functional Release Coordination
 
-Extend the example with one failure or change relevant to release readiness and dependency management. Explain how it was detected, investigated, corrected, and checked again.
+Coordinated last-mile validations and testing across development, QA, and operations teams for a major product launch, ensuring compliance with regulatory standards and stakeholder requirements. Technologies: Test Management Systems, Communication Platforms, Compliance Frameworks.
 
-- Evidence: A documented change or injected failure
-- Evidence: A reproducible check and investigation notes
-- Evidence: A clear explanation of limitations and next improvements
+### Risk Assessment and Mitigation
 
-## Evidence to prepare
+Developed comprehensive risk assessment frameworks for releases, identifying potential issues early and implementing preventive measures, resulting in zero critical post-release defects. Technologies: Risk Assessment Tools, Quality Metrics, Documentation Tools.
 
-- Explain one coverage decision and the risk it addresses.
-- Show your own contribution using a repository, test artifact, or investigation report.
-- Describe a defect you investigated and how you verified the correction.
-- Distinguish technical influence from people management and describe the scope you actually owned.
+### AI-Gated Release Pipeline for LLM Deployment
 
-Use only your own verified qualifications and measured outcomes.
+Implemented AI-powered release management system for a generative AI SaaS platform, building LLM deployment quality gates that enforce accuracy, latency, and hallucination rate SLAs before production promotion. Deployed ArgoCD-integrated automated AI smoke tests, AI release risk prediction scoring, and predictive rollback triggers based on OpenTelemetry LLM performance signals, achieving zero unplanned LLM rollbacks in 6 months. Technologies: AI-Gated Release Management, LLM Deployment Quality Gates, AI Release Risk Prediction, Predictive Rollback Systems, AI Smoke Testing, ArgoCD, OpenTelemetry, JIRA.
 
-## Continue learning
+## Education
 
-- [Playwright curriculum](https://academy.vibetestq.com/playwright/)
-- [Practice Hub](https://academy.vibetestq.com/practicehub/)
-- [Interview questions](https://academy.vibetestq.com/iqs/)
+MBA in Operations Management from Lucknow University, Lucknow (2010-2012, 8.2 CGPA)
 
-## Research context
+## Certifications
 
-Academy editorial synthesis; requirements vary by employer.
+Certified Scrum Master (CSM), ITIL Foundation, PMP (Project Management Professional)
 
-- [QA Team Lead · Peak Hire Solutions · Cutshort](https://cutshort.io/job/QA-Team-Lead-Surat-Peak-Hire-Solutions-jT3PQNfI)
-- [Cognizant · Test Lead · Employer posting](https://careers.cognizant.com/global-en/jobs/00070448651/test-lead/)
+## Achievements
+
+Awarded "Release Excellence Champion" for managing zero-downtime releases in 2024; Led team to achieve 99% on-time delivery; Implemented automated release monitoring reducing manual effort by 50%; Recognized for crisis management during critical hotfix deployments
