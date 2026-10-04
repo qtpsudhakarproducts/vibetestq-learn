@@ -531,7 +531,7 @@ window.showLinkedInModal = showLinkedInModal;
                 <a id="popup-register-btn" href="#" target="_blank" rel="noopener noreferrer"
                    class="btn btn-primary"
                    style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; padding: 1rem;">
-                    <i class="fas fa-user-plus"></i> Register for Free Demo
+                    <i class="fas fa-user-plus"></i> Contact on WhatsApp
                 </a>
                 <a id="popup-viewall-btn" href="/upcoming-trainings"
                    class="btn btn-secondary"
@@ -781,15 +781,15 @@ window.showLinkedInModal = showLinkedInModal;
         const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value || ''; };
 
         setText('popup-title', '🎯 ' + (first.name || ''));
-        setText('popup-date', first.demoDate || '');
-        setText('popup-time', first.demoTime || '');
+        setText('popup-date', first.trainingStartDate || '');
+        setText('popup-time', first.sessionTime || '');
         setText('popup-trainer', first.trainer || '');
         setText('popup-duration', (first.duration ? first.duration : '') + (first.sessionTime ? ' (' + first.sessionTime + ')' : ''));
         setText('popup-start-date', first.trainingStartDate || '');
 
         const registerBtn = document.getElementById('popup-register-btn');
         if (registerBtn) {
-            registerBtn.href = first.registerUrl || first.registerurl || '#';
+            registerBtn.href = first.contactUrl || '#';
         }
 
         // show after short delay (preserve UX)

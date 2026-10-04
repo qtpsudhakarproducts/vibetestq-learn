@@ -1,64 +1,16 @@
 {
-    "trainings": [
-        {
-            "name": "Playwright GenAI Test Lead Masterclass",
-            "type": "Live Cohort",
-            "description": "2-Month Flagship Program: JS/TS, Playwright, POM, Cucumber BDD, CI/CD, GenAI Agents & Self-Healing",
-            "trainer": "Sudhakar Kakunuri (21+ Yrs)",
-            "duration": "2 Months (8 Weeks)",
-            "sessionTime": "7:00 AM – 8:30 AM IST (Mon–Fri)",
-            "demoDate": "October 12, 2026",
-            "demoTime": "7:00 AM IST (Live Zoom)",
-            "trainingStartDate": "October 14, 2026",
-            "registerUrl": "https://us06web.zoom.us/meeting/register/F2nCtNS9Q7G1jD_QQbytGA",
-            "detailsUrl": "qa-ai-era-training.html",
-            "badge": "Flagship · 14/20 Seats Reserved",
-            "pricing": "INR / USD Corporate & Individual Plans Available"
-        },
-        {
-            "name": "GenAI Manual Testing to AI QA Engineer",
-            "type": "Live Cohort",
-            "description": "1-Month Career Transformation: Prompt Engineering, PRD Test Synthesis, Synthetic Test Data & Edge Cases",
-            "trainer": "Sudhakar Kakunuri",
-            "duration": "1 Month (4 Weeks)",
-            "sessionTime": "8:30 PM – 9:30 PM IST (Mon–Fri)",
-            "demoDate": "October 19, 2026",
-            "demoTime": "8:30 PM IST (Live Zoom)",
-            "trainingStartDate": "October 21, 2026",
-            "registerUrl": "https://wa.me/message/KUQXMGZALG4FE1?text=Hi%20Sudhakar,%20I%20want%20to%20register%20for%20the%20GenAI%20Manual%20Testing%20batch",
-            "detailsUrl": "genai-manual-testing.html",
-            "badge": "Career Shift · High Demand",
-            "pricing": "Instant WhatsApp Registration"
-        },
-        {
-            "name": "Selenium with GenAI (Java & Python)",
-            "type": "Live Cohort",
-            "description": "6-Week Advanced Framework Engineering: Selenium 4 BiDi/CDP, Self-Healing Locators & Dockerized CI Grid",
-            "trainer": "Sudhakar Kakunuri",
-            "duration": "6 Weeks",
-            "sessionTime": "7:00 AM – 8:30 AM IST (Weekdays)",
-            "demoDate": "November 2, 2026",
-            "demoTime": "7:00 AM IST (Live Zoom)",
-            "trainingStartDate": "November 4, 2026",
-            "registerUrl": "https://wa.me/message/KUQXMGZALG4FE1?text=Hi%20Sudhakar,%20I%20am%20interested%20in%20Selenium%20with%20GenAI%20program",
-            "detailsUrl": "selenium-genai.html",
-            "badge": "Enterprise Automation",
-            "pricing": "Enrollment Open"
-        },
-        {
-            "name": "Cypress with GenAI Fast Track",
-            "type": "Weekend Intensive",
-            "description": "4-Week Fast Track: Interceptors, Component Testing, Mock Server & Autonomous Spec Synthesis",
-            "trainer": "Sudhakar Kakunuri",
-            "duration": "4 Weeks",
-            "sessionTime": "Weekends (Sat & Sun 10:00 AM IST)",
-            "demoDate": "November 7, 2026",
-            "demoTime": "10:00 AM IST",
-            "trainingStartDate": "November 14, 2026",
-            "registerUrl": "https://wa.me/message/KUQXMGZALG4FE1?text=Hi%20Sudhakar,%20I%20want%20to%20enroll%20in%20Cypress%20GenAI%20Fast%20Track",
-            "detailsUrl": "cypress-genai.html",
-            "badge": "Weekend Track",
-            "pricing": "Enrollment Open"
-        }
-    ]
+  "trainings": [
+    {
+      "name": "Playwright GenAI Test Lead Training",
+      "type": "Live online",
+      "description": "Learn JavaScript, TypeScript, Playwright, framework design, API testing, CI/CD, and GenAI workflows with an instructor.",
+      "trainer": "Sudhakar Kakunuri",
+      "sessionTime": "8:30 AM – 10:00 AM IST",
+      "trainingStartDate": "November 10, 2026",
+      "pricing": "₹30,000",
+      "oneTimePayment": "₹27,000 (10% discount)",
+      "contactUrl": "https://wa.me/message/KUQXMGZALG4FE1",
+      "detailsUrl": "qa-ai-era-training.html"
+    }
+  ]
 }

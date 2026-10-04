@@ -29,8 +29,11 @@ for(const [route,active] of [['/learn/','learn'],['/playwright/index.html','curr
   const context={document:scheduleDocument,window:{location:{origin:'https://academy.vibetestq.com'}},URL,localStorage:{getItem(){return null;}},fetch:async function(url){requests++;assert.equal(url,'/upcoming-trainings.json');return {ok:true,json:async()=>data};}};
   vm.runInNewContext(script,context);
   await new Promise(resolve=>setImmediate(resolve));
-  assert.equal(requests,1);assert.equal(sessions.children.length,2);
+  assert.equal(requests,1);assert.equal(sessions.children.length,1);
   const first=sessions.children[0];
+  assert.equal(first.children.find(n=>n.tag==='a'&&n.className==='ap-button').href,data.trainings[0].contactUrl);
+  assert.ok(first.children.find(n=>n.tag==='dl').children.some(n=>n.textContent===data.trainings[0].pricing));
+  assert.ok(first.children.find(n=>n.tag==='dl').children.some(n=>n.textContent===data.trainings[0].oneTimePayment));
   assert.equal(first.children.find(n=>n.tag==='h3').textContent,data.trainings[0].name);
   assert.equal(first.children.find(n=>n.tag==='a'&&n.textContent==='View program →').href,'https://academy.vibetestq.com/'+data.trainings[0].detailsUrl);
   sessions.children=[node('published-fallback')];context.fetch=async()=>{throw Error('offline');};

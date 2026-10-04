@@ -42,9 +42,9 @@
       if(!list.length){fragment.appendChild(el('p','No sessions are listed right now. Contact trainings@vibetestq.com for the next batch.'));}
       list.forEach(function(t){
         var card=el('article',null,'ap-card');card.appendChild(el('span',t.type,'ap-tag'));card.appendChild(el('h3',t.name));card.appendChild(el('p',t.description));
-        var dl=el('dl');[['Training starts',t.trainingStartDate],['Live demo',[t.demoDate,t.demoTime].filter(Boolean).join(' · ')],['Duration and sessions',[t.duration,t.sessionTime].filter(Boolean).join(' · ')],['Trainer',t.trainer]].forEach(function(row){dl.appendChild(el('dt',row[0]));dl.appendChild(el('dd',row[1]));});card.appendChild(dl);
-        var registration=href(t.registerUrl), details=href(t.detailsUrl);
-        if(registration){var a=el('a','Register / inquire ↗','ap-button');a.href=registration;a.target='_blank';a.rel='noopener';card.appendChild(a);card.appendChild(el('br'));}
+        var dl=el('dl');[['Training starts',t.trainingStartDate],['Session time',t.sessionTime],['Training fee',t.pricing],['One-time payment',t.oneTimePayment],['Trainer',t.trainer]].forEach(function(row){dl.appendChild(el('dt',row[0]));dl.appendChild(el('dd',row[1]));});card.appendChild(dl);
+        var registration=href(t.contactUrl), details=href(t.detailsUrl);
+        if(registration){var a=el('a','Contact on WhatsApp ↗','ap-button');a.href=registration;a.target='_blank';a.rel='noopener';card.appendChild(a);card.appendChild(el('br'));}
         if(details){var b=el('a','View program →');b.href=details;card.appendChild(b);}
         fragment.appendChild(card);
       });

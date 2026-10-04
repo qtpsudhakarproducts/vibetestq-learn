@@ -5,12 +5,12 @@ from pathlib import Path
 from urllib.parse import urlsplit, unquote
 from xml.etree import ElementTree
 import re
-import subprocess
+import json
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ['index.html', 'upcoming-trainings.html', 'qa-ai-era-training.html',
          'genai-manual-testing.html', 'selenium-genai.html', 'cypress-genai.html',
-         'interviews.html', 'mentors.html', '404.html']
+         '404.html']
 
 
 class Document(HTMLParser):
@@ -51,20 +51,26 @@ for name in PAGES:
                 errors.append((name, 'Missing fragment', reference))
 
 for name in ['interviews.html', 'mentors.html']:
-    original = subprocess.check_output(['git', 'show', 'main:' + name], cwd=ROOT).decode('utf-8')
     current = (ROOT / name).read_text(encoding='utf-8')
-    def contract(text):
-        form = re.search(r'<form\b.*?</form>', text, re.S).group()
-        return [(tag, {k: v for k, v in attrs.items() if k in ['id', 'name', 'type', 'required', 'value', 'for']}) for tag, attrs in Document(form).elements]
-    if contract(original) != contract(current):
-        errors.append((name, 'Form inputs changed'))
-    for key in ['endpoint', 'token', 'extra', 'readReply']:
-        old, new = re.search(key + r':\s*([^\n]+)', original), re.search(key + r':\s*([^\n]+)', current)
-        if (old.group(1) if old else None) != (new.group(1) if new else None):
-            errors.append((name, 'Submission contract changed', key))
+    if '<form' in current or 'content="0;url=/"' not in current:
+        errors.append((name, 'Retired service must redirect without a form'))
+for name in PAGES:
+    if name in ['interviews.html', 'mentors.html']:
+        continue
+    current = (ROOT / name).read_text(encoding='utf-8')
+    if re.search(r'interviews\.html|mentors\.html|Register|meeting/register', current):
+        errors.append((name, 'Removed service or registration link still present'))
+training = json.loads((ROOT / 'upcoming-trainings.json').read_text(encoding='utf-8'))['trainings']
+assert len(training) == 1
+assert training[0]['name'] == 'Playwright GenAI Test Lead Training'
+assert training[0]['trainingStartDate'] == 'November 10, 2026'
+assert training[0]['sessionTime'] == '8:30 AM \u2013 10:00 AM IST'
+assert training[0]['pricing'] == '\u20b930,000'
+assert training[0]['oneTimePayment'] == '\u20b927,000 (10% discount)'
+assert training[0]['contactUrl'] == 'https://wa.me/message/KUQXMGZALG4FE1'
 ElementTree.parse(ROOT / 'sitemap.xml')
 for error in errors:
     print('FAIL:', *error)
 if errors:
     raise SystemExit(1)
-print(f'PASS: {len(PAGES)} pages, local links, fragments, assets, labels, sitemap and preserved interview/mentorship submission contracts.')
+print(f'PASS: {len(PAGES)} pages, local links, fragments, assets, labels, sitemap and the single WhatsApp training schedule.')

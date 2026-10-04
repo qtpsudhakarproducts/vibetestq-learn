@@ -8,9 +8,9 @@ import json
 import re
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = '20261003.1'
+VERSION = '20261004.1'
 PUBLIC = ['qa-ai-era-training.html', 'genai-manual-testing.html', 'selenium-genai.html',
-          'cypress-genai.html', 'interviews.html', 'mentors.html']
+          'cypress-genai.html']
 
 
 def brand():
@@ -19,14 +19,14 @@ def brand():
 
 def header(active=''):
     entries = [('Learn', '/learn/', 'learn'), ('Programs', '/#programs', 'programs'),
-               ('Practice', '/practicehub/', 'practice'), ('Career', '/#career', 'career'),
+               ('Practice', '/practicehub/', 'practice'), ('Interview prep', '/iqs/', 'preparation'),
                ('Schedule', '/upcoming-trainings.html', 'schedule')]
     links = ''.join(f'<a href="{url}"' + (' aria-current="page"' if key == active else '') + f'>{label}</a>' for label, url, key in entries)
     return f'''<a class="ap-skip" href="#academy-main">Skip to content</a><header class="ap-header"><nav class="ap-wrap ap-nav" aria-label="Academy navigation">{brand()}<div class="ap-links" id="academy-navigation">{links}<a class="ap-company" href="https://vibetestq.com/" target="_blank" rel="noopener">Company ↗</a></div><button class="ap-theme" type="button" aria-label="Switch to dark theme">Dark</button><button class="ap-menu" type="button" aria-expanded="false" aria-controls="academy-navigation">Menu</button></nav></header>'''
 
 
 def footer():
-    return f'''<footer class="ap-footer"><div class="ap-wrap"><div class="ap-footer-grid"><div>{brand()}<p>Training, documentation, and hands-on learning for modern Quality Engineering.</p></div><div><strong>Learn and practice</strong><ul><li><a href="/learn/">Learning library</a></li><li><a href="/playwright/">Playwright curriculum</a></li><li><a href="/practicehub/">Practice challenges</a></li><li><a href="/projects/">Automation practice lab</a></li><li><a href="/playwright/assessments/">Quizzes</a></li></ul></div><div><strong>Programs and career</strong><ul><li><a href="/#programs">Live programs</a></li><li><a href="/upcoming-trainings.html">Batch schedule</a></li><li><a href="/iqs/">Interview questions</a></li><li><a href="/interviews.html">Mock interviews</a></li><li><a href="/mentors.html">Mentorship</a></li></ul></div><div><strong>Connect</strong><ul><li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li><li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">Ask about training ↗</a></li><li><a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company ↗</a></li><li><a href="https://vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH Platform ↗</a></li></ul></div></div><div class="ap-footer-bottom"><span>© 2026 VibeTestQ Academy.</span><span>Learn · Practice · Build · Prepare</span></div></div></footer>'''
+    return f'''<footer class="ap-footer"><div class="ap-wrap"><div class="ap-footer-grid"><div>{brand()}<p>Training, documentation, and hands-on learning for modern Quality Engineering.</p></div><div><strong>Learn and practice</strong><ul><li><a href="/learn/">Learning library</a></li><li><a href="/playwright/">Playwright curriculum</a></li><li><a href="/practicehub/">Practice challenges</a></li><li><a href="/projects/">Automation practice lab</a></li><li><a href="/playwright/assessments/">Quizzes</a></li></ul></div><div><strong>Programs and preparation</strong><ul><li><a href="/#programs">Live programs</a></li><li><a href="/upcoming-trainings.html">Batch schedule</a></li><li><a href="/iqs/">Interview questions</a></li></ul></div><div><strong>Connect</strong><ul><li><a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a></li><li><a href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">Ask about training ↗</a></li><li><a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company ↗</a></li><li><a href="https://vibetestq.com/tamash-platform/" target="_blank" rel="noopener">TAMASH Platform ↗</a></li></ul></div></div><div class="ap-footer-bottom"><span>© 2026 VibeTestQ Academy.</span><span>Learn · Practice · Build · Prepare</span></div></div></footer>'''
 
 
 def page(path, title, description, body, active='', resume=False):
@@ -47,13 +47,13 @@ def sessions(trainings, limit=None):
     rows = []
     for t in trainings[:limit] if limit else trainings:
         e = lambda key: html.escape(str(t.get(key, '')), quote=True)
-        rows.append(f'''<article class="ap-card"><span class="ap-tag">{e('type')}</span><h3>{e('name')}</h3><p>{e('description')}</p><dl><dt>Training starts</dt><dd>{e('trainingStartDate')}</dd><dt>Live demo</dt><dd>{e('demoDate')} · {e('demoTime')}</dd><dt>Duration and sessions</dt><dd>{e('duration')} · {e('sessionTime')}</dd><dt>Trainer</dt><dd>{e('trainer')}</dd></dl><a class="ap-button" href="{e('registerUrl')}" target="_blank" rel="noopener">Register / inquire ↗</a><br><a href="/{e('detailsUrl')}">View program →</a></article>''')
+        rows.append(f'''<article class="ap-card"><span class="ap-tag">{e('type')}</span><h3>{e('name')}</h3><p>{e('description')}</p><dl><dt>Training starts</dt><dd>{e('trainingStartDate')}</dd><dt>Session time</dt><dd>{e('sessionTime')}</dd><dt>Training fee</dt><dd>{e('pricing')}</dd><dt>One-time payment</dt><dd>{e('oneTimePayment')}</dd><dt>Trainer</dt><dd>{e('trainer')}</dd></dl><a class="ap-button" href="{e('contactUrl')}" target="_blank" rel="noopener">Contact on WhatsApp ↗</a><br><a href="/{e('detailsUrl')}">View program →</a></article>''')
     return f'<div class="ap-grid two" data-academy-sessions="{limit or 0}">' + ''.join(rows) + '</div>' if rows else '<div data-academy-sessions="0"><p>No sessions are listed right now. Email <a href="mailto:trainings@vibetestq.com">trainings@vibetestq.com</a> for the next batch.</p></div>'
 
 
 def build():
     trainings = json.loads((ROOT / 'upcoming-trainings.json').read_text(encoding='utf-8'))['trainings']
-    body = '''<section class="ap-hero"><div class="ap-wrap ap-hero-grid"><div><span class="ap-eyebrow">VibeTestQ Academy · Quality Engineering education</span><h1>Learn the skills.<br>Practice the work.<br><span>Build your confidence.</span></h1><p class="ap-lead">Training, practical guides, and hands-on exercises for modern QA and automation. Choose a learning path, join a live program, or put your skills to work.</p><div class="ap-actions"><a class="ap-button" href="/learn/">Start Learning →</a><a class="ap-button secondary" href="#programs">Explore Live Programs</a></div><p class="ap-fine">Free lessons, practice sets, and quizzes. GitHub sign-in is required for learning pages.</p></div><aside class="ap-start" aria-label="Choose where to start"><span class="ap-eyebrow">Your next step</span><h2>What would you like to do?</h2><p>Pick the route that fits your goal.</p><a href="/playwright/"><strong>Learn automation from the foundations →</strong><span>Start with the Playwright curriculum and supporting guides.</span></a><a href="/practicehub/"><strong>Practice what you already know →</strong><span>Challenges with feedback, hints, and explanations.</span></a><a href="/upcoming-trainings.html"><strong>Learn with an instructor →</strong><span>Explore live programs and scheduled demo sessions.</span></a><a href="/iqs/"><strong>Prepare for your next interview →</strong><span>Study questions and build a focused preparation plan.</span></a></aside></div></section>'''
+    body = '''<section class="ap-hero"><div class="ap-wrap ap-hero-grid"><div><span class="ap-eyebrow">VibeTestQ Academy · Quality Engineering education</span><h1>Learn the skills.<br>Practice the work.<br><span>Build your confidence.</span></h1><p class="ap-lead">Training, practical guides, and hands-on exercises for modern QA and automation. Choose a learning path, join a live program, or put your skills to work.</p><div class="ap-actions"><a class="ap-button" href="/learn/">Start Learning →</a><a class="ap-button secondary" href="#programs">Explore Live Programs</a></div><p class="ap-fine">Free lessons, practice sets, and quizzes. GitHub sign-in is required for learning pages.</p></div><aside class="ap-start" aria-label="Choose where to start"><span class="ap-eyebrow">Your next step</span><h2>What would you like to do?</h2><p>Pick the route that fits your goal.</p><a href="/playwright/"><strong>Learn automation from the foundations →</strong><span>Start with the Playwright curriculum and supporting guides.</span></a><a href="/practicehub/"><strong>Practice what you already know →</strong><span>Challenges with feedback, hints, and explanations.</span></a><a href="/upcoming-trainings.html"><strong>Learn with an instructor →</strong><span>See the upcoming live online training and contact us on WhatsApp.</span></a><a href="/iqs/"><strong>Prepare for your next interview →</strong><span>Study questions and build a focused preparation plan.</span></a></aside></div></section>'''
     body += section('paths', 'Learn at your pace', 'Find your learning path.', 'Read the guides, work through examples, and follow your progress in the learning library.', cards([
         ('Start here', 'Playwright & automation', 'Build your foundations in JavaScript, TypeScript, Playwright, API testing, and framework design.', '/playwright/', 'Open curriculum'),
         ('AI for QA', 'AI for Testers', 'Understand AI concepts and explore their use in testing and Quality Engineering.', '/ai/', 'Explore AI learning'),
@@ -65,30 +65,28 @@ def build():
         ('Check', 'Quizzes & assessments', 'Check your understanding as you work through the Playwright curriculum.', '/playwright/assessments/', 'Explore quizzes'),
     ]))
     body += section('programs', 'Instructor-led learning', 'Learn with a live program.', 'Explore the curriculum first, then check the schedule or ask which program fits your experience.', cards([
-        ('Playwright + GenAI', 'Playwright Test Lead', 'JavaScript and TypeScript, Playwright, framework design, API testing, CI/CD, and GenAI workflows.', '/qa-ai-era-training.html', 'View curriculum'),
+        ('Playwright + GenAI', 'Playwright GenAI Test Lead Training', 'JavaScript and TypeScript, Playwright, framework design, API testing, CI/CD, and GenAI workflows.', '/qa-ai-era-training.html', 'View curriculum'),
         ('AI-assisted QA', 'GenAI Manual Testing', 'Testing foundations, practical AI workflows, and applying GenAI to Quality Engineering work.', '/genai-manual-testing.html', 'View curriculum'),
         ('Selenium + GenAI', 'Selenium automation', 'Build on Selenium foundations and explore advanced automation and GenAI-assisted testing.', '/selenium-genai.html', 'View curriculum'),
         ('Cypress + GenAI', 'Cypress automation', 'Explore modern end-to-end automation, framework practice, and GenAI-assisted testing.', '/cypress-genai.html', 'View curriculum'),
     ], 'four'), True, '<a href="/upcoming-trainings.html">View batch schedule →</a>')
-    body += section('sessions', 'Live learning', 'Scheduled programs and demos.', 'Dates and session details come from the Academy schedule. Times are shown in IST.', sessions(trainings, 2), more='<a href="/upcoming-trainings.html">See all sessions →</a>')
-    body += section('career', 'Prepare for your next step', 'Turn practice into readiness.', 'Use structured preparation and feedback to identify what to work on next.', cards([
+    body += section('sessions', 'Live learning', 'Upcoming live online training.', 'Starts November 10, 2026. Contact us on WhatsApp to join. Times are shown in IST.', sessions(trainings, 2), more='<a href="/upcoming-trainings.html">See all sessions →</a>')
+    body += section('preparation', 'Prepare for your next step', 'Turn practice into readiness.', 'Study questions and explanations to prepare for your next Quality Engineering interview.', cards([
         ('Study', 'Interview preparation', 'Browse questions and explanations across Quality Engineering topics.', '/iqs/', 'Browse questions'),
-        ('Get feedback', 'Mock interviews', 'Explore the interview and evaluation service and request a session.', '/interviews.html', 'Explore interview support'),
-        ('Community', 'Mentorship', 'Learn about the community mentorship program and opportunities to contribute.', '/mentors.html', 'Explore mentorship'),
     ]), True)
     body += '''<section class="ap-section"><div class="ap-wrap"><div class="ap-next"><div><span class="ap-eyebrow">Start with one topic</span><h2>Your next learning step is here.</h2><p>Open the library, choose a track, and work through it at your pace.</p></div><a class="ap-button" href="/learn/">Open Learning Library →</a></div><p class="ap-fine">Looking for the TAMASH product? Visit the <a href="https://vibetestq.com/" target="_blank" rel="noopener">VibeTestQ company website ↗</a>.</p></div></section>'''
     page('index.html', 'VibeTestQ Academy | Learn, Practice & Build Quality Engineering Skills', 'Explore Quality Engineering training, learning guides, practice challenges, quizzes, and interview preparation at VibeTestQ Academy.', body, resume=True)
 
-    body = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Live programs</span><h1>Find your next<br><span>learning session.</span></h1><p class="ap-lead">Explore program start dates, live demos, and session details. Choose a curriculum before registering or asking about a batch.</p><div class="ap-actions"><a class="ap-button secondary" href="/#programs">Explore Programs</a><a class="ap-button" href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">Ask About a Program ↗</a></div></div></section>'''
-    body += section('schedule', 'Batch schedule', 'Scheduled training and demo sessions.', 'All session times are shown in IST. Confirm availability when you register or inquire.', sessions(trainings), True)
-    page('upcoming-trainings.html', 'Training Schedule | VibeTestQ Academy', 'Explore VibeTestQ Academy live training programs, demo dates, start dates, and session times.', body, 'schedule')
+    body = '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">Live programs</span><h1>Find your next<br><span>learning session.</span></h1><p class="ap-lead">Join Playwright GenAI Test Lead Training, live online from November 10, 2026, 8:30–10:00 AM IST. Contact us on WhatsApp to join.</p><div class="ap-actions"><a class="ap-button secondary" href="/#programs">Explore Programs</a><a class="ap-button" href="https://wa.me/message/KUQXMGZALG4FE1" target="_blank" rel="noopener">Contact on WhatsApp ↗</a></div></div></section>'''
+    body += section('schedule', 'Batch schedule', 'Playwright GenAI Test Lead Training.', 'Training fee: ₹30,000. Pay ₹27,000 with the 10% one-time payment discount. All session times are shown in IST.', sessions(trainings), True)
+    page('upcoming-trainings.html', 'Training Schedule | VibeTestQ Academy', 'Playwright GenAI Test Lead Training: live online from November 10, 2026, 8:30–10:00 AM IST. ₹30,000; one-time payment ₹27,000. Contact on WhatsApp.', body, 'schedule')
 
     for name in PUBLIC:
         source = (ROOT / name).read_text(encoding='utf-8')
         source = re.sub(r'<html\b[^>]*>', '<html lang="en" data-theme="light">', source, count=1)
         source = re.sub(r'<body\b[^>]*>', '<body class="academy-public">', source, count=1)
         source = re.sub(r'\s*<a class="ap-skip"[^>]*>.*?</a>', '', source, flags=re.S)
-        source = re.sub(r'\s*<header\b[^>]*>.*?</header>', lambda _: '\n' + header('career' if name in ['interviews.html', 'mentors.html'] else 'programs'), source, count=1, flags=re.S)
+        source = re.sub(r'\s*<header\b[^>]*>.*?</header>', lambda _: '\n' + header('programs'), source, count=1, flags=re.S)
         source = re.sub(r'<footer\b[^>]*>.*?</footer>', lambda _: footer(), source, count=1, flags=re.S)
         source = re.sub(r'<main\b[^>]*>', '<main id="academy-main">', source, count=1)
         source = re.sub(r'<script src="script\.js[^\"]*"></script>', '', source)
@@ -98,6 +96,9 @@ def build():
         source = source.replace('color: #ffffff;', 'color: var(--text-main);').replace('color: #cbd5e1;', 'color: var(--text-muted);')
         source = source.replace('Free to use &mdash; including commercially', 'Explore the program')
         (ROOT / name).write_text('\n'.join(line.rstrip() for line in source.splitlines()) + '\n', encoding='utf-8')
+
+    for retired in ['interviews.html', 'mentors.html']:
+        (ROOT / retired).write_text('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url=/"><title>VibeTestQ Academy</title></head><body><p>This service is no longer listed. <a href="/">Visit Academy home</a>.</p></body></html>\n', encoding='utf-8')
 
     page('404.html', 'Page Not Found | VibeTestQ Academy', 'Find Academy learning paths, training programs, and practice resources.', '''<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">VibeTestQ Academy</span><h1>Let’s find your<br><span>next learning step.</span></h1><p class="ap-lead">This page is no longer available. Browse the learning library or return to Academy home.</p><div class="ap-actions"><a class="ap-button" href="/learn/">Open Learning Library</a><a class="ap-button secondary" href="/">Academy Home</a></div></div></section>''')
     fallback = (ROOT / '404.html').read_text(encoding='utf-8')
