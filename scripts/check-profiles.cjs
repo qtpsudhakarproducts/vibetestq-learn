@@ -8,9 +8,11 @@ assert.equal(data.market,'India');
 assert.equal(data.profiles.length,57);
 assert.equal(new Set(data.profiles.map(p=>p.path)).size,57);
 assert.equal(Object.keys(data.categories).length,14);
+const formats=new Set();
 for(const p of data.profiles){
   const html=fs.readFileSync(path.join(root,'profiles',p.path),'utf8');
   const md=fs.readFileSync(path.join(root,'profiles',p.path.replace('.html','.md')),'utf8');
+  formats.add(html.match(/resume-sheet resume-format-([a-z]+)/)[1]);
   assert.ok(html.includes(p.resume.name));
   for (const heading of ['Professional Summary','Technical Skills','Work Experience','Project Experience']) {
     assert.ok(html.includes(heading));assert.ok(md.includes('## '+heading));
@@ -25,6 +27,7 @@ for(const p of data.profiles){
   const content=html.match(/<main\b[^>]*>([\s\S]*?)<\/main>/)[1];
   assert.ok(!/mailto:|linkedin.com\/in\/|github.com\/(?!qtpsudhakar)|self-healing selectors via Playwright/i.test(content));
 }
+assert.equal(formats.size,8);
 function control(value=''){return {value,events:{},addEventListener(event,fn){this.events[event]=fn;},focus(){this.focused=true;}};}
 const search=control(),category=control('all'),level=control('all'),reset=control(),count={},empty={};
 const cards=data.profiles.map(p=>({hidden:false,dataset:{category:p.category,level:p.level,search:[p.resume.name,p.role,...p.resume.technologies].join(' ').toLowerCase()}}));

@@ -10,6 +10,34 @@ spec.loader.exec_module(academy)
 page, section, cards = academy.page, academy.section, academy.cards
 ROOT = Path(__file__).resolve().parents[1]
 E = html.escape
+FORMATS = {
+    'classic': 'Classic single column',
+    'modern': 'Modern two column',
+    'sidebar': 'Skills sidebar',
+    'editorial': 'Editorial',
+    'executive': 'Executive',
+    'timeline': 'Experience timeline',
+    'project': 'Project focused',
+    'compact': 'Compact skills first',
+}
+
+
+def formats_for(profiles):
+    counts = {}
+    result = {}
+    for p in profiles:
+        category = p['category']
+        choices = ('classic', 'modern', 'compact')
+        if category in ['sdet', 'automation-engineering', 'architecture']:
+            choices = ('sidebar', 'project', 'modern', 'timeline')
+        elif category in ['test-leadership', 'senior-leadership']:
+            choices = ('editorial', 'executive', 'timeline', 'classic')
+        elif category in ['ai-ml-testing', 'performance-testing', 'data-quality']:
+            choices = ('project', 'compact', 'sidebar', 'modern')
+        index = counts.get(category, 0)
+        result[p['path']] = choices[index % len(choices)]
+        counts[category] = index + 1
+    return result
 
 
 def bullets(items):
@@ -23,9 +51,9 @@ def resume_section(title, content):
 def decorate(path, directory=False):
     file = ROOT / path
     source = file.read_text(encoding='utf-8')
-    extra = '<link rel="stylesheet" href="/assets/academy/profiles.css?v=20261005.1">'
+    extra = '<link rel="stylesheet" href="/assets/academy/profiles.css?v=20261005.2">'
     if directory:
-        extra += '<script defer src="/assets/academy/profiles.js?v=20261005.1"></script>'
+        extra += '<script defer src="/assets/academy/profiles.js?v=20261005.2"></script>'
     file.write_text(source.replace('</head>', extra + '</head>'), encoding='utf-8')
 
 
@@ -51,6 +79,7 @@ def write_markdown(p):
 def build():
     data = json.loads((ROOT / 'profiles/profiles.json').read_text(encoding='utf-8'))
     profiles, categories = data['profiles'], data['categories']
+    formats = formats_for(profiles)
     career = '<section class="ap-hero"><div class="ap-wrap"><span class="ap-eyebrow">VibeTestQ Academy</span><h1>Career Preparation.<br><span>Profiles &amp; interview practice.</span></h1><p class="ap-lead">Browse sample QA resumes or prepare with interview questions.</p></div></section>'
     career += section('resources', 'Choose a resource', 'Two ways to get started.', '', cards([
         ('Sample resumes', 'Sample QA profiles', 'Browse 57 resume examples by role and experience, with professional summaries, skills, work experience and projects.', '/profiles/', 'Browse sample profiles'),
@@ -66,7 +95,7 @@ def build():
         r = p['resume']
         search = ' '.join([r['name'], p['role'], *r['technologies']]).lower()
         skills = ' &middot; '.join(E(x) for x in r['technologies'][:6])
-        directory.append(f'<article class="ap-card cp-card" data-category="{E(p["category"])}" data-level="{E(p["level"])}" data-search="{E(search, quote=True)}"><span class="ap-tag">{E(p["levelLabel"])} &middot; {E(p["experience"].replace("1 years", "1 year"))}</span><h3><a href="/profiles/{E(p["path"])}">{E(p["role"])}</a></h3><p class="cp-sample-name">{E(r["name"])} &middot; Sample resume</p><p class="cp-skills">{skills}</p><a class="ap-button secondary" href="/profiles/{E(p["path"])}">View sample resume</a></article>')
+        directory.append(f'<article class="ap-card cp-card" data-category="{E(p["category"])}" data-level="{E(p["level"])}" data-search="{E(search, quote=True)}"><span class="ap-tag">{E(p["levelLabel"])} &middot; {E(p["experience"].replace("1 years", "1 year"))}</span><h3><a href="/profiles/{E(p["path"])}">{E(p["role"])}</a></h3><p class="cp-sample-name">{E(r["name"])} &middot; Sample resume</p><p class="cp-skills">{skills}</p><p class="resume-format-label">Format: {FORMATS[formats[p["path"]]]}</p><a class="ap-button secondary" href="/profiles/{E(p["path"])}">View sample resume</a></article>')
     body = intro + '<section class="ap-section white resume-directory-list" id="examples"><div class="ap-wrap">' + filters + '<div class="ap-grid three">' + ''.join(directory) + '</div></div></section>'
     page('profiles/index.html', 'Sample QA Profiles & Resumes | VibeTestQ Academy', 'Browse 57 complete sample resumes for QA, automation, SDET, specialist and test leadership roles. Print, save as PDF or download editable Markdown.', body, 'career')
     decorate('profiles/index.html', directory=True)
@@ -75,18 +104,36 @@ def build():
         md = E(Path(p['path']).name.replace('.html', '.md'))
         actions = f'<div class="ap-wrap resume-toolbar"><a href="/profiles/">&larr; All sample profiles</a><div><button type="button" class="ap-button" onclick="window.print()">Print / Save as PDF</button><a class="ap-button secondary" href="{md}" download>Download Markdown</a></div></div>'
         header = f'<header class="resume-heading"><span class="ap-eyebrow">Sample resume</span><h1>{E(r["name"])}</h1><p class="resume-role">{E(p["role"])} &middot; {E(p["experience"].replace("1 years", "1 year"))} experience</p><p>{E(r["location"])}</p><p class="resume-contact">[Your email] &middot; [Your phone]<br>[Your LinkedIn URL] &middot; [Your GitHub / Portfolio URL]</p></header>'
-        main = resume_section('Professional Summary', bullets(r['summary']))
-        main += resume_section('Work Experience', f'<h3>{E(p["role"])}</h3><p class="resume-muted">[Company name] &middot; [Start date &ndash; End date]</p><p>{E(r["experience"])}</p><h3>Responsibilities</h3>' + bullets(r['responsibilities']))
+        summary = resume_section('Professional Summary', bullets(r['summary']))
+        experience = resume_section('Work Experience', f'<h3>{E(p["role"])}</h3><p class="resume-muted">[Company name] &middot; [Start date &ndash; End date]</p><p>{E(r["experience"])}</p><h3>Responsibilities</h3>' + bullets(r['responsibilities']))
         projects = ''
         for x in r['projects']:
             title, separator, description = x.partition(': ')
             projects += '<div class="resume-project"><h3>' + E(title) + '</h3><p>' + E(description if separator else x) + '</p></div>'
-        main += resume_section('Project Experience', projects)
-        side = resume_section('Technical Skills', '<div class="resume-tags">' + ''.join('<span>' + E(x) + '</span>' for x in r['technologies']) + '</div>')
+        project = resume_section('Project Experience', '<div class="resume-project-grid">' + projects + '</div>')
+        skills = resume_section('Technical Skills', '<div class="resume-tags">' + ''.join('<span>' + E(x) + '</span>' for x in r['technologies']) + '</div>')
+        qualifications = ''
         for title, key in [('Education', 'education'), ('Certifications', 'certifications'), ('Achievements', 'achievements')]:
             if r[key]:
-                side += resume_section(title, '<p>' + E(r[key]) + '</p>')
-        body = actions + '<div class="ap-wrap"><p class="resume-note">Sample resume with fictional details. Replace the content with your own experience and qualifications.</p><article class="resume-sheet">' + header + '<div class="resume-columns"><div>' + main + '</div><aside aria-label="Skills and qualifications">' + side + '</aside></div></article></div>'
+                qualifications += resume_section(title, '<p>' + E(r[key]) + '</p>')
+        format = formats[p['path']]
+        if format == 'sidebar':
+            sheet = '<div class="resume-columns"><aside aria-label="Profile, skills and qualifications">' + header + skills + qualifications + '</aside><div>' + summary + experience + project + '</div></div>'
+        elif format == 'classic':
+            sheet = header + summary + skills + experience + project + qualifications
+        elif format == 'compact':
+            sheet = header + skills + '<div class="resume-columns"><div>' + summary + experience + project + '</div><aside aria-label="Qualifications">' + qualifications + '</aside></div>'
+        elif format == 'timeline':
+            sheet = header + summary + '<div class="resume-timeline">' + experience + project + '</div>' + skills + qualifications
+        elif format == 'project':
+            sheet = header + summary + project + '<div class="resume-columns"><div>' + experience + '</div><aside aria-label="Skills and qualifications">' + skills + qualifications + '</aside></div>'
+        elif format == 'executive':
+            sheet = header + summary + experience + '<div class="resume-columns"><div>' + project + '</div><aside aria-label="Skills and qualifications">' + skills + qualifications + '</aside></div>'
+        elif format == 'editorial':
+            sheet = header + summary + experience + project + '<div class="resume-columns"><div>' + skills + '</div><aside aria-label="Qualifications">' + qualifications + '</aside></div>'
+        else:
+            sheet = header + '<div class="resume-columns"><div>' + summary + experience + project + '</div><aside aria-label="Skills and qualifications">' + skills + qualifications + '</aside></div>'
+        body = actions + '<div class="ap-wrap"><p class="resume-note">Sample resume with fictional details. Replace the content with your own experience and qualifications. <strong>Format: ' + FORMATS[format] + '.</strong></p><article class="resume-sheet resume-format-' + format + '">' + sheet + '</article></div>'
         path = 'profiles/' + p['path']
         page(path, r['name'] + ' - ' + p['role'] + ' | Sample Resume | VibeTestQ Academy', 'Sample resume for ' + p['role'] + ' with summary, skills, experience, projects and qualifications.', body, 'career')
         decorate(path)
